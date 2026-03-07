@@ -48,6 +48,15 @@ struct EntryDetailView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
+                        ShareLink(
+                            item: shareText(referenceDate: timeline.date)
+                        ) {
+                            Label(
+                                FluelCopy.share(),
+                                systemImage: "square.and.arrow.up"
+                            )
+                        }
+
                         Button(
                             FluelCopy.edit()
                         ) {
@@ -261,6 +270,15 @@ struct EntryDetailView: View {
         }
 
         return UIImage(data: photoData)
+    }
+
+    private func shareText(
+        referenceDate: Date
+    ) -> String {
+        EntryShareTextFormatter.text(
+            for: entry,
+            referenceDate: referenceDate
+        )
     }
 
     private func archive() {

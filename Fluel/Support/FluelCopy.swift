@@ -22,6 +22,16 @@ enum FluelCopy {
         )
     }
 
+    static func share(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Share",
+            japanese: "共有",
+            locale: locale
+        )
+    }
+
     static func save(
         locale: Locale = .autoupdatingCurrent
     ) -> String {
