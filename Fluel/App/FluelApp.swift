@@ -5,7 +5,9 @@
 //  Created by Hiromu Nakano on 2026/03/07.
 //
 
+import FluelLibrary
 import MHPlatform
+import SwiftData
 import SwiftUI
 
 @main
@@ -16,6 +18,7 @@ struct FluelApp: App {
     var body: some Scene {
         WindowGroup {
             AppRootView()
+                .modelContainer(bootstrap.modelContainer)
                 .environment(bootstrap.appRuntime)
         }
     }

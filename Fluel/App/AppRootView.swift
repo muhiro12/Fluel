@@ -1,9 +1,13 @@
+import FluelLibrary
 import MHPlatform
 import SwiftUI
 
 struct AppRootView: View {
-    @Environment(\.scenePhase) private var scenePhase
-    @Environment(MHAppRuntime.self) private var appRuntime
+    @Environment(\.scenePhase)
+    private var scenePhase
+
+    @Environment(MHAppRuntime.self)
+    private var appRuntime
 
     var body: some View {
         RootView()
@@ -20,7 +24,7 @@ struct AppRootView: View {
     }
 }
 
-#Preview {
+#Preview(traits: .modifier(FluelSampleData())) {
     AppRootView()
         .environment(
             MHAppRuntime(

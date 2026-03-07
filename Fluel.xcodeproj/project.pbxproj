@@ -7,11 +7,39 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B1A2A3012F65000100BC027C /* FluelLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = B1A2A3122F65000100BC027C /* FluelLibrary */; };
+		B1A2A3022F65000100BC027C /* FluelWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B1A2A3042F65000100BC027C /* FluelWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		B1A2A3032F65000100BC027C /* FluelLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = B1A2A3132F65000100BC027C /* FluelLibrary */; };
 		A1B2C3D42F60000100BC027C /* MHPlatform in Frameworks */ = {isa = PBXBuildFile; productRef = A1B2C3D62F60000100BC027C /* MHPlatform */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		B1A2A3082F65000100BC027C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AD91A1052F5C545200BC027C /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B1A2A30A2F65000100BC027C;
+			remoteInfo = FluelWidget;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		B1A2A3072F65000100BC027C /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				B1A2A3022F65000100BC027C /* FluelWidget.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		AD91A10D2F5C545200BC027C /* Fluel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fluel.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B1A2A3042F65000100BC027C /* FluelWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FluelWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD9F01012F5F000100BC027C /* FluelLibrary */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = FluelLibrary; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -22,6 +50,13 @@
 				Info.plist,
 			);
 			target = AD91A10C2F5C545200BC027C /* Fluel */;
+		};
+		B1A2A3052F65000100BC027C /* Exceptions for "FluelWidget" folder in "FluelWidget" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Configurations/Info.plist,
+			);
+			target = B1A2A30A2F65000100BC027C /* FluelWidget */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
@@ -34,6 +69,14 @@
 			path = Fluel;
 			sourceTree = "<group>";
 		};
+		B1A2A3062F65000100BC027C /* FluelWidget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				B1A2A3052F65000100BC027C /* Exceptions for "FluelWidget" folder in "FluelWidget" target */,
+			);
+			path = FluelWidget;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -41,7 +84,16 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B1A2A3012F65000100BC027C /* FluelLibrary in Frameworks */,
 				A1B2C3D42F60000100BC027C /* MHPlatform in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B1A2A3092F65000100BC027C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B1A2A3032F65000100BC027C /* FluelLibrary in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -53,6 +105,7 @@
 			children = (
 				AD9F01012F5F000100BC027C /* FluelLibrary */,
 				AD91A10F2F5C545200BC027C /* Fluel */,
+				B1A2A3062F65000100BC027C /* FluelWidget */,
 				AD91A10E2F5C545200BC027C /* Products */,
 			);
 			sourceTree = "<group>";
@@ -61,6 +114,7 @@
 			isa = PBXGroup;
 			children = (
 				AD91A10D2F5C545200BC027C /* Fluel.app */,
+				B1A2A3042F65000100BC027C /* FluelWidget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -75,21 +129,47 @@
 				AD91A1092F5C545200BC027C /* Sources */,
 				AD91A10A2F5C545200BC027C /* Frameworks */,
 				AD91A10B2F5C545200BC027C /* Resources */,
+				B1A2A3072F65000100BC027C /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				B1A2A30E2F65000100BC027C /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				AD91A10F2F5C545200BC027C /* Fluel */,
 			);
 			name = Fluel;
 			packageProductDependencies = (
+				B1A2A3122F65000100BC027C /* FluelLibrary */,
 				A1B2C3D62F60000100BC027C /* MHPlatform */,
 			);
 			productName = Fluel;
 			productReference = AD91A10D2F5C545200BC027C /* Fluel.app */;
 			productType = "com.apple.product-type.application";
+		};
+		B1A2A30A2F65000100BC027C /* FluelWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B1A2A30F2F65000100BC027C /* Build configuration list for PBXNativeTarget "FluelWidget" */;
+			buildPhases = (
+				B1A2A30D2F65000100BC027C /* Sources */,
+				B1A2A3092F65000100BC027C /* Frameworks */,
+				B1A2A30C2F65000100BC027C /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				B1A2A3062F65000100BC027C /* FluelWidget */,
+			);
+			name = FluelWidget;
+			packageProductDependencies = (
+				B1A2A3132F65000100BC027C /* FluelLibrary */,
+			);
+			productName = FluelWidget;
+			productReference = B1A2A3042F65000100BC027C /* FluelWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -102,6 +182,9 @@
 				LastUpgradeCheck = 2630;
 				TargetAttributes = {
 					AD91A10C2F5C545200BC027C = {
+						CreatedOnToolsVersion = 26.3;
+					};
+					B1A2A30A2F65000100BC027C = {
 						CreatedOnToolsVersion = 26.3;
 					};
 				};
@@ -125,12 +208,20 @@
 			projectRoot = "";
 			targets = (
 				AD91A10C2F5C545200BC027C /* Fluel */,
+				B1A2A30A2F65000100BC027C /* FluelWidget */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
 		AD91A10B2F5C545200BC027C /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B1A2A30C2F65000100BC027C /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -147,7 +238,22 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		B1A2A30D2F65000100BC027C /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B1A2A30E2F65000100BC027C /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B1A2A30A2F65000100BC027C /* FluelWidget */;
+			targetProxy = B1A2A3082F65000100BC027C /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCRemoteSwiftPackageReference section */
 		A1B2C3D52F60000100BC027C /* XCRemoteSwiftPackageReference "MHPlatform" */ = {
@@ -166,6 +272,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Fluel/Fluel.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 66PKF55HK5;
@@ -212,6 +319,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Fluel/Fluel.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 66PKF55HK5;
@@ -369,6 +477,71 @@
 			};
 			name = Release;
 		};
+		B1A2A3102F65000100BC027C /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = FluelWidget/Configurations/FluelWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 66PKF55HK5;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FluelWidget/Configurations/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Fluel;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.muhiro12.Fluel.Widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		B1A2A3112F65000100BC027C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_ENTITLEMENTS = FluelWidget/Configurations/FluelWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 66PKF55HK5;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = FluelWidget/Configurations/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Fluel;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.muhiro12.Fluel.Widget;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_DEFAULT_ACTOR_ISOLATION = MainActor;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -390,6 +563,15 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
+		B1A2A30F2F65000100BC027C /* Build configuration list for PBXNativeTarget "FluelWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B1A2A3102F65000100BC027C /* Debug */,
+				B1A2A3112F65000100BC027C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 /* End XCConfigurationList section */
 
 /* Begin XCLocalSwiftPackageReference section */
@@ -400,6 +582,16 @@
 /* End XCLocalSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		B1A2A3122F65000100BC027C /* FluelLibrary */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AD9F01022F5F000100BC027C /* XCLocalSwiftPackageReference "FluelLibrary" */;
+			productName = FluelLibrary;
+		};
+		B1A2A3132F65000100BC027C /* FluelLibrary */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AD9F01022F5F000100BC027C /* XCLocalSwiftPackageReference "FluelLibrary" */;
+			productName = FluelLibrary;
+		};
 		A1B2C3D62F60000100BC027C /* MHPlatform */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = A1B2C3D52F60000100BC027C /* XCRemoteSwiftPackageReference "MHPlatform" */;
