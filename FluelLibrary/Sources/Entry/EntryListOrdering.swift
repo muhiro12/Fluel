@@ -4,18 +4,43 @@ import Foundation
 public enum EntryListOrdering {
     public static func active(
         _ entries: [Entry],
+        sortMode: ActiveEntrySortMode = .oldestFirst,
         calendar: Calendar = .autoupdatingCurrent
     ) -> [Entry] {
         entries.sorted { lhs, rhs in
             let lhsDate = lhs.startComponents.earliestDate(calendar: calendar) ?? .distantPast
             let rhsDate = rhs.startComponents.earliestDate(calendar: calendar) ?? .distantPast
 
-            if lhsDate != rhsDate {
-                return lhsDate < rhsDate
-            }
+            switch sortMode {
+            case .oldestFirst:
+                if lhsDate != rhsDate {
+                    return lhsDate < rhsDate
+                }
 
-            if lhs.startPrecision != rhs.startPrecision {
-                return precisionRank(lhs.startPrecision) < precisionRank(rhs.startPrecision)
+                if lhs.startPrecision != rhs.startPrecision {
+                    return precisionRank(lhs.startPrecision) < precisionRank(rhs.startPrecision)
+                }
+            case .newestFirst:
+                if lhsDate != rhsDate {
+                    return lhsDate > rhsDate
+                }
+
+                if lhs.startPrecision != rhs.startPrecision {
+                    return precisionRank(lhs.startPrecision) > precisionRank(rhs.startPrecision)
+                }
+            case .alphabetical:
+                let titleComparison = lhs.title.localizedCaseInsensitiveCompare(rhs.title)
+                if titleComparison != .orderedSame {
+                    return titleComparison == .orderedAscending
+                }
+
+                if lhsDate != rhsDate {
+                    return lhsDate < rhsDate
+                }
+
+                if lhs.startPrecision != rhs.startPrecision {
+                    return precisionRank(lhs.startPrecision) < precisionRank(rhs.startPrecision)
+                }
             }
 
             let titleComparison = lhs.title.localizedCaseInsensitiveCompare(rhs.title)
@@ -56,6 +81,7 @@ public enum EntryListOrdering {
             entries.filter { entry in
                 entry.isArchived == false
             },
+            sortMode: .oldestFirst,
             calendar: calendar
         ).first
     }
