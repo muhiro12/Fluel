@@ -1,8 +1,13 @@
 import FluelLibrary
+import MHUI
 import SwiftData
 import SwiftUI
 
 struct ArchiveListView: View {
+    private enum Metrics {
+        static let rowSpacing: CGFloat = 12
+    }
+
     @Query(
         filter: #Predicate<Entry> { entry in
             entry.archivedAt != nil
@@ -23,24 +28,26 @@ struct ArchiveListView: View {
                     listContent(referenceDate: context.date)
                 }
             }
-            .navigationTitle(FluelCopy.archived())
             .navigationBarTitleDisplayMode(.inline)
-            .background(Color(uiColor: .systemGroupedBackground))
         }
     }
 
     private var emptyState: some View {
-        VStack(alignment: .leading, spacing: 16) {
-            Text(FluelCopy.archiveEmptyTitle())
-                .font(.title3.weight(.medium))
-
+        ContentUnavailableView {
+            Label(
+                FluelCopy.archiveEmptyTitle(),
+                systemImage: "archivebox"
+            )
+        } description: {
             Text(FluelCopy.archiveEmptyBody())
-                .foregroundStyle(.secondary)
-
-            Spacer(minLength: 0)
         }
-        .padding(24)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+        .mhEmptyStateLayout()
+        .mhSurfaceInset()
+        .mhSurface(role: .muted)
+        .mhScreen(
+            title: Text(FluelCopy.archived()),
+            subtitle: Text(FluelCopy.archiveScreenSubtitle())
+        )
     }
 
     private func listContent(
@@ -59,9 +66,22 @@ struct ArchiveListView: View {
                         }
                     )
                 }
+                .listRowInsets(
+                    .init(
+                        top: 0,
+                        leading: 0,
+                        bottom: Metrics.rowSpacing,
+                        trailing: 0
+                    )
+                )
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
             }
         }
-        .listStyle(.insetGrouped)
+        .mhListChrome(
+            title: Text(FluelCopy.archived()),
+            subtitle: Text(FluelCopy.archiveScreenSubtitle())
+        )
     }
 }
 
@@ -69,4 +89,5 @@ struct ArchiveListView: View {
     NavigationStack {
         ArchiveListView()
     }
+    .fluelAppStyle()
 }

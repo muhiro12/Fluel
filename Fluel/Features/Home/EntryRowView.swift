@@ -1,12 +1,32 @@
 import FluelLibrary
+import MHUI
 import SwiftData
 import SwiftUI
 import UIKit
 
 struct EntryRowView: View {
+    private enum Metrics {
+        static let imageSize: CGFloat = 48
+        static let elapsedWidth: CGFloat = 120
+    }
+
+    @Environment(\.mhTheme)
+    private var theme
+
     let entry: Entry
     let referenceDate: Date
     let footerText: String?
+
+    var body: some View {
+        let snapshot = EntryElapsedSnapshot(
+            startComponents: entry.startComponents,
+            referenceDate: referenceDate
+        )
+
+        return content(
+            snapshot: snapshot
+        )
+    }
 
     init(
         entry: Entry,
@@ -18,54 +38,59 @@ struct EntryRowView: View {
         self.footerText = footerText
     }
 
-    var body: some View {
-        let snapshot = EntryElapsedSnapshot(
-            startComponents: entry.startComponents,
-            referenceDate: referenceDate
-        )
-
-        HStack(alignment: .top, spacing: 14) {
+    private func content(
+        snapshot: EntryElapsedSnapshot
+    ) -> some View {
+        HStack(alignment: .top, spacing: theme.spacing.control) {
             if let image = entryImage {
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFill()
-                    .frame(width: 44, height: 44)
-                    .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
+                    .frame(
+                        width: Metrics.imageSize,
+                        height: Metrics.imageSize
+                    )
+                    .clipShape(
+                        RoundedRectangle(
+                            cornerRadius: theme.radius.control,
+                            style: .continuous
+                        )
+                    )
+                    .accessibilityHidden(true)
             }
 
-            VStack(alignment: .leading, spacing: 6) {
-                Text(entry.title)
-                    .font(.headline.weight(.medium))
-                    .foregroundStyle(.primary)
-
+            VStack(alignment: .leading, spacing: theme.spacing.inline) {
                 Text(
                     EntryFormatting.startLabelText(
                         for: entry.startComponents
                     )
                 )
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
+                .mhRowOverline()
+
+                Text(entry.title)
+                    .mhRowTitle()
 
                 if let footerText {
                     Text(footerText)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                        .mhRowSupporting()
                 }
             }
+            .frame(maxWidth: .infinity, alignment: .leading)
 
-            Spacer(minLength: 12)
+            Spacer(minLength: theme.layout.rowAccessorySpacing)
 
             Text(
                 EntryFormatting.primaryElapsedText(
                     for: snapshot
                 )
             )
-            .font(.headline.weight(.semibold))
+            .mhTextStyle(.bodyStrong, colorRole: .primaryText)
             .multilineTextAlignment(.trailing)
-            .foregroundStyle(.primary)
-            .frame(maxWidth: 120, alignment: .trailing)
+            .frame(maxWidth: Metrics.elapsedWidth, alignment: .trailing)
         }
-        .padding(.vertical, 8)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .mhRow()
+        .mhSurface(role: entry.isArchived ? .muted : .standard)
     }
 
     private var entryImage: UIImage? {
@@ -78,12 +103,54 @@ struct EntryRowView: View {
 }
 
 #Preview {
-    let context = try! FluelSampleData.makeSharedContext()
-    let entries = try! context.modelContainer.mainContext.fetch(FetchDescriptor<Entry>())
+    EntryRowPreview()
+}
 
-    return EntryRowView(
-        entry: EntryListOrdering.active(entries).first ?? entries[0],
-        referenceDate: .now
-    )
-    .modelContainer(context.modelContainer)
+private struct EntryRowPreview: View {
+    var body: some View {
+        if let preview = previewContent {
+            preview
+        } else {
+            Text("Preview unavailable")
+                .fluelAppStyle()
+        }
+    }
+
+    private var previewContent: AnyView? {
+        guard let context = try? FluelSampleData.makeSharedContext(),
+              let entry = try? previewEntry(
+                  context: context.modelContainer.mainContext
+              ) else {
+            return nil
+        }
+
+        return AnyView(
+            EntryRowView(
+                entry: entry,
+                referenceDate: .now
+            )
+            .modelContainer(context.modelContainer)
+            .fluelAppStyle()
+        )
+    }
+
+    private func previewEntry(
+        context: ModelContext
+    ) throws -> Entry {
+        let entries = try context.fetch(FetchDescriptor<Entry>())
+
+        if let activeEntry = EntryListOrdering.active(entries).first {
+            return activeEntry
+        }
+
+        guard let firstEntry = entries.first else {
+            throw PreviewError.missingEntry
+        }
+
+        return firstEntry
+    }
+}
+
+private enum PreviewError: Error {
+    case missingEntry
 }

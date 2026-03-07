@@ -1,4 +1,5 @@
 import FluelLibrary
+import MHUI
 import PhotosUI
 import SwiftData
 import SwiftUI
@@ -70,6 +71,7 @@ struct EntryFormView: View {
                     text: $title
                 )
                 .textInputAutocapitalization(.words)
+                .mhInputChrome()
             } header: {
                 Text(FluelCopy.titleFieldLabel())
             } footer: {
@@ -151,6 +153,7 @@ struct EntryFormView: View {
                         systemImage: "photo"
                     )
                 }
+                .buttonStyle(.mhSecondary)
 
                 if photoData != nil {
                     Button(
@@ -160,6 +163,7 @@ struct EntryFormView: View {
                         photoData = nil
                         selectedPhotoItem = nil
                     }
+                    .buttonStyle(.mhDestructive)
                 }
             } header: {
                 Text(FluelCopy.photoSectionTitle())
@@ -168,13 +172,17 @@ struct EntryFormView: View {
             Section {
                 TextEditor(text: $note)
                     .frame(minHeight: 120)
+                    .mhInputChrome()
             } header: {
                 Text(FluelCopy.noteSectionTitle())
             } footer: {
                 Text(FluelCopy.notePlaceholder())
             }
         }
-        .navigationTitle(navigationTitle)
+        .mhFormChrome(
+            title: Text(navigationTitle),
+            subtitle: Text(screenSubtitle)
+        )
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
@@ -229,6 +237,15 @@ struct EntryFormView: View {
         }
     }
 
+    private var screenSubtitle: String {
+        switch mode {
+        case .create:
+            return FluelCopy.createScreenSubtitle()
+        case .edit:
+            return FluelCopy.editScreenSubtitle()
+        }
+    }
+
     private var canSave: Bool {
         do {
             _ = try input.resolvedStartComponents(
@@ -257,7 +274,7 @@ struct EntryFormView: View {
     private var yearRange: [Int] {
         let currentYear = calendar.component(.year, from: currentDate)
 
-        return Array((1900...currentYear).reversed()) // swiftlint:disable:this no_magic_numbers
+        return Array((1_900...currentYear).reversed()) // swiftlint:disable:this no_magic_numbers
     }
 
     private var availableMonths: [(value: Int, label: String)] {
@@ -383,4 +400,18 @@ struct EntryFormView: View {
             mode: .create
         )
     }
+    .fluelAppStyle()
+}
+
+#Preview("Edit", traits: .modifier(FluelSampleData())) {
+    let context = try! FluelSampleData.makeSharedContext()
+    let entries = try! context.modelContainer.mainContext.fetch(FetchDescriptor<Entry>())
+
+    return NavigationStack {
+        EntryFormView(
+            mode: .edit(EntryListOrdering.active(entries).first ?? entries[0])
+        )
+    }
+    .modelContainer(context.modelContainer)
+    .fluelAppStyle()
 }

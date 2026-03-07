@@ -1,8 +1,13 @@
 import FluelLibrary
+import MHUI
 import SwiftData
 import SwiftUI
 
 struct HomeView: View {
+    private enum Metrics {
+        static let rowSpacing: CGFloat = 12
+    }
+
     @Query(
         filter: #Predicate<Entry> { entry in
             entry.archivedAt == nil
@@ -27,7 +32,6 @@ struct HomeView: View {
                     listContent(referenceDate: context.date)
                 }
             }
-            .navigationTitle(FluelAppConfiguration.appName)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -66,24 +70,27 @@ struct HomeView: View {
     }
 
     private var emptyState: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            Text(FluelCopy.homeEmptyTitle())
-                .font(.title2.weight(.medium))
-
+        ContentUnavailableView {
+            Label(
+                FluelCopy.homeEmptyTitle(),
+                systemImage: "square.stack.3d.up"
+            )
+        } description: {
             Text(FluelCopy.homeEmptyBody())
-                .foregroundStyle(.secondary)
-
+        } actions: {
             Button(
                 FluelCopy.addFirstEntry(),
                 action: onAdd
             )
-            .buttonStyle(.borderedProminent)
-
-            Spacer(minLength: 0)
+            .buttonStyle(.mhPrimary)
         }
-        .padding(24)
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-        .background(Color(uiColor: .systemGroupedBackground))
+        .mhEmptyStateLayout()
+        .mhSurfaceInset()
+        .mhSurface()
+        .mhScreen(
+            title: Text(FluelAppConfiguration.appName),
+            subtitle: Text(FluelCopy.homeScreenSubtitle())
+        )
     }
 
     private func listContent(
@@ -99,9 +106,22 @@ struct HomeView: View {
                         referenceDate: referenceDate
                     )
                 }
+                .listRowInsets(
+                    .init(
+                        top: 0,
+                        leading: 0,
+                        bottom: Metrics.rowSpacing,
+                        trailing: 0
+                    )
+                )
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
             }
         }
-        .listStyle(.insetGrouped)
+        .mhListChrome(
+            title: Text(FluelAppConfiguration.appName),
+            subtitle: Text(FluelCopy.homeScreenSubtitle())
+        )
     }
 }
 
@@ -113,4 +133,5 @@ struct HomeView: View {
             onShowLicenses: {}
         )
     }
+    .fluelAppStyle()
 }

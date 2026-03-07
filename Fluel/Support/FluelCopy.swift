@@ -371,7 +371,7 @@ enum FluelCopy {
         )
     }
 
-    private static func localized(
+    static func localized(
         english: String,
         japanese: String,
         locale: Locale

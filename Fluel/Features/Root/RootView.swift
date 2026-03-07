@@ -49,4 +49,5 @@ struct RootView: View {
                 configuration: FluelAppConfiguration.runtimeConfiguration
             )
         )
+        .fluelAppStyle()
 }

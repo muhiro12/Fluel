@@ -1,4 +1,5 @@
 import FluelLibrary
+import MHUI
 import SwiftData
 import SwiftUI
 import UIKit
@@ -6,6 +7,8 @@ import UIKit
 struct EntryDetailView: View {
     @Environment(\.dismiss)
     private var dismiss
+    @Environment(\.mhTheme)
+    private var theme
     @Environment(\.modelContext)
     private var context
 
@@ -21,80 +24,25 @@ struct EntryDetailView: View {
                 referenceDate: timeline.date
             )
 
-            ScrollView {
-                VStack(alignment: .leading, spacing: 24) {
-                    if let image = entryImage {
-                        Image(uiImage: image)
-                            .resizable()
-                            .scaledToFill()
-                            .frame(maxWidth: .infinity)
-                            .frame(height: 220)
-                            .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
-                    }
+            VStack(alignment: .leading, spacing: theme.spacing.section) {
+                elapsedSection(snapshot: snapshot)
+                detailsSection(snapshot: snapshot)
 
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text(entry.title)
-                            .font(.largeTitle.weight(.medium))
-
-                        Text(
-                            EntryFormatting.startLabelText(
-                                for: entry.startComponents
-                            )
-                        )
-                        .font(.headline)
-                        .foregroundStyle(.secondary)
-
-                        if let archivedAt = entry.archivedAt {
-                            Text(
-                                EntryFormatting.archivedOnText(
-                                    archivedAt
-                                )
-                            )
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                        }
-                    }
-
-                    VStack(alignment: .leading, spacing: 10) {
-                        Text(
-                            EntryFormatting.primaryElapsedText(
-                                for: snapshot
-                            )
-                        )
-                        .font(.system(size: 44, weight: .semibold, design: .rounded))
-                        .multilineTextAlignment(.leading)
-
-                        Text(
-                            EntryFormatting.detailElapsedText(
-                                for: snapshot
-                            )
-                        )
-                        .font(.body)
-                        .foregroundStyle(.secondary)
-                    }
-
-                    detailCard(snapshot: snapshot)
-
-                    if let note = entry.note {
-                        VStack(alignment: .leading, spacing: 10) {
-                            Text(FluelCopy.noteSectionTitle())
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-
-                            Text(note)
-                                .frame(maxWidth: .infinity, alignment: .leading)
-                        }
-                        .padding(20)
-                        .background(
-                            Color(uiColor: .secondarySystemBackground),
-                            in: RoundedRectangle(cornerRadius: 22, style: .continuous)
-                        )
-                    }
+                if let note = entry.note,
+                   note.isEmpty == false {
+                    noteSection(note)
                 }
-                .padding(24)
-                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .background(Color(uiColor: .systemGroupedBackground))
+            .mhScreen(
+                title: Text(entry.title),
+                subtitle: Text(
+                    EntryFormatting.startLabelText(
+                        for: entry.startComponents
+                    )
+                )
+            ) {
+                headerContent
+            }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -156,47 +104,122 @@ struct EntryDetailView: View {
     }
 
     @ViewBuilder
-    private func detailCard(
+    private var headerContent: some View {
+        if let image = entryImage {
+            Image(uiImage: image)
+                .resizable()
+                .scaledToFill()
+                .frame(maxWidth: .infinity)
+                .frame(height: 240)
+                .clipShape(
+                    RoundedRectangle(
+                        cornerRadius: 24,
+                        style: .continuous
+                    )
+                )
+        }
+
+        if let archivedAt = entry.archivedAt {
+            Text(
+                EntryFormatting.archivedOnText(
+                    archivedAt
+                )
+            )
+            .mhTextStyle(.metadata, colorRole: .secondaryText)
+        }
+    }
+
+    private func elapsedSection(
         snapshot: EntryElapsedSnapshot
     ) -> some View {
-        VStack(alignment: .leading, spacing: 18) {
-            DetailMetricView(
-                title: FluelCopy.started(),
+        VStack(alignment: .leading, spacing: theme.spacing.control) {
+            Text(
+                EntryFormatting.primaryElapsedText(
+                    for: snapshot
+                )
+            )
+            .font(.system(size: 44, weight: .semibold, design: .rounded))
+            .multilineTextAlignment(.leading)
+
+            Text(
+                EntryFormatting.detailElapsedText(
+                    for: snapshot
+                )
+            )
+            .mhTextStyle(.supporting, colorRole: .secondaryText)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .mhSection(
+            title: Text(FluelCopy.timeTogetherSectionTitle()),
+            supporting: Text(FluelCopy.timeTogetherSectionBody())
+        )
+    }
+
+    private func detailsSection(
+        snapshot: EntryElapsedSnapshot
+    ) -> some View {
+        VStack(spacing: 0) {
+            LabeledContent(
+                FluelCopy.started(),
                 value: EntryFormatting.startDateText(
                     for: entry.startComponents
                 )
             )
+            .labeledContentStyle(.mhKeyValue)
 
-            DetailMetricView(
-                title: FluelCopy.knownAs(),
+            LabeledContent(
+                FluelCopy.knownAs(),
                 value: EntryFormatting.precisionText(
                     for: entry.startPrecision
                 )
             )
+            .labeledContentStyle(.mhKeyValue)
 
-            DetailMetricView(
-                title: FluelCopy.elapsedInFull(),
+            LabeledContent(
+                FluelCopy.elapsedInFull(),
                 value: EntryFormatting.detailElapsedText(
                     for: snapshot
                 )
             )
+            .labeledContentStyle(.mhKeyValue)
 
             if let totalMeasureText = EntryFormatting.totalMeasureText(
                 for: snapshot
             ) {
-                DetailMetricView(
-                    title: snapshot.totalDays != nil
+                LabeledContent(
+                    snapshot.totalDays != nil
                         ? FluelCopy.totalDays()
                         : FluelCopy.totalMonths(),
                     value: totalMeasureText
                 )
+                .labeledContentStyle(.mhKeyValue)
             }
         }
-        .padding(20)
-        .background(
-            Color(uiColor: .secondarySystemBackground),
-            in: RoundedRectangle(cornerRadius: 22, style: .continuous)
+        .mhGroupedRows()
+        .mhSection(
+            title: Text(FluelCopy.detailsSectionTitle()),
+            supporting: Text(detailsSectionSupportingText)
         )
+    }
+
+    private func noteSection(
+        _ note: String
+    ) -> some View {
+        Text(note)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .mhTextStyle(.body)
+            .mhSection(
+                title: Text(FluelCopy.noteSectionTitle()),
+                supporting: Text(FluelCopy.notePlaceholder())
+            )
+    }
+
+    private var detailsSectionSupportingText: String {
+        if let archivedAt = entry.archivedAt {
+            return EntryFormatting.archivedOnText(archivedAt)
+        }
+
+        return FluelCopy.detailsSectionBody()
     }
 
     private var entryImage: UIImage? {
@@ -234,24 +257,6 @@ struct EntryDetailView: View {
     }
 }
 
-private struct DetailMetricView: View {
-    let title: String
-    let value: String
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Text(title)
-                .font(.caption)
-                .foregroundStyle(.secondary)
-
-            Text(value)
-                .font(.title3.weight(.medium))
-                .foregroundStyle(.primary)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-    }
-}
-
 #Preview {
     let context = try! FluelSampleData.makeSharedContext()
     let entries = try! context.modelContainer.mainContext.fetch(FetchDescriptor<Entry>())
@@ -260,4 +265,5 @@ private struct DetailMetricView: View {
         EntryDetailView(entry: EntryListOrdering.active(entries).first ?? entries[0])
     }
     .modelContainer(context.modelContainer)
+    .fluelAppStyle()
 }

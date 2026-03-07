@@ -1,0 +1,87 @@
+import Foundation
+
+extension FluelCopy {
+    static func homeScreenSubtitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "See the time that has quietly gathered with the things "
+                + "and places you live with.",
+            japanese: "身の回りのものや場所と重なってきた時間を、静かに見渡せます。",
+            locale: locale
+        )
+    }
+
+    static func archiveScreenSubtitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "What has moved out of daily life stays here, readable "
+                + "and separate.",
+            japanese: "日々のそばを離れたものも、ここで静かに読み返せます。",
+            locale: locale
+        )
+    }
+
+    static func createScreenSubtitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Add one thing or place you live with.",
+            japanese: "一緒に暮らしているものや場所をひとつ加えます。",
+            locale: locale
+        )
+    }
+
+    static func editScreenSubtitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Adjust what you know, including how precisely the start "
+                + "is known.",
+            japanese: "始まりをどこまで分かっているかも含めて、静かに整えられます。",
+            locale: locale
+        )
+    }
+
+    static func timeTogetherSectionTitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Time together",
+            japanese: "重なってきた時間",
+            locale: locale
+        )
+    }
+
+    static func timeTogetherSectionBody(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "A quiet view of how long this has been with you.",
+            japanese: "どれくらい長くそばにあるかを、落ち着いて見られます。",
+            locale: locale
+        )
+    }
+
+    static func detailsSectionTitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Details",
+            japanese: "詳細",
+            locale: locale
+        )
+    }
+
+    static func detailsSectionBody(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "The start and its precision stay exactly as you know "
+                + "them.",
+            japanese: "始まりと、その分かる範囲をそのまま残します。",
+            locale: locale
+        )
+    }
+}

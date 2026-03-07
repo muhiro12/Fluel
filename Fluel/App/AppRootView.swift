@@ -11,6 +11,7 @@ struct AppRootView: View {
 
     var body: some View {
         RootView()
+            .fluelAppStyle()
             .task {
                 appRuntime.startIfNeeded()
             }
