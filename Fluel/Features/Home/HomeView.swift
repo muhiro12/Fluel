@@ -20,13 +20,17 @@ struct HomeView: View {
 
     @State private var errorMessage: String?
     @State private var searchText = String()
+    @State private var sortMode: ActiveEntrySortMode = .oldestFirst
 
     let onAdd: () -> Void
     let onShowArchive: () -> Void
     let onShowLicenses: () -> Void
 
     private var sortedEntries: [Entry] {
-        EntryListOrdering.active(activeEntries)
+        EntryListOrdering.active(
+            activeEntries,
+            sortMode: sortMode
+        )
     }
 
     private var displayedEntries: [Entry] {
@@ -51,6 +55,25 @@ struct HomeView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Menu {
+                        Section(FluelCopy.sort()) {
+                            ForEach(ActiveEntrySortMode.allCases, id: \.self) { mode in
+                                Button {
+                                    sortMode = mode
+                                } label: {
+                                    if sortMode == mode {
+                                        Label(
+                                            FluelCopy.activeSortMode(mode),
+                                            systemImage: "checkmark"
+                                        )
+                                    } else {
+                                        Text(
+                                            FluelCopy.activeSortMode(mode)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+
                         Button(
                             FluelCopy.archived()
                         ) {

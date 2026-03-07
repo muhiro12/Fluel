@@ -1,3 +1,4 @@
+import FluelLibrary
 import Foundation
 
 enum FluelCopy {
@@ -160,6 +161,42 @@ enum FluelCopy {
             japanese: "記録を検索",
             locale: locale
         )
+    }
+
+    static func sort(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Sort",
+            japanese: "並び順",
+            locale: locale
+        )
+    }
+
+    static func activeSortMode(
+        _ sortMode: ActiveEntrySortMode,
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        switch sortMode {
+        case .oldestFirst:
+            return localized(
+                english: "Longest together",
+                japanese: "長く一緒にいる順",
+                locale: locale
+            )
+        case .newestFirst:
+            return localized(
+                english: "Most recent start",
+                japanese: "最近始まった順",
+                locale: locale
+            )
+        case .alphabetical:
+            return localized(
+                english: "Alphabetical",
+                japanese: "名前順",
+                locale: locale
+            )
+        }
     }
 
     static func homeSearchEmptyTitle(
