@@ -6,6 +6,7 @@ public enum EntryRepositoryError: LocalizedError, Equatable {
     case emptyTitle
     case invalidStartDate
     case futureStartDate
+    case deleteRequiresArchivedEntry
 
     public var errorDescription: String? {
         switch (self, FluelLocale(locale: .autoupdatingCurrent)) {
@@ -21,6 +22,10 @@ public enum EntryRepositoryError: LocalizedError, Equatable {
             return "The start date needs to be in the past or today."
         case (.futureStartDate, .japanese):
             return "開始時期は今日以前を選んでください。"
+        case (.deleteRequiresArchivedEntry, .english):
+            return "Archive the entry before deleting it."
+        case (.deleteRequiresArchivedEntry, .japanese):
+            return "削除する前に、この記録を保管済みにしてください。"
         }
     }
 }
@@ -77,6 +82,18 @@ public enum EntryRepository {
         now: Date = .now
     ) throws {
         entry.restore(now: now)
+        try context.save()
+    }
+
+    public static func delete(
+        context: ModelContext,
+        entry: Entry
+    ) throws {
+        guard entry.isArchived else {
+            throw EntryRepositoryError.deleteRequiresArchivedEntry
+        }
+
+        context.delete(entry)
         try context.save()
     }
 

@@ -15,6 +15,7 @@ struct EntryDetailView: View {
     let entry: Entry
 
     @State private var errorMessage: String?
+    @State private var isConfirmingDelete = false
     @State private var isPresentingEditor = false
 
     var body: some View {
@@ -59,6 +60,13 @@ struct EntryDetailView: View {
                             ) {
                                 restore()
                             }
+
+                            Button(
+                                FluelCopy.delete(),
+                                role: .destructive
+                            ) {
+                                isConfirmingDelete = true
+                            }
                         } else {
                             Button(
                                 FluelCopy.archive()
@@ -81,6 +89,31 @@ struct EntryDetailView: View {
                     mode: .edit(entry)
                 )
             }
+        }
+        .confirmationDialog(
+            FluelCopy.deleteConfirmationTitle(),
+            isPresented: $isConfirmingDelete,
+            titleVisibility: .visible
+        ) {
+            Button(
+                FluelCopy.deletePermanently(),
+                role: .destructive
+            ) {
+                delete()
+            }
+
+            Button(
+                FluelCopy.cancel(),
+                role: .cancel
+            ) {
+                isConfirmingDelete = false
+            }
+        } message: {
+            Text(
+                FluelCopy.deleteConfirmationMessage(
+                    for: entry.title
+                )
+            )
         }
         .alert(
             FluelCopy.error(),
@@ -246,6 +279,19 @@ struct EntryDetailView: View {
     private func restore() {
         do {
             try EntryRepository.restore(
+                context: context,
+                entry: entry
+            )
+            FluelWidgetReloader.reloadAllTimelines()
+            dismiss()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
+    }
+
+    private func delete() {
+        do {
+            try EntryRepository.delete(
                 context: context,
                 entry: entry
             )

@@ -81,6 +81,47 @@ enum FluelCopy {
         )
     }
 
+    static func delete(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Delete",
+            japanese: "削除",
+            locale: locale
+        )
+    }
+
+    static func deletePermanently(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Delete Permanently",
+            japanese: "完全に削除",
+            locale: locale
+        )
+    }
+
+    static func deleteConfirmationTitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Delete this entry?",
+            japanese: "この記録を削除しますか？",
+            locale: locale
+        )
+    }
+
+    static func deleteConfirmationMessage(
+        for entryTitle: String,
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "\"\(entryTitle)\" will be permanently removed from Fluel.",
+            japanese: "「\(entryTitle)」を Fluel から完全に削除します。",
+            locale: locale
+        )
+    }
+
     static func homeEmptyTitle(
         locale: Locale = .autoupdatingCurrent
     ) -> String {

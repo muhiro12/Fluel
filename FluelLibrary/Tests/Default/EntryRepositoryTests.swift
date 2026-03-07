@@ -127,4 +127,82 @@ struct EntryRepositoryTests {
         #expect(try EntryRepository.fetchActiveEntries(context: context).count == 1)
         #expect(try EntryRepository.fetchArchivedEntries(context: context).isEmpty)
     }
+
+    @Test
+    func delete_removes_archived_entry_without_affecting_other_entries() throws {
+        let context = try makeTestContext()
+        let archivedEntry = try EntryRepository.create(
+            context: context,
+            input: makeInput(
+                title: "Desk lamp",
+                precision: .month,
+                year: 2_022,
+                month: 8
+            ),
+            now: isoDate("2026-03-08T12:00:00Z"),
+            calendar: .init(identifier: .gregorian)
+        )
+        let activeEntry = try EntryRepository.create(
+            context: context,
+            input: makeInput(
+                title: "Wallet",
+                precision: .year,
+                year: 2_021
+            ),
+            now: isoDate("2026-03-08T12:00:01Z"),
+            calendar: .init(identifier: .gregorian)
+        )
+
+        try EntryRepository.archive(
+            context: context,
+            entry: archivedEntry,
+            now: isoDate("2026-03-09T12:00:00Z")
+        )
+
+        try EntryRepository.delete(
+            context: context,
+            entry: archivedEntry
+        )
+
+        let remainingEntries = try EntryRepository.fetchAllEntries(
+            context: context
+        )
+        let activeEntries = try EntryRepository.fetchActiveEntries(
+            context: context
+        )
+        let archivedEntries = try EntryRepository.fetchArchivedEntries(
+            context: context
+        )
+
+        #expect(remainingEntries.count == 1)
+        #expect(remainingEntries.first?.title == activeEntry.title)
+        #expect(activeEntries.count == 1)
+        #expect(activeEntries.first?.title == activeEntry.title)
+        #expect(archivedEntries.isEmpty)
+    }
+
+    @Test
+    func delete_rejects_active_entry() throws {
+        let context = try makeTestContext()
+        let entry = try EntryRepository.create(
+            context: context,
+            input: makeInput(
+                title: "Shoes",
+                precision: .year,
+                year: 2_024
+            ),
+            now: isoDate("2026-03-08T12:00:00Z"),
+            calendar: .init(identifier: .gregorian)
+        )
+
+        #expect(throws: EntryRepositoryError.deleteRequiresArchivedEntry) {
+            try EntryRepository.delete(
+                context: context,
+                entry: entry
+            )
+        }
+
+        #expect(try EntryRepository.fetchAllEntries(context: context).count == 1)
+        #expect(try EntryRepository.fetchActiveEntries(context: context).count == 1)
+    }
 }
