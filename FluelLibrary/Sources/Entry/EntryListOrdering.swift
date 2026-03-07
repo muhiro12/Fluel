@@ -53,18 +53,39 @@ public enum EntryListOrdering {
     }
 
     public static func archived(
-        _ entries: [Entry]
+        _ entries: [Entry],
+        sortMode: ArchivedEntrySortMode = .recentlyArchived
     ) -> [Entry] {
         entries.sorted { lhs, rhs in
             let lhsArchivedAt = lhs.archivedAt ?? .distantPast
             let rhsArchivedAt = rhs.archivedAt ?? .distantPast
 
-            if lhsArchivedAt != rhsArchivedAt {
-                return lhsArchivedAt > rhsArchivedAt
-            }
+            switch sortMode {
+            case .recentlyArchived:
+                if lhsArchivedAt != rhsArchivedAt {
+                    return lhsArchivedAt > rhsArchivedAt
+                }
 
-            if lhs.updatedAt != rhs.updatedAt {
-                return lhs.updatedAt > rhs.updatedAt
+                if lhs.updatedAt != rhs.updatedAt {
+                    return lhs.updatedAt > rhs.updatedAt
+                }
+            case .oldestArchived:
+                if lhsArchivedAt != rhsArchivedAt {
+                    return lhsArchivedAt < rhsArchivedAt
+                }
+
+                if lhs.updatedAt != rhs.updatedAt {
+                    return lhs.updatedAt < rhs.updatedAt
+                }
+            case .alphabetical:
+                let titleComparison = lhs.title.localizedCaseInsensitiveCompare(rhs.title)
+                if titleComparison != .orderedSame {
+                    return titleComparison == .orderedAscending
+                }
+
+                if lhsArchivedAt != rhsArchivedAt {
+                    return lhsArchivedAt > rhsArchivedAt
+                }
             }
 
             let titleComparison = lhs.title.localizedCaseInsensitiveCompare(rhs.title)
