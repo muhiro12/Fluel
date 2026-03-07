@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		A1B2C3D42F60000100BC027C /* MHPlatform in Frameworks */ = {isa = PBXBuildFile; productRef = A1B2C3D62F60000100BC027C /* MHPlatform */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		AD91A10D2F5C545200BC027C /* Fluel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fluel.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD9F01012F5F000100BC027C /* FluelLibrary */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = FluelLibrary; sourceTree = "<group>"; };
@@ -37,6 +41,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A1B2C3D42F60000100BC027C /* MHPlatform in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -80,6 +85,7 @@
 			);
 			name = Fluel;
 			packageProductDependencies = (
+				A1B2C3D62F60000100BC027C /* MHPlatform */,
 			);
 			productName = Fluel;
 			productReference = AD91A10D2F5C545200BC027C /* Fluel.app */;
@@ -110,6 +116,7 @@
 			mainGroup = AD91A1042F5C545200BC027C;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				A1B2C3D52F60000100BC027C /* XCRemoteSwiftPackageReference "MHPlatform" */,
 				AD9F01022F5F000100BC027C /* XCLocalSwiftPackageReference "FluelLibrary" */,
 			);
 			preferredProjectObjectVersion = 77;
@@ -141,6 +148,17 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A1B2C3D52F60000100BC027C /* XCRemoteSwiftPackageReference "MHPlatform" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/muhiro12/MHPlatform.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCBuildConfiguration section */
 		AD91A11C2F5C545300BC027C /* Debug */ = {
@@ -380,6 +398,14 @@
 			relativePath = FluelLibrary;
 		};
 /* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A1B2C3D62F60000100BC027C /* MHPlatform */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A1B2C3D52F60000100BC027C /* XCRemoteSwiftPackageReference "MHPlatform" */;
+			productName = MHPlatform;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = AD91A1052F5C545200BC027C /* Project object */;
 }
