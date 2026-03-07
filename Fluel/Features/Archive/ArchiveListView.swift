@@ -21,9 +21,13 @@ struct ArchiveListView: View {
     @State private var errorMessage: String?
     @State private var pendingDeleteEntry: Entry?
     @State private var searchText = String()
+    @State private var sortMode: ArchivedEntrySortMode = .recentlyArchived
 
     private var sortedEntries: [Entry] {
-        EntryListOrdering.archived(archivedEntries)
+        EntryListOrdering.archived(
+            archivedEntries,
+            sortMode: sortMode
+        )
     }
 
     private var displayedEntries: [Entry] {
@@ -45,6 +49,35 @@ struct ArchiveListView: View {
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Menu {
+                        Section(FluelCopy.sort()) {
+                            ForEach(ArchivedEntrySortMode.allCases, id: \.self) { mode in
+                                Button {
+                                    sortMode = mode
+                                } label: {
+                                    if sortMode == mode {
+                                        Label(
+                                            FluelCopy.archivedSortMode(mode),
+                                            systemImage: "checkmark"
+                                        )
+                                    } else {
+                                        Text(
+                                            FluelCopy.archivedSortMode(mode)
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    } label: {
+                        Label(
+                            FluelCopy.sort(),
+                            systemImage: "arrow.up.arrow.down.circle"
+                        )
+                    }
+                }
+            }
         }
         .searchable(
             text: $searchText,

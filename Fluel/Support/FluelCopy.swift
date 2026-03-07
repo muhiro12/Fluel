@@ -199,6 +199,32 @@ enum FluelCopy {
         }
     }
 
+    static func archivedSortMode(
+        _ sortMode: ArchivedEntrySortMode,
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        switch sortMode {
+        case .recentlyArchived:
+            return localized(
+                english: "Recently archived",
+                japanese: "最近保管した順",
+                locale: locale
+            )
+        case .oldestArchived:
+            return localized(
+                english: "Oldest archived",
+                japanese: "古く保管した順",
+                locale: locale
+            )
+        case .alphabetical:
+            return localized(
+                english: "Alphabetical",
+                japanese: "名前順",
+                locale: locale
+            )
+        }
+    }
+
     static func homeSearchEmptyTitle(
         locale: Locale = .autoupdatingCurrent
     ) -> String {
