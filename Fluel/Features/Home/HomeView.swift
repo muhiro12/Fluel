@@ -8,12 +8,17 @@ struct HomeView: View {
         static let rowSpacing: CGFloat = 12
     }
 
+    @Environment(\.modelContext)
+    private var context
+
     @Query(
         filter: #Predicate<Entry> { entry in
             entry.archivedAt == nil
         }
     )
     private var activeEntries: [Entry]
+
+    @State private var errorMessage: String?
 
     let onAdd: () -> Void
     let onShowArchive: () -> Void
@@ -67,6 +72,25 @@ struct HomeView: View {
                 }
             }
         }
+        .alert(
+            FluelCopy.error(),
+            isPresented: Binding(
+                get: {
+                    errorMessage != nil
+                },
+                set: { isPresented in
+                    if isPresented == false {
+                        errorMessage = nil
+                    }
+                }
+            )
+        ) {
+            Button(FluelCopy.ok(), role: .cancel) {
+                errorMessage = nil
+            }
+        } message: {
+            Text(errorMessage ?? String())
+        }
     }
 
     private var emptyState: some View {
@@ -106,6 +130,20 @@ struct HomeView: View {
                         referenceDate: referenceDate
                     )
                 }
+                .swipeActions(
+                    edge: .trailing,
+                    allowsFullSwipe: false
+                ) {
+                    Button {
+                        archive(entry)
+                    } label: {
+                        Label(
+                            FluelCopy.archive(),
+                            systemImage: "archivebox"
+                        )
+                    }
+                    .tint(.orange)
+                }
                 .listRowInsets(
                     .init(
                         top: 0,
@@ -122,6 +160,20 @@ struct HomeView: View {
             title: Text(FluelAppConfiguration.appName),
             subtitle: Text(FluelCopy.homeScreenSubtitle())
         )
+    }
+
+    private func archive(
+        _ entry: Entry
+    ) {
+        do {
+            try EntryRepository.archive(
+                context: context,
+                entry: entry
+            )
+            FluelWidgetReloader.reloadAllTimelines()
+        } catch {
+            errorMessage = error.localizedDescription
+        }
     }
 }
 
