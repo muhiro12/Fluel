@@ -1,0 +1,26 @@
+{
+  "configurations" : [
+    {
+      "id" : "8B9799AC-31F1-4B37-8A1A-B3E279A7FE80",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "language" : "en",
+    "performanceAntipatternCheckerEnabled" : true,
+    "region" : "US"
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "FluelLibraryTests",
+        "name" : "FluelLibraryTests"
+      }
+    }
+  ],
+  "version" : 2
+}

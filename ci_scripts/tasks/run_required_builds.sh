@@ -202,17 +202,22 @@ if [[ -z "$changed_files" ]]; then
 fi
 
 needs_fluel_build=false
+needs_fluel_library_tests=false
 
 if grep -Eq '^Fluel/|^Fluel\.xcodeproj/' <<<"$build_relevant_changed_files"; then
   needs_fluel_build=true
 fi
 
-if ! $needs_fluel_build; then
-  echo "No changes under Fluel/ or Fluel.xcodeproj/."
+if grep -Eq '^FluelLibrary/' <<<"$build_relevant_changed_files"; then
+  needs_fluel_library_tests=true
+fi
+
+if ! $needs_fluel_build && ! $needs_fluel_library_tests; then
+  echo "No changes under Fluel/, FluelLibrary/, or Fluel.xcodeproj/."
   if $should_run_pre_commit; then
-    run_note="pre-commit completed. No changes under Fluel/ or Fluel.xcodeproj/. Build/test steps were skipped."
+    run_note="pre-commit completed. No changes under Fluel/, FluelLibrary/, or Fluel.xcodeproj/. Build/test steps were skipped."
   else
-    run_note="No changes under Fluel/ or Fluel.xcodeproj/. Build/test steps were skipped."
+    run_note="No changes under Fluel/, FluelLibrary/, or Fluel.xcodeproj/. Build/test steps were skipped."
   fi
   exit 0
 fi
@@ -224,4 +229,11 @@ if $needs_fluel_build; then
     "build_app" \
     "Build Fluel scheme" \
     bash "$repository_root/ci_scripts/tasks/build_app.sh"
+fi
+
+if $needs_fluel_library_tests; then
+  run_logged_step \
+    "test_shared_library" \
+    "Test FluelLibrary scheme" \
+    bash "$repository_root/ci_scripts/tasks/test_shared_library.sh"
 fi

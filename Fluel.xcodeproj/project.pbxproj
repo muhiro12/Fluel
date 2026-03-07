@@ -8,6 +8,7 @@
 
 /* Begin PBXFileReference section */
 		AD91A10D2F5C545200BC027C /* Fluel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fluel.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		AD9F01012F5F000100BC027C /* FluelLibrary */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = FluelLibrary; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -45,6 +46,7 @@
 		AD91A1042F5C545200BC027C = {
 			isa = PBXGroup;
 			children = (
+				AD9F01012F5F000100BC027C /* FluelLibrary */,
 				AD91A10F2F5C545200BC027C /* Fluel */,
 				AD91A10E2F5C545200BC027C /* Products */,
 			);
@@ -107,6 +109,9 @@
 			);
 			mainGroup = AD91A1042F5C545200BC027C;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				AD9F01022F5F000100BC027C /* XCLocalSwiftPackageReference "FluelLibrary" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = AD91A10E2F5C545200BC027C /* Products */;
 			projectDirPath = "";
@@ -368,6 +373,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		AD9F01022F5F000100BC027C /* XCLocalSwiftPackageReference "FluelLibrary" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = FluelLibrary;
+		};
+/* End XCLocalSwiftPackageReference section */
 	};
 	rootObject = AD91A1052F5C545200BC027C /* Project object */;
 }
