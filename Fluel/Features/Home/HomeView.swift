@@ -19,6 +19,7 @@ struct HomeView: View {
     private var activeEntries: [Entry]
 
     @State private var errorMessage: String?
+    @State private var searchText = String()
 
     let onAdd: () -> Void
     let onShowArchive: () -> Void
@@ -28,11 +29,20 @@ struct HomeView: View {
         EntryListOrdering.active(activeEntries)
     }
 
+    private var displayedEntries: [Entry] {
+        EntrySearchMatcher.filter(
+            sortedEntries,
+            matching: searchText
+        )
+    }
+
     var body: some View {
         TimelineView(.periodic(from: .now, by: 3_600)) { context in // swiftlint:disable:this no_magic_numbers
             Group {
                 if sortedEntries.isEmpty {
                     emptyState
+                } else if displayedEntries.isEmpty {
+                    searchEmptyState
                 } else {
                     listContent(referenceDate: context.date)
                 }
@@ -72,6 +82,10 @@ struct HomeView: View {
                 }
             }
         }
+        .searchable(
+            text: $searchText,
+            prompt: FluelCopy.searchEntries()
+        )
         .alert(
             FluelCopy.error(),
             isPresented: Binding(
@@ -117,11 +131,29 @@ struct HomeView: View {
         )
     }
 
+    private var searchEmptyState: some View {
+        ContentUnavailableView {
+            Label(
+                FluelCopy.homeSearchEmptyTitle(),
+                systemImage: "magnifyingglass"
+            )
+        } description: {
+            Text(FluelCopy.homeSearchEmptyBody())
+        }
+        .mhEmptyStateLayout()
+        .mhSurfaceInset()
+        .mhSurface()
+        .mhScreen(
+            title: Text(FluelAppConfiguration.appName),
+            subtitle: Text(FluelCopy.homeScreenSubtitle())
+        )
+    }
+
     private func listContent(
         referenceDate: Date
     ) -> some View {
         List {
-            ForEach(sortedEntries) { entry in
+            ForEach(displayedEntries) { entry in
                 NavigationLink {
                     EntryDetailView(entry: entry)
                 } label: {
