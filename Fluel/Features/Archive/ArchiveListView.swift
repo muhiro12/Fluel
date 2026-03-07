@@ -8,6 +8,8 @@ struct ArchiveListView: View {
         static let rowSpacing: CGFloat = 12
     }
 
+    @Environment(\.mhTheme)
+    private var theme
     @Environment(\.modelContext)
     private var context
 
@@ -178,6 +180,18 @@ struct ArchiveListView: View {
         referenceDate: Date
     ) -> some View {
         List {
+            listSummaryCard
+                .listRowInsets(
+                    .init(
+                        top: 0,
+                        leading: 0,
+                        bottom: Metrics.rowSpacing,
+                        trailing: 0
+                    )
+                )
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
+
             ForEach(displayedEntries) { entry in
                 NavigationLink {
                     EntryDetailView(entry: entry)
@@ -235,6 +249,34 @@ struct ArchiveListView: View {
             title: Text(FluelCopy.archived()),
             subtitle: Text(FluelCopy.archiveScreenSubtitle())
         )
+    }
+
+    private var listSummaryCard: some View {
+        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+            Text(
+                FluelCopy.archivedEntryCount(
+                    sortedEntries.count
+                )
+            )
+            .font(.headline)
+
+            Text(
+                FluelCopy.showingEntries(
+                    displayedCount: displayedEntries.count,
+                    totalCount: sortedEntries.count
+                )
+            )
+            .font(.subheadline)
+
+            Text(
+                "\(FluelCopy.sort()): \(FluelCopy.archivedSortMode(sortMode))"
+            )
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .mhRow()
+        .mhSurface(role: .muted)
     }
 
     private func restore(

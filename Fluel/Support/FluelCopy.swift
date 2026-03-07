@@ -275,6 +275,48 @@ enum FluelCopy {
         )
     }
 
+    static func activeEntryCount(
+        _ count: Int,
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        let english = count == 1
+            ? "1 active entry"
+            : "\(count) active entries"
+
+        return localized(
+            english: english,
+            japanese: "進行中の記録 \(count)件",
+            locale: locale
+        )
+    }
+
+    static func archivedEntryCount(
+        _ count: Int,
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        let english = count == 1
+            ? "1 archived entry"
+            : "\(count) archived entries"
+
+        return localized(
+            english: english,
+            japanese: "保管済みの記録 \(count)件",
+            locale: locale
+        )
+    }
+
+    static func showingEntries(
+        displayedCount: Int,
+        totalCount: Int,
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Showing \(displayedCount) of \(totalCount)",
+            japanese: "\(totalCount)件中 \(displayedCount)件を表示",
+            locale: locale
+        )
+    }
+
     static func archiveEmptyTitle(
         locale: Locale = .autoupdatingCurrent
     ) -> String {
