@@ -20,9 +20,17 @@ struct ArchiveListView: View {
 
     @State private var errorMessage: String?
     @State private var pendingDeleteEntry: Entry?
+    @State private var searchText = String()
 
     private var sortedEntries: [Entry] {
         EntryListOrdering.archived(archivedEntries)
+    }
+
+    private var displayedEntries: [Entry] {
+        EntrySearchMatcher.filter(
+            sortedEntries,
+            matching: searchText
+        )
     }
 
     var body: some View {
@@ -30,12 +38,18 @@ struct ArchiveListView: View {
             Group {
                 if sortedEntries.isEmpty {
                     emptyState
+                } else if displayedEntries.isEmpty {
+                    searchEmptyState
                 } else {
                     listContent(referenceDate: context.date)
                 }
             }
             .navigationBarTitleDisplayMode(.inline)
         }
+        .searchable(
+            text: $searchText,
+            prompt: FluelCopy.searchEntries()
+        )
         .confirmationDialog(
             FluelCopy.deleteConfirmationTitle(),
             isPresented: Binding(
@@ -109,11 +123,29 @@ struct ArchiveListView: View {
         )
     }
 
+    private var searchEmptyState: some View {
+        ContentUnavailableView {
+            Label(
+                FluelCopy.archiveSearchEmptyTitle(),
+                systemImage: "magnifyingglass"
+            )
+        } description: {
+            Text(FluelCopy.archiveSearchEmptyBody())
+        }
+        .mhEmptyStateLayout()
+        .mhSurfaceInset()
+        .mhSurface(role: .muted)
+        .mhScreen(
+            title: Text(FluelCopy.archived()),
+            subtitle: Text(FluelCopy.archiveScreenSubtitle())
+        )
+    }
+
     private func listContent(
         referenceDate: Date
     ) -> some View {
         List {
-            ForEach(sortedEntries) { entry in
+            ForEach(displayedEntries) { entry in
                 NavigationLink {
                     EntryDetailView(entry: entry)
                 } label: {

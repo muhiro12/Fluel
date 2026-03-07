@@ -182,6 +182,26 @@ enum FluelCopy {
         )
     }
 
+    static func archiveSearchEmptyTitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "No archived entries matched",
+            japanese: "一致する保管済み記録がありません",
+            locale: locale
+        )
+    }
+
+    static func archiveSearchEmptyBody(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Try another word from the title, note, or archived entries.",
+            japanese: "名前やメモに含まれる別の言葉で探してみてください。",
+            locale: locale
+        )
+    }
+
     static func archiveEmptyTitle(
         locale: Locale = .autoupdatingCurrent
     ) -> String {
