@@ -220,6 +220,57 @@ public enum EntryFormatting {
         }
     }
 
+    public static func startRangeText(
+        for startComponents: EntryStartComponents,
+        locale: Locale = .autoupdatingCurrent,
+        calendar: Calendar = .autoupdatingCurrent
+    ) -> String? {
+        let resolvedDate = startComponents.earliestDate(calendar: calendar) ?? .now
+
+        switch (startComponents.precision, FluelLocale(locale: locale)) {
+        case (.day, _):
+            return nil
+        case (.month, .english):
+            let dateText = resolvedDate.formatted(
+                .dateTime
+                    .month(.abbreviated)
+                    .year()
+                    .locale(locale)
+            )
+
+            return "Sometime in \(dateText)"
+        case (.month, .japanese):
+            let yearText = startComponents.year.formatted(
+                .number
+                    .grouping(.never)
+                    .locale(locale)
+            )
+            let monthText = startComponents.month?.formatted(
+                .number
+                    .grouping(.never)
+                    .locale(locale)
+            ) ?? String()
+
+            return "\(yearText)年\(monthText)月のどこか"
+        case (.year, .english):
+            let yearText = startComponents.year.formatted(
+                .number
+                    .grouping(.never)
+                    .locale(locale)
+            )
+
+            return "Sometime in \(yearText)"
+        case (.year, .japanese):
+            let yearText = startComponents.year.formatted(
+                .number
+                    .grouping(.never)
+                    .locale(locale)
+            )
+
+            return "\(yearText)年のどこか"
+        }
+    }
+
     public static func precisionText(
         for precision: EntryDatePrecision,
         locale: Locale = .autoupdatingCurrent

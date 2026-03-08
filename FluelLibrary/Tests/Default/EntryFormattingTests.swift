@@ -71,4 +71,33 @@ struct EntryFormattingTests {
 
         #expect(result == "月まで分かる")
     }
+
+    @Test
+    func startRangeText_formats_english_month_precision() throws {
+        let result = EntryFormatting.startRangeText(
+            for: try .init(
+                precision: .month,
+                year: 2_024,
+                month: 3
+            ),
+            locale: enUS,
+            calendar: calendar
+        )
+
+        #expect(result == "Sometime in Mar 2024")
+    }
+
+    @Test
+    func startRangeText_formats_japanese_year_precision() throws {
+        let result = EntryFormatting.startRangeText(
+            for: try .init(
+                precision: .year,
+                year: 2_018
+            ),
+            locale: jaJP,
+            calendar: calendar
+        )
+
+        #expect(result == "2018年のどこか")
+    }
 }
