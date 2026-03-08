@@ -507,6 +507,16 @@ enum FluelCopy {
         )
     }
 
+    static func startRange(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Start range",
+            japanese: "始まりの幅",
+            locale: locale
+        )
+    }
+
     static func knownAs(
         locale: Locale = .autoupdatingCurrent
     ) -> String {

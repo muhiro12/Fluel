@@ -209,6 +209,16 @@ struct EntryDetailView: View {
             )
             .labeledContentStyle(.mhKeyValue)
 
+            if let startRangeText = EntryFormatting.startRangeText(
+                for: entry.startComponents
+            ) {
+                LabeledContent(
+                    FluelCopy.startRange(),
+                    value: startRangeText
+                )
+                .labeledContentStyle(.mhKeyValue)
+            }
+
             LabeledContent(
                 FluelCopy.knownAs(),
                 value: EntryFormatting.precisionText(
