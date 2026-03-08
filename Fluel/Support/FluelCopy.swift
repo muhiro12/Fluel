@@ -497,6 +497,16 @@ enum FluelCopy {
         )
     }
 
+    static func clearNote(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Clear Note",
+            japanese: "メモを消す",
+            locale: locale
+        )
+    }
+
     static func started(
         locale: Locale = .autoupdatingCurrent
     ) -> String {

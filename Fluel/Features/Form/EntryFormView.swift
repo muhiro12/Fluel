@@ -173,6 +173,16 @@ struct EntryFormView: View {
                 TextEditor(text: $note)
                     .frame(minHeight: 120)
                     .mhInputChrome()
+
+                if note.isEmpty == false {
+                    Button(
+                        FluelCopy.clearNote(),
+                        role: .destructive
+                    ) {
+                        note = String()
+                    }
+                    .buttonStyle(.mhDestructive)
+                }
             } header: {
                 Text(FluelCopy.noteSectionTitle())
             } footer: {
