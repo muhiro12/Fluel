@@ -22,6 +22,7 @@ func makeInput( // swiftlint:disable:this function_parameter_count
     year: Int,
     month: Int? = nil,
     day: Int? = nil,
+    photoData: Data? = nil,
     note: String? = nil
 ) -> EntryFormInput {
     .init(
@@ -30,6 +31,7 @@ func makeInput( // swiftlint:disable:this function_parameter_count
         startYear: year,
         startMonth: month,
         startDay: day,
+        photoData: photoData,
         note: note
     )
 }

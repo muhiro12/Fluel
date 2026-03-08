@@ -183,6 +183,42 @@ enum FluelCopy {
         )
     }
 
+    static func filter(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Filter",
+            japanese: "絞り込み",
+            locale: locale
+        )
+    }
+
+    static func entryContentFilterMode(
+        _ mode: EntryContentFilterMode,
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        switch mode {
+        case .all:
+            return localized(
+                english: "All",
+                japanese: "すべて",
+                locale: locale
+            )
+        case .withNote:
+            return localized(
+                english: "With note",
+                japanese: "メモあり",
+                locale: locale
+            )
+        case .withPhoto:
+            return localized(
+                english: "With photo",
+                japanese: "写真あり",
+                locale: locale
+            )
+        }
+    }
+
     static func activeSortMode(
         _ sortMode: ActiveEntrySortMode,
         locale: Locale = .autoupdatingCurrent
@@ -249,8 +285,8 @@ enum FluelCopy {
         locale: Locale = .autoupdatingCurrent
     ) -> String {
         localized(
-            english: "Try another word from the title or note.",
-            japanese: "名前やメモに含まれる別の言葉で試してください。",
+            english: "Try another filter or word from the title or note.",
+            japanese: "絞り込みや、名前・メモに含まれる別の言葉で試してください。",
             locale: locale
         )
     }

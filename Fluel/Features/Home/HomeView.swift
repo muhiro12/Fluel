@@ -23,6 +23,7 @@ struct HomeView: View {
     @State private var errorMessage: String?
     @State private var searchText = String()
     @State private var sortMode: ActiveEntrySortMode = .oldestFirst
+    @State private var contentFilter: EntryContentFilterMode = .all
 
     let onAdd: () -> Void
     let onShowArchive: () -> Void
@@ -37,8 +38,15 @@ struct HomeView: View {
 
     private var displayedEntries: [Entry] {
         EntrySearchMatcher.filter(
-            sortedEntries,
+            contentFilteredEntries,
             matching: searchText
+        )
+    }
+
+    private var contentFilteredEntries: [Entry] {
+        EntryContentFilter.filter(
+            sortedEntries,
+            mode: contentFilter
         )
     }
 
@@ -231,7 +239,11 @@ struct HomeView: View {
         .mhListChrome(
             title: Text(FluelAppConfiguration.appName),
             subtitle: Text(FluelCopy.homeScreenSubtitle())
-        )
+        ) {
+            EntryContentFilterBar(
+                selection: $contentFilter
+            )
+        }
     }
 
     private var listSummaryCard: some View {
@@ -253,6 +265,12 @@ struct HomeView: View {
 
             Text(
                 "\(FluelCopy.sort()): \(FluelCopy.activeSortMode(sortMode))"
+            )
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+
+            Text(
+                "\(FluelCopy.filter()): \(FluelCopy.entryContentFilterMode(contentFilter))"
             )
             .font(.subheadline)
             .foregroundStyle(.secondary)
