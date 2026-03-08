@@ -128,6 +128,20 @@ struct ActivityTimelineView: View {
         )
     }
 
+    private var shareText: String {
+        EntryActivityTimelineShareTextFormatter.text(
+            summary: summary,
+            trends: trendSnapshots,
+            milestoneDigest: milestoneDigest,
+            activityFilterLabel: FluelCopy.entryActivityFilterMode(
+                activityFilter
+            ),
+            scopeLabel: FluelCopy.entryActivityScopeMode(
+                scopeFilter
+            )
+        )
+    }
+
     var body: some View {
         Group {
             if entries.isEmpty {
@@ -146,6 +160,17 @@ struct ActivityTimelineView: View {
             prompt: FluelCopy.searchTimeline()
         )
         .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                if searchedActivity.isEmpty == false {
+                    ShareLink(item: shareText) {
+                        Label(
+                            FluelCopy.share(),
+                            systemImage: "square.and.arrow.up"
+                        )
+                    }
+                }
+            }
+
             ToolbarItem(placement: .topBarTrailing) {
                 Button(action: onAdd) {
                     Label(
