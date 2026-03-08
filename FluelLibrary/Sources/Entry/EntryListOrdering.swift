@@ -41,6 +41,17 @@ public enum EntryListOrdering {
                 if lhs.startPrecision != rhs.startPrecision {
                     return precisionRank(lhs.startPrecision) < precisionRank(rhs.startPrecision)
                 }
+            case .recentlyUpdated:
+                if lhs.updatedAt != rhs.updatedAt {
+                    return lhs.updatedAt > rhs.updatedAt
+                }
+
+                let titleComparison = lhs.title.localizedCaseInsensitiveCompare(rhs.title)
+                if titleComparison != .orderedSame {
+                    return titleComparison == .orderedAscending
+                }
+
+                return lhs.createdAt < rhs.createdAt
             }
 
             let titleComparison = lhs.title.localizedCaseInsensitiveCompare(rhs.title)

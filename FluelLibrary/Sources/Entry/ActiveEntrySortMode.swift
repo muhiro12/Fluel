@@ -5,4 +5,5 @@ public enum ActiveEntrySortMode: String, CaseIterable, Sendable {
     case oldestFirst
     case newestFirst
     case alphabetical
+    case recentlyUpdated
 }

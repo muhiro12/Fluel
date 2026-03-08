@@ -242,6 +242,12 @@ enum FluelCopy {
                 japanese: "名前順",
                 locale: locale
             )
+        case .recentlyUpdated:
+            return localized(
+                english: "Recently updated",
+                japanese: "最近更新した順",
+                locale: locale
+            )
         }
     }
 

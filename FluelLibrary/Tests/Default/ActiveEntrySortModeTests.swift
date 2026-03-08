@@ -44,6 +44,19 @@ struct ActiveEntrySortModeTests {
         #expect(result.map(\.title) == ["Bag", "This home", "Watch"])
     }
 
+    @Test
+    func recentlyUpdated_orders_by_update_time_then_title() throws {
+        let entries = try makeEntries()
+
+        let result = EntryListOrdering.active(
+            entries,
+            sortMode: .recentlyUpdated,
+            calendar: calendar
+        )
+
+        #expect(result.map(\.title) == ["Bag", "Watch", "This home"])
+    }
+
     private func makeEntries() throws -> [Entry] {
         let context = try makeTestContext()
 
@@ -78,6 +91,46 @@ struct ActiveEntrySortModeTests {
                 day: 5
             ),
             now: isoDate("2026-03-08T12:00:02Z"),
+            calendar: calendar
+        )
+
+        try EntryRepository.update(
+            context: context,
+            entry: home,
+            input: makeInput(
+                title: "This home",
+                precision: .year,
+                year: 2_018,
+                note: "Living room"
+            ),
+            now: isoDate("2026-03-08T12:30:00Z"),
+            calendar: calendar
+        )
+        try EntryRepository.update(
+            context: context,
+            entry: watch,
+            input: makeInput(
+                title: "Watch",
+                precision: .month,
+                year: 2_022,
+                month: 11,
+                note: "Polished"
+            ),
+            now: isoDate("2026-03-08T13:00:00Z"),
+            calendar: calendar
+        )
+        try EntryRepository.update(
+            context: context,
+            entry: bag,
+            input: makeInput(
+                title: "Bag",
+                precision: .day,
+                year: 2_025,
+                month: 9,
+                day: 5,
+                note: "Cleaned"
+            ),
+            now: isoDate("2026-03-08T13:00:00Z"),
             calendar: calendar
         )
 
