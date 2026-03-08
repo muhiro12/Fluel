@@ -45,6 +45,7 @@ struct MainView: View {
             TabView(selection: $selectedTab) {
                 HomeView(
                     onAdd: presentCreateEntry,
+                    onCreateFromPreset: presentCreateEntry(presetID:),
                     onShowArchive: showArchive,
                     onShowLicenses: showLicenses
                 )

@@ -12,6 +12,7 @@ struct HomeView: View {
     private var theme
     @Environment(\.modelContext)
     private var context
+    @EnvironmentObject private var presetStore: EntryPresetStore
 
     @Query(
         filter: #Predicate<Entry> { entry in
@@ -49,6 +50,7 @@ struct HomeView: View {
     private var showsMetadataBadges = true
 
     let onAdd: () -> Void
+    let onCreateFromPreset: (String) -> Void
     let onShowArchive: () -> Void
     let onShowLicenses: () -> Void
 
@@ -117,6 +119,10 @@ struct HomeView: View {
                 errorMessage = message
             }
         )
+    }
+
+    private var starterPresets: [EntryPreset] {
+        Array(presetStore.builtInPresets.prefix(4))
     }
 
     var body: some View {
@@ -210,23 +216,32 @@ struct HomeView: View {
     }
 
     private var emptyState: some View {
-        ContentUnavailableView {
-            Label(
-                FluelCopy.homeEmptyTitle(),
-                systemImage: "square.stack.3d.up"
-            )
-        } description: {
-            Text(FluelCopy.homeEmptyBody())
-        } actions: {
-            Button(
-                FluelCopy.addFirstEntry(),
-                action: onAdd
-            )
-            .buttonStyle(.mhPrimary)
+        ScrollView {
+            VStack(alignment: .leading, spacing: theme.spacing.section) {
+                ContentUnavailableView {
+                    Label(
+                        FluelCopy.homeEmptyTitle(),
+                        systemImage: "square.stack.3d.up"
+                    )
+                } description: {
+                    Text(FluelCopy.homeEmptyBody())
+                } actions: {
+                    Button(
+                        FluelCopy.addFirstEntry(),
+                        action: onAdd
+                    )
+                    .buttonStyle(.mhPrimary)
+                }
+                .mhEmptyStateLayout()
+
+                if starterPresets.isEmpty == false {
+                    starterPresetsCard
+                        .mhRow()
+                        .mhSurface(role: .muted)
+                }
+            }
+            .mhSurfaceInset()
         }
-        .mhEmptyStateLayout()
-        .mhSurfaceInset()
-        .mhSurface()
         .mhScreen(
             title: Text(FluelAppConfiguration.appName),
             subtitle: Text(FluelCopy.homeScreenSubtitle())
@@ -255,6 +270,20 @@ struct HomeView: View {
         referenceDate: Date
     ) -> some View {
         List {
+            if starterPresets.isEmpty == false {
+                starterPresetsCard
+                    .listRowInsets(
+                        .init(
+                            top: 0,
+                            leading: 0,
+                            bottom: Metrics.rowSpacing,
+                            trailing: 0
+                        )
+                    )
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
+            }
+
             if showsListSummaryCards {
                 FluelEntryListSummaryCard(summary: summary)
                     .listRowInsets(
@@ -337,6 +366,21 @@ struct HomeView: View {
         mutationWorkflow.archive(entry: entry)
     }
 
+    var starterPresetsCard: some View {
+        EntryPresetStrip(
+            presets: starterPresets,
+            selectedPresetID: nil,
+            onSelect: selectPreset
+        )
+    }
+
+    func selectPreset(
+        _ preset: EntryPreset
+    ) {
+        presetStore.markUsed(preset.id)
+        onCreateFromPreset(preset.id)
+    }
+
     private func clearSearch() {
         searchText = String()
     }
@@ -350,9 +394,11 @@ struct HomeView: View {
     NavigationStack {
         HomeView(
             onAdd: {},
+            onCreateFromPreset: { _ in },
             onShowArchive: {},
             onShowLicenses: {}
         )
     }
+    .environmentObject(EntryPresetStore.preview())
     .fluelAppStyle()
 }
