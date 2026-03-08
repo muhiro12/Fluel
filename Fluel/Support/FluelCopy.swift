@@ -831,6 +831,16 @@ enum FluelCopy {
         )
     }
 
+    static func timelineTrends(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Monthly trends",
+            japanese: "月ごとの動き",
+            locale: locale
+        )
+    }
+
     static func timelineShowingActivity(
         displayedCount: Int,
         totalCount: Int,
@@ -850,6 +860,17 @@ enum FluelCopy {
         localized(
             english: "\(count) months shown",
             japanese: "\(count)か月分を表示",
+            locale: locale
+        )
+    }
+
+    static func timelineTrendTotal(
+        _ count: Int,
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "\(count) activity items",
+            japanese: "動き \(count)件",
             locale: locale
         )
     }

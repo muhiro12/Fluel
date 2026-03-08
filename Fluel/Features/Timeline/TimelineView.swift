@@ -73,6 +73,12 @@ struct ActivityTimelineView: View {
         )
     }
 
+    private var trendSnapshots: [EntryActivityTrendSnapshot] {
+        EntryActivityTrendSnapshotQuery.recentMonths(
+            activity: searchedActivity
+        )
+    }
+
     var body: some View {
         Group {
             if entries.isEmpty {
@@ -192,6 +198,22 @@ struct ActivityTimelineView: View {
             .listRowSeparator(.hidden)
             .listRowBackground(Color.clear)
 
+            if trendSnapshots.isEmpty == false {
+                TimelineTrendCard(
+                    trends: trendSnapshots
+                )
+                .listRowInsets(
+                    .init(
+                        top: 0,
+                        leading: 0,
+                        bottom: 12,
+                        trailing: 0
+                    )
+                )
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
+            }
+
             ForEach(sections, id: \.monthStart) { section in
                 Section(section.title) {
                     ForEach(section.items, id: \.entryID) { item in
@@ -296,6 +318,125 @@ private struct TimelineSummaryCard: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .mhRow()
         .mhSurface(role: .muted)
+    }
+}
+
+private struct TimelineTrendCard: View {
+    @Environment(\.mhTheme)
+    private var theme
+
+    let trends: [EntryActivityTrendSnapshot]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+            Text(FluelCopy.timelineTrends())
+                .font(.headline)
+
+            VStack(spacing: 0) {
+                ForEach(trends, id: \.monthStart) { trend in
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack(alignment: .firstTextBaseline, spacing: theme.spacing.inline) {
+                            Text(trend.title)
+                                .mhRowTitle()
+
+                            Spacer(minLength: 0)
+
+                            Text(
+                                FluelCopy.timelineTrendTotal(
+                                    trend.totalCount
+                                )
+                            )
+                            .mhTextStyle(.metadata, colorRole: .secondaryText)
+                        }
+
+                        TimelineTrendBar(trend: trend)
+
+                        HStack(spacing: 8) {
+                            TimelineTrendPill(
+                                label: FluelCopy.timelineActivityCount(
+                                    kind: .added,
+                                    count: trend.addedCount
+                                ),
+                                color: .green
+                            )
+                            TimelineTrendPill(
+                                label: FluelCopy.timelineActivityCount(
+                                    kind: .updated,
+                                    count: trend.updatedCount
+                                ),
+                                color: .blue
+                            )
+                            TimelineTrendPill(
+                                label: FluelCopy.timelineActivityCount(
+                                    kind: .archived,
+                                    count: trend.archivedCount
+                                ),
+                                color: .orange
+                            )
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.vertical, 12)
+
+                    if trend.monthStart != trends.last?.monthStart {
+                        Divider()
+                    }
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .mhRow()
+        .mhSurface(role: .muted)
+    }
+}
+
+private struct TimelineTrendBar: View {
+    let trend: EntryActivityTrendSnapshot
+
+    var body: some View {
+        GeometryReader { proxy in
+            let width = proxy.size.width
+            let total = max(Double(trend.totalCount), 1)
+            let addedWidth = width * Double(trend.addedCount) / total
+            let updatedWidth = width * Double(trend.updatedCount) / total
+            let archivedWidth = width * Double(trend.archivedCount) / total
+
+            HStack(spacing: 4) {
+                if trend.addedCount > 0 {
+                    RoundedRectangle(cornerRadius: 6)
+                        .fill(Color.green)
+                        .frame(width: max(addedWidth, 10))
+                }
+
+                if trend.updatedCount > 0 {
+                    RoundedRectangle(cornerRadius: 6)
+                        .fill(Color.blue)
+                        .frame(width: max(updatedWidth, 10))
+                }
+
+                if trend.archivedCount > 0 {
+                    RoundedRectangle(cornerRadius: 6)
+                        .fill(Color.orange)
+                        .frame(width: max(archivedWidth, 10))
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .frame(height: 10)
+    }
+}
+
+private struct TimelineTrendPill: View {
+    let label: String
+    let color: Color
+
+    var body: some View {
+        Text(label)
+            .font(.caption.weight(.semibold))
+            .foregroundStyle(color)
+            .padding(.horizontal, 10)
+            .padding(.vertical, 6)
+            .background(color.opacity(0.12), in: Capsule())
     }
 }
 
