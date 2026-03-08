@@ -74,6 +74,14 @@ struct ArchiveListView: View {
         )
     }
 
+    private var hasActiveSearch: Bool {
+        searchText.isEmpty == false
+    }
+
+    private var hasActiveFilter: Bool {
+        contentFilter != .all
+    }
+
     var body: some View {
         TimelineView(.periodic(from: .now, by: 3_600)) { context in // swiftlint:disable:this no_magic_numbers
             Group {
@@ -287,9 +295,15 @@ struct ArchiveListView: View {
             title: Text(FluelCopy.archived()),
             subtitle: Text(FluelCopy.archiveScreenSubtitle())
         ) {
-            EntryContentFilterBar(
-                selection: contentFilterBinding
-            )
+            VStack(alignment: .leading, spacing: theme.spacing.inline) {
+                EntryContentFilterBar(
+                    selection: contentFilterBinding
+                )
+
+                if hasActiveSearch || hasActiveFilter {
+                    listStateActions
+                }
+            }
         }
     }
 
@@ -327,6 +341,30 @@ struct ArchiveListView: View {
         .mhSurface(role: .muted)
     }
 
+    private var listStateActions: some View {
+        HStack(spacing: theme.spacing.inline) {
+            if hasActiveSearch {
+                Button(
+                    FluelCopy.clearSearch(),
+                    action: clearSearch
+                )
+                .buttonStyle(.mhSecondary)
+            }
+
+            if hasActiveFilter {
+                Button(
+                    FluelCopy.clearFilter(),
+                    action: clearFilter
+                )
+                .buttonStyle(.mhSecondary)
+            }
+
+            Spacer(minLength: 0)
+        }
+        .mhSurfaceInset()
+        .mhSurface(role: .muted)
+    }
+
     private func restore(
         _ entry: Entry
     ) {
@@ -339,6 +377,14 @@ struct ArchiveListView: View {
         } catch {
             errorMessage = error.localizedDescription
         }
+    }
+
+    private func clearSearch() {
+        searchText = String()
+    }
+
+    private func clearFilter() {
+        storedContentFilter = EntryContentFilterMode.all.rawValue
     }
 
     private func deletePendingEntry() {

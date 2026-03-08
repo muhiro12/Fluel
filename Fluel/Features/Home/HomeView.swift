@@ -77,6 +77,14 @@ struct HomeView: View {
         )
     }
 
+    private var hasActiveSearch: Bool {
+        searchText.isEmpty == false
+    }
+
+    private var hasActiveFilter: Bool {
+        contentFilter != .all
+    }
+
     var body: some View {
         TimelineView(.periodic(from: .now, by: 3_600)) { context in // swiftlint:disable:this no_magic_numbers
             Group {
@@ -267,9 +275,15 @@ struct HomeView: View {
             title: Text(FluelAppConfiguration.appName),
             subtitle: Text(FluelCopy.homeScreenSubtitle())
         ) {
-            EntryContentFilterBar(
-                selection: contentFilterBinding
-            )
+            VStack(alignment: .leading, spacing: theme.spacing.inline) {
+                EntryContentFilterBar(
+                    selection: contentFilterBinding
+                )
+
+                if hasActiveSearch || hasActiveFilter {
+                    listStateActions
+                }
+            }
         }
     }
 
@@ -307,6 +321,30 @@ struct HomeView: View {
         .mhSurface(role: .muted)
     }
 
+    private var listStateActions: some View {
+        HStack(spacing: theme.spacing.inline) {
+            if hasActiveSearch {
+                Button(
+                    FluelCopy.clearSearch(),
+                    action: clearSearch
+                )
+                .buttonStyle(.mhSecondary)
+            }
+
+            if hasActiveFilter {
+                Button(
+                    FluelCopy.clearFilter(),
+                    action: clearFilter
+                )
+                .buttonStyle(.mhSecondary)
+            }
+
+            Spacer(minLength: 0)
+        }
+        .mhSurfaceInset()
+        .mhSurface(role: .muted)
+    }
+
     private func archive(
         _ entry: Entry
     ) {
@@ -319,6 +357,14 @@ struct HomeView: View {
         } catch {
             errorMessage = error.localizedDescription
         }
+    }
+
+    private func clearSearch() {
+        searchText = String()
+    }
+
+    private func clearFilter() {
+        storedContentFilter = EntryContentFilterMode.all.rawValue
     }
 }
 

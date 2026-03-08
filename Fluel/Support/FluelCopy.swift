@@ -193,6 +193,26 @@ enum FluelCopy {
         )
     }
 
+    static func clearSearch(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Clear search",
+            japanese: "検索をクリア",
+            locale: locale
+        )
+    }
+
+    static func clearFilter(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Clear filter",
+            japanese: "絞り込みを解除",
+            locale: locale
+        )
+    }
+
     static func entryContentFilterMode(
         _ mode: EntryContentFilterMode,
         locale: Locale = .autoupdatingCurrent
