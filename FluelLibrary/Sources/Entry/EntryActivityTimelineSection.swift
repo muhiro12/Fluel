@@ -40,14 +40,29 @@ public enum EntryActivityTimelineSectionQuery {
         calendar: Calendar = .autoupdatingCurrent,
         limit: Int = 6
     ) -> [EntryActivityTimelineSection] {
-        guard limit > 0 else {
-            return []
-        }
-
         let activity = EntryActivitySnapshotQuery.recent(
             entries: entries,
             limit: max(entries.count, limit)
         )
+
+        return sections(
+            activity: activity,
+            locale: locale,
+            calendar: calendar,
+            limit: limit
+        )
+    }
+
+    public static func sections(
+        activity: [EntryActivitySnapshot],
+        locale: Locale = .autoupdatingCurrent,
+        calendar: Calendar = .autoupdatingCurrent,
+        limit: Int = 6
+    ) -> [EntryActivityTimelineSection] {
+        guard limit > 0 else {
+            return []
+        }
+
         let groupedActivity = Dictionary(grouping: activity) { snapshot in
             monthStartDate(
                 for: snapshot.timestamp,

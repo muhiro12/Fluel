@@ -723,6 +723,58 @@ enum FluelCopy {
         }
     }
 
+    static func entryActivityFilterMode(
+        _ mode: EntryActivityFilterMode,
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        switch mode {
+        case .all:
+            return localized(
+                english: "All activity",
+                japanese: "すべての動き",
+                locale: locale
+            )
+        case .added:
+            return localized(
+                english: "Added",
+                japanese: "追加のみ",
+                locale: locale
+            )
+        case .updated:
+            return localized(
+                english: "Updated",
+                japanese: "更新のみ",
+                locale: locale
+            )
+        case .archived:
+            return localized(
+                english: "Archived",
+                japanese: "保管のみ",
+                locale: locale
+            )
+        }
+    }
+
+    static func timelineFilterEmptyTitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "No activity matches this filter",
+            japanese: "この絞り込みに当てはまる動きはありません",
+            locale: locale
+        )
+    }
+
+    static func timelineFilterEmptyBody(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Try another activity kind to see more of what has been added, updated, or archived.",
+            japanese: "追加、更新、保管の別の絞り込みに切り替えると、動きが見つかるかもしれません。",
+            locale: locale
+        )
+    }
+
     static func archiveEmptyTitle(
         locale: Locale = .autoupdatingCurrent
     ) -> String {

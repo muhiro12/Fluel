@@ -4,14 +4,19 @@ import SwiftData
 import SwiftUI
 
 struct ActivityTimelineView: View {
+    @Environment(\.mhTheme)
+    private var theme
+
     @Query
     private var entries: [Entry]
+
+    @State private var activityFilter = EntryActivityFilterMode.all
 
     let onAdd: () -> Void
 
     private var sections: [EntryActivityTimelineSection] {
         EntryActivityTimelineSectionQuery.sections(
-            entries: entries
+            activity: filteredActivity
         )
     }
 
@@ -26,18 +31,30 @@ struct ActivityTimelineView: View {
         )
     }
 
+    private var allActivity: [EntryActivitySnapshot] {
+        EntryActivitySnapshotQuery.recent(
+            entries: entries,
+            limit: max(entries.count, 1)
+        )
+    }
+
+    private var filteredActivity: [EntryActivitySnapshot] {
+        EntryActivityFilter.filter(
+            allActivity,
+            mode: activityFilter
+        )
+    }
+
     var body: some View {
         Group {
             if entries.isEmpty {
                 emptyState
+            } else if filteredActivity.isEmpty {
+                filteredEmptyState
             } else {
                 timelineList
             }
         }
-        .mhScreen(
-            title: Text(FluelCopy.timeline()),
-            subtitle: Text(FluelCopy.timelineScreenSubtitle())
-        )
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -69,6 +86,34 @@ struct ActivityTimelineView: View {
         .mhEmptyStateLayout()
         .mhSurfaceInset()
         .mhSurface(role: .muted)
+        .mhScreen(
+            title: Text(FluelCopy.timeline()),
+            subtitle: Text(FluelCopy.timelineScreenSubtitle())
+        )
+    }
+
+    private var filteredEmptyState: some View {
+        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+            EntryActivityKindFilterBar(
+                selection: $activityFilter
+            )
+
+            ContentUnavailableView {
+                Label(
+                    FluelCopy.timelineFilterEmptyTitle(),
+                    systemImage: "line.3.horizontal.decrease.circle"
+                )
+            } description: {
+                Text(FluelCopy.timelineFilterEmptyBody())
+            }
+            .mhEmptyStateLayout()
+            .mhSurfaceInset()
+            .mhSurface(role: .muted)
+        }
+        .mhScreen(
+            title: Text(FluelCopy.timeline()),
+            subtitle: Text(FluelCopy.timelineScreenSubtitle())
+        )
     }
 
     private var timelineList: some View {
@@ -90,6 +135,14 @@ struct ActivityTimelineView: View {
             }
         }
         .listStyle(.insetGrouped)
+        .mhListChrome(
+            title: Text(FluelCopy.timeline()),
+            subtitle: Text(FluelCopy.timelineScreenSubtitle())
+        ) {
+            EntryActivityKindFilterBar(
+                selection: $activityFilter
+            )
+        }
     }
 }
 
