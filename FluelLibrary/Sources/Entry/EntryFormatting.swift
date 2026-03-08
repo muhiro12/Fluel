@@ -353,6 +353,45 @@ public enum EntryFormatting {
         }
     }
 
+    public static func metadataBadgeTexts(
+        for entry: Entry,
+        locale: Locale = .autoupdatingCurrent
+    ) -> [String] {
+        var badges = [String]()
+
+        if entry.photoData?.isEmpty == false {
+            badges.append(
+                localized(
+                    english: "Photo",
+                    japanese: "写真",
+                    locale: locale
+                )
+            )
+        }
+
+        if notePreviewText(entry.note) != nil {
+            badges.append(
+                localized(
+                    english: "Note",
+                    japanese: "メモ",
+                    locale: locale
+                )
+            )
+        }
+
+        if entry.startPrecision != .day {
+            badges.append(
+                localized(
+                    english: "Approximate start",
+                    japanese: "開始はおおよそ",
+                    locale: locale
+                )
+            )
+        }
+
+        return badges
+    }
+
     public static func archivedFooterText(
         archivedAt: Date,
         note: String?,

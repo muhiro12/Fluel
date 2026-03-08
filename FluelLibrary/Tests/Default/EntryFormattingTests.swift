@@ -140,6 +140,79 @@ struct EntryFormattingTests {
     }
 
     @Test
+    func metadataBadgeTexts_returns_photo_note_and_approximate_start_badges() throws {
+        let context = try makeTestContext()
+        let entry = try EntryRepository.create(
+            context: context,
+            input: makeInput(
+                title: "Lamp",
+                precision: .month,
+                year: 2_024,
+                month: 3,
+                photoData: Data([0x01]),
+                note: "  By the sofa  "
+            ),
+            now: isoDate("2026-03-08T12:00:00Z"),
+            calendar: calendar
+        )
+
+        let result = EntryFormatting.metadataBadgeTexts(
+            for: entry,
+            locale: enUS
+        )
+
+        #expect(result == ["Photo", "Note", "Approximate start"])
+    }
+
+    @Test
+    func metadataBadgeTexts_skips_note_badge_for_blank_note() throws {
+        let context = try makeTestContext()
+        let entry = try EntryRepository.create(
+            context: context,
+            input: makeInput(
+                title: "Desk",
+                precision: .year,
+                year: 2_020,
+                note: " \n "
+            ),
+            now: isoDate("2026-03-08T12:00:00Z"),
+            calendar: calendar
+        )
+
+        let result = EntryFormatting.metadataBadgeTexts(
+            for: entry,
+            locale: jaJP
+        )
+
+        #expect(result == ["開始はおおよそ"])
+    }
+
+    @Test
+    func metadataBadgeTexts_skips_approximate_start_for_exact_day() throws {
+        let context = try makeTestContext()
+        let entry = try EntryRepository.create(
+            context: context,
+            input: makeInput(
+                title: "Wallet",
+                precision: .day,
+                year: 2_025,
+                month: 8,
+                day: 14,
+                photoData: Data([0x02])
+            ),
+            now: isoDate("2026-03-08T12:00:00Z"),
+            calendar: calendar
+        )
+
+        let result = EntryFormatting.metadataBadgeTexts(
+            for: entry,
+            locale: enUS
+        )
+
+        #expect(result == ["Photo"])
+    }
+
+    @Test
     func archivedFooterText_returns_archived_text_without_note() {
         let result = EntryFormatting.archivedFooterText(
             archivedAt: isoDate("2026-03-08T12:00:00Z"),

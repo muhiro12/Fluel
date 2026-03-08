@@ -8,10 +8,13 @@ struct EntryRowView: View {
     private enum Metrics {
         static let imageSize: CGFloat = 48
         static let elapsedWidth: CGFloat = 120
+        static let badgeSpacing: CGFloat = 6
     }
 
     @Environment(\.mhTheme)
     private var theme
+    @Environment(\.locale)
+    private var locale
 
     let entry: Entry
     let referenceDate: Date
@@ -41,7 +44,12 @@ struct EntryRowView: View {
     private func content(
         snapshot: EntryElapsedSnapshot
     ) -> some View {
-        HStack(alignment: .top, spacing: theme.spacing.control) {
+        let metadataBadges = EntryFormatting.metadataBadgeTexts(
+            for: entry,
+            locale: locale
+        )
+
+        return HStack(alignment: .top, spacing: theme.spacing.control) {
             if let image = entryImage {
                 Image(uiImage: image)
                     .resizable()
@@ -69,6 +77,24 @@ struct EntryRowView: View {
 
                 Text(entry.title)
                     .mhRowTitle()
+
+                if metadataBadges.isEmpty == false {
+                    HStack(spacing: Metrics.badgeSpacing) {
+                        ForEach(metadataBadges, id: \.self) { badge in
+                            Text(badge)
+                                .font(.caption.weight(.semibold))
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .foregroundStyle(.secondary)
+                                .background {
+                                    Capsule(style: .continuous)
+                                        .fill(
+                                            Color.secondary.opacity(0.14)
+                                        )
+                                }
+                        }
+                    }
+                }
 
                 if let footerText {
                     Text(footerText)
