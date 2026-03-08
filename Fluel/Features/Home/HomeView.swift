@@ -32,6 +32,21 @@ struct HomeView: View {
         store: EntryListPreferences.store
     )
     private var storedContentFilter = EntryContentFilterMode.all.rawValue
+    @AppStorage(
+        DisplayPreferences.showsListSummaryCards,
+        store: DisplayPreferences.store
+    )
+    private var showsListSummaryCards = true
+    @AppStorage(
+        DisplayPreferences.showsNotePreviews,
+        store: DisplayPreferences.store
+    )
+    private var showsNotePreviews = true
+    @AppStorage(
+        DisplayPreferences.showsMetadataBadges,
+        store: DisplayPreferences.store
+    )
+    private var showsMetadataBadges = true
 
     let onAdd: () -> Void
     let onShowArchive: () -> Void
@@ -237,17 +252,19 @@ struct HomeView: View {
         referenceDate: Date
     ) -> some View {
         List {
-            listSummaryCard
-                .listRowInsets(
-                    .init(
-                        top: 0,
-                        leading: 0,
-                        bottom: Metrics.rowSpacing,
-                        trailing: 0
+            if showsListSummaryCards {
+                listSummaryCard
+                    .listRowInsets(
+                        .init(
+                            top: 0,
+                            leading: 0,
+                            bottom: Metrics.rowSpacing,
+                            trailing: 0
+                        )
                     )
-                )
-                .listRowSeparator(.hidden)
-                .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
+            }
 
             ForEach(displayedEntries) { entry in
                 NavigationLink {
@@ -256,9 +273,12 @@ struct HomeView: View {
                     EntryRowView(
                         entry: entry,
                         referenceDate: referenceDate,
-                        footerText: EntryFormatting.notePreviewText(
-                            entry.note
-                        )
+                        footerText: showsNotePreviews
+                            ? EntryFormatting.notePreviewText(
+                                entry.note
+                            )
+                            : nil,
+                        showsMetadataBadges: showsMetadataBadges
                     )
                 }
                 .swipeActions(

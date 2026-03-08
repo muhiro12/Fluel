@@ -19,6 +19,7 @@ struct EntryRowView: View {
     let entry: Entry
     let referenceDate: Date
     let footerText: String?
+    let showsMetadataBadges: Bool
 
     var body: some View {
         let snapshot = EntryElapsedSnapshot(
@@ -34,11 +35,13 @@ struct EntryRowView: View {
     init(
         entry: Entry,
         referenceDate: Date,
-        footerText: String? = nil
+        footerText: String? = nil,
+        showsMetadataBadges: Bool = true
     ) {
         self.entry = entry
         self.referenceDate = referenceDate
         self.footerText = footerText
+        self.showsMetadataBadges = showsMetadataBadges
     }
 
     private func content(
@@ -78,7 +81,8 @@ struct EntryRowView: View {
                 Text(entry.title)
                     .mhRowTitle()
 
-                if metadataBadges.isEmpty == false {
+                if showsMetadataBadges,
+                   metadataBadges.isEmpty == false {
                     HStack(spacing: Metrics.badgeSpacing) {
                         ForEach(metadataBadges, id: \.self) { badge in
                             Text(badge)

@@ -16,6 +16,11 @@ struct DashboardView: View {
 
     @Query
     private var entries: [Entry]
+    @AppStorage(
+        DisplayPreferences.showsDashboardHighlights,
+        store: DisplayPreferences.store
+    )
+    private var showsDashboardHighlights = true
 
     let onAdd: () -> Void
     let onShowArchive: () -> Void
@@ -48,11 +53,13 @@ struct DashboardView: View {
                             leadEntryCard
                         }
 
-                        if milestones.isEmpty == false {
+                        if showsDashboardHighlights,
+                           milestones.isEmpty == false {
                             milestoneSection(milestones)
                         }
 
-                        if recentActivity.isEmpty == false {
+                        if showsDashboardHighlights,
+                           recentActivity.isEmpty == false {
                             activitySection(recentActivity)
                         }
                     }

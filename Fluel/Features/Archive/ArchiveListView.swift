@@ -33,6 +33,21 @@ struct ArchiveListView: View {
         store: EntryListPreferences.store
     )
     private var storedContentFilter = EntryContentFilterMode.all.rawValue
+    @AppStorage(
+        DisplayPreferences.showsListSummaryCards,
+        store: DisplayPreferences.store
+    )
+    private var showsListSummaryCards = true
+    @AppStorage(
+        DisplayPreferences.showsNotePreviews,
+        store: DisplayPreferences.store
+    )
+    private var showsNotePreviews = true
+    @AppStorage(
+        DisplayPreferences.showsMetadataBadges,
+        store: DisplayPreferences.store
+    )
+    private var showsMetadataBadges = true
 
     private var sortedEntries: [Entry] {
         EntryListOrdering.archived(
@@ -239,17 +254,19 @@ struct ArchiveListView: View {
         referenceDate: Date
     ) -> some View {
         List {
-            listSummaryCard
-                .listRowInsets(
-                    .init(
-                        top: 0,
-                        leading: 0,
-                        bottom: Metrics.rowSpacing,
-                        trailing: 0
+            if showsListSummaryCards {
+                listSummaryCard
+                    .listRowInsets(
+                        .init(
+                            top: 0,
+                            leading: 0,
+                            bottom: Metrics.rowSpacing,
+                            trailing: 0
+                        )
                     )
-                )
-                .listRowSeparator(.hidden)
-                .listRowBackground(Color.clear)
+                    .listRowSeparator(.hidden)
+                    .listRowBackground(Color.clear)
+            }
 
             ForEach(displayedEntries) { entry in
                 NavigationLink {
@@ -261,9 +278,12 @@ struct ArchiveListView: View {
                         footerText: entry.archivedAt.map { archivedAt in
                             EntryFormatting.archivedFooterText(
                                 archivedAt: archivedAt,
-                                note: entry.note
+                                note: showsNotePreviews
+                                    ? entry.note
+                                    : nil
                             )
-                        }
+                        },
+                        showsMetadataBadges: showsMetadataBadges
                     )
                 }
                 .swipeActions(

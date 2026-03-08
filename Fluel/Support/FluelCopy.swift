@@ -587,6 +587,46 @@ enum FluelCopy {
         )
     }
 
+    static func showListSummaryCards(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Show list summary cards",
+            japanese: "一覧の summary card を表示",
+            locale: locale
+        )
+    }
+
+    static func showNotePreviews(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Show note previews",
+            japanese: "メモ preview を表示",
+            locale: locale
+        )
+    }
+
+    static func showMetadataBadges(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Show metadata badges",
+            japanese: "metadata badge を表示",
+            locale: locale
+        )
+    }
+
+    static func showDashboardHighlights(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Show dashboard highlights",
+            japanese: "ダッシュボードの highlights を表示",
+            locale: locale
+        )
+    }
+
     static func dataStatus(
         locale: Locale = .autoupdatingCurrent
     ) -> String {

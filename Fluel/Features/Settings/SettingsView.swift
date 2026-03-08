@@ -9,6 +9,26 @@ struct SettingsView: View {
 
     @Query
     private var entries: [Entry]
+    @AppStorage(
+        DisplayPreferences.showsListSummaryCards,
+        store: DisplayPreferences.store
+    )
+    private var showsListSummaryCards = true
+    @AppStorage(
+        DisplayPreferences.showsNotePreviews,
+        store: DisplayPreferences.store
+    )
+    private var showsNotePreviews = true
+    @AppStorage(
+        DisplayPreferences.showsMetadataBadges,
+        store: DisplayPreferences.store
+    )
+    private var showsMetadataBadges = true
+    @AppStorage(
+        DisplayPreferences.showsDashboardHighlights,
+        store: DisplayPreferences.store
+    )
+    private var showsDashboardHighlights = true
 
     let onShowArchive: () -> Void
     let onShowLicenses: () -> Void
@@ -38,8 +58,25 @@ struct SettingsView: View {
             Text(FluelCopy.display())
                 .font(.headline)
 
-            Text(FluelCopy.displaySettingsPreviewBody())
-                .mhTextStyle(.supporting, colorRole: .secondaryText)
+            Toggle(
+                FluelCopy.showListSummaryCards(),
+                isOn: $showsListSummaryCards
+            )
+
+            Toggle(
+                FluelCopy.showNotePreviews(),
+                isOn: $showsNotePreviews
+            )
+
+            Toggle(
+                FluelCopy.showMetadataBadges(),
+                isOn: $showsMetadataBadges
+            )
+
+            Toggle(
+                FluelCopy.showDashboardHighlights(),
+                isOn: $showsDashboardHighlights
+            )
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .mhRow()
