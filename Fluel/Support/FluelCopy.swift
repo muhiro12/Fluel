@@ -32,6 +32,16 @@ enum FluelCopy {
         )
     }
 
+    static func duplicate(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Duplicate",
+            japanese: "複製",
+            locale: locale
+        )
+    }
+
     static func save(
         locale: Locale = .autoupdatingCurrent
     ) -> String {

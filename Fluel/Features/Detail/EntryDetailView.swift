@@ -17,6 +17,7 @@ struct EntryDetailView: View {
     @State private var errorMessage: String?
     @State private var isConfirmingDelete = false
     @State private var isPresentingEditor = false
+    @State private var isPresentingDuplicateForm = false
 
     var body: some View {
         TimelineView(.periodic(from: .now, by: 3_600)) { timeline in // swiftlint:disable:this no_magic_numbers
@@ -58,6 +59,12 @@ struct EntryDetailView: View {
                         }
 
                         Button(
+                            FluelCopy.duplicate()
+                        ) {
+                            isPresentingDuplicateForm = true
+                        }
+
+                        Button(
                             FluelCopy.edit()
                         ) {
                             isPresentingEditor = true
@@ -96,6 +103,16 @@ struct EntryDetailView: View {
             NavigationStack {
                 EntryFormView(
                     mode: .edit(entry)
+                )
+            }
+        }
+        .sheet(isPresented: $isPresentingDuplicateForm) {
+            NavigationStack {
+                EntryFormView(
+                    mode: .create,
+                    prefilledInput: EntryFormInput(
+                        duplicating: entry
+                    )
                 )
             }
         }

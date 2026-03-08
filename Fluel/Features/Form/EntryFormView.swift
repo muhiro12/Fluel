@@ -27,36 +27,51 @@ struct EntryFormView: View {
     @State private var errorMessage: String?
 
     private let mode: Mode
+    private let prefilledInput: EntryFormInput?
     private let currentDate: Date
     private let calendar: Calendar
 
     init(
         mode: Mode,
+        prefilledInput: EntryFormInput? = nil,
         currentDate: Date = .now,
         calendar: Calendar = .autoupdatingCurrent
     ) {
         self.mode = mode
+        self.prefilledInput = prefilledInput
         self.currentDate = currentDate
         self.calendar = calendar
 
         let resolvedEntry: Entry?
+        let createInput: EntryFormInput?
 
         switch mode {
         case .create:
             resolvedEntry = nil
+            createInput = prefilledInput
         case let .edit(entry):
             resolvedEntry = entry
+            createInput = nil
         }
 
-        let defaultDate = resolvedEntry?.startComponents.earliestDate(calendar: calendar) ?? currentDate
+        let prefilledStartDate = createInput.flatMap { input in
+            try? input.resolvedStartComponents(
+                referenceDate: currentDate,
+                calendar: calendar
+            )
+            .earliestDate(calendar: calendar)
+        }
+        let defaultDate = resolvedEntry?.startComponents.earliestDate(calendar: calendar)
+            ?? prefilledStartDate
+            ?? currentDate
 
-        _title = State(initialValue: resolvedEntry?.title ?? String())
-        _precision = State(initialValue: resolvedEntry?.startPrecision ?? .day)
+        _title = State(initialValue: resolvedEntry?.title ?? createInput?.title ?? String())
+        _precision = State(initialValue: resolvedEntry?.startPrecision ?? createInput?.startPrecision ?? .day)
         _selectedDate = State(initialValue: defaultDate)
-        _year = State(initialValue: resolvedEntry?.startYear ?? calendar.component(.year, from: currentDate))
-        _month = State(initialValue: resolvedEntry?.startMonth ?? calendar.component(.month, from: currentDate))
-        _note = State(initialValue: resolvedEntry?.note ?? String())
-        _photoData = State(initialValue: resolvedEntry?.photoData)
+        _year = State(initialValue: resolvedEntry?.startYear ?? createInput?.startYear ?? calendar.component(.year, from: currentDate))
+        _month = State(initialValue: resolvedEntry?.startMonth ?? createInput?.startMonth ?? calendar.component(.month, from: currentDate))
+        _note = State(initialValue: resolvedEntry?.note ?? createInput?.note ?? String())
+        _photoData = State(initialValue: resolvedEntry?.photoData ?? createInput?.photoData)
     }
 
     var body: some View {
