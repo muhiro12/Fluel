@@ -12,6 +12,12 @@ public struct EntryWidgetSnapshot: Equatable, Sendable {
     public let primaryText: String
     public let startText: String
     public let activeCount: Int
+    public let archivedCount: Int
+    public let activeWithNotesCount: Int
+    public let activeWithPhotosCount: Int
+    public let mostRecentlyArchivedTitle: String?
+    public let upcomingMilestone: EntryMilestoneSnapshot?
+    public let recentActivity: EntryActivitySnapshot?
 }
 
 /// Shared widget query helpers that read the lead active entry from the shared store.
@@ -22,33 +28,49 @@ public enum EntryWidgetSnapshotQuery {
         locale: Locale = .autoupdatingCurrent,
         calendar: Calendar = .autoupdatingCurrent
     ) throws -> EntryWidgetSnapshot? {
-        let activeEntries = try EntryRepository.fetchActiveEntries(
-            context: context,
-            calendar: calendar
-        )
-
-        guard let leadEntry = activeEntries.first else {
-            return nil
-        }
-
-        let elapsedSnapshot = EntryElapsedSnapshot(
-            startComponents: leadEntry.startComponents,
+        let entries = try EntryRepository.fetchAllEntries(context: context)
+        let collectionSnapshot = EntryCollectionSnapshotQuery.snapshot(
+            entries: entries,
             referenceDate: referenceDate,
             calendar: calendar
         )
+        guard
+            let leadTitle = collectionSnapshot.leadActiveTitle,
+            let leadStartComponents = collectionSnapshot.leadActiveStartComponents,
+            let leadElapsedSnapshot = collectionSnapshot.leadActiveElapsedSnapshot
+        else {
+            return nil
+        }
+        let upcomingMilestone = EntryMilestoneSnapshotQuery.upcomingActiveMilestones(
+            entries: entries,
+            referenceDate: referenceDate,
+            locale: locale,
+            calendar: calendar,
+            limit: 1
+        ).first
+        let recentActivity = EntryActivitySnapshotQuery.recent(
+            entries: entries,
+            limit: 1
+        ).first
 
         return .init(
-            title: leadEntry.title,
+            title: leadTitle,
             primaryText: EntryFormatting.primaryElapsedText(
-                for: elapsedSnapshot,
+                for: leadElapsedSnapshot,
                 locale: locale
             ),
             startText: EntryFormatting.startLabelText(
-                for: leadEntry.startComponents,
+                for: leadStartComponents,
                 locale: locale,
                 calendar: calendar
             ),
-            activeCount: activeEntries.count
+            activeCount: collectionSnapshot.activeCount,
+            archivedCount: collectionSnapshot.archivedCount,
+            activeWithNotesCount: collectionSnapshot.activeWithNotesCount,
+            activeWithPhotosCount: collectionSnapshot.activeWithPhotosCount,
+            mostRecentlyArchivedTitle: collectionSnapshot.mostRecentlyArchivedTitle,
+            upcomingMilestone: upcomingMilestone,
+            recentActivity: recentActivity
         )
     }
 
@@ -91,7 +113,40 @@ public enum EntryWidgetSnapshotQuery {
                 locale: locale,
                 calendar: calendar
             ),
-            activeCount: 6
+            activeCount: 6,
+            archivedCount: 1,
+            activeWithNotesCount: 3,
+            activeWithPhotosCount: 2,
+            mostRecentlyArchivedTitle: "Desk lamp",
+            upcomingMilestone: .init(
+                entryID: UUID(uuidString: "11111111-1111-1111-1111-111111111111") ?? UUID(),
+                title: "Wallet",
+                milestoneDate: calendar.date(
+                    from: .init(
+                        year: 2_026,
+                        month: 3,
+                        day: 8
+                    )
+                ) ?? .now,
+                daysRemaining: 0,
+                milestoneText: EntryFormatting.primaryElapsedText(
+                    for: snapshot,
+                    locale: locale
+                ),
+                isApproximate: false
+            ),
+            recentActivity: .init(
+                entryID: UUID(uuidString: "22222222-2222-2222-2222-222222222222") ?? UUID(),
+                title: "Desk lamp",
+                kind: .archived,
+                timestamp: calendar.date(
+                    from: .init(
+                        year: 2_026,
+                        month: 2,
+                        day: 19
+                    )
+                ) ?? .now
+            )
         )
     }
 }
