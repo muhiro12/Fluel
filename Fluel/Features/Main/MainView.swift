@@ -26,6 +26,7 @@ struct MainView: View {
     @Environment(MHAppRuntime.self)
     private var appRuntime
 
+    @StateObject private var presetStore = EntryPresetStore()
     @State private var selectedTab: Tab = .home
     @State private var path = [Destination]()
     @State private var activeSheet: Sheet?
@@ -89,6 +90,7 @@ struct MainView: View {
                 }
             }
         }
+        .environmentObject(presetStore)
         .sheet(item: $activeSheet) { sheet in
             NavigationStack {
                 switch sheet {
