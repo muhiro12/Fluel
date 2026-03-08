@@ -200,7 +200,10 @@ struct ArchiveListView: View {
                         entry: entry,
                         referenceDate: referenceDate,
                         footerText: entry.archivedAt.map { archivedAt in
-                            EntryFormatting.archivedOnText(archivedAt)
+                            EntryFormatting.archivedFooterText(
+                                archivedAt: archivedAt,
+                                note: entry.note
+                            )
                         }
                     )
                 }
