@@ -3,28 +3,69 @@ import MHPlatform
 import SwiftUI
 
 struct RootView: View {
+    private enum Tab: Hashable {
+        case home
+        case dashboard
+    }
+
+    private enum Destination: Hashable {
+        case archive
+    }
+
     @Environment(MHAppRuntime.self)
     private var appRuntime
 
+    @State private var selectedTab: Tab = .home
     @State private var isPresentingCreate = false
     @State private var isPresentingLicenses = false
-    @State private var isShowingArchive = false
+    @State private var path = [Destination]()
 
     var body: some View {
-        NavigationStack {
-            HomeView(
-                onAdd: {
-                    isPresentingCreate = true
-                },
-                onShowArchive: {
-                    isShowingArchive = true
-                },
-                onShowLicenses: {
-                    isPresentingLicenses = true
+        NavigationStack(path: $path) {
+            TabView(selection: $selectedTab) {
+                HomeView(
+                    onAdd: {
+                        isPresentingCreate = true
+                    },
+                    onShowArchive: {
+                        path.append(.archive)
+                    },
+                    onShowLicenses: {
+                        isPresentingLicenses = true
+                    }
+                )
+                .tabItem {
+                    Label(
+                        FluelCopy.home(),
+                        systemImage: "house"
+                    )
                 }
-            )
-            .navigationDestination(isPresented: $isShowingArchive) {
-                ArchiveListView()
+                .tag(Tab.home)
+
+                DashboardView(
+                    onAdd: {
+                        isPresentingCreate = true
+                    },
+                    onShowArchive: {
+                        path.append(.archive)
+                    },
+                    onShowLicenses: {
+                        isPresentingLicenses = true
+                    }
+                )
+                .tabItem {
+                    Label(
+                        FluelCopy.dashboard(),
+                        systemImage: "square.grid.2x2"
+                    )
+                }
+                .tag(Tab.dashboard)
+            }
+            .navigationDestination(for: Destination.self) { destination in
+                switch destination {
+                case .archive:
+                    ArchiveListView()
+                }
             }
         }
         .sheet(isPresented: $isPresentingCreate) {

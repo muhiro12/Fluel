@@ -2,6 +2,26 @@ import FluelLibrary
 import Foundation
 
 enum FluelCopy {
+    static func home(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Home",
+            japanese: "ホーム",
+            locale: locale
+        )
+    }
+
+    static func dashboard(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Dashboard",
+            japanese: "ダッシュボード",
+            locale: locale
+        )
+    }
+
     static func add(
         locale: Locale = .autoupdatingCurrent
     ) -> String {
@@ -413,6 +433,81 @@ enum FluelCopy {
         localized(
             english: "With photos: \(count)",
             japanese: "写真あり \(count)件",
+            locale: locale
+        )
+    }
+
+    static func totalEntriesCount(
+        _ count: Int,
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        let english = count == 1
+            ? "1 total entry"
+            : "\(count) total entries"
+
+        return localized(
+            english: english,
+            japanese: "すべての記録 \(count)件",
+            locale: locale
+        )
+    }
+
+    static func overview(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Overview",
+            japanese: "全体像",
+            locale: locale
+        )
+    }
+
+    static func leadEntry(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Longest together right now",
+            japanese: "いま最も長く一緒にいる記録",
+            locale: locale
+        )
+    }
+
+    static func quickActions(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Quick actions",
+            japanese: "クイック操作",
+            locale: locale
+        )
+    }
+
+    static func recentlyArchivedHighlight(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Recently archived",
+            japanese: "最近保管した記録",
+            locale: locale
+        )
+    }
+
+    static func dashboardEmptyTitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Nothing to summarize yet",
+            japanese: "まだまとめる記録がありません",
+            locale: locale
+        )
+    }
+
+    static func dashboardEmptyBody(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Add the first entry and Fluel will start shaping the quiet overview here.",
+            japanese: "最初の記録を追加すると、ここに静かな全体像が立ち上がります。",
             locale: locale
         )
     }

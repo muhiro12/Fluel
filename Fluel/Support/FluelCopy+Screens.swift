@@ -23,6 +23,17 @@ extension FluelCopy {
         )
     }
 
+    static func dashboardScreenSubtitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "See the whole shape of what is still with you and what "
+                + "has already been archived.",
+            japanese: "いま一緒にあるものと、保管済みになったものの全体像を静かに見渡せます。",
+            locale: locale
+        )
+    }
+
     static func createScreenSubtitle(
         locale: Locale = .autoupdatingCurrent
     ) -> String {
