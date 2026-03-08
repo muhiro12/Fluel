@@ -27,6 +27,7 @@ struct EntryDetailView: View {
             )
 
             VStack(alignment: .leading, spacing: theme.spacing.section) {
+                quickActions(referenceDate: timeline.date)
                 elapsedSection(snapshot: snapshot)
                 detailsSection(snapshot: snapshot)
 
@@ -185,6 +186,67 @@ struct EntryDetailView: View {
                 )
             )
             .mhTextStyle(.metadata, colorRole: .secondaryText)
+        }
+    }
+
+    private func quickActions(
+        referenceDate: Date
+    ) -> some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: theme.spacing.inline) {
+                ShareLink(
+                    item: shareText(referenceDate: referenceDate)
+                ) {
+                    Label(
+                        FluelCopy.share(),
+                        systemImage: "square.and.arrow.up"
+                    )
+                }
+                .buttonStyle(.mhSecondary)
+
+                Button {
+                    isPresentingDuplicateForm = true
+                } label: {
+                    Label(
+                        FluelCopy.duplicate(),
+                        systemImage: "plus.square.on.square"
+                    )
+                }
+                .buttonStyle(.mhSecondary)
+
+                Button {
+                    isPresentingEditor = true
+                } label: {
+                    Label(
+                        FluelCopy.edit(),
+                        systemImage: "pencil"
+                    )
+                }
+                .buttonStyle(.mhSecondary)
+
+                if entry.isArchived {
+                    Button(
+                        action: restore
+                    ) {
+                        Label(
+                            FluelCopy.restore(),
+                            systemImage: "arrow.uturn.backward"
+                        )
+                    }
+                    .buttonStyle(.mhSecondary)
+                } else {
+                    Button(
+                        action: archive
+                    ) {
+                        Label(
+                            FluelCopy.archive(),
+                            systemImage: "archivebox"
+                        )
+                    }
+                    .buttonStyle(.mhSecondary)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
     }
 
