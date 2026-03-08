@@ -310,6 +310,25 @@ public enum EntryFormatting {
         }
     }
 
+    public static func notePreviewText(
+        _ note: String?
+    ) -> String? {
+        guard let note else {
+            return nil
+        }
+
+        let preview = note
+            .components(separatedBy: .whitespacesAndNewlines)
+            .filter { $0.isEmpty == false }
+            .joined(separator: " ")
+
+        guard preview.isEmpty == false else {
+            return nil
+        }
+
+        return preview
+    }
+
     public static func archivedOnText(
         _ date: Date,
         locale: Locale = .autoupdatingCurrent

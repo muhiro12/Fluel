@@ -100,4 +100,22 @@ struct EntryFormattingTests {
 
         #expect(result == "2018年のどこか")
     }
+
+    @Test
+    func notePreviewText_collapses_multiline_whitespace() {
+        let result = EntryFormatting.notePreviewText(
+            "  Always here\nwith me \n  every day  "
+        )
+
+        #expect(result == "Always here with me every day")
+    }
+
+    @Test
+    func notePreviewText_returns_nil_for_blank_note() {
+        let result = EntryFormatting.notePreviewText(
+            " \n "
+        )
+
+        #expect(result == nil)
+    }
 }
