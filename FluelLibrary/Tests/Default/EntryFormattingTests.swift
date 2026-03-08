@@ -278,4 +278,24 @@ struct EntryFormattingTests {
 
         #expect(result == "Archived on Mar 8, 2026 | Living room lamp")
     }
+
+    @Test
+    func createdOnText_formats_english_date() {
+        let result = EntryFormatting.createdOnText(
+            isoDate("2026-03-08T12:00:00Z"),
+            locale: enUS
+        )
+
+        #expect(result == "Created on Mar 8, 2026")
+    }
+
+    @Test
+    func createdOnText_formats_japanese_date() {
+        let result = EntryFormatting.createdOnText(
+            isoDate("2026-03-08T12:00:00Z"),
+            locale: jaJP
+        )
+
+        #expect(result == "2026年3月8日に作成")
+    }
 }

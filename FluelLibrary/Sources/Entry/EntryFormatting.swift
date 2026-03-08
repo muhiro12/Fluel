@@ -455,6 +455,26 @@ public enum EntryFormatting {
             return "\(formattedDate)に保管済み"
         }
     }
+
+    public static func createdOnText(
+        _ date: Date,
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        let formattedDate = date.formatted(
+            .dateTime
+                .year()
+                .month(.abbreviated)
+                .day()
+                .locale(locale)
+        )
+
+        switch FluelLocale(locale: locale) {
+        case .english:
+            return "Created on \(formattedDate)"
+        case .japanese:
+            return "\(formattedDate)に作成"
+        }
+    }
 }
 
 private extension EntryFormatting {
