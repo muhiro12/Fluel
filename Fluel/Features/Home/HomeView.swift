@@ -22,8 +22,16 @@ struct HomeView: View {
 
     @State private var errorMessage: String?
     @State private var searchText = String()
-    @State private var sortMode: ActiveEntrySortMode = .oldestFirst
-    @State private var contentFilter: EntryContentFilterMode = .all
+    @AppStorage(
+        EntryListPreferences.homeSortMode,
+        store: EntryListPreferences.store
+    )
+    private var storedSortMode = ActiveEntrySortMode.oldestFirst.rawValue
+    @AppStorage(
+        EntryListPreferences.homeContentFilter,
+        store: EntryListPreferences.store
+    )
+    private var storedContentFilter = EntryContentFilterMode.all.rawValue
 
     let onAdd: () -> Void
     let onShowArchive: () -> Void
@@ -50,6 +58,25 @@ struct HomeView: View {
         )
     }
 
+    private var sortMode: ActiveEntrySortMode {
+        ActiveEntrySortMode(rawValue: storedSortMode) ?? .oldestFirst
+    }
+
+    private var contentFilter: EntryContentFilterMode {
+        EntryContentFilterMode(rawValue: storedContentFilter) ?? .all
+    }
+
+    private var contentFilterBinding: Binding<EntryContentFilterMode> {
+        .init(
+            get: {
+                contentFilter
+            },
+            set: { newValue in
+                storedContentFilter = newValue.rawValue
+            }
+        )
+    }
+
     var body: some View {
         TimelineView(.periodic(from: .now, by: 3_600)) { context in // swiftlint:disable:this no_magic_numbers
             Group {
@@ -68,7 +95,7 @@ struct HomeView: View {
                         Section(FluelCopy.sort()) {
                             ForEach(ActiveEntrySortMode.allCases, id: \.self) { mode in
                                 Button {
-                                    sortMode = mode
+                                    storedSortMode = mode.rawValue
                                 } label: {
                                     if sortMode == mode {
                                         Label(
@@ -241,7 +268,7 @@ struct HomeView: View {
             subtitle: Text(FluelCopy.homeScreenSubtitle())
         ) {
             EntryContentFilterBar(
-                selection: $contentFilter
+                selection: contentFilterBinding
             )
         }
     }
