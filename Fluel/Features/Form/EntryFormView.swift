@@ -176,7 +176,7 @@ struct EntryFormView: View {
             } header: {
                 Text(FluelCopy.noteSectionTitle())
             } footer: {
-                Text(FluelCopy.notePlaceholder())
+                Text(noteFooterText)
             }
         }
         .mhFormChrome(
@@ -329,6 +329,17 @@ struct EntryFormView: View {
         }
 
         return UIImage(data: photoData)
+    }
+
+    private var noteFooterText: String {
+        guard let countText = EntryFormatting.noteCharacterCountText(note) else {
+            return FluelCopy.notePlaceholder()
+        }
+
+        return """
+        \(FluelCopy.notePlaceholder())
+        \(countText)
+        """
     }
 
     private func syncSelectionsForPrecision() {
