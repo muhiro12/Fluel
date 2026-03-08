@@ -717,6 +717,16 @@ enum FluelCopy {
         )
     }
 
+    static func archivedAfter(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Archived after",
+            japanese: "保管まで",
+            locale: locale
+        )
+    }
+
     static func more(
         locale: Locale = .autoupdatingCurrent
     ) -> String {

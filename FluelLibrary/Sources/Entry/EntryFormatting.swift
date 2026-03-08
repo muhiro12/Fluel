@@ -495,6 +495,24 @@ public enum EntryFormatting {
             return "\(formattedDate)に更新"
         }
     }
+
+    public static func archivedDurationText(
+        startComponents: EntryStartComponents,
+        archivedAt: Date,
+        locale: Locale = .autoupdatingCurrent,
+        calendar: Calendar = .autoupdatingCurrent
+    ) -> String {
+        let snapshot = EntryElapsedSnapshot(
+            startComponents: startComponents,
+            referenceDate: archivedAt,
+            calendar: calendar
+        )
+
+        return detailElapsedText(
+            for: snapshot,
+            locale: locale
+        )
+    }
 }
 
 private extension EntryFormatting {

@@ -264,6 +264,17 @@ struct EntryDetailView: View {
                 .labeledContentStyle(.mhKeyValue)
             }
 
+            if let archivedAt = entry.archivedAt {
+                LabeledContent(
+                    FluelCopy.archivedAfter(),
+                    value: EntryFormatting.archivedDurationText(
+                        startComponents: entry.startComponents,
+                        archivedAt: archivedAt
+                    )
+                )
+                .labeledContentStyle(.mhKeyValue)
+            }
+
             LabeledContent(
                 FluelCopy.createdOn(),
                 value: EntryFormatting.createdOnText(

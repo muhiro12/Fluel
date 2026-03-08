@@ -318,4 +318,35 @@ struct EntryFormattingTests {
 
         #expect(result == "2026年3月8日に更新")
     }
+
+    @Test
+    func archivedDurationText_formats_english_elapsed_value() throws {
+        let result = EntryFormatting.archivedDurationText(
+            startComponents: try .init(
+                precision: .month,
+                year: 2_024,
+                month: 3
+            ),
+            archivedAt: isoDate("2026-03-08T12:00:00Z"),
+            locale: enUS,
+            calendar: calendar
+        )
+
+        #expect(result == "2 years")
+    }
+
+    @Test
+    func archivedDurationText_formats_japanese_elapsed_value() throws {
+        let result = EntryFormatting.archivedDurationText(
+            startComponents: try .init(
+                precision: .year,
+                year: 2_020
+            ),
+            archivedAt: isoDate("2026-03-08T12:00:00Z"),
+            locale: jaJP,
+            calendar: calendar
+        )
+
+        #expect(result == "6年")
+    }
 }
