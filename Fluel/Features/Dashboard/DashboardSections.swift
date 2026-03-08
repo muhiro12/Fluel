@@ -53,7 +53,7 @@ struct DashboardQuickActionsCard: View {
     let onShowLicenses: () -> Void
 
     private var featuredPresets: [EntryPreset] {
-        Array(presetStore.builtInPresets.prefix(4))
+        presetStore.suggestedPresets(limit: 4)
     }
 
     var body: some View {

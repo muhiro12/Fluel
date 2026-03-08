@@ -1425,6 +1425,26 @@ enum FluelCopy {
         )
     }
 
+    static func pinnedPresets(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Pinned presets",
+            japanese: "ピン留めしたプリセット",
+            locale: locale
+        )
+    }
+
+    static func recentPresets(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Recent presets",
+            japanese: "最近使ったプリセット",
+            locale: locale
+        )
+    }
+
     static func presetCount(
         _ count: Int,
         locale: Locale = .autoupdatingCurrent
@@ -1447,6 +1467,17 @@ enum FluelCopy {
         )
     }
 
+    static func pinnedPresetCount(
+        _ count: Int,
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "\(count) pinned presets",
+            japanese: "\(count)件のピン留め済みプリセット",
+            locale: locale
+        )
+    }
+
     static func noCustomPresetsTitle(
         locale: Locale = .autoupdatingCurrent
     ) -> String {
@@ -1463,6 +1494,86 @@ enum FluelCopy {
         localized(
             english: "Starter presets are ready. Add your own combinations next.",
             japanese: "まずは標準プリセットが使えます。次に自分の組み合わせを追加できます。",
+            locale: locale
+        )
+    }
+
+    static func noPinnedPresetsTitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "No pinned presets yet",
+            japanese: "ピン留めしたプリセットはまだありません",
+            locale: locale
+        )
+    }
+
+    static func noPinnedPresetsBody(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Pin the presets you want to keep close across the app.",
+            japanese: "よく使うプリセットをピン留めすると、アプリ全体で手前に出せます。",
+            locale: locale
+        )
+    }
+
+    static func noRecentPresetsTitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "No recent presets yet",
+            japanese: "最近使ったプリセットはまだありません",
+            locale: locale
+        )
+    }
+
+    static func noRecentPresetsBody(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Use a preset once and it will rise here for faster reuse.",
+            japanese: "一度使ったプリセットは、次からここに上がってきます。",
+            locale: locale
+        )
+    }
+
+    static func pinPreset(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Pin preset",
+            japanese: "プリセットをピン留め",
+            locale: locale
+        )
+    }
+
+    static func unpinPreset(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Unpin preset",
+            japanese: "ピン留めを外す",
+            locale: locale
+        )
+    }
+
+    static func pinned(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Pinned",
+            japanese: "ピン留め済み",
+            locale: locale
+        )
+    }
+
+    static func recent(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Recent",
+            japanese: "最近使った",
             locale: locale
         )
     }
@@ -1656,6 +1767,26 @@ enum FluelCopy {
         localized(
             english: "Begin from a familiar thing or place, then adjust anything you need.",
             japanese: "身近なものや場所から始めて、必要なところだけ整えられます。",
+            locale: locale
+        )
+    }
+
+    static func quickPresets(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Quick presets",
+            japanese: "すぐ使えるプリセット",
+            locale: locale
+        )
+    }
+
+    static func quickPresetsBody(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Pinned and recent presets stay ready before the full editor opens.",
+            japanese: "ピン留めしたものや最近使ったものを、入力前にすぐ呼び出せます。",
             locale: locale
         )
     }

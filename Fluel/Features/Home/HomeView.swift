@@ -121,8 +121,8 @@ struct HomeView: View {
         )
     }
 
-    private var starterPresets: [EntryPreset] {
-        Array(presetStore.builtInPresets.prefix(4))
+    private var quickPresets: [EntryPreset] {
+        presetStore.suggestedPresets(limit: 4)
     }
 
     var body: some View {
@@ -234,8 +234,8 @@ struct HomeView: View {
                 }
                 .mhEmptyStateLayout()
 
-                if starterPresets.isEmpty == false {
-                    starterPresetsCard
+                if quickPresets.isEmpty == false {
+                    quickPresetsCard
                         .mhRow()
                         .mhSurface(role: .muted)
                 }
@@ -270,8 +270,8 @@ struct HomeView: View {
         referenceDate: Date
     ) -> some View {
         List {
-            if starterPresets.isEmpty == false {
-                starterPresetsCard
+            if quickPresets.isEmpty == false {
+                quickPresetsCard
                     .listRowInsets(
                         .init(
                             top: 0,
@@ -366,9 +366,9 @@ struct HomeView: View {
         mutationWorkflow.archive(entry: entry)
     }
 
-    var starterPresetsCard: some View {
+    var quickPresetsCard: some View {
         EntryPresetStrip(
-            presets: starterPresets,
+            presets: quickPresets,
             selectedPresetID: nil,
             onSelect: selectPreset
         )

@@ -127,10 +127,17 @@ struct SettingsView: View {
 
                     Text(
                         FluelCopy.presetCount(
-                            presetStore.builtInPresets.count
+                            presetStore.allPresets.count
                         )
                     )
                     .mhRowSupporting()
+
+                    Text(
+                        FluelCopy.pinnedPresetCount(
+                            presetStore.pinnedPresets.count
+                        )
+                    )
+                    .mhTextStyle(.metadata, colorRole: .secondaryText)
 
                     Text(
                         FluelCopy.customPresetCount(

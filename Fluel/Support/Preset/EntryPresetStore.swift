@@ -61,6 +61,45 @@ final class EntryPresetStore: ObservableObject {
         builtInPresets + customPresets
     }
 
+    var pinnedPresets: [EntryPreset] {
+        allPresets
+            .filter(\.isPinned)
+            .sorted(by: isHigherPriorityPreset(_:_:))
+    }
+
+    var recentPresets: [EntryPreset] {
+        allPresets
+            .filter { preset in
+                preset.isPinned == false && preset.lastUsedAt != nil
+            }
+            .sorted(by: isHigherPriorityPreset(_:_:))
+    }
+
+    func suggestedPresets(
+        limit: Int
+    ) -> [EntryPreset] {
+        let prioritizedGroups = [
+            pinnedPresets,
+            recentPresets,
+            builtInPresets,
+            customPresets
+        ]
+        var seenIDs = Set<String>()
+        var presets = [EntryPreset]()
+
+        for group in prioritizedGroups {
+            for preset in group where seenIDs.insert(preset.id).inserted {
+                presets.append(preset)
+
+                if presets.count >= limit {
+                    return presets
+                }
+            }
+        }
+
+        return presets
+    }
+
     func preset(
         id: String
     ) -> EntryPreset? {
@@ -111,6 +150,10 @@ final class EntryPresetStore: ObservableObject {
             ),
             at: .distantPast
         )
+        store.setPinned(true, for: "starter-home")
+        store.markUsed("starter-home")
+        store.markUsed("starter-wallet")
+        store.markUsed("starter-plant")
         return store
     }
 
@@ -193,6 +236,27 @@ final class EntryPresetStore: ObservableObject {
             createdAt: createdAt,
             updatedAt: updatedAt
         )
+    }
+
+    private func isHigherPriorityPreset(
+        _ lhs: EntryPreset,
+        _ rhs: EntryPreset
+    ) -> Bool {
+        if lhs.lastUsedAt != rhs.lastUsedAt {
+            return (lhs.lastUsedAt ?? .distantPast) > (rhs.lastUsedAt ?? .distantPast)
+        }
+
+        if lhs.updatedAt != rhs.updatedAt {
+            return (lhs.updatedAt ?? .distantPast) > (rhs.updatedAt ?? .distantPast)
+        }
+
+        if lhs.createdAt != rhs.createdAt {
+            return (lhs.createdAt ?? .distantPast) > (rhs.createdAt ?? .distantPast)
+        }
+
+        return lhs.title.localizedCaseInsensitiveCompare(
+            rhs.title
+        ) == .orderedAscending
     }
 
     private func persistRecords() {

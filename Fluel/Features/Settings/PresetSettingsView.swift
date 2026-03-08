@@ -13,9 +13,42 @@ struct PresetSettingsView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: theme.spacing.section) {
                 PresetSettingsSectionCard(
+                    title: FluelCopy.pinnedPresets(),
+                    presets: presetStore.pinnedPresets,
+                    emptyState: .init(
+                        title: FluelCopy.noPinnedPresetsTitle(),
+                        body: FluelCopy.noPinnedPresetsBody()
+                    ),
+                    onTogglePin: togglePin,
+                    onEdit: { preset in
+                        editingPreset = preset
+                    },
+                    onDelete: { preset in
+                        deletingPreset = preset
+                    }
+                )
+
+                PresetSettingsSectionCard(
+                    title: FluelCopy.recentPresets(),
+                    presets: presetStore.recentPresets,
+                    emptyState: .init(
+                        title: FluelCopy.noRecentPresetsTitle(),
+                        body: FluelCopy.noRecentPresetsBody()
+                    ),
+                    onTogglePin: togglePin,
+                    onEdit: { preset in
+                        editingPreset = preset
+                    },
+                    onDelete: { preset in
+                        deletingPreset = preset
+                    }
+                )
+
+                PresetSettingsSectionCard(
                     title: FluelCopy.builtInPresets(),
                     presets: presetStore.builtInPresets,
-                    emptyState: nil
+                    emptyState: nil,
+                    onTogglePin: togglePin
                 )
 
                 PresetSettingsSectionCard(
@@ -25,6 +58,7 @@ struct PresetSettingsView: View {
                         title: FluelCopy.noCustomPresetsTitle(),
                         body: FluelCopy.noCustomPresetsBody()
                     ),
+                    onTogglePin: togglePin,
                     onEdit: { preset in
                         editingPreset = preset
                     },
@@ -111,6 +145,15 @@ struct PresetSettingsView: View {
             )
         }
     }
+
+    private func togglePin(
+        _ preset: EntryPreset
+    ) {
+        presetStore.setPinned(
+            preset.isPinned == false,
+            for: preset.id
+        )
+    }
 }
 
 private struct PresetSettingsSectionCard: View {
@@ -125,6 +168,7 @@ private struct PresetSettingsSectionCard: View {
     let title: String
     let presets: [EntryPreset]
     let emptyState: EmptyState?
+    var onTogglePin: ((EntryPreset) -> Void)? = nil
     var onEdit: ((EntryPreset) -> Void)? = nil
     var onDelete: ((EntryPreset) -> Void)? = nil
 
@@ -146,6 +190,7 @@ private struct PresetSettingsSectionCard: View {
                     ForEach(presets) { preset in
                         PresetSettingsRow(
                             preset: preset,
+                            onTogglePin: onTogglePin,
                             onEdit: onEdit,
                             onDelete: onDelete
                         )
@@ -166,6 +211,7 @@ private struct PresetSettingsSectionCard: View {
 
 private struct PresetSettingsRow: View {
     let preset: EntryPreset
+    var onTogglePin: ((EntryPreset) -> Void)? = nil
     var onEdit: ((EntryPreset) -> Void)? = nil
     var onDelete: ((EntryPreset) -> Void)? = nil
 
@@ -187,24 +233,43 @@ private struct PresetSettingsRow: View {
                     Text(note)
                         .mhTextStyle(.metadata, colorRole: .secondaryText)
                 }
+
+                if let statusText {
+                    Text(statusText)
+                        .mhTextStyle(.metadata, colorRole: .secondaryText)
+                }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            if preset.isEditable,
-               let onEdit,
-               let onDelete {
+            if hasMenuActions {
                 Menu {
-                    Button(
-                        FluelCopy.editPreset()
-                    ) {
-                        onEdit(preset)
+                    if let onTogglePin {
+                        Button(
+                            preset.isPinned
+                                ? FluelCopy.unpinPreset()
+                                : FluelCopy.pinPreset()
+                        ) {
+                            onTogglePin(preset)
+                        }
                     }
 
-                    Button(
-                        FluelCopy.delete(),
-                        role: .destructive
-                    ) {
-                        onDelete(preset)
+                    if preset.isEditable,
+                       let onEdit {
+                        Button(
+                            FluelCopy.editPreset()
+                        ) {
+                            onEdit(preset)
+                        }
+                    }
+
+                    if preset.isEditable,
+                       let onDelete {
+                        Button(
+                            FluelCopy.delete(),
+                            role: .destructive
+                        ) {
+                            onDelete(preset)
+                        }
                     }
                 } label: {
                     Image(systemName: "ellipsis.circle")
@@ -212,6 +277,24 @@ private struct PresetSettingsRow: View {
                 }
             }
         }
+    }
+
+    private var hasMenuActions: Bool {
+        onTogglePin != nil || (preset.isEditable && (onEdit != nil || onDelete != nil))
+    }
+
+    private var statusText: String? {
+        let labels = [
+            preset.isPinned ? FluelCopy.pinned() : nil,
+            preset.lastUsedAt != nil ? FluelCopy.recent() : nil
+        ]
+        .compactMap { $0 }
+
+        if labels.isEmpty {
+            return nil
+        }
+
+        return labels.joined(separator: " • ")
     }
 }
 

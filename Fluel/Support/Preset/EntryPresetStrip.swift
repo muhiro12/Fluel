@@ -5,16 +5,18 @@ struct EntryPresetStrip: View {
     @Environment(\.mhTheme)
     private var theme
 
+    var title: String = FluelCopy.quickPresets()
+    var subtitle: String = FluelCopy.quickPresetsBody()
     let presets: [EntryPreset]
     let selectedPresetID: String?
     let onSelect: (EntryPreset) -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: theme.spacing.inline) {
-            Text(FluelCopy.starterPresets())
+            Text(title)
                 .font(.headline)
 
-            Text(FluelCopy.starterPresetsBody())
+            Text(subtitle)
                 .mhTextStyle(.supporting, colorRole: .secondaryText)
 
             ScrollView(.horizontal, showsIndicators: false) {

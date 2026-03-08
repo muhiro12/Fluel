@@ -47,9 +47,9 @@ struct EntryFormView: View {
 
     var body: some View {
         Form {
-            if case .create = mode, starterPresets.isEmpty == false {
+            if case .create = mode, quickPresets.isEmpty == false {
                 EntryFormPresetSection(
-                    presets: starterPresets,
+                    presets: quickPresets,
                     selectedPresetID: selectedPresetID,
                     onSelect: applyPreset
                 )
@@ -192,8 +192,8 @@ struct EntryFormView: View {
 }
 
 private extension EntryFormView {
-    var starterPresets: [EntryPreset] {
-        Array(presetStore.builtInPresets.prefix(6))
+    var quickPresets: [EntryPreset] {
+        presetStore.suggestedPresets(limit: 6)
     }
 
     var mutationWorkflow: FluelEntryMutationWorkflow {
