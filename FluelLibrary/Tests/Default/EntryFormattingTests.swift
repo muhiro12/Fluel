@@ -120,6 +120,26 @@ struct EntryFormattingTests {
     }
 
     @Test
+    func noteCharacterCountText_formats_english_plural_count() {
+        let result = EntryFormatting.noteCharacterCountText(
+            "With a lamp",
+            locale: enUS
+        )
+
+        #expect(result == "11 characters")
+    }
+
+    @Test
+    func noteCharacterCountText_returns_nil_for_blank_note() {
+        let result = EntryFormatting.noteCharacterCountText(
+            " \n ",
+            locale: jaJP
+        )
+
+        #expect(result == nil)
+    }
+
+    @Test
     func archivedFooterText_returns_archived_text_without_note() {
         let result = EntryFormatting.archivedFooterText(
             archivedAt: isoDate("2026-03-08T12:00:00Z"),

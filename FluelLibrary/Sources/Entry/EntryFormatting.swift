@@ -329,6 +329,30 @@ public enum EntryFormatting {
         return preview
     }
 
+    public static func noteCharacterCountText(
+        _ note: String?,
+        locale: Locale = .autoupdatingCurrent
+    ) -> String? {
+        guard let note,
+              note.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty == false else {
+            return nil
+        }
+
+        let language = FluelLocale(locale: locale)
+        let number = language.numberText(note.count, locale: locale)
+
+        switch language {
+        case .english:
+            if note.count == 1 {
+                return "\(number) character"
+            }
+
+            return "\(number) characters"
+        case .japanese:
+            return "\(number)文字"
+        }
+    }
+
     public static func archivedFooterText(
         archivedAt: Date,
         note: String?,
