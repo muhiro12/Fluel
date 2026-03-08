@@ -298,4 +298,24 @@ struct EntryFormattingTests {
 
         #expect(result == "2026年3月8日に作成")
     }
+
+    @Test
+    func updatedOnText_formats_english_date() {
+        let result = EntryFormatting.updatedOnText(
+            isoDate("2026-03-08T12:00:00Z"),
+            locale: enUS
+        )
+
+        #expect(result == "Updated on Mar 8, 2026")
+    }
+
+    @Test
+    func updatedOnText_formats_japanese_date() {
+        let result = EntryFormatting.updatedOnText(
+            isoDate("2026-03-08T12:00:00Z"),
+            locale: jaJP
+        )
+
+        #expect(result == "2026年3月8日に更新")
+    }
 }

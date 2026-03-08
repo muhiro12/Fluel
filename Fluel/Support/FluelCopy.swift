@@ -707,6 +707,16 @@ enum FluelCopy {
         )
     }
 
+    static func updatedOn(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Updated",
+            japanese: "更新日",
+            locale: locale
+        )
+    }
+
     static func more(
         locale: Locale = .autoupdatingCurrent
     ) -> String {

@@ -271,6 +271,14 @@ struct EntryDetailView: View {
                 )
             )
             .labeledContentStyle(.mhKeyValue)
+
+            LabeledContent(
+                FluelCopy.updatedOn(),
+                value: EntryFormatting.updatedOnText(
+                    entry.updatedAt
+                )
+            )
+            .labeledContentStyle(.mhKeyValue)
         }
         .mhGroupedRows()
         .mhSection(
