@@ -180,8 +180,8 @@ struct EntryFormView: View {
             } header: {
                 Text(FluelCopy.startSectionTitle())
             } footer: {
-                if let startSummaryText {
-                    Text(startSummaryText)
+                if let startSectionFooterText {
+                    Text(startSectionFooterText)
                 }
             }
 
@@ -419,6 +419,17 @@ struct EntryFormView: View {
         return EntryFormatting.formStartSummaryText(
             for: startComponents
         )
+    }
+
+    private var startSectionFooterText: String? {
+        guard let startSummaryText else {
+            return nil
+        }
+
+        return """
+        \(startSummaryText)
+        \(FluelCopy.knownAs()): \(EntryFormatting.precisionText(for: precision))
+        """
     }
 
     private var startPreviewComponents: EntryStartComponents? {
