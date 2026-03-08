@@ -63,6 +63,51 @@ struct EntryFormattingTests {
     }
 
     @Test
+    func formStartSummaryText_formats_english_day_precision() throws {
+        let result = EntryFormatting.formStartSummaryText(
+            for: try .init(
+                precision: .day,
+                year: 2_024,
+                month: 5,
+                day: 11
+            ),
+            locale: enUS,
+            calendar: calendar
+        )
+
+        #expect(result == "Starts on May 11, 2024")
+    }
+
+    @Test
+    func formStartSummaryText_formats_english_month_precision() throws {
+        let result = EntryFormatting.formStartSummaryText(
+            for: try .init(
+                precision: .month,
+                year: 2_024,
+                month: 3
+            ),
+            locale: enUS,
+            calendar: calendar
+        )
+
+        #expect(result == "Starts sometime in Mar 2024")
+    }
+
+    @Test
+    func formStartSummaryText_formats_japanese_year_precision() throws {
+        let result = EntryFormatting.formStartSummaryText(
+            for: try .init(
+                precision: .year,
+                year: 2_018
+            ),
+            locale: jaJP,
+            calendar: calendar
+        )
+
+        #expect(result == "2018年のどこかで始まる")
+    }
+
+    @Test
     func precisionText_formats_japanese_month_precision() {
         let result = EntryFormatting.precisionText(
             for: .month,

@@ -220,6 +220,33 @@ public enum EntryFormatting {
         }
     }
 
+    public static func formStartSummaryText(
+        for startComponents: EntryStartComponents,
+        locale: Locale = .autoupdatingCurrent,
+        calendar: Calendar = .autoupdatingCurrent
+    ) -> String {
+        let dateText = startDateText(
+            for: startComponents,
+            locale: locale,
+            calendar: calendar
+        )
+
+        switch (startComponents.precision, FluelLocale(locale: locale)) {
+        case (.day, .english):
+            return "Starts on \(dateText)"
+        case (.day, .japanese):
+            return "\(dateText)に始まる"
+        case (.month, .english):
+            return "Starts sometime in \(dateText)"
+        case (.month, .japanese):
+            return "\(dateText)のどこかで始まる"
+        case (.year, .english):
+            return "Starts sometime in \(dateText)"
+        case (.year, .japanese):
+            return "\(dateText)のどこかで始まる"
+        }
+    }
+
     public static func startRangeText(
         for startComponents: EntryStartComponents,
         locale: Locale = .autoupdatingCurrent,
