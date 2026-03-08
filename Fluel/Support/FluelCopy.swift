@@ -1294,6 +1294,189 @@ enum FluelCopy {
         )
     }
 
+    static func presets(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Presets",
+            japanese: "プリセット",
+            locale: locale
+        )
+    }
+
+    static func startedToday(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Started today",
+            japanese: "今日から",
+            locale: locale
+        )
+    }
+
+    static func startedThisMonth(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Started this month",
+            japanese: "今月から",
+            locale: locale
+        )
+    }
+
+    static func startedThisYear(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Started this year",
+            japanese: "今年から",
+            locale: locale
+        )
+    }
+
+    static func startedDaysAgo(
+        _ count: Int,
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Started \(count) days ago",
+            japanese: "\(count)日前から",
+            locale: locale
+        )
+    }
+
+    static func startedMonthsAgo(
+        _ count: Int,
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Started \(count) months ago",
+            japanese: "\(count)か月前から",
+            locale: locale
+        )
+    }
+
+    static func startedYearsAgo(
+        _ count: Int,
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Started \(count) years ago",
+            japanese: "\(count)年前から",
+            locale: locale
+        )
+    }
+
+    static func starterHomeTitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "This home",
+            japanese: "この家",
+            locale: locale
+        )
+    }
+
+    static func starterHomeNote(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Still the place daily life gathers.",
+            japanese: "日々の暮らしが静かに集まる場所。",
+            locale: locale
+        )
+    }
+
+    static func starterWalletTitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Wallet",
+            japanese: "財布",
+            locale: locale
+        )
+    }
+
+    static func starterWalletNote(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Usually the first thing that leaves with you.",
+            japanese: "外に出るとき、たいてい最初に持つもの。",
+            locale: locale
+        )
+    }
+
+    static func starterBagTitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Bag",
+            japanese: "バッグ",
+            locale: locale
+        )
+    }
+
+    static func starterShoesTitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Shoes",
+            japanese: "靴",
+            locale: locale
+        )
+    }
+
+    static func starterWatchTitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Watch",
+            japanese: "腕時計",
+            locale: locale
+        )
+    }
+
+    static func starterPlantTitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Plant",
+            japanese: "植物",
+            locale: locale
+        )
+    }
+
+    static func starterPlantNote(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "The one that keeps sharing the same light.",
+            japanese: "同じ光を静かに分け合ってきた存在。",
+            locale: locale
+        )
+    }
+
+    static func starterNotebookTitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Notebook",
+            japanese: "ノート",
+            locale: locale
+        )
+    }
+
+    static func starterNotebookNote(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Mostly for ordinary thoughts.",
+            japanese: "何気ない考えを主に書いてきたもの。",
+            locale: locale
+        )
+    }
+
     static func localized(
         english: String,
         japanese: String,

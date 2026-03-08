@@ -1,4 +1,5 @@
 import Combine
+import FluelLibrary
 import Foundation
 
 @MainActor
@@ -66,6 +67,51 @@ final class EntryPresetStore: ObservableObject {
         allPresets.first { preset in
             preset.id == id
         }
+    }
+
+    func resolvedInput(
+        for id: String,
+        referenceDate: Date = .now,
+        calendar: Calendar = .autoupdatingCurrent
+    ) -> EntryFormInput? {
+        guard let preset = preset(id: id) else {
+            return nil
+        }
+
+        return resolvedInput(
+            for: preset,
+            referenceDate: referenceDate,
+            calendar: calendar
+        )
+    }
+
+    func resolvedInput(
+        for preset: EntryPreset,
+        referenceDate: Date = .now,
+        calendar: Calendar = .autoupdatingCurrent
+    ) -> EntryFormInput {
+        preset.definition.resolvedInput(
+            referenceDate: referenceDate,
+            calendar: calendar
+        )
+    }
+
+    static func preview() -> EntryPresetStore {
+        let defaults = UserDefaults(
+            suiteName: "EntryPresetStore.preview.\(UUID().uuidString)"
+        ) ?? .standard
+        let store = EntryPresetStore(defaults: defaults)
+        store.saveCustomPreset(
+            definition: .init(
+                title: FluelCopy.starterNotebookTitle(),
+                symbolName: "notebook",
+                startPrecision: .month,
+                relativeValue: 4,
+                note: FluelCopy.starterNotebookNote()
+            ),
+            at: .distantPast
+        )
+        return store
     }
 
     func saveCustomPreset(

@@ -103,6 +103,64 @@ struct EntryPreset: Identifiable, Equatable, Sendable {
 
 enum EntryPresetCatalog {
     static var builtInItems: [EntryPresetCatalogItem] {
-        []
+        [
+            .init(
+                id: "starter-home",
+                definition: .init(
+                    title: FluelCopy.starterHomeTitle(),
+                    symbolName: "house",
+                    startPrecision: .year,
+                    relativeValue: 8,
+                    note: FluelCopy.starterHomeNote()
+                )
+            ),
+            .init(
+                id: "starter-wallet",
+                definition: .init(
+                    title: FluelCopy.starterWalletTitle(),
+                    symbolName: "wallet.pass",
+                    startPrecision: .day,
+                    relativeValue: 365,
+                    note: FluelCopy.starterWalletNote()
+                )
+            ),
+            .init(
+                id: "starter-bag",
+                definition: .init(
+                    title: FluelCopy.starterBagTitle(),
+                    symbolName: "bag",
+                    startPrecision: .month,
+                    relativeValue: 18
+                )
+            ),
+            .init(
+                id: "starter-shoes",
+                definition: .init(
+                    title: FluelCopy.starterShoesTitle(),
+                    symbolName: "shoeprints.fill",
+                    startPrecision: .day,
+                    relativeValue: 90
+                )
+            ),
+            .init(
+                id: "starter-watch",
+                definition: .init(
+                    title: FluelCopy.starterWatchTitle(),
+                    symbolName: "applewatch.watchface",
+                    startPrecision: .month,
+                    relativeValue: 30
+                )
+            ),
+            .init(
+                id: "starter-plant",
+                definition: .init(
+                    title: FluelCopy.starterPlantTitle(),
+                    symbolName: "leaf",
+                    startPrecision: .month,
+                    relativeValue: 7,
+                    note: FluelCopy.starterPlantNote()
+                )
+            )
+        ]
     }
 }
