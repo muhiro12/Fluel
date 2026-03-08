@@ -31,6 +31,9 @@ struct DashboardView: View {
                 entries: entries,
                 referenceDate: timeline.date
             )
+            let recentActivity = EntryActivitySnapshotQuery.recent(
+                entries: entries
+            )
 
             ScrollView {
                 VStack(alignment: .leading, spacing: theme.spacing.section) {
@@ -47,6 +50,10 @@ struct DashboardView: View {
 
                         if milestones.isEmpty == false {
                             milestoneSection(milestones)
+                        }
+
+                        if recentActivity.isEmpty == false {
+                            activitySection(recentActivity)
                         }
                     }
                 }
@@ -284,6 +291,51 @@ struct DashboardView: View {
                     .padding(.vertical, 12)
 
                     if milestone.entryID != milestones.last?.entryID {
+                        Divider()
+                    }
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .mhRow()
+        .mhSurface(role: .muted)
+    }
+
+    private func activitySection(
+        _ activity: [EntryActivitySnapshot]
+    ) -> some View {
+        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+            Text(FluelCopy.recentActivity())
+                .font(.headline)
+
+            VStack(spacing: 0) {
+                ForEach(activity, id: \.entryID) { item in
+                    VStack(alignment: .leading, spacing: 6) {
+                        HStack(alignment: .firstTextBaseline, spacing: theme.spacing.inline) {
+                            Text(item.title)
+                                .mhRowTitle()
+
+                            Spacer(minLength: 0)
+
+                            Text(
+                                item.timestamp.formatted(
+                                    .dateTime
+                                        .month(.abbreviated)
+                                        .day()
+                                        .hour()
+                                        .minute()
+                                )
+                            )
+                            .mhTextStyle(.metadata, colorRole: .secondaryText)
+                        }
+
+                        Text(FluelCopy.entryActivityKind(item.kind))
+                            .mhRowSupporting()
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.vertical, 12)
+
+                    if item.entryID != activity.last?.entryID {
                         Divider()
                     }
                 }

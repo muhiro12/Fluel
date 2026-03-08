@@ -547,6 +547,42 @@ enum FluelCopy {
         )
     }
 
+    static func recentActivity(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Recent activity",
+            japanese: "最近の動き",
+            locale: locale
+        )
+    }
+
+    static func entryActivityKind(
+        _ kind: EntryActivityKind,
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        switch kind {
+        case .added:
+            return localized(
+                english: "Added",
+                japanese: "追加",
+                locale: locale
+            )
+        case .updated:
+            return localized(
+                english: "Updated",
+                japanese: "更新",
+                locale: locale
+            )
+        case .archived:
+            return localized(
+                english: "Archived",
+                japanese: "保管",
+                locale: locale
+            )
+        }
+    }
+
     static func archiveEmptyTitle(
         locale: Locale = .autoupdatingCurrent
     ) -> String {
