@@ -179,6 +179,10 @@ struct EntryFormView: View {
                 }
             } header: {
                 Text(FluelCopy.startSectionTitle())
+            } footer: {
+                if let startSummaryText {
+                    Text(startSummaryText)
+                }
             }
 
             Section {
@@ -404,6 +408,33 @@ struct EntryFormView: View {
             startDay: resolvedDay,
             photoData: photoData,
             note: note
+        )
+    }
+
+    private var startSummaryText: String? {
+        guard let startComponents = startPreviewComponents else {
+            return nil
+        }
+
+        return EntryFormatting.formStartSummaryText(
+            for: startComponents
+        )
+    }
+
+    private var startPreviewComponents: EntryStartComponents? {
+        try? .init(
+            precision: precision,
+            year: precision == .day
+                ? calendar.component(.year, from: selectedDate)
+                : year,
+            month: precision == .year
+                ? nil
+                : (precision == .day
+                    ? calendar.component(.month, from: selectedDate)
+                    : month),
+            day: precision == .day
+                ? calendar.component(.day, from: selectedDate)
+                : nil
         )
     }
 
