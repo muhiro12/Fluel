@@ -1,32 +1,23 @@
-//
-//  FluelApp.swift
-//  Fluel
-//
-//  Created by Hiromu Nakano on 2026/03/07.
-//
-
-import FluelLibrary
-import MHPlatform
-import SwiftData
+import MHLogging
 import SwiftUI
 
 @main
 struct FluelApp: App {
-    private let bootstrap: FluelAppBootstrap
+    private let platformEnvironment: FluelPlatformEnvironment
     private let startupLogger = FluelAppLogging.logger(category: "AppStartup")
 
     var body: some Scene {
         WindowGroup {
-            AppRootView()
-                .modelContainer(bootstrap.modelContainer)
-                .environment(bootstrap.appRuntime)
+            MainView()
+                .fluelPlatformEnvironment(platformEnvironment)
+                .fluelAppStyle()
         }
     }
 
     @MainActor
     init() {
         startupLogger.notice("app startup began")
-        bootstrap = .live()
+        platformEnvironment = .live()
         startupLogger.notice("startup dependencies ready")
         startupLogger.notice("startup wiring finished")
     }

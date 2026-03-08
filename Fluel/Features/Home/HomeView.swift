@@ -100,20 +100,23 @@ struct HomeView: View {
         contentFilter != .all
     }
 
-    private var displayedNoteCount: Int {
-        displayedEntries.reduce(into: 0) { partialResult, entry in
-            if EntryFormatting.notePreviewText(entry.note) != nil {
-                partialResult += 1
-            }
-        }
+    private var summary: FluelEntryListSummary {
+        .init(
+            headline: FluelCopy.activeEntryCount(sortedEntries.count),
+            displayedEntries: displayedEntries,
+            totalEntries: sortedEntries,
+            sortLabel: FluelCopy.activeSortMode(sortMode),
+            filterLabel: FluelCopy.entryContentFilterMode(contentFilter)
+        )
     }
 
-    private var displayedPhotoCount: Int {
-        displayedEntries.reduce(into: 0) { partialResult, entry in
-            if entry.photoData?.isEmpty == false {
-                partialResult += 1
+    private var mutationWorkflow: FluelEntryMutationWorkflow {
+        .init(
+            context: context,
+            onError: { message in
+                errorMessage = message
             }
-        }
+        )
     }
 
     var body: some View {
@@ -253,7 +256,7 @@ struct HomeView: View {
     ) -> some View {
         List {
             if showsListSummaryCards {
-                listSummaryCard
+                FluelEntryListSummaryCard(summary: summary)
                     .listRowInsets(
                         .init(
                             top: 0,
@@ -317,98 +320,21 @@ struct HomeView: View {
                 )
 
                 if hasActiveSearch || hasActiveFilter {
-                    listStateActions
+                    FluelEntryListStateActions(
+                        showsClearSearch: hasActiveSearch,
+                        showsClearFilter: hasActiveFilter,
+                        onClearSearch: clearSearch,
+                        onClearFilter: clearFilter
+                    )
                 }
             }
         }
     }
 
-    private var listSummaryCard: some View {
-        VStack(alignment: .leading, spacing: theme.spacing.inline) {
-            Text(
-                FluelCopy.activeEntryCount(
-                    sortedEntries.count
-                )
-            )
-            .font(.headline)
-
-            Text(
-                FluelCopy.showingEntries(
-                    displayedCount: displayedEntries.count,
-                    totalCount: sortedEntries.count
-                )
-            )
-            .font(.subheadline)
-
-            Text(
-                FluelCopy.withNotesCount(
-                    displayedNoteCount
-                )
-            )
-            .font(.subheadline)
-            .foregroundStyle(.secondary)
-
-            Text(
-                FluelCopy.withPhotosCount(
-                    displayedPhotoCount
-                )
-            )
-            .font(.subheadline)
-            .foregroundStyle(.secondary)
-
-            Text(
-                "\(FluelCopy.sort()): \(FluelCopy.activeSortMode(sortMode))"
-            )
-            .font(.subheadline)
-            .foregroundStyle(.secondary)
-
-            Text(
-                "\(FluelCopy.filter()): \(FluelCopy.entryContentFilterMode(contentFilter))"
-            )
-            .font(.subheadline)
-            .foregroundStyle(.secondary)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .mhRow()
-        .mhSurface(role: .muted)
-    }
-
-    private var listStateActions: some View {
-        HStack(spacing: theme.spacing.inline) {
-            if hasActiveSearch {
-                Button(
-                    FluelCopy.clearSearch(),
-                    action: clearSearch
-                )
-                .buttonStyle(.mhSecondary)
-            }
-
-            if hasActiveFilter {
-                Button(
-                    FluelCopy.clearFilter(),
-                    action: clearFilter
-                )
-                .buttonStyle(.mhSecondary)
-            }
-
-            Spacer(minLength: 0)
-        }
-        .mhSurfaceInset()
-        .mhSurface(role: .muted)
-    }
-
     private func archive(
         _ entry: Entry
     ) {
-        do {
-            try EntryRepository.archive(
-                context: context,
-                entry: entry
-            )
-            FluelWidgetReloader.reloadAllTimelines()
-        } catch {
-            errorMessage = error.localizedDescription
-        }
+        mutationWorkflow.archive(entry: entry)
     }
 
     private func clearSearch() {

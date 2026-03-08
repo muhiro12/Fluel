@@ -1,9 +1,7 @@
 import Foundation
 
 enum DisplayPreferences {
-    static let store = UserDefaults(
-        suiteName: FluelAppConfiguration.preferencesSuiteName
-    ) ?? .standard
+    static let store = FluelSharedPreferences.store
 
     static let showsListSummaryCards = "display_shows_list_summary_cards"
     static let showsNotePreviews = "display_shows_note_previews"

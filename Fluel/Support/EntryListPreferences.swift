@@ -1,9 +1,7 @@
 import Foundation
 
 enum EntryListPreferences {
-    static let store = UserDefaults(
-        suiteName: FluelAppConfiguration.preferencesSuiteName
-    ) ?? .standard
+    static let store = FluelSharedPreferences.store
 
     static let homeSortMode = "home_list_sort_mode"
     static let homeContentFilter = "home_list_content_filter"

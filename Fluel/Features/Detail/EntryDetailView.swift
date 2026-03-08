@@ -2,13 +2,10 @@ import FluelLibrary
 import MHUI
 import SwiftData
 import SwiftUI
-import UIKit
 
 struct EntryDetailView: View {
     @Environment(\.dismiss)
     private var dismiss
-    @Environment(\.mhTheme)
-    private var theme
     @Environment(\.modelContext)
     private var context
 
@@ -25,15 +22,26 @@ struct EntryDetailView: View {
                 startComponents: entry.startComponents,
                 referenceDate: timeline.date
             )
+            let shareText = shareText(referenceDate: timeline.date)
 
-            VStack(alignment: .leading, spacing: theme.spacing.section) {
-                quickActions(referenceDate: timeline.date)
-                elapsedSection(snapshot: snapshot)
-                detailsSection(snapshot: snapshot)
+            VStack(alignment: .leading, spacing: 24) {
+                EntryDetailQuickActions(
+                    entry: entry,
+                    shareText: shareText,
+                    onDuplicate: presentDuplicateForm,
+                    onEdit: presentEditor,
+                    onArchive: archive,
+                    onRestore: restore
+                )
+                EntryDetailElapsedSection(snapshot: snapshot)
+                EntryDetailDetailsSection(
+                    entry: entry,
+                    snapshot: snapshot
+                )
 
                 if let note = entry.note,
                    note.isEmpty == false {
-                    noteSection(note)
+                    EntryDetailNoteSection(note: note)
                 }
             }
             .mhScreen(
@@ -44,59 +52,20 @@ struct EntryDetailView: View {
                     )
                 )
             ) {
-                headerContent
+                EntryDetailHeaderContent(entry: entry)
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Menu {
-                        ShareLink(
-                            item: shareText(referenceDate: timeline.date)
-                        ) {
-                            Label(
-                                FluelCopy.share(),
-                                systemImage: "square.and.arrow.up"
-                            )
-                        }
-
-                        Button(
-                            FluelCopy.duplicate()
-                        ) {
-                            isPresentingDuplicateForm = true
-                        }
-
-                        Button(
-                            FluelCopy.edit()
-                        ) {
-                            isPresentingEditor = true
-                        }
-
-                        if entry.isArchived {
-                            Button(
-                                FluelCopy.restore()
-                            ) {
-                                restore()
-                            }
-
-                            Button(
-                                FluelCopy.delete(),
-                                role: .destructive
-                            ) {
-                                isConfirmingDelete = true
-                            }
-                        } else {
-                            Button(
-                                FluelCopy.archive()
-                            ) {
-                                archive()
-                            }
-                        }
-                    } label: {
-                        Label(
-                            FluelCopy.more(),
-                            systemImage: "ellipsis.circle"
-                        )
-                    }
+                    EntryDetailMoreMenu(
+                        entry: entry,
+                        shareText: shareText,
+                        onDuplicate: presentDuplicateForm,
+                        onEdit: presentEditor,
+                        onArchive: archive,
+                        onRestore: restore,
+                        onDelete: presentDeleteConfirmation
+                    )
                 }
             }
         }
@@ -163,231 +132,6 @@ struct EntryDetailView: View {
         }
     }
 
-    @ViewBuilder
-    private var headerContent: some View {
-        if let image = entryImage {
-            Image(uiImage: image)
-                .resizable()
-                .scaledToFill()
-                .frame(maxWidth: .infinity)
-                .frame(height: 240)
-                .clipShape(
-                    RoundedRectangle(
-                        cornerRadius: 24,
-                        style: .continuous
-                    )
-                )
-        }
-
-        if let archivedAt = entry.archivedAt {
-            Text(
-                EntryFormatting.archivedOnText(
-                    archivedAt
-                )
-            )
-            .mhTextStyle(.metadata, colorRole: .secondaryText)
-        }
-    }
-
-    private func quickActions(
-        referenceDate: Date
-    ) -> some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: theme.spacing.inline) {
-                ShareLink(
-                    item: shareText(referenceDate: referenceDate)
-                ) {
-                    Label(
-                        FluelCopy.share(),
-                        systemImage: "square.and.arrow.up"
-                    )
-                }
-                .buttonStyle(.mhSecondary)
-
-                Button {
-                    isPresentingDuplicateForm = true
-                } label: {
-                    Label(
-                        FluelCopy.duplicate(),
-                        systemImage: "plus.square.on.square"
-                    )
-                }
-                .buttonStyle(.mhSecondary)
-
-                Button {
-                    isPresentingEditor = true
-                } label: {
-                    Label(
-                        FluelCopy.edit(),
-                        systemImage: "pencil"
-                    )
-                }
-                .buttonStyle(.mhSecondary)
-
-                if entry.isArchived {
-                    Button(
-                        action: restore
-                    ) {
-                        Label(
-                            FluelCopy.restore(),
-                            systemImage: "arrow.uturn.backward"
-                        )
-                    }
-                    .buttonStyle(.mhSecondary)
-                } else {
-                    Button(
-                        action: archive
-                    ) {
-                        Label(
-                            FluelCopy.archive(),
-                            systemImage: "archivebox"
-                        )
-                    }
-                    .buttonStyle(.mhSecondary)
-                }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
-        }
-    }
-
-    private func elapsedSection(
-        snapshot: EntryElapsedSnapshot
-    ) -> some View {
-        VStack(alignment: .leading, spacing: theme.spacing.control) {
-            Text(
-                EntryFormatting.primaryElapsedText(
-                    for: snapshot
-                )
-            )
-            .font(.system(size: 44, weight: .semibold, design: .rounded))
-            .multilineTextAlignment(.leading)
-
-            Text(
-                EntryFormatting.detailElapsedText(
-                    for: snapshot
-                )
-            )
-            .mhTextStyle(.supporting, colorRole: .secondaryText)
-        }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .mhSection(
-            title: Text(FluelCopy.timeTogetherSectionTitle()),
-            supporting: Text(FluelCopy.timeTogetherSectionBody())
-        )
-    }
-
-    private func detailsSection(
-        snapshot: EntryElapsedSnapshot
-    ) -> some View {
-        VStack(spacing: 0) {
-            LabeledContent(
-                FluelCopy.started(),
-                value: EntryFormatting.startDateText(
-                    for: entry.startComponents
-                )
-            )
-            .labeledContentStyle(.mhKeyValue)
-
-            if let startRangeText = EntryFormatting.startRangeText(
-                for: entry.startComponents
-            ) {
-                LabeledContent(
-                    FluelCopy.startRange(),
-                    value: startRangeText
-                )
-                .labeledContentStyle(.mhKeyValue)
-            }
-
-            LabeledContent(
-                FluelCopy.knownAs(),
-                value: EntryFormatting.precisionText(
-                    for: entry.startPrecision
-                )
-            )
-            .labeledContentStyle(.mhKeyValue)
-
-            LabeledContent(
-                FluelCopy.elapsedInFull(),
-                value: EntryFormatting.detailElapsedText(
-                    for: snapshot
-                )
-            )
-            .labeledContentStyle(.mhKeyValue)
-
-            if let totalMeasureText = EntryFormatting.totalMeasureText(
-                for: snapshot
-            ) {
-                LabeledContent(
-                    snapshot.totalDays != nil
-                        ? FluelCopy.totalDays()
-                        : FluelCopy.totalMonths(),
-                    value: totalMeasureText
-                )
-                .labeledContentStyle(.mhKeyValue)
-            }
-
-            if let archivedAt = entry.archivedAt {
-                LabeledContent(
-                    FluelCopy.archivedAfter(),
-                    value: EntryFormatting.archivedDurationText(
-                        startComponents: entry.startComponents,
-                        archivedAt: archivedAt
-                    )
-                )
-                .labeledContentStyle(.mhKeyValue)
-            }
-
-            LabeledContent(
-                FluelCopy.createdOn(),
-                value: EntryFormatting.createdOnText(
-                    entry.createdAt
-                )
-            )
-            .labeledContentStyle(.mhKeyValue)
-
-            LabeledContent(
-                FluelCopy.updatedOn(),
-                value: EntryFormatting.updatedOnText(
-                    entry.updatedAt
-                )
-            )
-            .labeledContentStyle(.mhKeyValue)
-        }
-        .mhGroupedRows()
-        .mhSection(
-            title: Text(FluelCopy.detailsSectionTitle()),
-            supporting: Text(detailsSectionSupportingText)
-        )
-    }
-
-    private func noteSection(
-        _ note: String
-    ) -> some View {
-        Text(note)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .mhTextStyle(.body)
-            .mhSection(
-                title: Text(FluelCopy.noteSectionTitle()),
-                supporting: Text(FluelCopy.notePlaceholder())
-            )
-    }
-
-    private var detailsSectionSupportingText: String {
-        if let archivedAt = entry.archivedAt {
-            return EntryFormatting.archivedOnText(archivedAt)
-        }
-
-        return FluelCopy.detailsSectionBody()
-    }
-
-    private var entryImage: UIImage? {
-        guard let photoData = entry.photoData else {
-            return nil
-        }
-
-        return UIImage(data: photoData)
-    }
-
     private func shareText(
         referenceDate: Date
     ) -> String {
@@ -398,52 +142,54 @@ struct EntryDetailView: View {
     }
 
     private func archive() {
-        do {
-            try EntryRepository.archive(
-                context: context,
-                entry: entry
-            )
-            FluelWidgetReloader.reloadAllTimelines()
-            dismiss()
-        } catch {
-            errorMessage = error.localizedDescription
-        }
+        mutationWorkflow.archive(entry: entry)
     }
 
     private func restore() {
-        do {
-            try EntryRepository.restore(
-                context: context,
-                entry: entry
-            )
-            FluelWidgetReloader.reloadAllTimelines()
-            dismiss()
-        } catch {
-            errorMessage = error.localizedDescription
-        }
+        mutationWorkflow.restore(entry: entry)
     }
 
     private func delete() {
-        do {
-            try EntryRepository.delete(
-                context: context,
-                entry: entry
-            )
-            FluelWidgetReloader.reloadAllTimelines()
-            dismiss()
-        } catch {
-            errorMessage = error.localizedDescription
-        }
+        mutationWorkflow.delete(entry: entry)
+    }
+
+    private func presentEditor() {
+        isPresentingEditor = true
+    }
+
+    private func presentDuplicateForm() {
+        isPresentingDuplicateForm = true
+    }
+
+    private func presentDeleteConfirmation() {
+        isConfirmingDelete = true
+    }
+}
+
+private extension EntryDetailView {
+    var mutationWorkflow: FluelEntryMutationWorkflow {
+        .init(
+            context: context,
+            onSuccess: {
+                dismiss()
+            },
+            onError: { message in
+                errorMessage = message
+            }
+        )
     }
 }
 
 #Preview {
-    let context = try! FluelSampleData.makeSharedContext()
-    let entries = try! context.modelContainer.mainContext.fetch(FetchDescriptor<Entry>())
-
-    return NavigationStack {
-        EntryDetailView(entry: EntryListOrdering.active(entries).first ?? entries[0])
+    if let context = try? FluelSampleData.makeSharedContext(),
+       let entries = try? context.modelContainer.mainContext.fetch(FetchDescriptor<Entry>()),
+       let entry = EntryListOrdering.active(entries).first ?? entries.first {
+        NavigationStack {
+            EntryDetailView(entry: entry)
+        }
+        .modelContainer(context.modelContainer)
+        .fluelAppStyle()
+    } else {
+        Text("Failed to load preview")
     }
-    .modelContainer(context.modelContainer)
-    .fluelAppStyle()
 }

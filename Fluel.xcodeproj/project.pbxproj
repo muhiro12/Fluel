@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A1B2C3D42F60000100BC027C /* MHPlatform in Frameworks */ = {isa = PBXBuildFile; productRef = A1B2C3D62F60000100BC027C /* MHPlatform */; };
 		B1A2A3012F65000100BC027C /* FluelLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = B1A2A3122F65000100BC027C /* FluelLibrary */; };
 		B1A2A3022F65000100BC027C /* FluelWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = B1A2A3042F65000100BC027C /* FluelWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		B1A2A3032F65000100BC027C /* FluelLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = B1A2A3132F65000100BC027C /* FluelLibrary */; };
-		A1B2C3D42F60000100BC027C /* MHPlatform in Frameworks */ = {isa = PBXBuildFile; productRef = A1B2C3D62F60000100BC027C /* MHPlatform */; };
 		C1D2E3F42F66000100BC027C /* MHUI in Frameworks */ = {isa = PBXBuildFile; productRef = C1D2E3F62F66000100BC027C /* MHUI */; };
 /* End PBXBuildFile section */
 
@@ -40,8 +40,8 @@
 
 /* Begin PBXFileReference section */
 		AD91A10D2F5C545200BC027C /* Fluel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fluel.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		B1A2A3042F65000100BC027C /* FluelWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FluelWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD9F01012F5F000100BC027C /* FluelLibrary */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = FluelLibrary; sourceTree = "<group>"; };
+		B1A2A3042F65000100BC027C /* FluelWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FluelWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -204,7 +204,7 @@
 			packageReferences = (
 				A1B2C3D52F60000100BC027C /* XCRemoteSwiftPackageReference "MHPlatform" */,
 				AD9F01022F5F000100BC027C /* XCLocalSwiftPackageReference "FluelLibrary" */,
-				C1D2E3F52F66000100BC027C /* XCLocalSwiftPackageReference "MHUI" */,
+				C1D2E3F52F66000100BC027C /* XCLocalSwiftPackageReference "../MHUI" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = AD91A10E2F5C545200BC027C /* Products */;
@@ -258,17 +258,6 @@
 			targetProxy = B1A2A3082F65000100BC027C /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
-
-/* Begin XCRemoteSwiftPackageReference section */
-		A1B2C3D52F60000100BC027C /* XCRemoteSwiftPackageReference "MHPlatform" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/muhiro12/MHPlatform.git";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
-		};
-/* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCBuildConfiguration section */
 		AD91A11C2F5C545300BC027C /* Debug */ = {
@@ -583,13 +572,29 @@
 			isa = XCLocalSwiftPackageReference;
 			relativePath = FluelLibrary;
 		};
-		C1D2E3F52F66000100BC027C /* XCLocalSwiftPackageReference "MHUI" */ = {
+		C1D2E3F52F66000100BC027C /* XCLocalSwiftPackageReference "../MHUI" */ = {
 			isa = XCLocalSwiftPackageReference;
 			relativePath = ../MHUI;
 		};
 /* End XCLocalSwiftPackageReference section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		A1B2C3D52F60000100BC027C /* XCRemoteSwiftPackageReference "MHPlatform" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/muhiro12/MHPlatform.git";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
+		A1B2C3D62F60000100BC027C /* MHPlatform */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A1B2C3D52F60000100BC027C /* XCRemoteSwiftPackageReference "MHPlatform" */;
+			productName = MHPlatform;
+		};
 		B1A2A3122F65000100BC027C /* FluelLibrary */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = AD9F01022F5F000100BC027C /* XCLocalSwiftPackageReference "FluelLibrary" */;
@@ -600,14 +605,9 @@
 			package = AD9F01022F5F000100BC027C /* XCLocalSwiftPackageReference "FluelLibrary" */;
 			productName = FluelLibrary;
 		};
-		A1B2C3D62F60000100BC027C /* MHPlatform */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = A1B2C3D52F60000100BC027C /* XCRemoteSwiftPackageReference "MHPlatform" */;
-			productName = MHPlatform;
-		};
 		C1D2E3F62F66000100BC027C /* MHUI */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = C1D2E3F52F66000100BC027C /* XCLocalSwiftPackageReference "MHUI" */;
+			package = C1D2E3F52F66000100BC027C /* XCLocalSwiftPackageReference "../MHUI" */;
 			productName = MHUI;
 		};
 /* End XCSwiftPackageProductDependency section */

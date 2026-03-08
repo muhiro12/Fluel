@@ -2,7 +2,7 @@ import FluelLibrary
 import MHPlatform
 import SwiftUI
 
-struct RootView: View {
+struct MainView: View {
     private enum Tab: Hashable {
         case home
         case dashboard
@@ -13,27 +13,29 @@ struct RootView: View {
         case archive
     }
 
+    private enum Sheet: String, Identifiable {
+        case create
+        case licenses
+
+        var id: String {
+            rawValue
+        }
+    }
+
     @Environment(MHAppRuntime.self)
     private var appRuntime
 
     @State private var selectedTab: Tab = .home
-    @State private var isPresentingCreate = false
-    @State private var isPresentingLicenses = false
     @State private var path = [Destination]()
+    @State private var activeSheet: Sheet?
 
     var body: some View {
         NavigationStack(path: $path) {
             TabView(selection: $selectedTab) {
                 HomeView(
-                    onAdd: {
-                        isPresentingCreate = true
-                    },
-                    onShowArchive: {
-                        path.append(.archive)
-                    },
-                    onShowLicenses: {
-                        isPresentingLicenses = true
-                    }
+                    onAdd: presentCreateEntry,
+                    onShowArchive: showArchive,
+                    onShowLicenses: showLicenses
                 )
                 .tabItem {
                     Label(
@@ -44,15 +46,9 @@ struct RootView: View {
                 .tag(Tab.home)
 
                 DashboardView(
-                    onAdd: {
-                        isPresentingCreate = true
-                    },
-                    onShowArchive: {
-                        path.append(.archive)
-                    },
-                    onShowLicenses: {
-                        isPresentingLicenses = true
-                    }
+                    onAdd: presentCreateEntry,
+                    onShowArchive: showArchive,
+                    onShowLicenses: showLicenses
                 )
                 .tabItem {
                     Label(
@@ -63,12 +59,8 @@ struct RootView: View {
                 .tag(Tab.dashboard)
 
                 SettingsView(
-                    onShowArchive: {
-                        path.append(.archive)
-                    },
-                    onShowLicenses: {
-                        isPresentingLicenses = true
-                    }
+                    onShowArchive: showArchive,
+                    onShowLicenses: showLicenses
                 )
                 .tabItem {
                     Label(
@@ -85,27 +77,45 @@ struct RootView: View {
                 }
             }
         }
-        .sheet(isPresented: $isPresentingCreate) {
+        .sheet(item: $activeSheet) { sheet in
             NavigationStack {
-                EntryFormView(mode: .create)
+                switch sheet {
+                case .create:
+                    EntryFormView(mode: .create)
+                case .licenses:
+                    FluelLicenseView()
+                }
             }
         }
-        .sheet(isPresented: $isPresentingLicenses) {
-            NavigationStack {
-                appRuntime.licensesView()
-                    .navigationTitle(FluelCopy.licenses())
-                    .navigationBarTitleDisplayMode(.inline)
-            }
-        }
+        .mhAppRuntimeLifecycle(
+            runtime: appRuntime,
+            plan: FluelRuntimeLifecycleSupport.makePlan()
+        )
+    }
+}
+
+private extension MainView {
+    func presentCreateEntry() {
+        activeSheet = .create
+    }
+
+    func showArchive() {
+        path.append(.archive)
+    }
+
+    func showLicenses() {
+        activeSheet = .licenses
     }
 }
 
 #Preview(traits: .modifier(FluelSampleData())) {
-    RootView()
-        .environment(
-            MHAppRuntime(
-                configuration: FluelAppConfiguration.runtimeConfiguration
+    if let context = try? FluelSampleData.makeSharedContext() {
+        MainView()
+            .fluelPlatformEnvironment(
+                .preview(modelContainer: context.modelContainer)
             )
-        )
-        .fluelAppStyle()
+            .fluelAppStyle()
+    } else {
+        Text("Failed to load preview")
+    }
 }
