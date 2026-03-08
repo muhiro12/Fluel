@@ -791,6 +791,36 @@ enum FluelCopy {
         )
     }
 
+    static func timelineSearchEmptyTitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "No activity matched this search",
+            japanese: "この検索に一致する動きはありません",
+            locale: locale
+        )
+    }
+
+    static func timelineSearchEmptyBody(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Try another word from the title or activity kind.",
+            japanese: "名前や動きの種類を変えて探してみてください。",
+            locale: locale
+        )
+    }
+
+    static func searchTimeline(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Search timeline",
+            japanese: "タイムラインを検索",
+            locale: locale
+        )
+    }
+
     static func timelineFilterEmptyBody(
         locale: Locale = .autoupdatingCurrent
     ) -> String {

@@ -12,13 +12,14 @@ struct ActivityTimelineView: View {
 
     @State private var activityFilter = EntryActivityFilterMode.all
     @State private var scopeFilter = EntryActivityScopeMode.recentSixMonths
+    @State private var searchText = String()
 
     let onAdd: () -> Void
 
     private var sections: [EntryActivityTimelineSection] {
         EntryActivityTimelineSectionQuery.sections(
-            activity: displayedActivity,
-            limit: max(displayedActivity.count, 1)
+            activity: searchedActivity,
+            limit: max(searchedActivity.count, 1)
         )
     }
 
@@ -54,17 +55,34 @@ struct ActivityTimelineView: View {
         )
     }
 
+    private var searchedActivity: [EntryActivitySnapshot] {
+        EntryActivitySearchMatcher.filter(
+            displayedActivity,
+            matching: searchText
+        )
+    }
+
+    private var hasActiveSearch: Bool {
+        searchText.isEmpty == false
+    }
+
     var body: some View {
         Group {
             if entries.isEmpty {
                 emptyState
             } else if displayedActivity.isEmpty {
                 filteredEmptyState
+            } else if searchedActivity.isEmpty, hasActiveSearch {
+                searchEmptyState
             } else {
                 timelineList
             }
         }
         .navigationBarTitleDisplayMode(.inline)
+        .searchable(
+            text: $searchText,
+            prompt: FluelCopy.searchTimeline()
+        )
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button(action: onAdd) {
@@ -95,6 +113,28 @@ struct ActivityTimelineView: View {
         .mhEmptyStateLayout()
         .mhSurfaceInset()
         .mhSurface(role: .muted)
+        .mhScreen(
+            title: Text(FluelCopy.timeline()),
+            subtitle: Text(FluelCopy.timelineScreenSubtitle())
+        )
+    }
+
+    private var searchEmptyState: some View {
+        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+            filterControls
+
+            ContentUnavailableView {
+                Label(
+                    FluelCopy.timelineSearchEmptyTitle(),
+                    systemImage: "magnifyingglass"
+                )
+            } description: {
+                Text(FluelCopy.timelineSearchEmptyBody())
+            }
+            .mhEmptyStateLayout()
+            .mhSurfaceInset()
+            .mhSurface(role: .muted)
+        }
         .mhScreen(
             title: Text(FluelCopy.timeline()),
             subtitle: Text(FluelCopy.timelineScreenSubtitle())
