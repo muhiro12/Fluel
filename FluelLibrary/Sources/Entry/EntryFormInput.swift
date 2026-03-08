@@ -28,6 +28,20 @@ public struct EntryFormInput: Equatable, Sendable {
         self.note = note
     }
 
+    public init(
+        duplicating entry: Entry
+    ) {
+        self.init(
+            title: entry.title,
+            startPrecision: entry.startPrecision,
+            startYear: entry.startYear,
+            startMonth: entry.startMonth,
+            startDay: entry.startDay,
+            photoData: entry.photoData,
+            note: entry.note
+        )
+    }
+
     var trimmedTitle: String {
         title.trimmingCharacters(in: .whitespacesAndNewlines)
     }
