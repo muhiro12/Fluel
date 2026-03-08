@@ -6,6 +6,8 @@ struct PresetSettingsView: View {
     private var theme
     @EnvironmentObject private var presetStore: EntryPresetStore
     @State private var isPresentingCreateSheet = false
+    @State private var editingPreset: EntryPreset?
+    @State private var deletingPreset: EntryPreset?
 
     var body: some View {
         ScrollView {
@@ -22,7 +24,13 @@ struct PresetSettingsView: View {
                     emptyState: .init(
                         title: FluelCopy.noCustomPresetsTitle(),
                         body: FluelCopy.noCustomPresetsBody()
-                    )
+                    ),
+                    onEdit: { preset in
+                        editingPreset = preset
+                    },
+                    onDelete: { preset in
+                        deletingPreset = preset
+                    }
                 )
             }
             .mhSurfaceInset()
@@ -53,6 +61,55 @@ struct PresetSettingsView: View {
                 }
             }
         }
+        .sheet(item: $editingPreset) { preset in
+            NavigationStack {
+                PresetEditorView(mode: .edit(preset)) { definition in
+                    presetStore.saveCustomPreset(
+                        id: preset.id,
+                        definition: definition
+                    )
+                }
+            }
+        }
+        .confirmationDialog(
+            FluelCopy.deletePresetConfirmationTitle(),
+            isPresented: Binding(
+                get: {
+                    deletingPreset != nil
+                },
+                set: { isPresented in
+                    if isPresented == false {
+                        deletingPreset = nil
+                    }
+                }
+            ),
+            titleVisibility: .visible
+        ) {
+            Button(
+                FluelCopy.delete(),
+                role: .destructive
+            ) {
+                if let deletingPreset {
+                    presetStore.deleteCustomPreset(
+                        id: deletingPreset.id
+                    )
+                }
+                deletingPreset = nil
+            }
+
+            Button(
+                FluelCopy.cancel(),
+                role: .cancel
+            ) {
+                deletingPreset = nil
+            }
+        } message: {
+            Text(
+                FluelCopy.deletePresetConfirmationMessage(
+                    for: deletingPreset?.title ?? String()
+                )
+            )
+        }
     }
 }
 
@@ -68,6 +125,8 @@ private struct PresetSettingsSectionCard: View {
     let title: String
     let presets: [EntryPreset]
     let emptyState: EmptyState?
+    var onEdit: ((EntryPreset) -> Void)? = nil
+    var onDelete: ((EntryPreset) -> Void)? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: theme.spacing.inline) {
@@ -85,7 +144,11 @@ private struct PresetSettingsSectionCard: View {
             } else {
                 VStack(spacing: 0) {
                     ForEach(presets) { preset in
-                        PresetSettingsRow(preset: preset)
+                        PresetSettingsRow(
+                            preset: preset,
+                            onEdit: onEdit,
+                            onDelete: onDelete
+                        )
                             .padding(.vertical, 12)
 
                         if preset.id != presets.last?.id {
@@ -103,26 +166,52 @@ private struct PresetSettingsSectionCard: View {
 
 private struct PresetSettingsRow: View {
     let preset: EntryPreset
+    var onEdit: ((EntryPreset) -> Void)? = nil
+    var onDelete: ((EntryPreset) -> Void)? = nil
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
-            Label(
-                preset.title,
-                systemImage: preset.symbolName
-            )
-            .mhRowTitle()
+        HStack(alignment: .top, spacing: 12) {
+            VStack(alignment: .leading, spacing: 6) {
+                Label(
+                    preset.title,
+                    systemImage: preset.symbolName
+                )
+                .mhRowTitle()
 
-            Text(
-                EntryPresetFormatting.detailText(for: preset)
-            )
-            .mhRowSupporting()
+                Text(
+                    EntryPresetFormatting.detailText(for: preset)
+                )
+                .mhRowSupporting()
 
-            if let note = preset.note {
-                Text(note)
-                    .mhTextStyle(.metadata, colorRole: .secondaryText)
+                if let note = preset.note {
+                    Text(note)
+                        .mhTextStyle(.metadata, colorRole: .secondaryText)
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+
+            if preset.isEditable,
+               let onEdit,
+               let onDelete {
+                Menu {
+                    Button(
+                        FluelCopy.editPreset()
+                    ) {
+                        onEdit(preset)
+                    }
+
+                    Button(
+                        FluelCopy.delete(),
+                        role: .destructive
+                    ) {
+                        onDelete(preset)
+                    }
+                } label: {
+                    Image(systemName: "ellipsis.circle")
+                        .foregroundStyle(.secondary)
+                }
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 

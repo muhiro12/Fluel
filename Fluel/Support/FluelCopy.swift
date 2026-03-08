@@ -1344,6 +1344,37 @@ enum FluelCopy {
         )
     }
 
+    static func editPreset(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Edit preset",
+            japanese: "プリセットを編集",
+            locale: locale
+        )
+    }
+
+    static func deletePresetConfirmationTitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Delete this preset?",
+            japanese: "このプリセットを削除しますか？",
+            locale: locale
+        )
+    }
+
+    static func deletePresetConfirmationMessage(
+        for presetTitle: String,
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "\"\(presetTitle)\" will no longer appear in your preset list.",
+            japanese: "「\(presetTitle)」はプリセット一覧から削除されます。",
+            locale: locale
+        )
+    }
+
     static func presetEditorSubtitle(
         locale: Locale = .autoupdatingCurrent
     ) -> String {
