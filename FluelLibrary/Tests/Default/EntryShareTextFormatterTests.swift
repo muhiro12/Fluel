@@ -72,4 +72,29 @@ struct EntryShareTextFormatterTests {
         #expect(text.contains("保管: "))
         #expect(text.contains("保管済み"))
     }
+
+    @Test
+    func text_includes_start_range_for_month_precision() throws {
+        let context = try makeTestContext()
+        let entry = try EntryRepository.create(
+            context: context,
+            input: makeInput(
+                title: "Desk",
+                precision: .month,
+                year: 2_024,
+                month: 3
+            ),
+            now: isoDate("2026-03-08T12:00:00Z"),
+            calendar: calendar
+        )
+
+        let text = EntryShareTextFormatter.text(
+            for: entry,
+            referenceDate: isoDate("2026-03-08T12:00:00Z"),
+            locale: enUS,
+            calendar: calendar
+        )
+
+        #expect(text.contains("Start range: Sometime in Mar 2024"))
+    }
 }

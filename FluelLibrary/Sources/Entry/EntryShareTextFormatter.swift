@@ -39,6 +39,21 @@ public enum EntryShareTextFormatter {
                     calendar: calendar
                 )
             ),
+            EntryFormatting.startRangeText(
+                for: entry.startComponents,
+                locale: locale,
+                calendar: calendar
+            )
+            .map { startRangeText in
+                labeledLine(
+                    title: localized(
+                        english: "Start range",
+                        japanese: "始まりの幅",
+                        locale: locale
+                    ),
+                    value: startRangeText
+                )
+            },
             labeledLine(
                 title: localized(
                     english: "Known as",
@@ -51,6 +66,7 @@ public enum EntryShareTextFormatter {
                 )
             )
         ]
+        .compactMap { $0 }
 
         if let note = entry.note,
            note.isEmpty == false {
