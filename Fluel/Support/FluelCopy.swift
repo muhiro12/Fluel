@@ -22,6 +22,16 @@ enum FluelCopy {
         )
     }
 
+    static func timeline(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Timeline",
+            japanese: "タイムライン",
+            locale: locale
+        )
+    }
+
     static func settings(
         locale: Locale = .autoupdatingCurrent
     ) -> String {
@@ -518,6 +528,26 @@ enum FluelCopy {
         localized(
             english: "Add the first entry and Fluel will start shaping the quiet overview here.",
             japanese: "最初の記録を追加すると、ここに静かな全体像が立ち上がります。",
+            locale: locale
+        )
+    }
+
+    static func timelineEmptyTitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "No history yet",
+            japanese: "まだ履歴はありません",
+            locale: locale
+        )
+    }
+
+    static func timelineEmptyBody(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Once entries are added, updated, or archived, the quiet history of those changes will gather here.",
+            japanese: "記録の追加、更新、保管が積もってくると、その静かな履歴がここに集まります。",
             locale: locale
         )
     }

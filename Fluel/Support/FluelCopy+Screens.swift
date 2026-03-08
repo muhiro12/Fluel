@@ -34,6 +34,16 @@ extension FluelCopy {
         )
     }
 
+    static func timelineScreenSubtitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Read back the quiet sequence of entries being added, adjusted, and archived.",
+            japanese: "記録の追加、更新、保管が積もってきた流れを、静かに読み返せます。",
+            locale: locale
+        )
+    }
+
     static func settingsScreenSubtitle(
         locale: Locale = .autoupdatingCurrent
     ) -> String {

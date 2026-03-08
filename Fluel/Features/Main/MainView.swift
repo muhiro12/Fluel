@@ -5,6 +5,7 @@ import SwiftUI
 struct MainView: View {
     private enum Tab: Hashable {
         case home
+        case timeline
         case dashboard
         case settings
     }
@@ -44,6 +45,17 @@ struct MainView: View {
                     )
                 }
                 .tag(Tab.home)
+
+                ActivityTimelineView(
+                    onAdd: presentCreateEntry
+                )
+                .tabItem {
+                    Label(
+                        FluelCopy.timeline(),
+                        systemImage: "clock"
+                    )
+                }
+                .tag(Tab.timeline)
 
                 DashboardView(
                     onAdd: presentCreateEntry,
