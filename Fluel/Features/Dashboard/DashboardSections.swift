@@ -45,10 +45,16 @@ struct FluelDashboardLeadEntry {
 struct DashboardQuickActionsCard: View {
     @Environment(\.mhTheme)
     private var theme
+    @EnvironmentObject private var presetStore: EntryPresetStore
 
     let onAdd: () -> Void
+    let onCreateFromPreset: (String) -> Void
     let onShowArchive: () -> Void
     let onShowLicenses: () -> Void
+
+    private var featuredPresets: [EntryPreset] {
+        Array(presetStore.builtInPresets.prefix(4))
+    }
 
     var body: some View {
         VStack(alignment: .leading, spacing: theme.spacing.inline) {
@@ -103,6 +109,14 @@ struct DashboardQuickActionsCard: View {
                         action: onShowLicenses
                     )
                 }
+            }
+
+            if featuredPresets.isEmpty == false {
+                EntryPresetStrip(
+                    presets: featuredPresets,
+                    selectedPresetID: nil,
+                    onSelect: selectPreset
+                )
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -368,6 +382,13 @@ private struct DashboardMetricTile: View {
 }
 
 private extension DashboardQuickActionsCard {
+    func selectPreset(
+        _ preset: EntryPreset
+    ) {
+        presetStore.markUsed(preset.id)
+        onCreateFromPreset(preset.id)
+    }
+
     func quickActionButton(
         title: String,
         systemImage: String,

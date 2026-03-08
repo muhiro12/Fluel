@@ -16,6 +16,7 @@ struct DashboardView: View {
     private var showsDashboardHighlights = true
 
     let onAdd: () -> Void
+    let onCreateFromPreset: (String) -> Void
     let onShowArchive: () -> Void
     let onShowLicenses: () -> Void
 
@@ -30,6 +31,7 @@ struct DashboardView: View {
                 VStack(alignment: .leading, spacing: theme.spacing.section) {
                     DashboardQuickActionsCard(
                         onAdd: onAdd,
+                        onCreateFromPreset: onCreateFromPreset,
                         onShowArchive: onShowArchive,
                         onShowLicenses: onShowLicenses
                     )
@@ -83,9 +85,11 @@ struct DashboardView: View {
     NavigationStack {
         DashboardView(
             onAdd: {},
+            onCreateFromPreset: { _ in },
             onShowArchive: {},
             onShowLicenses: {}
         )
     }
+    .environmentObject(EntryPresetStore.preview())
     .fluelAppStyle()
 }

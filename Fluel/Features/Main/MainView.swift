@@ -14,12 +14,21 @@ struct MainView: View {
         case archive
     }
 
-    private enum Sheet: String, Identifiable {
-        case create
+    private enum Sheet: Identifiable {
+        case create(presetID: String?)
         case licenses
 
         var id: String {
-            rawValue
+            switch self {
+            case let .create(presetID):
+                if let presetID {
+                    return "create-\(presetID)"
+                }
+
+                return "create"
+            case .licenses:
+                return "licenses"
+            }
         }
     }
 
@@ -60,6 +69,7 @@ struct MainView: View {
 
                 DashboardView(
                     onAdd: presentCreateEntry,
+                    onCreateFromPreset: presentCreateEntry(presetID:),
                     onShowArchive: showArchive,
                     onShowLicenses: showLicenses
                 )
@@ -94,8 +104,12 @@ struct MainView: View {
         .sheet(item: $activeSheet) { sheet in
             NavigationStack {
                 switch sheet {
-                case .create:
-                    EntryFormView(mode: .create)
+                case let .create(presetID):
+                    EntryFormView(
+                        mode: .create,
+                        prefilledInput: presetID.flatMap { presetStore.resolvedInput(for: $0) },
+                        initialPresetID: presetID
+                    )
                 case .licenses:
                     FluelLicenseView()
                 }
@@ -110,7 +124,13 @@ struct MainView: View {
 
 private extension MainView {
     func presentCreateEntry() {
-        activeSheet = .create
+        presentCreateEntry(presetID: nil)
+    }
+
+    func presentCreateEntry(
+        presetID: String?
+    ) {
+        activeSheet = .create(presetID: presetID)
     }
 
     func showArchive() {
