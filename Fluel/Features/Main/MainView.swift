@@ -125,7 +125,9 @@ struct MainView: View {
 
 private extension MainView {
     func presentCreateEntry() {
-        presentCreateEntry(presetID: nil)
+        presentCreateEntry(
+            presetID: presetStore.defaultCreatePresetID
+        )
     }
 
     func presentCreateEntry(

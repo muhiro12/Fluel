@@ -1445,6 +1445,16 @@ enum FluelCopy {
         )
     }
 
+    static func defaultPreset(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Default preset",
+            japanese: "既定のプリセット",
+            locale: locale
+        )
+    }
+
     static func presetCount(
         _ count: Int,
         locale: Locale = .autoupdatingCurrent
@@ -1538,6 +1548,56 @@ enum FluelCopy {
         )
     }
 
+    static func noDefaultPresetTitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "No default preset selected",
+            japanese: "既定のプリセットはまだ選ばれていません",
+            locale: locale
+        )
+    }
+
+    static func noDefaultPresetBody(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Choose one preset to open every new entry form with a head start.",
+            japanese: "1つ選ぶと、新規作成を開いた時点でその内容から始められます。",
+            locale: locale
+        )
+    }
+
+    static func useDefaultPresetForNewEntries(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Use the default preset for new entries",
+            japanese: "新規作成で既定プリセットを使う",
+            locale: locale
+        )
+    }
+
+    static func setAsDefaultPreset(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Set as default preset",
+            japanese: "既定のプリセットにする",
+            locale: locale
+        )
+    }
+
+    static func clearDefaultPreset(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Clear default preset",
+            japanese: "既定のプリセットを外す",
+            locale: locale
+        )
+    }
+
     static func pinPreset(
         locale: Locale = .autoupdatingCurrent
     ) -> String {
@@ -1574,6 +1634,16 @@ enum FluelCopy {
         localized(
             english: "Recent",
             japanese: "最近使った",
+            locale: locale
+        )
+    }
+
+    static func defaultPresetBadge(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Default",
+            japanese: "既定",
             locale: locale
         )
     }

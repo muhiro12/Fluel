@@ -6,6 +6,8 @@ import Foundation
 final class EntryPresetStore: ObservableObject {
     @Published private(set) var customRecords: [EntryCustomPresetRecord]
     @Published private(set) var presetStates: [String: EntryPresetState]
+    @Published private(set) var defaultPresetID: String?
+    @Published private(set) var usesDefaultPreset: Bool
 
     private let defaults: UserDefaults
     private let encoder = JSONEncoder()
@@ -23,6 +25,13 @@ final class EntryPresetStore: ObservableObject {
             from: defaults,
             decoder: decoder
         )
+        defaultPresetID = defaults.string(
+            forKey: EntryPresetPreferences.defaultPresetID
+        )
+        usesDefaultPreset = defaults.object(
+            forKey: EntryPresetPreferences.usesDefaultPreset
+        ) as? Bool ?? false
+        sanitizeDefaultPreset()
     }
 
     var builtInPresets: [EntryPreset] {
@@ -100,6 +109,22 @@ final class EntryPresetStore: ObservableObject {
         return presets
     }
 
+    var defaultPreset: EntryPreset? {
+        guard let defaultPresetID else {
+            return nil
+        }
+
+        return preset(id: defaultPresetID)
+    }
+
+    var defaultCreatePresetID: String? {
+        guard usesDefaultPreset else {
+            return nil
+        }
+
+        return defaultPreset?.id
+    }
+
     func preset(
         id: String
     ) -> EntryPreset? {
@@ -154,6 +179,8 @@ final class EntryPresetStore: ObservableObject {
         store.markUsed("starter-home")
         store.markUsed("starter-wallet")
         store.markUsed("starter-plant")
+        store.setDefaultPreset(id: "starter-home")
+        store.setUsesDefaultPreset(true)
         return store
     }
 
@@ -194,8 +221,34 @@ final class EntryPresetStore: ObservableObject {
             record.id == id
         }
         presetStates[id] = nil
+        if defaultPresetID == id {
+            defaultPresetID = nil
+            usesDefaultPreset = false
+            persistDefaultPresetID()
+            persistUsesDefaultPreset()
+        }
         persistRecords()
         persistStates()
+    }
+
+    func setDefaultPreset(
+        id: String?
+    ) {
+        defaultPresetID = id
+
+        if id == nil {
+            usesDefaultPreset = false
+            persistUsesDefaultPreset()
+        }
+
+        persistDefaultPresetID()
+    }
+
+    func setUsesDefaultPreset(
+        _ usesDefaultPreset: Bool
+    ) {
+        self.usesDefaultPreset = usesDefaultPreset && defaultPreset != nil
+        persistUsesDefaultPreset()
     }
 
     func setPinned(
@@ -275,6 +328,17 @@ final class EntryPresetStore: ObservableObject {
         defaults.set(data, forKey: EntryPresetPreferences.presetStates)
     }
 
+    private func persistDefaultPresetID() {
+        defaults.set(defaultPresetID, forKey: EntryPresetPreferences.defaultPresetID)
+    }
+
+    private func persistUsesDefaultPreset() {
+        defaults.set(
+            usesDefaultPreset,
+            forKey: EntryPresetPreferences.usesDefaultPreset
+        )
+    }
+
     private static func loadRecords(
         from defaults: UserDefaults,
         decoder: JSONDecoder
@@ -307,5 +371,21 @@ final class EntryPresetStore: ObservableObject {
         }
 
         return states
+    }
+
+    private func sanitizeDefaultPreset() {
+        guard let defaultPresetID else {
+            usesDefaultPreset = false
+            persistUsesDefaultPreset()
+            return
+        }
+
+        guard preset(id: defaultPresetID) != nil else {
+            self.defaultPresetID = nil
+            usesDefaultPreset = false
+            persistDefaultPresetID()
+            persistUsesDefaultPreset()
+            return
+        }
     }
 }

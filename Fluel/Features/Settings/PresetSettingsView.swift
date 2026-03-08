@@ -12,6 +12,8 @@ struct PresetSettingsView: View {
     var body: some View {
         ScrollView {
             VStack(alignment: .leading, spacing: theme.spacing.section) {
+                defaultPresetCard
+
                 PresetSettingsSectionCard(
                     title: FluelCopy.pinnedPresets(),
                     presets: presetStore.pinnedPresets,
@@ -19,6 +21,8 @@ struct PresetSettingsView: View {
                         title: FluelCopy.noPinnedPresetsTitle(),
                         body: FluelCopy.noPinnedPresetsBody()
                     ),
+                    defaultPresetID: presetStore.defaultPresetID,
+                    onSelectDefault: selectDefault,
                     onTogglePin: togglePin,
                     onEdit: { preset in
                         editingPreset = preset
@@ -35,6 +39,8 @@ struct PresetSettingsView: View {
                         title: FluelCopy.noRecentPresetsTitle(),
                         body: FluelCopy.noRecentPresetsBody()
                     ),
+                    defaultPresetID: presetStore.defaultPresetID,
+                    onSelectDefault: selectDefault,
                     onTogglePin: togglePin,
                     onEdit: { preset in
                         editingPreset = preset
@@ -48,6 +54,8 @@ struct PresetSettingsView: View {
                     title: FluelCopy.builtInPresets(),
                     presets: presetStore.builtInPresets,
                     emptyState: nil,
+                    defaultPresetID: presetStore.defaultPresetID,
+                    onSelectDefault: selectDefault,
                     onTogglePin: togglePin
                 )
 
@@ -58,6 +66,8 @@ struct PresetSettingsView: View {
                         title: FluelCopy.noCustomPresetsTitle(),
                         body: FluelCopy.noCustomPresetsBody()
                     ),
+                    defaultPresetID: presetStore.defaultPresetID,
+                    onSelectDefault: selectDefault,
                     onTogglePin: togglePin,
                     onEdit: { preset in
                         editingPreset = preset
@@ -146,6 +156,72 @@ struct PresetSettingsView: View {
         }
     }
 
+    private var defaultPresetCard: some View {
+        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+            Text(FluelCopy.defaultPreset())
+                .font(.headline)
+
+            Toggle(
+                FluelCopy.useDefaultPresetForNewEntries(),
+                isOn: Binding(
+                    get: {
+                        presetStore.usesDefaultPreset
+                    },
+                    set: { newValue in
+                        presetStore.setUsesDefaultPreset(newValue)
+                    }
+                )
+            )
+            .disabled(presetStore.defaultPreset == nil)
+
+            if let defaultPreset = presetStore.defaultPreset {
+                Label(
+                    defaultPreset.title,
+                    systemImage: defaultPreset.symbolName
+                )
+                .mhRowTitle()
+
+                Text(
+                    EntryPresetFormatting.detailText(for: defaultPreset)
+                )
+                .mhRowSupporting()
+
+                if let note = defaultPreset.note {
+                    Text(note)
+                        .mhTextStyle(.metadata, colorRole: .secondaryText)
+                }
+
+                Button(
+                    FluelCopy.clearDefaultPreset()
+                ) {
+                    presetStore.setDefaultPreset(id: nil)
+                }
+                .buttonStyle(.mhSecondary)
+            } else {
+                Text(FluelCopy.noDefaultPresetTitle())
+                    .mhRowTitle()
+
+                Text(FluelCopy.noDefaultPresetBody())
+                    .mhRowSupporting()
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .mhRow()
+        .mhSurface(role: .muted)
+    }
+
+    private func selectDefault(
+        _ preset: EntryPreset
+    ) {
+        if presetStore.defaultPresetID == preset.id {
+            presetStore.setDefaultPreset(id: nil)
+            return
+        }
+
+        presetStore.setDefaultPreset(id: preset.id)
+        presetStore.setUsesDefaultPreset(true)
+    }
+
     private func togglePin(
         _ preset: EntryPreset
     ) {
@@ -168,6 +244,8 @@ private struct PresetSettingsSectionCard: View {
     let title: String
     let presets: [EntryPreset]
     let emptyState: EmptyState?
+    var defaultPresetID: String? = nil
+    var onSelectDefault: ((EntryPreset) -> Void)? = nil
     var onTogglePin: ((EntryPreset) -> Void)? = nil
     var onEdit: ((EntryPreset) -> Void)? = nil
     var onDelete: ((EntryPreset) -> Void)? = nil
@@ -190,6 +268,8 @@ private struct PresetSettingsSectionCard: View {
                     ForEach(presets) { preset in
                         PresetSettingsRow(
                             preset: preset,
+                            isDefaultPreset: defaultPresetID == preset.id,
+                            onSelectDefault: onSelectDefault,
                             onTogglePin: onTogglePin,
                             onEdit: onEdit,
                             onDelete: onDelete
@@ -211,6 +291,8 @@ private struct PresetSettingsSectionCard: View {
 
 private struct PresetSettingsRow: View {
     let preset: EntryPreset
+    let isDefaultPreset: Bool
+    var onSelectDefault: ((EntryPreset) -> Void)? = nil
     var onTogglePin: ((EntryPreset) -> Void)? = nil
     var onEdit: ((EntryPreset) -> Void)? = nil
     var onDelete: ((EntryPreset) -> Void)? = nil
@@ -243,6 +325,16 @@ private struct PresetSettingsRow: View {
 
             if hasMenuActions {
                 Menu {
+                    if let onSelectDefault {
+                        Button(
+                            isDefaultPreset
+                                ? FluelCopy.clearDefaultPreset()
+                                : FluelCopy.setAsDefaultPreset()
+                        ) {
+                            onSelectDefault(preset)
+                        }
+                    }
+
                     if let onTogglePin {
                         Button(
                             preset.isPinned
@@ -280,11 +372,12 @@ private struct PresetSettingsRow: View {
     }
 
     private var hasMenuActions: Bool {
-        onTogglePin != nil || (preset.isEditable && (onEdit != nil || onDelete != nil))
+        onSelectDefault != nil || onTogglePin != nil || (preset.isEditable && (onEdit != nil || onDelete != nil))
     }
 
     private var statusText: String? {
         let labels = [
+            isDefaultPreset ? FluelCopy.defaultPresetBadge() : nil,
             preset.isPinned ? FluelCopy.pinned() : nil,
             preset.lastUsedAt != nil ? FluelCopy.recent() : nil
         ]
