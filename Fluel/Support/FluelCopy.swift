@@ -607,6 +607,36 @@ enum FluelCopy {
         )
     }
 
+    static func discardChanges(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Discard Changes",
+            japanese: "変更を破棄",
+            locale: locale
+        )
+    }
+
+    static func discardChangesConfirmationTitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Discard your changes?",
+            japanese: "変更を破棄しますか？",
+            locale: locale
+        )
+    }
+
+    static func discardChangesConfirmationMessage(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Your unsaved edits will be lost.",
+            japanese: "保存していない変更は失われます。",
+            locale: locale
+        )
+    }
+
     static func started(
         locale: Locale = .autoupdatingCurrent
     ) -> String {

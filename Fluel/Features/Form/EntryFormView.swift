@@ -25,11 +25,13 @@ struct EntryFormView: View {
     @State private var photoData: Data?
     @State private var selectedPhotoItem: PhotosPickerItem?
     @State private var errorMessage: String?
+    @State private var isConfirmingDiscard = false
 
     private let mode: Mode
     private let prefilledInput: EntryFormInput?
     private let currentDate: Date
     private let calendar: Calendar
+    private let initialInput: EntryFormInput
 
     init(
         mode: Mode,
@@ -61,17 +63,46 @@ struct EntryFormView: View {
             )
             .earliestDate(calendar: calendar)
         }
+        let resolvedTitle = resolvedEntry?.title ?? createInput?.title ?? String()
+        let resolvedPrecision = resolvedEntry?.startPrecision ?? createInput?.startPrecision ?? .day
+        let resolvedYear = resolvedEntry?.startYear ?? createInput?.startYear ?? calendar.component(.year, from: currentDate)
+        let resolvedMonth = resolvedEntry?.startMonth ?? createInput?.startMonth ?? calendar.component(.month, from: currentDate)
+        let resolvedNote = resolvedEntry?.note ?? createInput?.note ?? String()
+        let resolvedPhotoData = resolvedEntry?.photoData ?? createInput?.photoData
         let defaultDate = resolvedEntry?.startComponents.earliestDate(calendar: calendar)
             ?? prefilledStartDate
             ?? currentDate
+        let initialYear = resolvedPrecision == .day
+            ? calendar.component(.year, from: defaultDate)
+            : resolvedYear
+        let initialMonth: Int? = switch resolvedPrecision {
+        case .day:
+            calendar.component(.month, from: defaultDate)
+        case .month:
+            resolvedMonth
+        case .year:
+            nil
+        }
+        let initialDay: Int? = resolvedPrecision == .day
+            ? calendar.component(.day, from: defaultDate)
+            : nil
 
-        _title = State(initialValue: resolvedEntry?.title ?? createInput?.title ?? String())
-        _precision = State(initialValue: resolvedEntry?.startPrecision ?? createInput?.startPrecision ?? .day)
+        _title = State(initialValue: resolvedTitle)
+        _precision = State(initialValue: resolvedPrecision)
         _selectedDate = State(initialValue: defaultDate)
-        _year = State(initialValue: resolvedEntry?.startYear ?? createInput?.startYear ?? calendar.component(.year, from: currentDate))
-        _month = State(initialValue: resolvedEntry?.startMonth ?? createInput?.startMonth ?? calendar.component(.month, from: currentDate))
-        _note = State(initialValue: resolvedEntry?.note ?? createInput?.note ?? String())
-        _photoData = State(initialValue: resolvedEntry?.photoData ?? createInput?.photoData)
+        _year = State(initialValue: resolvedYear)
+        _month = State(initialValue: resolvedMonth)
+        _note = State(initialValue: resolvedNote)
+        _photoData = State(initialValue: resolvedPhotoData)
+        initialInput = .init(
+            title: resolvedTitle,
+            startPrecision: resolvedPrecision,
+            startYear: initialYear,
+            startMonth: initialMonth,
+            startDay: initialDay,
+            photoData: resolvedPhotoData,
+            note: resolvedNote
+        )
     }
 
     var body: some View {
@@ -209,10 +240,11 @@ struct EntryFormView: View {
             subtitle: Text(screenSubtitle)
         )
         .navigationBarTitleDisplayMode(.inline)
+        .interactiveDismissDisabled(hasUnsavedChanges)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
                 Button(FluelCopy.cancel()) {
-                    dismiss()
+                    attemptDismiss()
                 }
             }
 
@@ -251,6 +283,29 @@ struct EntryFormView: View {
         } message: {
             Text(errorMessage ?? String())
         }
+        .confirmationDialog(
+            FluelCopy.discardChangesConfirmationTitle(),
+            isPresented: $isConfirmingDiscard,
+            titleVisibility: .visible
+        ) {
+            Button(
+                FluelCopy.discardChanges(),
+                role: .destructive
+            ) {
+                dismiss()
+            }
+
+            Button(
+                FluelCopy.cancel(),
+                role: .cancel
+            ) {
+                isConfirmingDiscard = false
+            }
+        } message: {
+            Text(
+                FluelCopy.discardChangesConfirmationMessage()
+            )
+        }
     }
 
     private var navigationTitle: String {
@@ -281,6 +336,10 @@ struct EntryFormView: View {
         } catch {
             return false
         }
+    }
+
+    private var hasUnsavedChanges: Bool {
+        input != initialInput
     }
 
     private var daySelection: Binding<Date> {
@@ -415,6 +474,15 @@ struct EntryFormView: View {
         } catch {
             errorMessage = error.localizedDescription
         }
+    }
+
+    private func attemptDismiss() {
+        if hasUnsavedChanges {
+            isConfirmingDiscard = true
+            return
+        }
+
+        dismiss()
     }
 
     private func loadSelectedPhotoIfNeeded() async {
