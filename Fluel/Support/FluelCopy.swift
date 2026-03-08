@@ -755,6 +755,32 @@ enum FluelCopy {
         }
     }
 
+    static func entryActivityScopeMode(
+        _ mode: EntryActivityScopeMode,
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        switch mode {
+        case .recentSixMonths:
+            return localized(
+                english: "Recent 6 months",
+                japanese: "直近6か月",
+                locale: locale
+            )
+        case .recentYear:
+            return localized(
+                english: "Recent year",
+                japanese: "直近1年",
+                locale: locale
+            )
+        case .allTime:
+            return localized(
+                english: "All time",
+                japanese: "すべて",
+                locale: locale
+            )
+        }
+    }
+
     static func timelineFilterEmptyTitle(
         locale: Locale = .autoupdatingCurrent
     ) -> String {

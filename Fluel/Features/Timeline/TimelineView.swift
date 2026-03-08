@@ -11,12 +11,14 @@ struct ActivityTimelineView: View {
     private var entries: [Entry]
 
     @State private var activityFilter = EntryActivityFilterMode.all
+    @State private var scopeFilter = EntryActivityScopeMode.recentSixMonths
 
     let onAdd: () -> Void
 
     private var sections: [EntryActivityTimelineSection] {
         EntryActivityTimelineSectionQuery.sections(
-            activity: filteredActivity
+            activity: displayedActivity,
+            limit: max(displayedActivity.count, 1)
         )
     }
 
@@ -38,10 +40,17 @@ struct ActivityTimelineView: View {
         )
     }
 
-    private var filteredActivity: [EntryActivitySnapshot] {
+    private var kindFilteredActivity: [EntryActivitySnapshot] {
         EntryActivityFilter.filter(
             allActivity,
             mode: activityFilter
+        )
+    }
+
+    private var displayedActivity: [EntryActivitySnapshot] {
+        EntryActivityScopeFilter.filter(
+            kindFilteredActivity,
+            mode: scopeFilter
         )
     }
 
@@ -49,7 +58,7 @@ struct ActivityTimelineView: View {
         Group {
             if entries.isEmpty {
                 emptyState
-            } else if filteredActivity.isEmpty {
+            } else if displayedActivity.isEmpty {
                 filteredEmptyState
             } else {
                 timelineList
@@ -94,9 +103,7 @@ struct ActivityTimelineView: View {
 
     private var filteredEmptyState: some View {
         VStack(alignment: .leading, spacing: theme.spacing.inline) {
-            EntryActivityKindFilterBar(
-                selection: $activityFilter
-            )
+            filterControls
 
             ContentUnavailableView {
                 Label(
@@ -139,8 +146,18 @@ struct ActivityTimelineView: View {
             title: Text(FluelCopy.timeline()),
             subtitle: Text(FluelCopy.timelineScreenSubtitle())
         ) {
+            filterControls
+        }
+    }
+
+    private var filterControls: some View {
+        VStack(alignment: .leading, spacing: theme.spacing.inline) {
             EntryActivityKindFilterBar(
                 selection: $activityFilter
+            )
+
+            EntryActivityScopeFilterBar(
+                selection: $scopeFilter
             )
         }
     }
