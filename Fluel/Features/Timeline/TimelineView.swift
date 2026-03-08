@@ -10,9 +10,17 @@ struct ActivityTimelineView: View {
     @Query
     private var entries: [Entry]
 
-    @State private var activityFilter = EntryActivityFilterMode.all
-    @State private var scopeFilter = EntryActivityScopeMode.recentSixMonths
     @State private var searchText = String()
+    @AppStorage(
+        EntryListPreferences.timelineActivityFilter,
+        store: EntryListPreferences.store
+    )
+    private var storedActivityFilter = EntryActivityFilterMode.all.rawValue
+    @AppStorage(
+        EntryListPreferences.timelineScopeFilter,
+        store: EntryListPreferences.store
+    )
+    private var storedScopeFilter = EntryActivityScopeMode.recentSixMonths.rawValue
 
     let onAdd: () -> Void
 
@@ -41,6 +49,36 @@ struct ActivityTimelineView: View {
         )
     }
 
+    private var activityFilter: EntryActivityFilterMode {
+        EntryActivityFilterMode(rawValue: storedActivityFilter) ?? .all
+    }
+
+    private var scopeFilter: EntryActivityScopeMode {
+        EntryActivityScopeMode(rawValue: storedScopeFilter) ?? .recentSixMonths
+    }
+
+    private var activityFilterBinding: Binding<EntryActivityFilterMode> {
+        .init(
+            get: {
+                activityFilter
+            },
+            set: { newValue in
+                storedActivityFilter = newValue.rawValue
+            }
+        )
+    }
+
+    private var scopeFilterBinding: Binding<EntryActivityScopeMode> {
+        .init(
+            get: {
+                scopeFilter
+            },
+            set: { newValue in
+                storedScopeFilter = newValue.rawValue
+            }
+        )
+    }
+
     private var kindFilteredActivity: [EntryActivitySnapshot] {
         EntryActivityFilter.filter(
             allActivity,
@@ -64,6 +102,10 @@ struct ActivityTimelineView: View {
 
     private var hasActiveSearch: Bool {
         searchText.isEmpty == false
+    }
+
+    private var hasActiveFilter: Bool {
+        activityFilter != .all || scopeFilter != .recentSixMonths
     }
 
     private var summary: EntryActivityTimelineSummary {
@@ -141,7 +183,7 @@ struct ActivityTimelineView: View {
 
     private var searchEmptyState: some View {
         VStack(alignment: .leading, spacing: theme.spacing.inline) {
-            filterControls
+            listHeaderControls
 
             ContentUnavailableView {
                 Label(
@@ -163,7 +205,7 @@ struct ActivityTimelineView: View {
 
     private var filteredEmptyState: some View {
         VStack(alignment: .leading, spacing: theme.spacing.inline) {
-            filterControls
+            listHeaderControls
 
             ContentUnavailableView {
                 Label(
@@ -258,20 +300,44 @@ struct ActivityTimelineView: View {
             title: Text(FluelCopy.timeline()),
             subtitle: Text(FluelCopy.timelineScreenSubtitle())
         ) {
+            listHeaderControls
+        }
+    }
+
+    private var listHeaderControls: some View {
+        VStack(alignment: .leading, spacing: theme.spacing.inline) {
             filterControls
+
+            if hasActiveSearch || hasActiveFilter {
+                FluelEntryListStateActions(
+                    showsClearSearch: hasActiveSearch,
+                    showsClearFilter: hasActiveFilter,
+                    onClearSearch: clearSearch,
+                    onClearFilter: clearFilters
+                )
+            }
         }
     }
 
     private var filterControls: some View {
         VStack(alignment: .leading, spacing: theme.spacing.inline) {
             EntryActivityKindFilterBar(
-                selection: $activityFilter
+                selection: activityFilterBinding
             )
 
             EntryActivityScopeFilterBar(
-                selection: $scopeFilter
+                selection: scopeFilterBinding
             )
         }
+    }
+
+    private func clearSearch() {
+        searchText = String()
+    }
+
+    private func clearFilters() {
+        storedActivityFilter = EntryActivityFilterMode.all.rawValue
+        storedScopeFilter = EntryActivityScopeMode.recentSixMonths.rawValue
     }
 }
 
