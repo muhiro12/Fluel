@@ -6,6 +6,7 @@ struct RootView: View {
     private enum Tab: Hashable {
         case home
         case dashboard
+        case settings
     }
 
     private enum Destination: Hashable {
@@ -60,6 +61,22 @@ struct RootView: View {
                     )
                 }
                 .tag(Tab.dashboard)
+
+                SettingsView(
+                    onShowArchive: {
+                        path.append(.archive)
+                    },
+                    onShowLicenses: {
+                        isPresentingLicenses = true
+                    }
+                )
+                .tabItem {
+                    Label(
+                        FluelCopy.settings(),
+                        systemImage: "gearshape"
+                    )
+                }
+                .tag(Tab.settings)
             }
             .navigationDestination(for: Destination.self) { destination in
                 switch destination {

@@ -22,6 +22,16 @@ enum FluelCopy {
         )
     }
 
+    static func settings(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Settings",
+            japanese: "設定",
+            locale: locale
+        )
+    }
+
     static func add(
         locale: Locale = .autoupdatingCurrent
     ) -> String {
@@ -553,6 +563,66 @@ enum FluelCopy {
         localized(
             english: "Recent activity",
             japanese: "最近の動き",
+            locale: locale
+        )
+    }
+
+    static func display(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Display",
+            japanese: "表示",
+            locale: locale
+        )
+    }
+
+    static func displaySettingsPreviewBody(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "List and dashboard display preferences live here.",
+            japanese: "一覧やダッシュボードの表示設定はここに集約していきます。",
+            locale: locale
+        )
+    }
+
+    static func dataStatus(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Data status",
+            japanese: "記録の状態",
+            locale: locale
+        )
+    }
+
+    static func support(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Support",
+            japanese: "サポート",
+            locale: locale
+        )
+    }
+
+    static func openArchivedEntries(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Open archived entries",
+            japanese: "保管済み一覧を開く",
+            locale: locale
+        )
+    }
+
+    static func openLicenses(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Open licenses",
+            japanese: "ライセンスを開く",
             locale: locale
         )
     }

@@ -34,6 +34,16 @@ extension FluelCopy {
         )
     }
 
+    static func settingsScreenSubtitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Adjust how Fluel surfaces the quiet information it keeps.",
+            japanese: "Fluel が静かに見せる情報の出し方を整えられます。",
+            locale: locale
+        )
+    }
+
     static func createScreenSubtitle(
         locale: Locale = .autoupdatingCurrent
     ) -> String {
