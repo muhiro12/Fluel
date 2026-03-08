@@ -66,6 +66,13 @@ struct ActivityTimelineView: View {
         searchText.isEmpty == false
     }
 
+    private var summary: EntryActivityTimelineSummary {
+        EntryActivityTimelineSummaryQuery.summary(
+            totalActivity: allActivity,
+            displayedActivity: searchedActivity
+        )
+    }
+
     var body: some View {
         Group {
             if entries.isEmpty {
@@ -165,6 +172,26 @@ struct ActivityTimelineView: View {
 
     private var timelineList: some View {
         List {
+            TimelineSummaryCard(
+                summary: summary,
+                activityFilterLabel: FluelCopy.entryActivityFilterMode(
+                    activityFilter
+                ),
+                scopeLabel: FluelCopy.entryActivityScopeMode(
+                    scopeFilter
+                )
+            )
+            .listRowInsets(
+                .init(
+                    top: 0,
+                    leading: 0,
+                    bottom: 12,
+                    trailing: 0
+                )
+            )
+            .listRowSeparator(.hidden)
+            .listRowBackground(Color.clear)
+
             ForEach(sections, id: \.monthStart) { section in
                 Section(section.title) {
                     ForEach(section.items, id: \.entryID) { item in
@@ -200,6 +227,75 @@ struct ActivityTimelineView: View {
                 selection: $scopeFilter
             )
         }
+    }
+}
+
+private struct TimelineSummaryCard: View {
+    let summary: EntryActivityTimelineSummary
+    let activityFilterLabel: String
+    let scopeLabel: String
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text(FluelCopy.timelineSummary())
+                .font(.headline)
+
+            Text(
+                FluelCopy.timelineShowingActivity(
+                    displayedCount: summary.displayedCount,
+                    totalCount: summary.totalCount
+                )
+            )
+            .font(.subheadline)
+
+            Text(
+                FluelCopy.timelineMonthsShown(summary.monthCount)
+            )
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+
+            Text(
+                FluelCopy.timelineActivityCount(
+                    kind: .added,
+                    count: summary.addedCount
+                )
+            )
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+
+            Text(
+                FluelCopy.timelineActivityCount(
+                    kind: .updated,
+                    count: summary.updatedCount
+                )
+            )
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+
+            Text(
+                FluelCopy.timelineActivityCount(
+                    kind: .archived,
+                    count: summary.archivedCount
+                )
+            )
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+
+            Text(
+                "\(FluelCopy.filter()): \(activityFilterLabel)"
+            )
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+
+            Text(
+                "\(FluelCopy.timelineScope()): \(scopeLabel)"
+            )
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .mhRow()
+        .mhSurface(role: .muted)
     }
 }
 

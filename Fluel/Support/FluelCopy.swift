@@ -821,6 +821,76 @@ enum FluelCopy {
         )
     }
 
+    static func timelineSummary(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Timeline summary",
+            japanese: "タイムライン要約",
+            locale: locale
+        )
+    }
+
+    static func timelineShowingActivity(
+        displayedCount: Int,
+        totalCount: Int,
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Showing \(displayedCount) of \(totalCount) activity items",
+            japanese: "\(totalCount)件中 \(displayedCount)件の動きを表示",
+            locale: locale
+        )
+    }
+
+    static func timelineMonthsShown(
+        _ count: Int,
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "\(count) months shown",
+            japanese: "\(count)か月分を表示",
+            locale: locale
+        )
+    }
+
+    static func timelineScope(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Scope",
+            japanese: "範囲",
+            locale: locale
+        )
+    }
+
+    static func timelineActivityCount(
+        kind: EntryActivityKind,
+        count: Int,
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        switch kind {
+        case .added:
+            return localized(
+                english: "\(count) added",
+                japanese: "追加 \(count)件",
+                locale: locale
+            )
+        case .updated:
+            return localized(
+                english: "\(count) updated",
+                japanese: "更新 \(count)件",
+                locale: locale
+            )
+        case .archived:
+            return localized(
+                english: "\(count) archived",
+                japanese: "保管 \(count)件",
+                locale: locale
+            )
+        }
+    }
+
     static func timelineFilterEmptyBody(
         locale: Locale = .autoupdatingCurrent
     ) -> String {
