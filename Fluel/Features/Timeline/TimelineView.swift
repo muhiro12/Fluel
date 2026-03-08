@@ -79,6 +79,13 @@ struct ActivityTimelineView: View {
         )
     }
 
+    private var milestoneDigest: EntryTimelineMilestoneDigest {
+        EntryTimelineMilestoneDigestQuery.digest(
+            entries: entries,
+            visibleActivity: searchedActivity
+        )
+    }
+
     var body: some View {
         Group {
             if entries.isEmpty {
@@ -201,6 +208,22 @@ struct ActivityTimelineView: View {
             if trendSnapshots.isEmpty == false {
                 TimelineTrendCard(
                     trends: trendSnapshots
+                )
+                .listRowInsets(
+                    .init(
+                        top: 0,
+                        leading: 0,
+                        bottom: 12,
+                        trailing: 0
+                    )
+                )
+                .listRowSeparator(.hidden)
+                .listRowBackground(Color.clear)
+            }
+
+            if milestoneDigest.milestoneCount > 0 {
+                TimelineMilestoneDigestCard(
+                    digest: milestoneDigest
                 )
                 .listRowInsets(
                     .init(
@@ -437,6 +460,84 @@ private struct TimelineTrendPill: View {
             .padding(.horizontal, 10)
             .padding(.vertical, 6)
             .background(color.opacity(0.12), in: Capsule())
+    }
+}
+
+private struct TimelineMilestoneDigestCard: View {
+    @Environment(\.mhTheme)
+    private var theme
+
+    let digest: EntryTimelineMilestoneDigest
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+            Text(FluelCopy.timelineMilestones())
+                .font(.headline)
+
+            HStack(spacing: 8) {
+                TimelineTrendPill(
+                    label: FluelCopy.timelineVisibleEntryCount(
+                        digest.visibleEntryCount
+                    ),
+                    color: .teal
+                )
+
+                if digest.approximateCount > 0 {
+                    TimelineTrendPill(
+                        label: FluelCopy.timelineApproximateMilestones(
+                            digest.approximateCount
+                        ),
+                        color: .purple
+                    )
+                }
+            }
+
+            VStack(spacing: 0) {
+                ForEach(digest.milestones, id: \.entryID) { milestone in
+                    VStack(alignment: .leading, spacing: 6) {
+                        HStack(alignment: .firstTextBaseline, spacing: theme.spacing.inline) {
+                            Text(milestone.title)
+                                .mhRowTitle()
+
+                            Spacer(minLength: 0)
+
+                            Text(
+                                FluelCopy.daysRemaining(
+                                    milestone.daysRemaining
+                                )
+                            )
+                            .mhTextStyle(.metadata, colorRole: .secondaryText)
+                        }
+
+                        Text(milestone.milestoneText)
+                            .font(.title3.weight(.semibold))
+
+                        Text(
+                            milestone.milestoneDate.formatted(
+                                .dateTime
+                                    .month(.abbreviated)
+                                    .day()
+                            )
+                        )
+                        .mhRowSupporting()
+
+                        if milestone.isApproximate {
+                            Text(FluelCopy.approximateMilestone())
+                                .mhTextStyle(.metadata, colorRole: .secondaryText)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.vertical, 12)
+
+                    if milestone.entryID != digest.milestones.last?.entryID {
+                        Divider()
+                    }
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .mhRow()
+        .mhSurface(role: .muted)
     }
 }
 

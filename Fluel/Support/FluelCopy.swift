@@ -841,6 +841,16 @@ enum FluelCopy {
         )
     }
 
+    static func timelineMilestones(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Upcoming from this timeline",
+            japanese: "このタイムラインの次の節目",
+            locale: locale
+        )
+    }
+
     static func timelineShowingActivity(
         displayedCount: Int,
         totalCount: Int,
@@ -871,6 +881,28 @@ enum FluelCopy {
         localized(
             english: "\(count) activity items",
             japanese: "動き \(count)件",
+            locale: locale
+        )
+    }
+
+    static func timelineVisibleEntryCount(
+        _ count: Int,
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "\(count) visible entries",
+            japanese: "表示中の記録 \(count)件",
+            locale: locale
+        )
+    }
+
+    static func timelineApproximateMilestones(
+        _ count: Int,
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "\(count) approximate milestones",
+            japanese: "おおよその節目 \(count)件",
             locale: locale
         )
     }
