@@ -23,8 +23,16 @@ struct ArchiveListView: View {
     @State private var errorMessage: String?
     @State private var pendingDeleteEntry: Entry?
     @State private var searchText = String()
-    @State private var sortMode: ArchivedEntrySortMode = .recentlyArchived
-    @State private var contentFilter: EntryContentFilterMode = .all
+    @AppStorage(
+        EntryListPreferences.archiveSortMode,
+        store: EntryListPreferences.store
+    )
+    private var storedSortMode = ArchivedEntrySortMode.recentlyArchived.rawValue
+    @AppStorage(
+        EntryListPreferences.archiveContentFilter,
+        store: EntryListPreferences.store
+    )
+    private var storedContentFilter = EntryContentFilterMode.all.rawValue
 
     private var sortedEntries: [Entry] {
         EntryListOrdering.archived(
@@ -47,6 +55,25 @@ struct ArchiveListView: View {
         )
     }
 
+    private var sortMode: ArchivedEntrySortMode {
+        ArchivedEntrySortMode(rawValue: storedSortMode) ?? .recentlyArchived
+    }
+
+    private var contentFilter: EntryContentFilterMode {
+        EntryContentFilterMode(rawValue: storedContentFilter) ?? .all
+    }
+
+    private var contentFilterBinding: Binding<EntryContentFilterMode> {
+        .init(
+            get: {
+                contentFilter
+            },
+            set: { newValue in
+                storedContentFilter = newValue.rawValue
+            }
+        )
+    }
+
     var body: some View {
         TimelineView(.periodic(from: .now, by: 3_600)) { context in // swiftlint:disable:this no_magic_numbers
             Group {
@@ -65,7 +92,7 @@ struct ArchiveListView: View {
                         Section(FluelCopy.sort()) {
                             ForEach(ArchivedEntrySortMode.allCases, id: \.self) { mode in
                                 Button {
-                                    sortMode = mode
+                                    storedSortMode = mode.rawValue
                                 } label: {
                                     if sortMode == mode {
                                         Label(
@@ -261,7 +288,7 @@ struct ArchiveListView: View {
             subtitle: Text(FluelCopy.archiveScreenSubtitle())
         ) {
             EntryContentFilterBar(
-                selection: $contentFilter
+                selection: contentFilterBinding
             )
         }
     }
