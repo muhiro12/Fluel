@@ -512,6 +512,41 @@ enum FluelCopy {
         )
     }
 
+    static func upcomingMilestones(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Upcoming milestones",
+            japanese: "これからの節目",
+            locale: locale
+        )
+    }
+
+    static func daysRemaining(
+        _ dayCount: Int,
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        let english = dayCount == 1
+            ? "In 1 day"
+            : "In \(dayCount) days"
+
+        return localized(
+            english: english,
+            japanese: "\(dayCount)日後",
+            locale: locale
+        )
+    }
+
+    static func approximateMilestone(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Based on the earliest possible start date",
+            japanese: "最も早い開始時期を基準にした目安です",
+            locale: locale
+        )
+    }
+
     static func archiveEmptyTitle(
         locale: Locale = .autoupdatingCurrent
     ) -> String {

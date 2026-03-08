@@ -27,6 +27,10 @@ struct DashboardView: View {
                 entries: entries,
                 referenceDate: timeline.date
             )
+            let milestones = EntryMilestoneSnapshotQuery.upcomingActiveMilestones(
+                entries: entries,
+                referenceDate: timeline.date
+            )
 
             ScrollView {
                 VStack(alignment: .leading, spacing: theme.spacing.section) {
@@ -39,6 +43,10 @@ struct DashboardView: View {
 
                         if let leadEntryCard = leadEntryCard(snapshot) {
                             leadEntryCard
+                        }
+
+                        if milestones.isEmpty == false {
+                            milestoneSection(milestones)
                         }
                     }
                 }
@@ -229,6 +237,61 @@ struct DashboardView: View {
             )
             .fill(Color.secondary.opacity(0.08))
         }
+    }
+
+    private func milestoneSection(
+        _ milestones: [EntryMilestoneSnapshot]
+    ) -> some View {
+        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+            Text(FluelCopy.upcomingMilestones())
+                .font(.headline)
+
+            VStack(spacing: 0) {
+                ForEach(milestones, id: \.entryID) { milestone in
+                    VStack(alignment: .leading, spacing: 6) {
+                        HStack(alignment: .firstTextBaseline, spacing: theme.spacing.inline) {
+                            Text(milestone.title)
+                                .mhRowTitle()
+
+                            Spacer(minLength: 0)
+
+                            Text(
+                                FluelCopy.daysRemaining(
+                                    milestone.daysRemaining
+                                )
+                            )
+                            .mhTextStyle(.metadata, colorRole: .secondaryText)
+                        }
+
+                        Text(milestone.milestoneText)
+                            .font(.title3.weight(.semibold))
+
+                        Text(
+                            milestone.milestoneDate.formatted(
+                                .dateTime
+                                    .month(.abbreviated)
+                                    .day()
+                            )
+                        )
+                        .mhRowSupporting()
+
+                        if milestone.isApproximate {
+                            Text(FluelCopy.approximateMilestone())
+                                .mhTextStyle(.metadata, colorRole: .secondaryText)
+                        }
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.vertical, 12)
+
+                    if milestone.entryID != milestones.last?.entryID {
+                        Divider()
+                    }
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .mhRow()
+        .mhSurface(role: .muted)
     }
 }
 
