@@ -89,35 +89,98 @@ struct DashboardView: View {
             Text(FluelCopy.quickActions())
                 .font(.headline)
 
-            HStack(spacing: theme.spacing.inline) {
-                Button(action: onAdd) {
-                    Label(
-                        FluelCopy.add(),
-                        systemImage: "plus.circle"
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: theme.spacing.inline) {
+                    quickActionButton(
+                        title: FluelCopy.add(),
+                        systemImage: "plus.circle",
+                        style: .mhPrimary,
+                        expandsHorizontally: false,
+                        action: onAdd
+                    )
+                    quickActionButton(
+                        title: FluelCopy.archived(),
+                        systemImage: "archivebox",
+                        style: .mhSecondary,
+                        expandsHorizontally: false,
+                        action: onShowArchive
+                    )
+                    quickActionButton(
+                        title: FluelCopy.licenses(),
+                        systemImage: "doc.text",
+                        style: .mhSecondary,
+                        expandsHorizontally: false,
+                        action: onShowLicenses
                     )
                 }
-                .buttonStyle(.mhPrimary)
 
-                Button(action: onShowArchive) {
-                    Label(
-                        FluelCopy.archived(),
-                        systemImage: "archivebox"
+                VStack(alignment: .leading, spacing: theme.spacing.inline) {
+                    quickActionButton(
+                        title: FluelCopy.add(),
+                        systemImage: "plus.circle",
+                        style: .mhPrimary,
+                        expandsHorizontally: true,
+                        action: onAdd
+                    )
+                    quickActionButton(
+                        title: FluelCopy.archived(),
+                        systemImage: "archivebox",
+                        style: .mhSecondary,
+                        expandsHorizontally: true,
+                        action: onShowArchive
+                    )
+                    quickActionButton(
+                        title: FluelCopy.licenses(),
+                        systemImage: "doc.text",
+                        style: .mhSecondary,
+                        expandsHorizontally: true,
+                        action: onShowLicenses
                     )
                 }
-                .buttonStyle(.mhSecondary)
-
-                Button(action: onShowLicenses) {
-                    Label(
-                        FluelCopy.licenses(),
-                        systemImage: "doc.text"
-                    )
-                }
-                .buttonStyle(.mhSecondary)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .mhRow()
         .mhSurface(role: .muted)
+    }
+
+    private func quickActionButton(
+        title: String,
+        systemImage: String,
+        style: MHActionButtonStyle,
+        expandsHorizontally: Bool,
+        action: @escaping () -> Void
+    ) -> some View {
+        Button(action: action) {
+            quickActionLabel(
+                title: title,
+                systemImage: systemImage,
+                expandsHorizontally: expandsHorizontally
+            )
+        }
+        .buttonStyle(style)
+    }
+
+    @ViewBuilder
+    private func quickActionLabel(
+        title: String,
+        systemImage: String,
+        expandsHorizontally: Bool
+    ) -> some View {
+        let label = Label(
+            title,
+            systemImage: systemImage
+        )
+        .lineLimit(1)
+        .truncationMode(.tail)
+
+        if expandsHorizontally {
+            label
+                .frame(maxWidth: .infinity, alignment: .leading)
+        } else {
+            label
+                .fixedSize(horizontal: true, vertical: false)
+        }
     }
 
     private var emptyState: some View {
