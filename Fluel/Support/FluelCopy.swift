@@ -1304,6 +1304,88 @@ enum FluelCopy {
         )
     }
 
+    static func presetScreenSubtitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Shape reusable starting points for new entries.",
+            japanese: "新しい記録の出発点を整えます。",
+            locale: locale
+        )
+    }
+
+    static func openPresets(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Open presets",
+            japanese: "プリセットを開く",
+            locale: locale
+        )
+    }
+
+    static func builtInPresets(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Built-in presets",
+            japanese: "標準プリセット",
+            locale: locale
+        )
+    }
+
+    static func customPresets(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Custom presets",
+            japanese: "カスタムプリセット",
+            locale: locale
+        )
+    }
+
+    static func presetCount(
+        _ count: Int,
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "\(count) presets",
+            japanese: "\(count)件のプリセット",
+            locale: locale
+        )
+    }
+
+    static func customPresetCount(
+        _ count: Int,
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "\(count) custom presets",
+            japanese: "\(count)件のカスタムプリセット",
+            locale: locale
+        )
+    }
+
+    static func noCustomPresetsTitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "No custom presets yet",
+            japanese: "カスタムプリセットはまだありません",
+            locale: locale
+        )
+    }
+
+    static func noCustomPresetsBody(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Starter presets are ready. Add your own combinations next.",
+            japanese: "まずは標準プリセットが使えます。次に自分の組み合わせを追加できます。",
+            locale: locale
+        )
+    }
+
     static func startedToday(
         locale: Locale = .autoupdatingCurrent
     ) -> String {

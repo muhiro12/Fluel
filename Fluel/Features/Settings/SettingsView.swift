@@ -6,6 +6,7 @@ import SwiftUI
 struct SettingsView: View {
     @Environment(\.mhTheme)
     private var theme
+    @EnvironmentObject private var presetStore: EntryPresetStore
 
     @Query
     private var entries: [Entry]
@@ -41,6 +42,7 @@ struct SettingsView: View {
         ScrollView {
             VStack(alignment: .leading, spacing: theme.spacing.section) {
                 displayCard
+                presetCard
                 dataCard(snapshot)
                 supportCard
             }
@@ -111,6 +113,41 @@ struct SettingsView: View {
         .mhSurface(role: .muted)
     }
 
+    private var presetCard: some View {
+        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+            Text(FluelCopy.presets())
+                .font(.headline)
+
+            NavigationLink {
+                PresetSettingsView()
+            } label: {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(FluelCopy.openPresets())
+                        .mhRowTitle()
+
+                    Text(
+                        FluelCopy.presetCount(
+                            presetStore.builtInPresets.count
+                        )
+                    )
+                    .mhRowSupporting()
+
+                    Text(
+                        FluelCopy.customPresetCount(
+                            presetStore.customPresets.count
+                        )
+                    )
+                    .mhTextStyle(.metadata, colorRole: .secondaryText)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            .buttonStyle(.plain)
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .mhRow()
+        .mhSurface(role: .muted)
+    }
+
     private var supportCard: some View {
         VStack(alignment: .leading, spacing: theme.spacing.inline) {
             Text(FluelCopy.support())
@@ -145,5 +182,6 @@ struct SettingsView: View {
             onShowLicenses: {}
         )
     }
+    .environmentObject(EntryPresetStore.preview())
     .fluelAppStyle()
 }
