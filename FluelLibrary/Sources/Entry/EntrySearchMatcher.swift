@@ -32,7 +32,10 @@ private extension EntrySearchMatcher {
         normalizedQuery: String,
         locale: Locale
     ) -> Bool {
-        searchableFields(for: entry).contains { field in
+        searchableFields(
+            for: entry,
+            locale: locale
+        ).contains { field in
             normalize(
                 field,
                 locale: locale
@@ -41,11 +44,35 @@ private extension EntrySearchMatcher {
     }
 
     static func searchableFields(
-        for entry: Entry
+        for entry: Entry,
+        locale: Locale,
+        calendar: Calendar = .autoupdatingCurrent
     ) -> [String] {
-        [
+        let startComponents = entry.startComponents
+
+        return [
             entry.title,
-            entry.note
+            entry.note,
+            EntryFormatting.startDateText(
+                for: startComponents,
+                locale: locale,
+                calendar: calendar
+            ),
+            EntryFormatting.precisionText(
+                for: entry.startPrecision,
+                locale: locale
+            ),
+            EntryFormatting.startRangeText(
+                for: startComponents,
+                locale: locale,
+                calendar: calendar
+            ),
+            entry.archivedAt.map { archivedAt in
+                EntryFormatting.archivedOnText(
+                    archivedAt,
+                    locale: locale
+                )
+            }
         ]
         .compactMap { $0 }
     }
