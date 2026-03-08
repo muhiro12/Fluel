@@ -196,7 +196,10 @@ struct HomeView: View {
                 } label: {
                     EntryRowView(
                         entry: entry,
-                        referenceDate: referenceDate
+                        referenceDate: referenceDate,
+                        footerText: EntryFormatting.notePreviewText(
+                            entry.note
+                        )
                     )
                 }
                 .swipeActions(
