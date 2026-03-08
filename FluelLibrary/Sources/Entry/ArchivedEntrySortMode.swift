@@ -4,5 +4,6 @@ import Foundation
 public enum ArchivedEntrySortMode: String, CaseIterable, Sendable {
     case recentlyArchived
     case oldestArchived
+    case longestTogether
     case alphabetical
 }

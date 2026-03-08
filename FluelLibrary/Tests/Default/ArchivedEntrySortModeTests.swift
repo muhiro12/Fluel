@@ -11,10 +11,11 @@ struct ArchivedEntrySortModeTests {
 
         let result = EntryListOrdering.archived(
             entries,
-            sortMode: .recentlyArchived
+            sortMode: .recentlyArchived,
+            calendar: calendar
         )
 
-        #expect(result.map(\.title) == ["Watch", "Bag", "This home"])
+        #expect(result.map(\.title) == ["This home", "Watch", "Bag"])
     }
 
     @Test
@@ -23,7 +24,21 @@ struct ArchivedEntrySortModeTests {
 
         let result = EntryListOrdering.archived(
             entries,
-            sortMode: .oldestArchived
+            sortMode: .oldestArchived,
+            calendar: calendar
+        )
+
+        #expect(result.map(\.title) == ["Bag", "Watch", "This home"])
+    }
+
+    @Test
+    func longestTogether_orders_by_archive_duration() throws {
+        let entries = try makeArchivedEntries()
+
+        let result = EntryListOrdering.archived(
+            entries,
+            sortMode: .longestTogether,
+            calendar: calendar
         )
 
         #expect(result.map(\.title) == ["This home", "Bag", "Watch"])
@@ -35,7 +50,8 @@ struct ArchivedEntrySortModeTests {
 
         let result = EntryListOrdering.archived(
             entries,
-            sortMode: .alphabetical
+            sortMode: .alphabetical,
+            calendar: calendar
         )
 
         #expect(result.map(\.title) == ["Bag", "This home", "Watch"])
@@ -81,17 +97,17 @@ struct ArchivedEntrySortModeTests {
         try EntryRepository.archive(
             context: context,
             entry: home,
-            now: isoDate("2026-03-09T12:00:00Z")
+            now: isoDate("2026-03-11T12:00:00Z")
         )
         try EntryRepository.archive(
             context: context,
             entry: bag,
-            now: isoDate("2026-03-10T12:00:00Z")
+            now: isoDate("2026-03-09T12:00:00Z")
         )
         try EntryRepository.archive(
             context: context,
             entry: watch,
-            now: isoDate("2026-03-11T12:00:00Z")
+            now: isoDate("2026-03-10T12:00:00Z")
         )
 
         return [watch, bag, home]

@@ -268,6 +268,12 @@ enum FluelCopy {
                 japanese: "古く保管した順",
                 locale: locale
             )
+        case .longestTogether:
+            return localized(
+                english: "Longest together",
+                japanese: "長く一緒にいた順",
+                locale: locale
+            )
         case .alphabetical:
             return localized(
                 english: "Alphabetical",

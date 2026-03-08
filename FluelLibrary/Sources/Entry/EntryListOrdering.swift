@@ -65,7 +65,8 @@ public enum EntryListOrdering {
 
     public static func archived(
         _ entries: [Entry],
-        sortMode: ArchivedEntrySortMode = .recentlyArchived
+        sortMode: ArchivedEntrySortMode = .recentlyArchived,
+        calendar: Calendar = .autoupdatingCurrent
     ) -> [Entry] {
         entries.sorted { lhs, rhs in
             let lhsArchivedAt = lhs.archivedAt ?? .distantPast
@@ -87,6 +88,19 @@ public enum EntryListOrdering {
 
                 if lhs.updatedAt != rhs.updatedAt {
                     return lhs.updatedAt < rhs.updatedAt
+                }
+            case .longestTogether:
+                let lhsStartDate = lhs.startComponents.earliestDate(
+                    calendar: calendar
+                ) ?? lhsArchivedAt
+                let rhsStartDate = rhs.startComponents.earliestDate(
+                    calendar: calendar
+                ) ?? rhsArchivedAt
+                let lhsDuration = lhsArchivedAt.timeIntervalSince(lhsStartDate)
+                let rhsDuration = rhsArchivedAt.timeIntervalSince(rhsStartDate)
+
+                if lhsDuration != rhsDuration {
+                    return lhsDuration > rhsDuration
                 }
             case .alphabetical:
                 let titleComparison = lhs.title.localizedCaseInsensitiveCompare(rhs.title)
