@@ -8,7 +8,7 @@ enum FluelAppConfiguration {
     nonisolated static let runtimeConfiguration = MHAppConfiguration(
         subscriptionProductIDs: [],
         subscriptionGroupID: nil,
-        nativeAdUnitID: nil,
+        nativeAdUnitID: FluelAdMobConfiguration.nativeAdUnitID,
         preferencesSuiteName: preferencesSuiteName,
         showsLicenses: true
     )
