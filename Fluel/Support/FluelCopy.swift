@@ -385,6 +385,28 @@ enum FluelCopy {
         )
     }
 
+    static func withNotesCount(
+        _ count: Int,
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "With notes: \(count)",
+            japanese: "メモあり \(count)件",
+            locale: locale
+        )
+    }
+
+    static func withPhotosCount(
+        _ count: Int,
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "With photos: \(count)",
+            japanese: "写真あり \(count)件",
+            locale: locale
+        )
+    }
+
     static func archiveEmptyTitle(
         locale: Locale = .autoupdatingCurrent
     ) -> String {

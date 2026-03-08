@@ -85,6 +85,22 @@ struct HomeView: View {
         contentFilter != .all
     }
 
+    private var displayedNoteCount: Int {
+        displayedEntries.reduce(into: 0) { partialResult, entry in
+            if EntryFormatting.notePreviewText(entry.note) != nil {
+                partialResult += 1
+            }
+        }
+    }
+
+    private var displayedPhotoCount: Int {
+        displayedEntries.reduce(into: 0) { partialResult, entry in
+            if entry.photoData?.isEmpty == false {
+                partialResult += 1
+            }
+        }
+    }
+
     var body: some View {
         TimelineView(.periodic(from: .now, by: 3_600)) { context in // swiftlint:disable:this no_magic_numbers
             Group {
@@ -303,6 +319,22 @@ struct HomeView: View {
                 )
             )
             .font(.subheadline)
+
+            Text(
+                FluelCopy.withNotesCount(
+                    displayedNoteCount
+                )
+            )
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+
+            Text(
+                FluelCopy.withPhotosCount(
+                    displayedPhotoCount
+                )
+            )
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
 
             Text(
                 "\(FluelCopy.sort()): \(FluelCopy.activeSortMode(sortMode))"
