@@ -3,6 +3,30 @@ import MHUI
 import PhotosUI
 import SwiftUI
 
+struct EntryFormPresetSection: View {
+    let presets: [EntryPreset]
+    let selectedPresetID: String?
+    let onSelect: (EntryPreset) -> Void
+
+    var body: some View {
+        Section {
+            EntryPresetStrip(
+                presets: presets,
+                selectedPresetID: selectedPresetID,
+                onSelect: onSelect
+            )
+            .listRowInsets(
+                EdgeInsets(
+                    top: 6,
+                    leading: 0,
+                    bottom: 6,
+                    trailing: 0
+                )
+            )
+        }
+    }
+}
+
 struct EntryFormTitleSection: View {
     @Binding var title: String
 

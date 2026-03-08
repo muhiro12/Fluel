@@ -1477,6 +1477,26 @@ enum FluelCopy {
         )
     }
 
+    static func starterPresets(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Starter presets",
+            japanese: "はじめのプリセット",
+            locale: locale
+        )
+    }
+
+    static func starterPresetsBody(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Begin from a familiar thing or place, then adjust anything you need.",
+            japanese: "身近なものや場所から始めて、必要なところだけ整えられます。",
+            locale: locale
+        )
+    }
+
     static func localized(
         english: String,
         japanese: String,

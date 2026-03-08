@@ -14,21 +14,26 @@ struct EntryFormView: View {
     private var dismiss
     @Environment(\.modelContext)
     private var context
+    @EnvironmentObject private var presetStore: EntryPresetStore
 
     @State private var draft: EntryFormDraft
     @State private var selectedPhotoItem: PhotosPickerItem?
+    @State private var selectedPresetID: String?
     @State private var errorMessage: String?
     @State private var isConfirmingDiscard = false
 
     private let mode: Mode
+    private let initialPresetID: String?
 
     init(
         mode: Mode,
         prefilledInput: EntryFormInput? = nil,
+        initialPresetID: String? = nil,
         currentDate: Date = .now,
         calendar: Calendar = .autoupdatingCurrent
     ) {
         self.mode = mode
+        self.initialPresetID = initialPresetID
         _draft = State(
             initialValue: .init(
                 mode: mode,
@@ -37,10 +42,19 @@ struct EntryFormView: View {
                 calendar: calendar
             )
         )
+        _selectedPresetID = State(initialValue: initialPresetID)
     }
 
     var body: some View {
         Form {
+            if case .create = mode, starterPresets.isEmpty == false {
+                EntryFormPresetSection(
+                    presets: starterPresets,
+                    selectedPresetID: selectedPresetID,
+                    onSelect: applyPreset
+                )
+            }
+
             EntryFormTitleSection(title: $draft.title)
             EntryFormStartSection(draft: $draft)
             EntryFormPhotoSection(
@@ -178,6 +192,10 @@ struct EntryFormView: View {
 }
 
 private extension EntryFormView {
+    var starterPresets: [EntryPreset] {
+        Array(presetStore.builtInPresets.prefix(6))
+    }
+
     var mutationWorkflow: FluelEntryMutationWorkflow {
         .init(
             context: context,
@@ -189,6 +207,28 @@ private extension EntryFormView {
                 errorMessage = message
             }
         )
+    }
+
+    func applyPreset(
+        _ preset: EntryPreset
+    ) {
+        guard case .create = mode else {
+            return
+        }
+
+        draft = .init(
+            mode: .create,
+            prefilledInput: presetStore.resolvedInput(
+                for: preset,
+                referenceDate: draft.currentDate,
+                calendar: draft.calendar
+            ),
+            currentDate: draft.currentDate,
+            calendar: draft.calendar
+        )
+        selectedPresetID = preset.id
+        selectedPhotoItem = nil
+        presetStore.markUsed(preset.id)
     }
 }
 
