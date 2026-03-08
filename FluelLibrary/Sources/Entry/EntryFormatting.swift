@@ -329,6 +329,23 @@ public enum EntryFormatting {
         return preview
     }
 
+    public static func archivedFooterText(
+        archivedAt: Date,
+        note: String?,
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        let archivedText = archivedOnText(
+            archivedAt,
+            locale: locale
+        )
+
+        guard let notePreview = notePreviewText(note) else {
+            return archivedText
+        }
+
+        return "\(archivedText) | \(notePreview)"
+    }
+
     public static func archivedOnText(
         _ date: Date,
         locale: Locale = .autoupdatingCurrent

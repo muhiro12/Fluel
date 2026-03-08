@@ -118,4 +118,26 @@ struct EntryFormattingTests {
 
         #expect(result == nil)
     }
+
+    @Test
+    func archivedFooterText_returns_archived_text_without_note() {
+        let result = EntryFormatting.archivedFooterText(
+            archivedAt: isoDate("2026-03-08T12:00:00Z"),
+            note: nil,
+            locale: enUS
+        )
+
+        #expect(result == "Archived on Mar 8, 2026")
+    }
+
+    @Test
+    func archivedFooterText_appends_note_preview() {
+        let result = EntryFormatting.archivedFooterText(
+            archivedAt: isoDate("2026-03-08T12:00:00Z"),
+            note: "  Living room\nlamp  ",
+            locale: enUS
+        )
+
+        #expect(result == "Archived on Mar 8, 2026 | Living room lamp")
+    }
 }
