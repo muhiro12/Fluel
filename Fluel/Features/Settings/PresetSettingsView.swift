@@ -5,6 +5,7 @@ struct PresetSettingsView: View {
     @Environment(\.mhTheme)
     private var theme
     @EnvironmentObject private var presetStore: EntryPresetStore
+    @State private var isPresentingCreateSheet = false
 
     var body: some View {
         ScrollView {
@@ -31,6 +32,27 @@ struct PresetSettingsView: View {
             subtitle: Text(FluelCopy.presetScreenSubtitle())
         )
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    isPresentingCreateSheet = true
+                } label: {
+                    Label(
+                        FluelCopy.newPreset(),
+                        systemImage: "plus"
+                    )
+                }
+            }
+        }
+        .sheet(isPresented: $isPresentingCreateSheet) {
+            NavigationStack {
+                PresetEditorView(mode: .create) { definition in
+                    presetStore.saveCustomPreset(
+                        definition: definition
+                    )
+                }
+            }
+        }
     }
 }
 

@@ -1324,6 +1324,56 @@ enum FluelCopy {
         )
     }
 
+    static func newPreset(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "New preset",
+            japanese: "新しいプリセット",
+            locale: locale
+        )
+    }
+
+    static func createPreset(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Create preset",
+            japanese: "プリセットを作成",
+            locale: locale
+        )
+    }
+
+    static func presetEditorSubtitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Capture a reusable start for familiar things or places.",
+            japanese: "身近なものや場所の始まり方を、使い回せる形で残します。",
+            locale: locale
+        )
+    }
+
+    static func presetSymbolLabel(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Symbol",
+            japanese: "シンボル",
+            locale: locale
+        )
+    }
+
+    static func presetOffsetLabel(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "How long ago",
+            japanese: "どのくらい前から",
+            locale: locale
+        )
+    }
+
     static func builtInPresets(
         locale: Locale = .autoupdatingCurrent
     ) -> String {
