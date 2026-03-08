@@ -24,6 +24,7 @@ struct ArchiveListView: View {
     @State private var pendingDeleteEntry: Entry?
     @State private var searchText = String()
     @State private var sortMode: ArchivedEntrySortMode = .recentlyArchived
+    @State private var contentFilter: EntryContentFilterMode = .all
 
     private var sortedEntries: [Entry] {
         EntryListOrdering.archived(
@@ -34,8 +35,15 @@ struct ArchiveListView: View {
 
     private var displayedEntries: [Entry] {
         EntrySearchMatcher.filter(
-            sortedEntries,
+            contentFilteredEntries,
             matching: searchText
+        )
+    }
+
+    private var contentFilteredEntries: [Entry] {
+        EntryContentFilter.filter(
+            sortedEntries,
+            mode: contentFilter
         )
     }
 
@@ -251,7 +259,11 @@ struct ArchiveListView: View {
         .mhListChrome(
             title: Text(FluelCopy.archived()),
             subtitle: Text(FluelCopy.archiveScreenSubtitle())
-        )
+        ) {
+            EntryContentFilterBar(
+                selection: $contentFilter
+            )
+        }
     }
 
     private var listSummaryCard: some View {
@@ -273,6 +285,12 @@ struct ArchiveListView: View {
 
             Text(
                 "\(FluelCopy.sort()): \(FluelCopy.archivedSortMode(sortMode))"
+            )
+            .font(.subheadline)
+            .foregroundStyle(.secondary)
+
+            Text(
+                "\(FluelCopy.filter()): \(FluelCopy.entryContentFilterMode(contentFilter))"
             )
             .font(.subheadline)
             .foregroundStyle(.secondary)

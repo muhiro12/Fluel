@@ -305,8 +305,8 @@ enum FluelCopy {
         locale: Locale = .autoupdatingCurrent
     ) -> String {
         localized(
-            english: "Try another word from the title, note, or archived entries.",
-            japanese: "名前やメモに含まれる別の言葉で探してみてください。",
+            english: "Try another filter or word from the title, note, or archived entries.",
+            japanese: "絞り込みや、名前・メモに含まれる別の言葉で探してみてください。",
             locale: locale
         )
     }
