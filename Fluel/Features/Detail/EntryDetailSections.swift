@@ -31,9 +31,6 @@ struct EntryDetailHeaderContent: View {
 }
 
 struct EntryDetailQuickActions: View {
-    @Environment(\.mhTheme)
-    private var theme
-
     let entry: Entry
     let shareText: String
     let onDuplicate: () -> Void
@@ -42,53 +39,50 @@ struct EntryDetailQuickActions: View {
     let onRestore: () -> Void
 
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: theme.spacing.inline) {
-                ShareLink(
-                    item: shareText
-                ) {
-                    Label(
-                        FluelCopy.share(),
-                        systemImage: "square.and.arrow.up"
-                    )
-                }
-                .buttonStyle(.mhSecondary)
-
-                Button(action: onDuplicate) {
-                    Label(
-                        FluelCopy.duplicate(),
-                        systemImage: "plus.square.on.square"
-                    )
-                }
-                .buttonStyle(.mhSecondary)
-
-                Button(action: onEdit) {
-                    Label(
-                        FluelCopy.edit(),
-                        systemImage: "pencil"
-                    )
-                }
-                .buttonStyle(.mhSecondary)
-
-                if entry.isArchived {
-                    Button(action: onRestore) {
-                        Label(
-                            FluelCopy.restore(),
-                            systemImage: "arrow.uturn.backward"
-                        )
-                    }
-                    .buttonStyle(.mhSecondary)
-                } else {
-                    Button(action: onArchive) {
-                        Label(
-                            FluelCopy.archive(),
-                            systemImage: "archivebox"
-                        )
-                    }
-                    .buttonStyle(.mhSecondary)
-                }
+        MHActionGroup {
+            ShareLink(
+                item: shareText
+            ) {
+                Label(
+                    FluelCopy.share(),
+                    systemImage: "square.and.arrow.up"
+                )
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .buttonStyle(.mhSecondary)
+
+            Button(action: onDuplicate) {
+                Label(
+                    FluelCopy.duplicate(),
+                    systemImage: "plus.square.on.square"
+                )
+            }
+            .buttonStyle(.mhSecondary)
+
+            Button(action: onEdit) {
+                Label(
+                    FluelCopy.edit(),
+                    systemImage: "pencil"
+                )
+            }
+            .buttonStyle(.mhSecondary)
+
+            if entry.isArchived {
+                Button(action: onRestore) {
+                    Label(
+                        FluelCopy.restore(),
+                        systemImage: "arrow.uturn.backward"
+                    )
+                }
+                .buttonStyle(.mhSecondary)
+            } else {
+                Button(action: onArchive) {
+                    Label(
+                        FluelCopy.archive(),
+                        systemImage: "archivebox"
+                    )
+                }
+                .buttonStyle(.mhSecondary)
+            }
         }
     }
 }

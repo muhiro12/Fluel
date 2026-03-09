@@ -127,34 +127,34 @@ struct ArchiveListView: View {
                     listContent(referenceDate: context.date)
                 }
             }
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Menu {
-                        Section(FluelCopy.sort()) {
-                            ForEach(ArchivedEntrySortMode.allCases, id: \.self) { mode in
-                                Button {
-                                    storedSortMode = mode.rawValue
-                                } label: {
-                                    if sortMode == mode {
-                                        Label(
-                                            FluelCopy.archivedSortMode(mode),
-                                            systemImage: "checkmark"
-                                        )
-                                    } else {
-                                        Text(
-                                            FluelCopy.archivedSortMode(mode)
-                                        )
-                                    }
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Menu {
+                    Section(FluelCopy.sort()) {
+                        ForEach(ArchivedEntrySortMode.allCases, id: \.self) { mode in
+                            Button {
+                                storedSortMode = mode.rawValue
+                            } label: {
+                                if sortMode == mode {
+                                    Label(
+                                        FluelCopy.archivedSortMode(mode),
+                                        systemImage: "checkmark"
+                                    )
+                                } else {
+                                    Text(
+                                        FluelCopy.archivedSortMode(mode)
+                                    )
                                 }
                             }
                         }
-                    } label: {
-                        Label(
-                            FluelCopy.sort(),
-                            systemImage: "arrow.up.arrow.down.circle"
-                        )
                     }
+                } label: {
+                    Label(
+                        FluelCopy.sort(),
+                        systemImage: "arrow.up.arrow.down.circle"
+                    )
                 }
             }
         }

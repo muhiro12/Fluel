@@ -136,57 +136,57 @@ struct HomeView: View {
                     listContent(referenceDate: context.date)
                 }
             }
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    Menu {
-                        Section(FluelCopy.sort()) {
-                            ForEach(ActiveEntrySortMode.allCases, id: \.self) { mode in
-                                Button {
-                                    storedSortMode = mode.rawValue
-                                } label: {
-                                    if sortMode == mode {
-                                        Label(
-                                            FluelCopy.activeSortMode(mode),
-                                            systemImage: "checkmark"
-                                        )
-                                    } else {
-                                        Text(
-                                            FluelCopy.activeSortMode(mode)
-                                        )
-                                    }
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarLeading) {
+                Menu {
+                    Section(FluelCopy.sort()) {
+                        ForEach(ActiveEntrySortMode.allCases, id: \.self) { mode in
+                            Button {
+                                storedSortMode = mode.rawValue
+                            } label: {
+                                if sortMode == mode {
+                                    Label(
+                                        FluelCopy.activeSortMode(mode),
+                                        systemImage: "checkmark"
+                                    )
+                                } else {
+                                    Text(
+                                        FluelCopy.activeSortMode(mode)
+                                    )
                                 }
                             }
                         }
-
-                        Button(
-                            FluelCopy.archived()
-                        ) {
-                            onShowArchive()
-                        }
-
-                        Button(
-                            FluelCopy.licenses()
-                        ) {
-                            onShowLicenses()
-                        }
-                    } label: {
-                        Label(
-                            FluelCopy.more(),
-                            systemImage: "ellipsis.circle"
-                        )
                     }
+
+                    Button(
+                        FluelCopy.archived()
+                    ) {
+                        onShowArchive()
+                    }
+
+                    Button(
+                        FluelCopy.licenses()
+                    ) {
+                        onShowLicenses()
+                    }
+                } label: {
+                    Label(
+                        FluelCopy.more(),
+                        systemImage: "ellipsis.circle"
+                    )
                 }
+            }
 
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        onAdd()
-                    } label: {
-                        Label(
-                            FluelCopy.add(),
-                            systemImage: "plus"
-                        )
-                    }
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    onAdd()
+                } label: {
+                    Label(
+                        FluelCopy.add(),
+                        systemImage: "plus"
+                    )
                 }
             }
         }

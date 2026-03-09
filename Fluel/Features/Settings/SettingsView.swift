@@ -160,21 +160,23 @@ struct SettingsView: View {
             Text(FluelCopy.support())
                 .font(.headline)
 
-            Button(action: onShowArchive) {
-                Label(
-                    FluelCopy.openArchivedEntries(),
-                    systemImage: "archivebox"
-                )
-            }
-            .buttonStyle(.mhSecondary)
+            MHActionGroup(layout: .vertical) {
+                Button(action: onShowArchive) {
+                    Label(
+                        FluelCopy.openArchivedEntries(),
+                        systemImage: "archivebox"
+                    )
+                }
+                .buttonStyle(.mhSecondary)
 
-            Button(action: onShowLicenses) {
-                Label(
-                    FluelCopy.openLicenses(),
-                    systemImage: "doc.text"
-                )
+                Button(action: onShowLicenses) {
+                    Label(
+                        FluelCopy.openLicenses(),
+                        systemImage: "doc.text"
+                    )
+                }
+                .buttonStyle(.mhSecondary)
             }
-            .buttonStyle(.mhSecondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .mhRow()

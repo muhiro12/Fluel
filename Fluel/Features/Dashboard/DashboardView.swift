@@ -66,15 +66,15 @@ struct DashboardView: View {
                 title: Text(FluelCopy.dashboard()),
                 subtitle: Text(FluelCopy.dashboardScreenSubtitle())
             )
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button(action: onAdd) {
-                        Label(
-                            FluelCopy.add(),
-                            systemImage: "plus"
-                        )
-                    }
+        }
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button(action: onAdd) {
+                    Label(
+                        FluelCopy.add(),
+                        systemImage: "plus"
+                    )
                 }
             }
         }

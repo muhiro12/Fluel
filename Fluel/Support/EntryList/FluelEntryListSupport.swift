@@ -83,16 +83,13 @@ struct FluelEntryListSummaryCard: View {
 }
 
 struct FluelEntryListStateActions: View {
-    @Environment(\.mhTheme)
-    private var theme
-
     let showsClearSearch: Bool
     let showsClearFilter: Bool
     let onClearSearch: () -> Void
     let onClearFilter: () -> Void
 
     var body: some View {
-        HStack(spacing: theme.spacing.inline) {
+        MHActionGroup {
             if showsClearSearch {
                 Button(
                     FluelCopy.clearSearch(),
@@ -108,8 +105,6 @@ struct FluelEntryListStateActions: View {
                 )
                 .buttonStyle(.mhSecondary)
             }
-
-            Spacer(minLength: 0)
         }
         .mhSurfaceInset()
         .mhSurface(role: .muted)
