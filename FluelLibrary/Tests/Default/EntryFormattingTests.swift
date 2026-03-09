@@ -5,6 +5,9 @@ import Testing
 struct EntryFormattingTests {
     private let enUS: Locale = .init(identifier: "en_US_POSIX")
     private let jaJP: Locale = .init(identifier: "ja_JP")
+    private let esES: Locale = .init(identifier: "es_ES")
+    private let frFR: Locale = .init(identifier: "fr_FR")
+    private let zhHans: Locale = .init(identifier: "zh-Hans")
     private let calendar: Calendar = .init(identifier: .gregorian)
 
     @Test
@@ -49,6 +52,27 @@ struct EntryFormattingTests {
     }
 
     @Test
+    func primaryElapsedText_formats_spanish_day_precision() throws {
+        let snapshot = EntryElapsedSnapshot(
+            startComponents: try .init(
+                precision: .day,
+                year: 2_023,
+                month: 1,
+                day: 15
+            ),
+            referenceDate: isoDate("2025-04-20T12:00:00Z"),
+            calendar: calendar
+        )
+
+        let result = EntryFormatting.primaryElapsedText(
+            for: snapshot,
+            locale: esES
+        )
+
+        #expect(result == "2 años, 3 meses")
+    }
+
+    @Test
     func startLabelText_formats_japanese_year_precision() throws {
         let result = EntryFormatting.startLabelText(
             for: try .init(
@@ -60,6 +84,20 @@ struct EntryFormattingTests {
         )
 
         #expect(result == "2020年から")
+    }
+
+    @Test
+    func startLabelText_formats_french_year_precision() throws {
+        let result = EntryFormatting.startLabelText(
+            for: try .init(
+                precision: .year,
+                year: 2_020
+            ),
+            locale: frFR,
+            calendar: calendar
+        )
+
+        #expect(result == "Depuis 2020")
     }
 
     @Test
@@ -108,6 +146,22 @@ struct EntryFormattingTests {
     }
 
     @Test
+    func formStartSummaryText_formats_chinese_month_precision() throws {
+        let result = EntryFormatting.formStartSummaryText(
+            for: try .init(
+                precision: .month,
+                year: 2_024,
+                month: 3
+            ),
+            locale: zhHans,
+            calendar: calendar
+        )
+
+        #expect(result.contains("大约始于"))
+        #expect(result.contains("2024"))
+    }
+
+    @Test
     func precisionText_formats_japanese_month_precision() {
         let result = EntryFormatting.precisionText(
             for: .month,
@@ -115,6 +169,16 @@ struct EntryFormattingTests {
         )
 
         #expect(result == "月まで分かる")
+    }
+
+    @Test
+    func precisionText_formats_spanish_month_precision() {
+        let result = EntryFormatting.precisionText(
+            for: .month,
+            locale: esES
+        )
+
+        #expect(result == "Conocido hasta el mes")
     }
 
     @Test
@@ -182,6 +246,16 @@ struct EntryFormattingTests {
         )
 
         #expect(result == nil)
+    }
+
+    @Test
+    func noteCharacterCountText_formats_chinese_count() {
+        let result = EntryFormatting.noteCharacterCountText(
+            "With a lamp",
+            locale: zhHans
+        )
+
+        #expect(result == "11 个字符")
     }
 
     @Test
@@ -258,6 +332,31 @@ struct EntryFormattingTests {
     }
 
     @Test
+    func metadataBadgeTexts_formats_french_badges() throws {
+        let context = try makeTestContext()
+        let entry = try EntryRepository.create(
+            context: context,
+            input: makeInput(
+                title: "Lampe",
+                precision: .month,
+                year: 2_024,
+                month: 3,
+                photoData: Data([0x01]),
+                note: "  Salon  "
+            ),
+            now: isoDate("2026-03-08T12:00:00Z"),
+            calendar: calendar
+        )
+
+        let result = EntryFormatting.metadataBadgeTexts(
+            for: entry,
+            locale: frFR
+        )
+
+        #expect(result == ["Photo", "Note", "Début approximatif"])
+    }
+
+    @Test
     func archivedFooterText_returns_archived_text_without_note() {
         let result = EntryFormatting.archivedFooterText(
             archivedAt: isoDate("2026-03-08T12:00:00Z"),
@@ -317,6 +416,16 @@ struct EntryFormattingTests {
         )
 
         #expect(result == "2026年3月8日に更新")
+    }
+
+    @Test
+    func createdOnText_formats_spanish_date() {
+        let result = EntryFormatting.createdOnText(
+            isoDate("2026-03-08T12:00:00Z"),
+            locale: esES
+        )
+
+        #expect(result.contains("Creado el"))
     }
 
     @Test

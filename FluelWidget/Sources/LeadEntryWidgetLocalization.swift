@@ -76,15 +76,24 @@ struct LeadEntryWidgetLocalization {
     func recentlyArchivedText(
         for title: String
     ) -> String {
-        localized(
-            english: "Recently archived: \(title)",
-            japanese: "最近保管: \(title)"
+        FluelLocalization.formattedString(
+            key: "widget_recently_archived_text",
+            defaultValue: "Recently archived: %@",
+            japaneseFallback: "最近保管: %@",
+            bundle: .main,
+            locale: locale,
+            arguments: [title]
         )
     }
 
     func milestoneDetail(
         _ milestone: EntryMilestoneSnapshot
     ) -> String {
+        let language = LeadEntryWidgetLocale(locale: locale)
+        let number = milestone.daysRemaining.formatted(
+            .number
+                .locale(locale)
+        )
         let approximateSuffix = milestone.isApproximate
             ? localized(
                 english: "Approximate start",
@@ -94,15 +103,31 @@ struct LeadEntryWidgetLocalization {
 
         let base: String
         if milestone.daysRemaining == 0 {
-            base = localized(
-                english: "\(milestone.milestoneText) today",
-                japanese: "今日で\(milestone.milestoneText)"
-            )
+            switch language {
+            case .english:
+                base = "\(milestone.milestoneText) today"
+            case .japanese:
+                base = "今日で\(milestone.milestoneText)"
+            case .spanish:
+                base = "\(milestone.milestoneText) hoy"
+            case .french:
+                base = "\(milestone.milestoneText) aujourd'hui"
+            case .simplifiedChinese:
+                base = "今天达到\(milestone.milestoneText)"
+            }
         } else {
-            base = localized(
-                english: "\(milestone.milestoneText) in \(milestone.daysRemaining) days",
-                japanese: "あと\(milestone.daysRemaining)日で\(milestone.milestoneText)"
-            )
+            switch language {
+            case .english:
+                base = "\(milestone.milestoneText) in \(number) days"
+            case .japanese:
+                base = "あと\(number)日で\(milestone.milestoneText)"
+            case .spanish:
+                base = "\(milestone.milestoneText) en \(number) días"
+            case .french:
+                base = "\(milestone.milestoneText) dans \(number) jours"
+            case .simplifiedChinese:
+                base = "还有\(number)天达到\(milestone.milestoneText)"
+            }
         }
 
         guard let approximateSuffix else {
@@ -121,6 +146,32 @@ struct LeadEntryWidgetLocalization {
         )
 
         return "\(activityKind(activity.kind)) · \(timestamp)"
+    }
+}
+
+private enum LeadEntryWidgetLocale {
+    case english
+    case japanese
+    case spanish
+    case french
+    case simplifiedChinese
+
+    init(
+        locale: Locale
+    ) {
+        let languageIdentifier = locale.language.languageCode?.identifier ?? locale.identifier
+
+        if languageIdentifier.hasPrefix("ja") {
+            self = .japanese
+        } else if languageIdentifier.hasPrefix("es") {
+            self = .spanish
+        } else if languageIdentifier.hasPrefix("fr") {
+            self = .french
+        } else if languageIdentifier.hasPrefix("zh") {
+            self = .simplifiedChinese
+        } else {
+            self = .english
+        }
     }
 }
 
@@ -151,13 +202,12 @@ private extension LeadEntryWidgetLocalization {
         english: String,
         japanese: String
     ) -> String {
-        let languageIdentifier = locale.language.languageCode?.identifier
-            ?? locale.identifier
-
-        if languageIdentifier.hasPrefix("ja") {
-            return japanese
-        }
-
-        return english
+        FluelLocalization.string(
+            key: english,
+            defaultValue: english,
+            japaneseFallback: japanese,
+            bundle: .main,
+            locale: locale
+        )
     }
 }

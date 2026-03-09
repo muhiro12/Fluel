@@ -176,10 +176,13 @@ enum FluelCopy {
         for entryTitle: String,
         locale: Locale = .autoupdatingCurrent
     ) -> String {
-        localized(
-            english: "\"\(entryTitle)\" will be permanently removed from Fluel.",
-            japanese: "「\(entryTitle)」を Fluel から完全に削除します。",
-            locale: locale
+        FluelLocalization.formattedString(
+            key: "delete_confirmation_message",
+            defaultValue: "\"%@\" will be permanently removed from Fluel.",
+            japaneseFallback: "「%@」を Fluel から完全に削除します。",
+            bundle: .main,
+            locale: locale,
+            arguments: [entryTitle]
         )
     }
 
@@ -397,30 +400,48 @@ enum FluelCopy {
         _ count: Int,
         locale: Locale = .autoupdatingCurrent
     ) -> String {
-        let english = count == 1
-            ? "1 active entry"
-            : "\(count) active entries"
-
-        return localized(
-            english: english,
-            japanese: "進行中の記録 \(count)件",
-            locale: locale
+        let language = FluelCopyLocale(locale: locale)
+        let number = count.formatted(
+            .number
+                .locale(locale)
         )
+
+        switch language {
+        case .english:
+            return count == 1 ? "\(number) active entry" : "\(number) active entries"
+        case .japanese:
+            return "進行中の記録 \(number)件"
+        case .spanish:
+            return count == 1 ? "\(number) registro activo" : "\(number) registros activos"
+        case .french:
+            return count == 1 ? "\(number) entrée active" : "\(number) entrées actives"
+        case .simplifiedChinese:
+            return "记录中 \(number) 条"
+        }
     }
 
     static func archivedEntryCount(
         _ count: Int,
         locale: Locale = .autoupdatingCurrent
     ) -> String {
-        let english = count == 1
-            ? "1 archived entry"
-            : "\(count) archived entries"
-
-        return localized(
-            english: english,
-            japanese: "保管済みの記録 \(count)件",
-            locale: locale
+        let language = FluelCopyLocale(locale: locale)
+        let number = count.formatted(
+            .number
+                .locale(locale)
         )
+
+        switch language {
+        case .english:
+            return count == 1 ? "\(number) archived entry" : "\(number) archived entries"
+        case .japanese:
+            return "保管済みの記録 \(number)件"
+        case .spanish:
+            return count == 1 ? "\(number) registro archivado" : "\(number) registros archivados"
+        case .french:
+            return count == 1 ? "\(number) entrée archivée" : "\(number) entrées archivées"
+        case .simplifiedChinese:
+            return "已归档 \(number) 条"
+        }
     }
 
     static func showingEntries(
@@ -428,48 +449,97 @@ enum FluelCopy {
         totalCount: Int,
         locale: Locale = .autoupdatingCurrent
     ) -> String {
-        localized(
-            english: "Showing \(displayedCount) of \(totalCount)",
-            japanese: "\(totalCount)件中 \(displayedCount)件を表示",
-            locale: locale
+        let displayed = displayedCount.formatted(
+            .number
+                .locale(locale)
         )
+        let total = totalCount.formatted(
+            .number
+                .locale(locale)
+        )
+
+        switch FluelCopyLocale(locale: locale) {
+        case .english:
+            return "Showing \(displayed) of \(total)"
+        case .japanese:
+            return "\(total)件中 \(displayed)件を表示"
+        case .spanish:
+            return "Se muestran \(displayed) de \(total)"
+        case .french:
+            return "Affichage de \(displayed) sur \(total)"
+        case .simplifiedChinese:
+            return "显示 \(total) 项中的 \(displayed) 项"
+        }
     }
 
     static func withNotesCount(
         _ count: Int,
         locale: Locale = .autoupdatingCurrent
     ) -> String {
-        localized(
-            english: "With notes: \(count)",
-            japanese: "メモあり \(count)件",
-            locale: locale
+        let number = count.formatted(
+            .number
+                .locale(locale)
         )
+
+        switch FluelCopyLocale(locale: locale) {
+        case .english:
+            return "With notes: \(number)"
+        case .japanese:
+            return "メモあり \(number)件"
+        case .spanish:
+            return "Con notas: \(number)"
+        case .french:
+            return "Avec notes : \(number)"
+        case .simplifiedChinese:
+            return "含备注：\(number)"
+        }
     }
 
     static func withPhotosCount(
         _ count: Int,
         locale: Locale = .autoupdatingCurrent
     ) -> String {
-        localized(
-            english: "With photos: \(count)",
-            japanese: "写真あり \(count)件",
-            locale: locale
+        let number = count.formatted(
+            .number
+                .locale(locale)
         )
+
+        switch FluelCopyLocale(locale: locale) {
+        case .english:
+            return "With photos: \(number)"
+        case .japanese:
+            return "写真あり \(number)件"
+        case .spanish:
+            return "Con fotos: \(number)"
+        case .french:
+            return "Avec photos : \(number)"
+        case .simplifiedChinese:
+            return "含照片：\(number)"
+        }
     }
 
     static func totalEntriesCount(
         _ count: Int,
         locale: Locale = .autoupdatingCurrent
     ) -> String {
-        let english = count == 1
-            ? "1 total entry"
-            : "\(count) total entries"
-
-        return localized(
-            english: english,
-            japanese: "すべての記録 \(count)件",
-            locale: locale
+        let language = FluelCopyLocale(locale: locale)
+        let number = count.formatted(
+            .number
+                .locale(locale)
         )
+
+        switch language {
+        case .english:
+            return count == 1 ? "\(number) total entry" : "\(number) total entries"
+        case .japanese:
+            return "すべての記録 \(number)件"
+        case .spanish:
+            return count == 1 ? "\(number) registro en total" : "\(number) registros en total"
+        case .french:
+            return count == 1 ? "\(number) entrée au total" : "\(number) entrées au total"
+        case .simplifiedChinese:
+            return "共 \(number) 条记录"
+        }
     }
 
     static func overview(
@@ -566,15 +636,23 @@ enum FluelCopy {
         _ dayCount: Int,
         locale: Locale = .autoupdatingCurrent
     ) -> String {
-        let english = dayCount == 1
-            ? "In 1 day"
-            : "In \(dayCount) days"
-
-        return localized(
-            english: english,
-            japanese: "\(dayCount)日後",
-            locale: locale
+        let number = dayCount.formatted(
+            .number
+                .locale(locale)
         )
+
+        switch FluelCopyLocale(locale: locale) {
+        case .english:
+            return dayCount == 1 ? "In \(number) day" : "In \(number) days"
+        case .japanese:
+            return "\(number)日後"
+        case .spanish:
+            return dayCount == 1 ? "En \(number) día" : "En \(number) días"
+        case .french:
+            return dayCount == 1 ? "Dans \(number) jour" : "Dans \(number) jours"
+        case .simplifiedChinese:
+            return "还有\(number)天"
+        }
     }
 
     static func approximateMilestone(
@@ -856,55 +934,119 @@ enum FluelCopy {
         totalCount: Int,
         locale: Locale = .autoupdatingCurrent
     ) -> String {
-        localized(
-            english: "Showing \(displayedCount) of \(totalCount) activity items",
-            japanese: "\(totalCount)件中 \(displayedCount)件の動きを表示",
-            locale: locale
+        let displayed = displayedCount.formatted(
+            .number
+                .locale(locale)
         )
+        let total = totalCount.formatted(
+            .number
+                .locale(locale)
+        )
+
+        switch FluelCopyLocale(locale: locale) {
+        case .english:
+            return "Showing \(displayed) of \(total) activity items"
+        case .japanese:
+            return "\(total)件中 \(displayed)件の動きを表示"
+        case .spanish:
+            return "Se muestran \(displayed) de \(total) actividades"
+        case .french:
+            return "Affichage de \(displayed) activités sur \(total)"
+        case .simplifiedChinese:
+            return "显示 \(total) 条动态中的 \(displayed) 条"
+        }
     }
 
     static func timelineMonthsShown(
         _ count: Int,
         locale: Locale = .autoupdatingCurrent
     ) -> String {
-        localized(
-            english: "\(count) months shown",
-            japanese: "\(count)か月分を表示",
-            locale: locale
+        let number = count.formatted(
+            .number
+                .locale(locale)
         )
+
+        switch FluelCopyLocale(locale: locale) {
+        case .english:
+            return count == 1 ? "\(number) month shown" : "\(number) months shown"
+        case .japanese:
+            return "\(number)か月分を表示"
+        case .spanish:
+            return count == 1 ? "\(number) mes mostrado" : "\(number) meses mostrados"
+        case .french:
+            return "\(number) mois affichés"
+        case .simplifiedChinese:
+            return "显示 \(number) 个月"
+        }
     }
 
     static func timelineTrendTotal(
         _ count: Int,
         locale: Locale = .autoupdatingCurrent
     ) -> String {
-        localized(
-            english: "\(count) activity items",
-            japanese: "動き \(count)件",
-            locale: locale
+        let number = count.formatted(
+            .number
+                .locale(locale)
         )
+
+        switch FluelCopyLocale(locale: locale) {
+        case .english:
+            return count == 1 ? "\(number) activity item" : "\(number) activity items"
+        case .japanese:
+            return "動き \(number)件"
+        case .spanish:
+            return count == 1 ? "\(number) actividad" : "\(number) actividades"
+        case .french:
+            return count == 1 ? "\(number) activité" : "\(number) activités"
+        case .simplifiedChinese:
+            return "\(number) 条动态"
+        }
     }
 
     static func timelineVisibleEntryCount(
         _ count: Int,
         locale: Locale = .autoupdatingCurrent
     ) -> String {
-        localized(
-            english: "\(count) visible entries",
-            japanese: "表示中の記録 \(count)件",
-            locale: locale
+        let number = count.formatted(
+            .number
+                .locale(locale)
         )
+
+        switch FluelCopyLocale(locale: locale) {
+        case .english:
+            return count == 1 ? "\(number) visible entry" : "\(number) visible entries"
+        case .japanese:
+            return "表示中の記録 \(number)件"
+        case .spanish:
+            return count == 1 ? "\(number) registro visible" : "\(number) registros visibles"
+        case .french:
+            return count == 1 ? "\(number) entrée visible" : "\(number) entrées visibles"
+        case .simplifiedChinese:
+            return "显示中的记录 \(number) 条"
+        }
     }
 
     static func timelineApproximateMilestones(
         _ count: Int,
         locale: Locale = .autoupdatingCurrent
     ) -> String {
-        localized(
-            english: "\(count) approximate milestones",
-            japanese: "おおよその節目 \(count)件",
-            locale: locale
+        let number = count.formatted(
+            .number
+                .locale(locale)
         )
+
+        switch FluelCopyLocale(locale: locale) {
+        case .english:
+            return count == 1 ? "\(number) approximate milestone" : "\(number) approximate milestones"
+        case .japanese:
+            return "おおよその節目 \(number)件"
+        case .spanish:
+            return count == 1 ? "\(number) hito aproximado" : "\(number) hitos aproximados"
+        case .french:
+            return count == 1 ? "\(number) jalon approximatif" : "\(number) jalons approximatifs"
+        case .simplifiedChinese:
+            return "大致里程碑 \(number) 个"
+        }
     }
 
     static func timelineScope(
@@ -922,25 +1064,51 @@ enum FluelCopy {
         count: Int,
         locale: Locale = .autoupdatingCurrent
     ) -> String {
+        let number = count.formatted(
+            .number
+                .locale(locale)
+        )
+
         switch kind {
         case .added:
-            return localized(
-                english: "\(count) added",
-                japanese: "追加 \(count)件",
-                locale: locale
-            )
+            switch FluelCopyLocale(locale: locale) {
+            case .english:
+                return "\(number) added"
+            case .japanese:
+                return "追加 \(number)件"
+            case .spanish:
+                return "\(number) añadidas"
+            case .french:
+                return count == 1 ? "\(number) ajout" : "\(number) ajouts"
+            case .simplifiedChinese:
+                return "新增 \(number) 项"
+            }
         case .updated:
-            return localized(
-                english: "\(count) updated",
-                japanese: "更新 \(count)件",
-                locale: locale
-            )
+            switch FluelCopyLocale(locale: locale) {
+            case .english:
+                return "\(number) updated"
+            case .japanese:
+                return "更新 \(number)件"
+            case .spanish:
+                return "\(number) actualizadas"
+            case .french:
+                return count == 1 ? "\(number) mise à jour" : "\(number) mises à jour"
+            case .simplifiedChinese:
+                return "更新 \(number) 项"
+            }
         case .archived:
-            return localized(
-                english: "\(count) archived",
-                japanese: "保管 \(count)件",
-                locale: locale
-            )
+            switch FluelCopyLocale(locale: locale) {
+            case .english:
+                return "\(number) archived"
+            case .japanese:
+                return "保管 \(number)件"
+            case .spanish:
+                return "\(number) archivadas"
+            case .french:
+                return count == 1 ? "\(number) archivage" : "\(number) archivages"
+            case .simplifiedChinese:
+                return "归档 \(number) 项"
+            }
         }
     }
 
@@ -1368,10 +1536,13 @@ enum FluelCopy {
         for presetTitle: String,
         locale: Locale = .autoupdatingCurrent
     ) -> String {
-        localized(
-            english: "\"\(presetTitle)\" will no longer appear in your preset list.",
-            japanese: "「\(presetTitle)」はプリセット一覧から削除されます。",
-            locale: locale
+        FluelLocalization.formattedString(
+            key: "delete_preset_confirmation_message",
+            defaultValue: "\"%@\" will no longer appear in your preset list.",
+            japaneseFallback: "「%@」はプリセット一覧から削除されます。",
+            bundle: .main,
+            locale: locale,
+            arguments: [presetTitle]
         )
     }
 
@@ -1459,33 +1630,69 @@ enum FluelCopy {
         _ count: Int,
         locale: Locale = .autoupdatingCurrent
     ) -> String {
-        localized(
-            english: "\(count) presets",
-            japanese: "\(count)件のプリセット",
-            locale: locale
+        let number = count.formatted(
+            .number
+                .locale(locale)
         )
+
+        switch FluelCopyLocale(locale: locale) {
+        case .english:
+            return count == 1 ? "\(number) preset" : "\(number) presets"
+        case .japanese:
+            return "\(number)件のプリセット"
+        case .spanish:
+            return count == 1 ? "\(number) preajuste" : "\(number) preajustes"
+        case .french:
+            return count == 1 ? "\(number) préréglage" : "\(number) préréglages"
+        case .simplifiedChinese:
+            return "\(number) 个预设"
+        }
     }
 
     static func customPresetCount(
         _ count: Int,
         locale: Locale = .autoupdatingCurrent
     ) -> String {
-        localized(
-            english: "\(count) custom presets",
-            japanese: "\(count)件のカスタムプリセット",
-            locale: locale
+        let number = count.formatted(
+            .number
+                .locale(locale)
         )
+
+        switch FluelCopyLocale(locale: locale) {
+        case .english:
+            return count == 1 ? "\(number) custom preset" : "\(number) custom presets"
+        case .japanese:
+            return "\(number)件のカスタムプリセット"
+        case .spanish:
+            return count == 1 ? "\(number) preajuste personalizado" : "\(number) preajustes personalizados"
+        case .french:
+            return count == 1 ? "\(number) préréglage personnalisé" : "\(number) préréglages personnalisés"
+        case .simplifiedChinese:
+            return "\(number) 个自定预设"
+        }
     }
 
     static func pinnedPresetCount(
         _ count: Int,
         locale: Locale = .autoupdatingCurrent
     ) -> String {
-        localized(
-            english: "\(count) pinned presets",
-            japanese: "\(count)件のピン留め済みプリセット",
-            locale: locale
+        let number = count.formatted(
+            .number
+                .locale(locale)
         )
+
+        switch FluelCopyLocale(locale: locale) {
+        case .english:
+            return count == 1 ? "\(number) pinned preset" : "\(number) pinned presets"
+        case .japanese:
+            return "\(number)件のピン留め済みプリセット"
+        case .spanish:
+            return count == 1 ? "\(number) preajuste fijado" : "\(number) preajustes fijados"
+        case .french:
+            return count == 1 ? "\(number) préréglage épinglé" : "\(number) préréglages épinglés"
+        case .simplifiedChinese:
+            return "\(number) 个置顶预设"
+        }
     }
 
     static func noCustomPresetsTitle(
@@ -1682,33 +1889,69 @@ enum FluelCopy {
         _ count: Int,
         locale: Locale = .autoupdatingCurrent
     ) -> String {
-        localized(
-            english: "Started \(count) days ago",
-            japanese: "\(count)日前から",
-            locale: locale
+        let number = count.formatted(
+            .number
+                .locale(locale)
         )
+
+        switch FluelCopyLocale(locale: locale) {
+        case .english:
+            return count == 1 ? "Started \(number) day ago" : "Started \(number) days ago"
+        case .japanese:
+            return "\(number)日前から"
+        case .spanish:
+            return count == 1 ? "Empezó hace \(number) día" : "Empezó hace \(number) días"
+        case .french:
+            return count == 1 ? "Commencé il y a \(number) jour" : "Commencé il y a \(number) jours"
+        case .simplifiedChinese:
+            return "\(number) 天前开始"
+        }
     }
 
     static func startedMonthsAgo(
         _ count: Int,
         locale: Locale = .autoupdatingCurrent
     ) -> String {
-        localized(
-            english: "Started \(count) months ago",
-            japanese: "\(count)か月前から",
-            locale: locale
+        let number = count.formatted(
+            .number
+                .locale(locale)
         )
+
+        switch FluelCopyLocale(locale: locale) {
+        case .english:
+            return count == 1 ? "Started \(number) month ago" : "Started \(number) months ago"
+        case .japanese:
+            return "\(number)か月前から"
+        case .spanish:
+            return count == 1 ? "Empezó hace \(number) mes" : "Empezó hace \(number) meses"
+        case .french:
+            return "Commencé il y a \(number) mois"
+        case .simplifiedChinese:
+            return "\(number) 个月前开始"
+        }
     }
 
     static func startedYearsAgo(
         _ count: Int,
         locale: Locale = .autoupdatingCurrent
     ) -> String {
-        localized(
-            english: "Started \(count) years ago",
-            japanese: "\(count)年前から",
-            locale: locale
+        let number = count.formatted(
+            .number
+                .locale(locale)
         )
+
+        switch FluelCopyLocale(locale: locale) {
+        case .english:
+            return count == 1 ? "Started \(number) year ago" : "Started \(number) years ago"
+        case .japanese:
+            return "\(number)年前から"
+        case .spanish:
+            return count == 1 ? "Empezó hace \(number) año" : "Empezó hace \(number) años"
+        case .french:
+            return count == 1 ? "Commencé il y a \(number) an" : "Commencé il y a \(number) ans"
+        case .simplifiedChinese:
+            return "\(number) 年前开始"
+        }
     }
 
     static func starterHomeTitle(
@@ -1860,8 +2103,6 @@ enum FluelCopy {
             locale: locale
         )
     }
-
-
 
     nonisolated static func entryCreationTipTitle(
         locale: Locale = .autoupdatingCurrent
@@ -2053,17 +2294,74 @@ enum FluelCopy {
         )
     }
 
+    nonisolated static func failedToLoadPreview(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Failed to load preview",
+            japanese: "プレビューを読み込めませんでした",
+            locale: locale
+        )
+    }
+
+    nonisolated static func previewUnavailable(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Preview unavailable",
+            japanese: "プレビューを表示できません",
+            locale: locale
+        )
+    }
+
+    nonisolated static func missingSampleEntry(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Missing sample entry",
+            japanese: "サンプルの記録が見つかりません",
+            locale: locale
+        )
+    }
+
     nonisolated static func localized(
         english: String,
         japanese: String,
-        locale: Locale
+        locale: Locale,
+        key: String? = nil
     ) -> String {
+        FluelLocalization.string(
+            key: key ?? english,
+            defaultValue: english,
+            japaneseFallback: japanese,
+            bundle: .main,
+            locale: locale
+        )
+    }
+}
+
+private enum FluelCopyLocale {
+    case english
+    case japanese
+    case spanish
+    case french
+    case simplifiedChinese
+
+    init(
+        locale: Locale
+    ) {
         let languageIdentifier = locale.language.languageCode?.identifier ?? locale.identifier
 
         if languageIdentifier.hasPrefix("ja") {
-            return japanese
+            self = .japanese
+        } else if languageIdentifier.hasPrefix("es") {
+            self = .spanish
+        } else if languageIdentifier.hasPrefix("fr") {
+            self = .french
+        } else if languageIdentifier.hasPrefix("zh") {
+            self = .simplifiedChinese
+        } else {
+            self = .english
         }
-
-        return english
     }
 }

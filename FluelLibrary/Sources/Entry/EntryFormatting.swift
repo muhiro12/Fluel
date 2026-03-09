@@ -193,7 +193,7 @@ public enum EntryFormatting {
                     .locale(locale)
             )
 
-            if language == .japanese {
+            if language == .japanese || language == .simplifiedChinese {
                 return "\(year)年"
             }
 
@@ -217,6 +217,12 @@ public enum EntryFormatting {
             return "Since \(dateText)"
         case .japanese:
             return "\(dateText)から"
+        case .spanish:
+            return "Desde \(dateText)"
+        case .french:
+            return "Depuis \(dateText)"
+        case .simplifiedChinese:
+            return "从\(dateText)开始"
         }
     }
 
@@ -236,14 +242,32 @@ public enum EntryFormatting {
             return "Starts on \(dateText)"
         case (.day, .japanese):
             return "\(dateText)に始まる"
+        case (.day, .spanish):
+            return "Empieza el \(dateText)"
+        case (.day, .french):
+            return "Commence le \(dateText)"
+        case (.day, .simplifiedChinese):
+            return "始于\(dateText)"
         case (.month, .english):
             return "Starts sometime in \(dateText)"
         case (.month, .japanese):
             return "\(dateText)のどこかで始まる"
+        case (.month, .spanish):
+            return "Empieza en algún momento de \(dateText)"
+        case (.month, .french):
+            return "Commence à un moment de \(dateText)"
+        case (.month, .simplifiedChinese):
+            return "大约始于\(dateText)"
         case (.year, .english):
             return "Starts sometime in \(dateText)"
         case (.year, .japanese):
             return "\(dateText)のどこかで始まる"
+        case (.year, .spanish):
+            return "Empieza en algún momento de \(dateText)"
+        case (.year, .french):
+            return "Commence à un moment de \(dateText)"
+        case (.year, .simplifiedChinese):
+            return "大约始于\(dateText)"
         }
     }
 
@@ -279,6 +303,37 @@ public enum EntryFormatting {
             ) ?? String()
 
             return "\(yearText)年\(monthText)月のどこか"
+        case (.month, .spanish):
+            let dateText = resolvedDate.formatted(
+                .dateTime
+                    .month(.abbreviated)
+                    .year()
+                    .locale(locale)
+            )
+
+            return "En algún momento de \(dateText)"
+        case (.month, .french):
+            let dateText = resolvedDate.formatted(
+                .dateTime
+                    .month(.abbreviated)
+                    .year()
+                    .locale(locale)
+            )
+
+            return "À un moment de \(dateText)"
+        case (.month, .simplifiedChinese):
+            let yearText = startComponents.year.formatted(
+                .number
+                    .grouping(.never)
+                    .locale(locale)
+            )
+            let monthText = startComponents.month?.formatted(
+                .number
+                    .grouping(.never)
+                    .locale(locale)
+            ) ?? String()
+
+            return "\(yearText)年\(monthText)月左右"
         case (.year, .english):
             let yearText = startComponents.year.formatted(
                 .number
@@ -295,6 +350,30 @@ public enum EntryFormatting {
             )
 
             return "\(yearText)年のどこか"
+        case (.year, .spanish):
+            let yearText = startComponents.year.formatted(
+                .number
+                    .grouping(.never)
+                    .locale(locale)
+            )
+
+            return "En algún momento de \(yearText)"
+        case (.year, .french):
+            let yearText = startComponents.year.formatted(
+                .number
+                    .grouping(.never)
+                    .locale(locale)
+            )
+
+            return "À un moment de \(yearText)"
+        case (.year, .simplifiedChinese):
+            let yearText = startComponents.year.formatted(
+                .number
+                    .grouping(.never)
+                    .locale(locale)
+            )
+
+            return "\(yearText)年左右"
         }
     }
 
@@ -307,14 +386,32 @@ public enum EntryFormatting {
             return "Exact day"
         case (.day, .japanese):
             return "日まで分かる"
+        case (.day, .spanish):
+            return "Día exacto"
+        case (.day, .french):
+            return "Jour exact"
+        case (.day, .simplifiedChinese):
+            return "精确到日"
         case (.month, .english):
             return "Known to the month"
         case (.month, .japanese):
             return "月まで分かる"
+        case (.month, .spanish):
+            return "Conocido hasta el mes"
+        case (.month, .french):
+            return "Connu jusqu'au mois"
+        case (.month, .simplifiedChinese):
+            return "精确到月"
         case (.year, .english):
             return "Known to the year"
         case (.year, .japanese):
             return "年まで分かる"
+        case (.year, .spanish):
+            return "Conocido hasta el año"
+        case (.year, .french):
+            return "Connu jusqu'à l'année"
+        case (.year, .simplifiedChinese):
+            return "精确到年"
         }
     }
 
@@ -334,6 +431,20 @@ public enum EntryFormatting {
             return "\(number) active entries"
         case .japanese:
             return "\(number)件を記録中"
+        case .spanish:
+            if count == 1 {
+                return "\(number) registro activo"
+            }
+
+            return "\(number) registros activos"
+        case .french:
+            if count == 1 {
+                return "\(number) entrée active"
+            }
+
+            return "\(number) entrées actives"
+        case .simplifiedChinese:
+            return "记录中 \(number) 条"
         }
     }
 
@@ -377,6 +488,20 @@ public enum EntryFormatting {
             return "\(number) characters"
         case .japanese:
             return "\(number)文字"
+        case .spanish:
+            if note.count == 1 {
+                return "\(number) carácter"
+            }
+
+            return "\(number) caracteres"
+        case .french:
+            if note.count == 1 {
+                return "\(number) caractère"
+            }
+
+            return "\(number) caractères"
+        case .simplifiedChinese:
+            return "\(number) 个字符"
         }
     }
 
@@ -453,6 +578,12 @@ public enum EntryFormatting {
             return "Archived on \(formattedDate)"
         case .japanese:
             return "\(formattedDate)に保管済み"
+        case .spanish:
+            return "Archivado el \(formattedDate)"
+        case .french:
+            return "Archivé le \(formattedDate)"
+        case .simplifiedChinese:
+            return "已于\(formattedDate)归档"
         }
     }
 
@@ -473,6 +604,12 @@ public enum EntryFormatting {
             return "Created on \(formattedDate)"
         case .japanese:
             return "\(formattedDate)に作成"
+        case .spanish:
+            return "Creado el \(formattedDate)"
+        case .french:
+            return "Créé le \(formattedDate)"
+        case .simplifiedChinese:
+            return "创建于\(formattedDate)"
         }
     }
 
@@ -493,6 +630,12 @@ public enum EntryFormatting {
             return "Updated on \(formattedDate)"
         case .japanese:
             return "\(formattedDate)に更新"
+        case .spanish:
+            return "Actualizado el \(formattedDate)"
+        case .french:
+            return "Mis à jour le \(formattedDate)"
+        case .simplifiedChinese:
+            return "更新于\(formattedDate)"
         }
     }
 
@@ -521,11 +664,12 @@ private extension EntryFormatting {
         japanese: String,
         locale: Locale
     ) -> String {
-        switch FluelLocale(locale: locale) {
-        case .english:
-            return english
-        case .japanese:
-            return japanese
-        }
+        FluelLocalization.string(
+            key: english,
+            defaultValue: english,
+            japaneseFallback: japanese,
+            bundle: .module,
+            locale: locale
+        )
     }
 }

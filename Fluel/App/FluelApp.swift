@@ -160,7 +160,7 @@ private struct CodexCaptureRootView: View {
                     EntryDetailView(entry: sampleEntry)
                 }
             } else {
-                Text("Missing sample entry")
+                Text(FluelCopy.missingSampleEntry())
             }
         case .formCreate:
             NavigationStack {
@@ -176,7 +176,7 @@ private struct CodexCaptureRootView: View {
                     )
                 }
             } else {
-                Text("Missing sample entry")
+                Text(FluelCopy.missingSampleEntry())
             }
         case .settings:
             NavigationStack {

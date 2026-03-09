@@ -78,4 +78,43 @@ struct EntryActivityTimelineShareTextFormatterTests {
         #expect(text.contains("範囲: 直近6か月"))
         #expect(text.contains("表示中: 4件中 2件の動き"))
     }
+
+    @Test
+    func text_includes_chinese_labels() {
+        let text = EntryActivityTimelineShareTextFormatter.text(
+            summary: .init(
+                totalCount: 4,
+                displayedCount: 2,
+                monthCount: 1,
+                addedCount: 0,
+                updatedCount: 1,
+                archivedCount: 1
+            ),
+            trends: [],
+            milestoneDigest: .init(
+                visibleEntryCount: 1,
+                milestoneCount: 1,
+                approximateCount: 1,
+                milestones: [
+                    .init(
+                        entryID: UUID(),
+                        title: "钱包",
+                        milestoneDate: isoDate("2026-03-20T00:00:00Z"),
+                        daysRemaining: 12,
+                        milestoneText: "2年",
+                        isApproximate: true
+                    )
+                ]
+            ),
+            activityFilterLabel: "全部动态",
+            scopeLabel: "最近 6 个月",
+            locale: Locale(identifier: "zh-Hans")
+        )
+
+        #expect(text.contains("Fluel 时间线"))
+        #expect(text.contains("范围: 最近 6 个月"))
+        #expect(text.contains("显示中: 4 条动态中的 2 条"))
+        #expect(text.contains("大致里程碑: 1"))
+        #expect(text.contains("还有12天"))
+    }
 }

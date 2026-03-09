@@ -4,6 +4,9 @@ import SwiftData
 import Testing
 
 struct EntryRepositoryTests {
+    private let esES: Locale = .init(identifier: "es_ES")
+    private let zhHans: Locale = .init(identifier: "zh-Hans")
+
     @Test
     func create_roundTrips_day_precision_components() throws {
         let context = try makeTestContext()
@@ -204,5 +207,25 @@ struct EntryRepositoryTests {
 
         #expect(try EntryRepository.fetchAllEntries(context: context).count == 1)
         #expect(try EntryRepository.fetchActiveEntries(context: context).count == 1)
+    }
+
+    @Test
+    func localizedDescription_formats_spanish_validation_message() {
+        let result = EntryRepositoryError.localizedDescription(
+            for: .futureStartDate,
+            locale: esES
+        )
+
+        #expect(result == "La fecha de inicio debe ser hoy o anterior.")
+    }
+
+    @Test
+    func localizedDescription_formats_chinese_delete_message() {
+        let result = EntryRepositoryError.localizedDescription(
+            for: .deleteRequiresArchivedEntry,
+            locale: zhHans
+        )
+
+        #expect(result == "删除前请先将该记录归档。")
     }
 }

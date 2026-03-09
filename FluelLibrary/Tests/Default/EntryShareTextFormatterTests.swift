@@ -5,6 +5,7 @@ import Testing
 struct EntryShareTextFormatterTests {
     private let enUS: Locale = .init(identifier: "en_US_POSIX")
     private let jaJP: Locale = .init(identifier: "ja_JP")
+    private let esES: Locale = .init(identifier: "es_ES")
     private let calendar: Calendar = .init(identifier: .gregorian)
 
     @Test
@@ -96,5 +97,35 @@ struct EntryShareTextFormatterTests {
         )
 
         #expect(text.contains("Start range: Sometime in Mar 2024"))
+    }
+
+    @Test
+    func text_includes_spanish_labels() throws {
+        let context = try makeTestContext()
+        let entry = try EntryRepository.create(
+            context: context,
+            input: makeInput(
+                title: "Bolso",
+                precision: .month,
+                year: 2_024,
+                month: 3,
+                note: "Siempre conmigo."
+            ),
+            now: isoDate("2026-03-08T12:00:00Z"),
+            calendar: calendar
+        )
+
+        let text = EntryShareTextFormatter.text(
+            for: entry,
+            referenceDate: isoDate("2026-03-08T12:00:00Z"),
+            locale: esES,
+            calendar: calendar
+        )
+
+        #expect(text.contains("Tiempo juntos"))
+        #expect(text.contains("Inicio"))
+        #expect(text.contains("Margen de inicio"))
+        #expect(text.contains("Precisión conocida"))
+        #expect(text.contains("Nota: Siempre conmigo."))
     }
 }

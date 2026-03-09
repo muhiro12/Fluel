@@ -115,11 +115,12 @@ private extension EntryShareTextFormatter {
         japanese: String,
         locale: Locale
     ) -> String {
-        switch FluelLocale(locale: locale) {
-        case .english:
-            return english
-        case .japanese:
-            return japanese
-        }
+        FluelLocalization.string(
+            key: english,
+            defaultValue: english,
+            japaneseFallback: japanese,
+            bundle: .module,
+            locale: locale
+        )
     }
 }

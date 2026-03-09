@@ -141,7 +141,7 @@ private struct EntryRowPreview: View {
         if let preview = previewContent {
             preview
         } else {
-            Text("Preview unavailable")
+            Text(FluelCopy.previewUnavailable())
                 .fluelAppStyle()
         }
     }

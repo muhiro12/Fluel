@@ -43,9 +43,8 @@ public enum EntryActivityTimelineShareTextFormatter {
                     japanese: "表示中",
                     locale: locale
                 ),
-                value: localized(
-                    english: "\(summary.displayedCount) of \(summary.totalCount) activity items",
-                    japanese: "\(summary.totalCount)件中 \(summary.displayedCount)件の動き",
+                value: localizedSummaryActivityCount(
+                    summary: summary,
                     locale: locale
                 )
             ),
@@ -55,9 +54,8 @@ public enum EntryActivityTimelineShareTextFormatter {
                     japanese: "月数",
                     locale: locale
                 ),
-                value: localized(
-                    english: "\(summary.monthCount) months",
-                    japanese: "\(summary.monthCount)か月",
+                value: localizedSummaryMonthCount(
+                    summary.monthCount,
                     locale: locale
                 )
             ),
@@ -160,11 +158,73 @@ private extension EntryActivityTimelineShareTextFormatter {
         _ count: Int,
         locale: Locale
     ) -> String {
-        localized(
-            english: "\(count) activity items",
-            japanese: "動き \(count)件",
-            locale: locale
+        let number = count.formatted(
+            .number
+                .locale(locale)
         )
+
+        switch FluelLocale(locale: locale) {
+        case .english:
+            return count == 1 ? "\(number) activity item" : "\(number) activity items"
+        case .japanese:
+            return "動き \(number)件"
+        case .spanish:
+            return count == 1 ? "\(number) actividad" : "\(number) actividades"
+        case .french:
+            return count == 1 ? "\(number) activité" : "\(number) activités"
+        case .simplifiedChinese:
+            return "\(number) 条动态"
+        }
+    }
+
+    static func localizedSummaryActivityCount(
+        summary: EntryActivityTimelineSummary,
+        locale: Locale
+    ) -> String {
+        let displayed = summary.displayedCount.formatted(
+            .number
+                .locale(locale)
+        )
+        let total = summary.totalCount.formatted(
+            .number
+                .locale(locale)
+        )
+
+        switch FluelLocale(locale: locale) {
+        case .english:
+            return "\(displayed) of \(total) activity items"
+        case .japanese:
+            return "\(total)件中 \(displayed)件の動き"
+        case .spanish:
+            return "\(displayed) de \(total) actividades"
+        case .french:
+            return "\(displayed) activités sur \(total)"
+        case .simplifiedChinese:
+            return "\(total) 条动态中的 \(displayed) 条"
+        }
+    }
+
+    static func localizedSummaryMonthCount(
+        _ count: Int,
+        locale: Locale
+    ) -> String {
+        let number = count.formatted(
+            .number
+                .locale(locale)
+        )
+
+        switch FluelLocale(locale: locale) {
+        case .english:
+            return count == 1 ? "\(number) month" : "\(number) months"
+        case .japanese:
+            return "\(number)か月"
+        case .spanish:
+            return count == 1 ? "\(number) mes" : "\(number) meses"
+        case .french:
+            return "\(number) mois"
+        case .simplifiedChinese:
+            return "\(number)个月"
+        }
     }
 
     static func localizedTrendKinds(
@@ -172,19 +232,19 @@ private extension EntryActivityTimelineShareTextFormatter {
         locale: Locale
     ) -> String {
         [
-            localized(
-                english: "\(trend.addedCount) added",
-                japanese: "追加 \(trend.addedCount)件",
+            localizedTrendKind(
+                kind: .added,
+                count: trend.addedCount,
                 locale: locale
             ),
-            localized(
-                english: "\(trend.updatedCount) updated",
-                japanese: "更新 \(trend.updatedCount)件",
+            localizedTrendKind(
+                kind: .updated,
+                count: trend.updatedCount,
                 locale: locale
             ),
-            localized(
-                english: "\(trend.archivedCount) archived",
-                japanese: "保管 \(trend.archivedCount)件",
+            localizedTrendKind(
+                kind: .archived,
+                count: trend.archivedCount,
                 locale: locale
             ),
         ]
@@ -195,11 +255,23 @@ private extension EntryActivityTimelineShareTextFormatter {
         _ milestone: EntryMilestoneSnapshot,
         locale: Locale
     ) -> String {
-        let daysText = localized(
-            english: "\(milestone.daysRemaining) days left",
-            japanese: "あと\(milestone.daysRemaining)日",
-            locale: locale
+        let number = milestone.daysRemaining.formatted(
+            .number
+                .locale(locale)
         )
+        let daysText: String
+        switch FluelLocale(locale: locale) {
+        case .english:
+            daysText = milestone.daysRemaining == 1 ? "\(number) day left" : "\(number) days left"
+        case .japanese:
+            daysText = "あと\(number)日"
+        case .spanish:
+            daysText = milestone.daysRemaining == 1 ? "Queda \(number) día" : "Quedan \(number) días"
+        case .french:
+            daysText = milestone.daysRemaining == 1 ? "Encore \(number) jour" : "Encore \(number) jours"
+        case .simplifiedChinese:
+            daysText = "还有\(number)天"
+        }
         let approximateText = milestone.isApproximate
             ? localized(
                 english: "approximate",
@@ -224,16 +296,61 @@ private extension EntryActivityTimelineShareTextFormatter {
         .joined(separator: " | ")
     }
 
+    static func localizedTrendKind(
+        kind: EntryActivityKind,
+        count: Int,
+        locale: Locale
+    ) -> String {
+        let number = count.formatted(
+            .number
+                .locale(locale)
+        )
+
+        switch (kind, FluelLocale(locale: locale)) {
+        case (.added, .english):
+            return "\(number) added"
+        case (.added, .japanese):
+            return "追加 \(number)件"
+        case (.added, .spanish):
+            return "\(number) añadidas"
+        case (.added, .french):
+            return count == 1 ? "\(number) ajout" : "\(number) ajouts"
+        case (.added, .simplifiedChinese):
+            return "新增 \(number) 项"
+        case (.updated, .english):
+            return "\(number) updated"
+        case (.updated, .japanese):
+            return "更新 \(number)件"
+        case (.updated, .spanish):
+            return "\(number) actualizadas"
+        case (.updated, .french):
+            return count == 1 ? "\(number) mise à jour" : "\(number) mises à jour"
+        case (.updated, .simplifiedChinese):
+            return "更新 \(number) 项"
+        case (.archived, .english):
+            return "\(number) archived"
+        case (.archived, .japanese):
+            return "保管 \(number)件"
+        case (.archived, .spanish):
+            return "\(number) archivadas"
+        case (.archived, .french):
+            return count == 1 ? "\(number) archivage" : "\(number) archivages"
+        case (.archived, .simplifiedChinese):
+            return "归档 \(number) 项"
+        }
+    }
+
     static func localized(
         english: String,
         japanese: String,
         locale: Locale
     ) -> String {
-        switch FluelLocale(locale: locale) {
-        case .english:
-            return english
-        case .japanese:
-            return japanese
-        }
+        FluelLocalization.string(
+            key: english,
+            defaultValue: english,
+            japaneseFallback: japanese,
+            bundle: .module,
+            locale: locale
+        )
     }
 }
