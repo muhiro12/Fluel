@@ -1,6 +1,6 @@
 import FluelLibrary
 import MHLogging
-import MHPlatform
+import MHAppRuntimeCore
 import SwiftData
 import SwiftUI
 
@@ -40,12 +40,12 @@ struct FluelApp: App {
             captureBootstrap = nil
             modelContainer = Self.makeLiveModelContainer()
         }
-#else
+        #else
         captureBootstrap = nil
         modelContainer = Self.makeLiveModelContainer()
-#endif
+        #endif
         appBootstrap = .init(
-            configuration: FluelAppConfiguration.runtimeConfiguration,
+            runtimeOnlyConfiguration: FluelAppConfiguration.runtimeConfiguration,
             lifecyclePlan: FluelAppConfiguration.runtimeLifecyclePlan
         )
 

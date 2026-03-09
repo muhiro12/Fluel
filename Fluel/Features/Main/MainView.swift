@@ -1,5 +1,4 @@
 import FluelLibrary
-import MHPlatform
 import SwiftData
 import SwiftUI
 
@@ -144,12 +143,6 @@ private extension MainView {
     if let context = try? FluelSampleData.makeSharedContext() {
         MainView()
             .modelContainer(context.modelContainer)
-            .mhAppRuntimeBootstrap(
-                .init(
-                    configuration: FluelAppConfiguration.runtimeConfiguration,
-                    lifecyclePlan: FluelAppConfiguration.runtimeLifecyclePlan
-                )
-            )
             .fluelAppStyle()
     } else {
         Text(FluelCopy.failedToLoadPreview())
