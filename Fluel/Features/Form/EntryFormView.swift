@@ -170,14 +170,16 @@ struct EntryFormView: View {
     }
 
     private func save() {
-        switch mode {
-        case .create:
-            mutationWorkflow.create(input: draft.input)
-        case let .edit(entry):
-            mutationWorkflow.update(
-                entry: entry,
-                input: draft.input
-            )
+        Task {
+            switch mode {
+            case .create:
+                await mutationWorkflow.create(input: draft.input)
+            case let .edit(entry):
+                await mutationWorkflow.update(
+                    entry: entry,
+                    input: draft.input
+                )
+            }
         }
     }
 

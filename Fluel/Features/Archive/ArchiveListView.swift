@@ -371,7 +371,9 @@ struct ArchiveListView: View {
     private func restore(
         _ entry: Entry
     ) {
-        mutationWorkflow.restore(entry: entry)
+        Task {
+            await mutationWorkflow.restore(entry: entry)
+        }
     }
 
     private func clearSearch() {
@@ -389,7 +391,9 @@ struct ArchiveListView: View {
 
         self.pendingDeleteEntry = nil
 
-        mutationWorkflow.delete(entry: pendingDeleteEntry)
+        Task {
+            await mutationWorkflow.delete(entry: pendingDeleteEntry)
+        }
     }
 }
 

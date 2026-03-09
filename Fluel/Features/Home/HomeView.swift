@@ -408,7 +408,9 @@ struct HomeView: View {
     private func archive(
         _ entry: Entry
     ) {
-        mutationWorkflow.archive(entry: entry)
+        Task {
+            await mutationWorkflow.archive(entry: entry)
+        }
     }
 
     var quickPresetsCard: some View {

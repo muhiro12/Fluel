@@ -153,17 +153,23 @@ struct EntryDetailView: View {
 
     private func archive() {
         FluelTipState.markDetailQuickActionsLearned()
-        mutationWorkflow.archive(entry: entry)
+        Task {
+            await mutationWorkflow.archive(entry: entry)
+        }
     }
 
     private func restore() {
         FluelTipState.markDetailQuickActionsLearned()
-        mutationWorkflow.restore(entry: entry)
+        Task {
+            await mutationWorkflow.restore(entry: entry)
+        }
     }
 
     private func delete() {
         FluelTipState.markDetailQuickActionsLearned()
-        mutationWorkflow.delete(entry: entry)
+        Task {
+            await mutationWorkflow.delete(entry: entry)
+        }
     }
 
     private func presentEditor() {

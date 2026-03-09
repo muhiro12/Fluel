@@ -1,5 +1,6 @@
 import FluelLibrary
 import Foundation
+import MHMutationFlow
 import SwiftData
 
 @MainActor
@@ -9,11 +10,10 @@ struct FluelEntryMutationWorkflow {
     var onSuccess: @MainActor () -> Void = {}
     var onError: @MainActor (String) -> Void = { _ in }
 
-    @discardableResult
     func create(
         input: EntryFormInput
-    ) -> Entry? {
-        perform {
+    ) async {
+        await runCreate(name: "createEntry") {
             try EntryRepository.create(
                 context: context,
                 input: input,
@@ -26,8 +26,8 @@ struct FluelEntryMutationWorkflow {
     func update(
         entry: Entry,
         input: EntryFormInput
-    ) {
-        _ = perform {
+    ) async {
+        await runVoid(name: "updateEntry") {
             try EntryRepository.update(
                 context: context,
                 entry: entry,
@@ -35,62 +35,97 @@ struct FluelEntryMutationWorkflow {
                 now: .now,
                 calendar: calendar
             )
-        } as Void?
+        }
     }
 
     func archive(
         entry: Entry
-    ) {
-        _ = perform {
+    ) async {
+        await runVoid(name: "archiveEntry") {
             try EntryRepository.archive(
                 context: context,
                 entry: entry,
                 now: .now
             )
-        } as Void?
+        }
     }
 
     func restore(
         entry: Entry
-    ) {
-        _ = perform {
+    ) async {
+        await runVoid(name: "restoreEntry") {
             try EntryRepository.restore(
                 context: context,
                 entry: entry,
                 now: .now
             )
-        } as Void?
+        }
     }
 
     func delete(
         entry: Entry
-    ) {
-        _ = perform {
+    ) async {
+        await runVoid(name: "deleteEntry") {
             try EntryRepository.delete(
                 context: context,
                 entry: entry
             )
-        } as Void?
+        }
     }
 }
 
 private extension FluelEntryMutationWorkflow {
-    func perform<Value>(
-        _ operation: () throws -> Value
-    ) -> Value? {
-        do {
-            let value = try operation()
-            handleSuccess()
-            return value
-        } catch {
-            onError(error.localizedDescription)
-            return nil
+    var successAdapter: MHMutationAdapter<Void> {
+        .fixed {
+            MHMutationStep.mainActor(name: "reloadWidgetTimelines") {
+                FluelWidgetReloader.reloadAllTimelines()
+            }
+            MHMutationStep.mainActor(name: "handleMutationSuccess") {
+                onSuccess()
+            }
         }
     }
 
-    func handleSuccess() {
-        // Keep post-save side effects behind one app-side boundary.
-        FluelWidgetReloader.reloadAllTimelines()
-        onSuccess()
+    func runCreate(
+        name: String,
+        operation: @escaping @MainActor @Sendable () throws -> Entry
+    ) async {
+        do {
+            _ = try await MHMutationWorkflow.runThrowing(
+                name: name,
+                operation: operation,
+                adapter: successAdapter,
+                projection: .closures(
+                    afterSuccess: { _ in () },
+                    returning: { _ in () }
+                )
+            )
+        } catch is CancellationError {
+            return
+        } catch let error as MHMutationWorkflowError {
+            onError(error.localizedDescription)
+        } catch {
+            onError(error.localizedDescription)
+        }
+    }
+
+    func runVoid(
+        name: String,
+        operation: @escaping @MainActor @Sendable () throws -> Void
+    ) async {
+        do {
+            _ = try await MHMutationWorkflow.runThrowing(
+                name: name,
+                operation: operation,
+                adapter: successAdapter,
+                adapterValue: ()
+            )
+        } catch is CancellationError {
+            return
+        } catch let error as MHMutationWorkflowError {
+            onError(error.localizedDescription)
+        } catch {
+            onError(error.localizedDescription)
+        }
     }
 }
