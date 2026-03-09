@@ -1,5 +1,6 @@
 import MHUI
 import SwiftUI
+import TipKit
 
 struct PresetSettingsView: View {
     @Environment(\.mhTheme)
@@ -8,6 +9,8 @@ struct PresetSettingsView: View {
     @State private var isPresentingCreateSheet = false
     @State private var editingPreset: EntryPreset?
     @State private var deletingPreset: EntryPreset?
+
+    private let defaultPresetTip = FluelTips.DefaultPresetTip()
 
     var body: some View {
         ScrollView {
@@ -168,6 +171,7 @@ struct PresetSettingsView: View {
                         presetStore.usesDefaultPreset
                     },
                     set: { newValue in
+                        FluelTipState.markDefaultPresetLearned()
                         presetStore.setUsesDefaultPreset(newValue)
                     }
                 )
@@ -194,6 +198,7 @@ struct PresetSettingsView: View {
                 Button(
                     FluelCopy.clearDefaultPreset()
                 ) {
+                    FluelTipState.markDefaultPresetLearned()
                     presetStore.setDefaultPreset(id: nil)
                 }
                 .buttonStyle(.mhSecondary)
@@ -208,11 +213,16 @@ struct PresetSettingsView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .mhRow()
         .mhSurface(role: .muted)
+        .popoverTip(
+            showsDefaultPresetTip ? defaultPresetTip : nil,
+            arrowEdge: .top
+        )
     }
 
     private func selectDefault(
         _ preset: EntryPreset
     ) {
+        FluelTipState.markDefaultPresetLearned()
         if presetStore.defaultPresetID == preset.id {
             presetStore.setDefaultPreset(id: nil)
             return
@@ -229,6 +239,11 @@ struct PresetSettingsView: View {
             preset.isPinned == false,
             for: preset.id
         )
+    }
+
+    private var showsDefaultPresetTip: Bool {
+        FluelTipBootstrap.isEnabled
+            && FluelTipState.hasLearnedDefaultPreset == false
     }
 }
 

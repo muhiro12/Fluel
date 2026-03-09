@@ -2,6 +2,7 @@ import FluelLibrary
 import MHUI
 import SwiftData
 import SwiftUI
+import TipKit
 
 struct ArchiveListView: View {
     private enum Metrics {
@@ -49,6 +50,8 @@ struct ArchiveListView: View {
     )
     private var showsMetadataBadges = true
 
+    private let contentFiltersTip = FluelTips.ContentFiltersTip()
+
     private var sortedEntries: [Entry] {
         EntryListOrdering.archived(
             archivedEntries,
@@ -85,6 +88,9 @@ struct ArchiveListView: View {
             },
             set: { newValue in
                 storedContentFilter = newValue.rawValue
+                if newValue != .all {
+                    FluelTipState.markContentFiltersLearned()
+                }
             }
         )
     }
@@ -114,6 +120,13 @@ struct ArchiveListView: View {
                 errorMessage = message
             }
         )
+    }
+
+    private var showsContentFiltersTip: Bool {
+        FluelTipBootstrap.isEnabled
+            && FluelTipState.hasLearnedContentFilters == false
+            && sortedEntries.isEmpty == false
+            && displayedEntries.isEmpty == false
     }
 
     var body: some View {
@@ -337,6 +350,10 @@ struct ArchiveListView: View {
             VStack(alignment: .leading, spacing: theme.spacing.inline) {
                 EntryContentFilterBar(
                     selection: contentFilterBinding
+                )
+                .popoverTip(
+                    showsContentFiltersTip ? contentFiltersTip : nil,
+                    arrowEdge: .top
                 )
 
                 if hasActiveSearch || hasActiveFilter {

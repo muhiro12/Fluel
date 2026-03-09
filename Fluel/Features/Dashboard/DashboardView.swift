@@ -2,6 +2,7 @@ import FluelLibrary
 import MHUI
 import SwiftData
 import SwiftUI
+import TipKit
 
 struct DashboardView: View {
     @Environment(\.mhTheme)
@@ -19,6 +20,8 @@ struct DashboardView: View {
     let onCreateFromPreset: (String) -> Void
     let onShowArchive: () -> Void
     let onShowLicenses: () -> Void
+
+    private let dashboardOverviewTip = FluelTips.DashboardOverviewTip()
 
     var body: some View {
         TimelineView(.periodic(from: .now, by: 3_600)) { timeline in // swiftlint:disable:this no_magic_numbers
@@ -40,6 +43,14 @@ struct DashboardView: View {
                         DashboardEmptyState(onAdd: onAdd)
                     } else {
                         DashboardOverviewCard(snapshot: content.snapshot)
+                            .popoverTip(
+                                showsDashboardOverviewTip(
+                                    for: content.snapshot
+                                )
+                                ? dashboardOverviewTip
+                                : nil,
+                                arrowEdge: .top
+                            )
 
                         if let leadEntry = content.leadEntry {
                             DashboardLeadEntryCard(leadEntry: leadEntry)
@@ -68,6 +79,11 @@ struct DashboardView: View {
             )
         }
         .navigationBarTitleDisplayMode(.inline)
+        .onDisappear {
+            if entries.isEmpty == false {
+                FluelTipState.markDashboardOverviewLearned()
+            }
+        }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button(action: onAdd) {
@@ -78,6 +94,16 @@ struct DashboardView: View {
                 }
             }
         }
+    }
+}
+
+private extension DashboardView {
+    func showsDashboardOverviewTip(
+        for snapshot: EntryCollectionSnapshot
+    ) -> Bool {
+        FluelTipBootstrap.isEnabled
+            && FluelTipState.hasLearnedDashboardOverview == false
+            && snapshot.totalCount > 0
     }
 }
 

@@ -2,6 +2,7 @@ import FluelLibrary
 import MHUI
 import SwiftData
 import SwiftUI
+import TipKit
 
 struct SettingsView: View {
     @Environment(\.mhTheme)
@@ -30,6 +31,8 @@ struct SettingsView: View {
         store: DisplayPreferences.store
     )
     private var showsDashboardHighlights = true
+
+    private let presetManagementTip = FluelTips.PresetManagementTip()
 
     let onShowArchive: () -> Void
     let onShowLicenses: () -> Void
@@ -120,6 +123,9 @@ struct SettingsView: View {
 
             NavigationLink {
                 PresetSettingsView()
+                    .onAppear {
+                        FluelTipState.markPresetManagementLearned()
+                    }
             } label: {
                 VStack(alignment: .leading, spacing: 6) {
                     Text(FluelCopy.openPresets())
@@ -153,6 +159,10 @@ struct SettingsView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .mhRow()
         .mhSurface(role: .muted)
+        .popoverTip(
+            showsPresetManagementTip ? presetManagementTip : nil,
+            arrowEdge: .top
+        )
     }
 
     private var supportCard: some View {
@@ -176,11 +186,24 @@ struct SettingsView: View {
                     )
                 }
                 .buttonStyle(.mhSecondary)
+
+                Button(action: FluelTipBootstrap.resetTips) {
+                    Label(
+                        FluelCopy.showTipsAgain(),
+                        systemImage: "lightbulb"
+                    )
+                }
+                .buttonStyle(.mhSecondary)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .mhRow()
         .mhSurface(role: .muted)
+    }
+
+    private var showsPresetManagementTip: Bool {
+        FluelTipBootstrap.isEnabled
+            && FluelTipState.hasLearnedPresetManagement == false
     }
 }
 

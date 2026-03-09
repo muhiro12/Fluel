@@ -2,10 +2,17 @@ import FluelLibrary
 import MHUI
 import SwiftData
 import SwiftUI
+import TipKit
 
 struct HomeView: View {
     private enum Metrics {
         static let rowSpacing: CGFloat = 12
+    }
+
+    private enum TipKind {
+        case addEntry
+        case presets
+        case filters
     }
 
     @Environment(\.mhTheme)
@@ -54,6 +61,10 @@ struct HomeView: View {
     let onShowArchive: () -> Void
     let onShowLicenses: () -> Void
 
+    private let entryCreationTip = FluelTips.EntryCreationTip()
+    private let presetSelectionTip = FluelTips.PresetSelectionTip()
+    private let contentFiltersTip = FluelTips.ContentFiltersTip()
+
     private var sortedEntries: [Entry] {
         EntryListOrdering.active(
             activeEntries,
@@ -90,6 +101,9 @@ struct HomeView: View {
             },
             set: { newValue in
                 storedContentFilter = newValue.rawValue
+                if newValue != .all {
+                    FluelTipState.markContentFiltersLearned()
+                }
             }
         )
     }
@@ -123,6 +137,29 @@ struct HomeView: View {
 
     private var quickPresets: [EntryPreset] {
         presetStore.suggestedPresets(limit: 4)
+    }
+
+    private var currentTip: TipKind? {
+        guard FluelTipBootstrap.isEnabled else {
+            return nil
+        }
+
+        if FluelTipState.hasLearnedEntryCreation == false {
+            return .addEntry
+        }
+
+        if quickPresets.isEmpty == false,
+           FluelTipState.hasLearnedPresetSelection == false {
+            return .presets
+        }
+
+        if sortedEntries.isEmpty == false,
+           displayedEntries.isEmpty == false,
+           FluelTipState.hasLearnedContentFilters == false {
+            return .filters
+        }
+
+        return nil
     }
 
     var body: some View {
@@ -188,6 +225,10 @@ struct HomeView: View {
                         systemImage: "plus"
                     )
                 }
+                .popoverTip(
+                    currentTip == .addEntry ? entryCreationTip : nil,
+                    arrowEdge: .top
+                )
             }
         }
         .searchable(
@@ -347,6 +388,10 @@ struct HomeView: View {
                 EntryContentFilterBar(
                     selection: contentFilterBinding
                 )
+                .popoverTip(
+                    currentTip == .filters ? contentFiltersTip : nil,
+                    arrowEdge: .top
+                )
 
                 if hasActiveSearch || hasActiveFilter {
                     FluelEntryListStateActions(
@@ -372,11 +417,16 @@ struct HomeView: View {
             selectedPresetID: nil,
             onSelect: selectPreset
         )
+        .popoverTip(
+            currentTip == .presets ? presetSelectionTip : nil,
+            arrowEdge: .top
+        )
     }
 
     func selectPreset(
         _ preset: EntryPreset
     ) {
+        FluelTipState.markPresetSelectionLearned()
         presetStore.markUsed(preset.id)
         onCreateFromPreset(preset.id)
     }

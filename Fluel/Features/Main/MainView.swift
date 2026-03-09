@@ -127,6 +127,7 @@ private extension MainView {
     func presentCreateEntry(
         presetID: String?
     ) {
+        FluelTipState.markEntryCreationLearned()
         activeSheet = .create(presetID: presetID)
     }
 
@@ -151,6 +152,6 @@ private extension MainView {
             )
             .fluelAppStyle()
     } else {
-        Text("Failed to load preview")
+        Text(FluelCopy.failedToLoadPreview())
     }
 }

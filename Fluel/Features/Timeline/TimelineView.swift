@@ -2,6 +2,7 @@ import FluelLibrary
 import MHUI
 import SwiftData
 import SwiftUI
+import TipKit
 
 struct ActivityTimelineView: View {
     @Environment(\.mhTheme)
@@ -23,6 +24,8 @@ struct ActivityTimelineView: View {
     private var storedScopeFilter = EntryActivityScopeMode.recentSixMonths.rawValue
 
     let onAdd: () -> Void
+
+    private let timelineFiltersTip = FluelTips.TimelineFiltersTip()
 
     private var sections: [EntryActivityTimelineSection] {
         EntryActivityTimelineSectionQuery.sections(
@@ -64,6 +67,9 @@ struct ActivityTimelineView: View {
             },
             set: { newValue in
                 storedActivityFilter = newValue.rawValue
+                if newValue != .all {
+                    FluelTipState.markTimelineFiltersLearned()
+                }
             }
         )
     }
@@ -75,6 +81,9 @@ struct ActivityTimelineView: View {
             },
             set: { newValue in
                 storedScopeFilter = newValue.rawValue
+                if newValue != .recentSixMonths {
+                    FluelTipState.markTimelineFiltersLearned()
+                }
             }
         )
     }
@@ -140,6 +149,12 @@ struct ActivityTimelineView: View {
                 scopeFilter
             )
         )
+    }
+
+    private var showsTimelineFiltersTip: Bool {
+        FluelTipBootstrap.isEnabled
+            && FluelTipState.hasLearnedTimelineFilters == false
+            && entries.isEmpty == false
     }
 
     var body: some View {
@@ -354,6 +369,10 @@ struct ActivityTimelineView: View {
                 selection: scopeFilterBinding
             )
         }
+        .popoverTip(
+            showsTimelineFiltersTip ? timelineFiltersTip : nil,
+            arrowEdge: .top
+        )
     }
 
     private func clearSearch() {

@@ -2,6 +2,7 @@ import FluelLibrary
 import MHUI
 import SwiftData
 import SwiftUI
+import TipKit
 
 struct EntryDetailView: View {
     @Environment(\.dismiss)
@@ -15,6 +16,8 @@ struct EntryDetailView: View {
     @State private var isConfirmingDelete = false
     @State private var isPresentingEditor = false
     @State private var isPresentingDuplicateForm = false
+
+    private let detailQuickActionsTip = FluelTips.DetailQuickActionsTip()
 
     var body: some View {
         TimelineView(.periodic(from: .now, by: 3_600)) { timeline in // swiftlint:disable:this no_magic_numbers
@@ -32,6 +35,10 @@ struct EntryDetailView: View {
                     onEdit: presentEditor,
                     onArchive: archive,
                     onRestore: restore
+                )
+                .popoverTip(
+                    showsDetailQuickActionsTip ? detailQuickActionsTip : nil,
+                    arrowEdge: .top
                 )
                 EntryDetailElapsedSection(snapshot: snapshot)
                 EntryDetailDetailsSection(
@@ -85,6 +92,9 @@ struct EntryDetailView: View {
                     )
                 )
             }
+        }
+        .onDisappear {
+            FluelTipState.markDetailQuickActionsLearned()
         }
         .confirmationDialog(
             FluelCopy.deleteConfirmationTitle(),
@@ -142,22 +152,27 @@ struct EntryDetailView: View {
     }
 
     private func archive() {
+        FluelTipState.markDetailQuickActionsLearned()
         mutationWorkflow.archive(entry: entry)
     }
 
     private func restore() {
+        FluelTipState.markDetailQuickActionsLearned()
         mutationWorkflow.restore(entry: entry)
     }
 
     private func delete() {
+        FluelTipState.markDetailQuickActionsLearned()
         mutationWorkflow.delete(entry: entry)
     }
 
     private func presentEditor() {
+        FluelTipState.markDetailQuickActionsLearned()
         isPresentingEditor = true
     }
 
     private func presentDuplicateForm() {
+        FluelTipState.markDetailQuickActionsLearned()
         isPresentingDuplicateForm = true
     }
 
@@ -167,6 +182,11 @@ struct EntryDetailView: View {
 }
 
 private extension EntryDetailView {
+    var showsDetailQuickActionsTip: Bool {
+        FluelTipBootstrap.isEnabled
+            && FluelTipState.hasLearnedDetailQuickActions == false
+    }
+
     var mutationWorkflow: FluelEntryMutationWorkflow {
         .init(
             context: context,
@@ -190,6 +210,6 @@ private extension EntryDetailView {
         .modelContainer(context.modelContainer)
         .fluelAppStyle()
     } else {
-        Text("Failed to load preview")
+        Text(FluelCopy.failedToLoadPreview())
     }
 }

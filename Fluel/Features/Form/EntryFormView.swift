@@ -3,6 +3,7 @@ import MHUI
 import PhotosUI
 import SwiftData
 import SwiftUI
+import TipKit
 
 struct EntryFormView: View {
     enum Mode {
@@ -24,6 +25,7 @@ struct EntryFormView: View {
 
     private let mode: Mode
     private let initialPresetID: String?
+    private let createPrecisionTip = FluelTips.CreatePrecisionTip()
 
     init(
         mode: Mode,
@@ -57,6 +59,10 @@ struct EntryFormView: View {
 
             EntryFormTitleSection(title: $draft.title)
             EntryFormStartSection(draft: $draft)
+                .popoverTip(
+                    showsCreatePrecisionTip ? createPrecisionTip : nil,
+                    arrowEdge: .top
+                )
             EntryFormPhotoSection(
                 draft: $draft,
                 selectedPhotoItem: $selectedPhotoItem
@@ -96,6 +102,10 @@ struct EntryFormView: View {
         }
         .onChange(of: draft.precision) {
             draft.syncForPrecision()
+
+            if case .create = mode {
+                FluelTipState.markCreatePrecisionLearned()
+            }
         }
         .alert(
             FluelCopy.error(),
@@ -196,6 +206,18 @@ private extension EntryFormView {
         presetStore.suggestedPresets(limit: 6)
     }
 
+    var showsCreatePrecisionTip: Bool {
+        guard FluelTipBootstrap.isEnabled else {
+            return false
+        }
+
+        guard case .create = mode else {
+            return false
+        }
+
+        return FluelTipState.hasLearnedCreatePrecision == false
+    }
+
     var mutationWorkflow: FluelEntryMutationWorkflow {
         .init(
             context: context,
@@ -216,6 +238,7 @@ private extension EntryFormView {
             return
         }
 
+        FluelTipState.markPresetSelectionLearned()
         draft = .init(
             mode: .create,
             prefilledInput: presetStore.resolvedInput(
@@ -253,6 +276,6 @@ private extension EntryFormView {
         .modelContainer(context.modelContainer)
         .fluelAppStyle()
     } else {
-        Text("Failed to load preview")
+        Text(FluelCopy.failedToLoadPreview())
     }
 }

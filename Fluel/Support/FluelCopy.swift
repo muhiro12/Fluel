@@ -1861,7 +1861,199 @@ enum FluelCopy {
         )
     }
 
-    static func localized(
+
+
+    nonisolated static func entryCreationTipTitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Begin with one entry",
+            japanese: "まずは 1 件から始める",
+            locale: locale
+        )
+    }
+
+    nonisolated static func entryCreationTipBody(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Add one thing or place first. You can quietly refine the date or note later.",
+            japanese: "まずはものや場所を 1 件加えるだけで十分です。日付やメモはあとから静かに整えられます。",
+            locale: locale
+        )
+    }
+
+    nonisolated static func presetSelectionTipTitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Reuse a familiar starting point",
+            japanese: "よくある始め方をそのまま使う",
+            locale: locale
+        )
+    }
+
+    nonisolated static func presetSelectionTipBody(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Quick presets let you begin from a familiar shape before you adjust the details.",
+            japanese: "クイックプリセットを使うと、よくある形から始めて必要なところだけ整えられます。",
+            locale: locale
+        )
+    }
+
+    nonisolated static func contentFiltersTipTitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Narrow what you see",
+            japanese: "見たい記録だけに絞る",
+            locale: locale
+        )
+    }
+
+    nonisolated static func contentFiltersTipBody(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Use these filters when you want to focus on entries with notes, photos, or everything again.",
+            japanese: "メモ付きや写真付きなど、見たい記録だけに寄せたい時はここで切り替えられます。",
+            locale: locale
+        )
+    }
+
+    nonisolated static func timelineFiltersTipTitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Read the timeline from different distances",
+            japanese: "タイムラインを違う距離感で読む",
+            locale: locale
+        )
+    }
+
+    nonisolated static func timelineFiltersTipBody(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Switch the activity kind and time range to see either a recent slice or a longer flow.",
+            japanese: "出来事の種類と期間を切り替えると、最近の動きにも長い流れにも静かに寄れます。",
+            locale: locale
+        )
+    }
+
+    nonisolated static func dashboardOverviewTipTitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "See the whole shape first",
+            japanese: "まず全体のかたちを見る",
+            locale: locale
+        )
+    }
+
+    nonisolated static func dashboardOverviewTipBody(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "This overview gathers the counts and highlights of what is still with you and what has already been archived.",
+            japanese: "いま一緒にあるものと保管済みのもの、その数や見どころをここでまとめて見渡せます。",
+            locale: locale
+        )
+    }
+
+    nonisolated static func detailQuickActionsTipTitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Keep the next action close",
+            japanese: "次の操作を手元に置く",
+            locale: locale
+        )
+    }
+
+    nonisolated static func detailQuickActionsTipBody(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Share, duplicate, edit, or archive from here without moving through the more menu.",
+            japanese: "共有、複製、編集、保管や復元は、その他メニューに入らずここから進められます。",
+            locale: locale
+        )
+    }
+
+    nonisolated static func createPrecisionTipTitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Keep the start as precisely as you know it",
+            japanese: "分かる精度のまま始まりを残す",
+            locale: locale
+        )
+    }
+
+    nonisolated static func createPrecisionTipBody(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "If you only know the month or year, switch the precision first. You can refine it later.",
+            japanese: "日まで分からない時は、先に月や年へ切り替えられます。あとから細かく直すこともできます。",
+            locale: locale
+        )
+    }
+
+    nonisolated static func presetManagementTipTitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Shape the presets you return to",
+            japanese: "戻ってくるプリセットを整える",
+            locale: locale
+        )
+    }
+
+    nonisolated static func presetManagementTipBody(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Manage pinned, recent, and custom presets here so new entries begin closer to your usual shape.",
+            japanese: "ピン留め、最近使ったもの、カスタムをここで整えると、新規作成が自分の形に近いところから始まります。",
+            locale: locale
+        )
+    }
+
+    nonisolated static func defaultPresetTipTitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Open new entries with a head start",
+            japanese: "新規作成を少し先から始める",
+            locale: locale
+        )
+    }
+
+    nonisolated static func defaultPresetTipBody(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Choose one preset as the default when you want every new entry to open from the same starting point.",
+            japanese: "いつも近い形から始めたい時は、1 つを既定にすると新規作成がその内容で開きます。",
+            locale: locale
+        )
+    }
+
+    nonisolated static func showTipsAgain(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Show hints again",
+            japanese: "ヒントをもう一度表示",
+            locale: locale
+        )
+    }
+
+    nonisolated static func localized(
         english: String,
         japanese: String,
         locale: Locale

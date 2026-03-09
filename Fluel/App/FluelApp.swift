@@ -30,6 +30,7 @@ struct FluelApp: App {
     @MainActor
     init() {
         startupLogger.notice("app startup began")
+        FluelTipBootstrap.configureIfNeeded()
 
 #if DEBUG
         if let bootstrap = try? CodexCaptureBootstrap.current() {

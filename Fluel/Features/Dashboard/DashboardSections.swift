@@ -361,6 +361,7 @@ private extension DashboardQuickActionsCard {
     func selectPreset(
         _ preset: EntryPreset
     ) {
+        FluelTipState.markPresetSelectionLearned()
         presetStore.markUsed(preset.id)
         onCreateFromPreset(preset.id)
     }
