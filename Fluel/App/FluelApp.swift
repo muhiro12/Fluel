@@ -1,26 +1,29 @@
 import FluelLibrary
 import MHLogging
+import MHPlatform
 import SwiftData
 import SwiftUI
 
 @main
 struct FluelApp: App {
-    private let platformEnvironment: FluelPlatformEnvironment
+    private let modelContainer: ModelContainer
+    private let appBootstrap: MHAppRuntimeBootstrap
     private let captureBootstrap: CodexCaptureBootstrap?
     private let startupLogger = FluelAppLogging.logger(category: "AppStartup")
 
     var body: some Scene {
         WindowGroup {
-            if let captureBootstrap {
-                CodexCaptureRootView(bootstrap: captureBootstrap)
-                    .environmentObject(captureBootstrap.presetStore)
-                    .fluelPlatformEnvironment(platformEnvironment)
-                    .fluelAppStyle()
-            } else {
-                MainView()
-                    .fluelPlatformEnvironment(platformEnvironment)
-                    .fluelAppStyle()
+            Group {
+                if let captureBootstrap {
+                    CodexCaptureRootView(bootstrap: captureBootstrap)
+                        .environmentObject(captureBootstrap.presetStore)
+                } else {
+                    MainView()
+                }
             }
+            .modelContainer(modelContainer)
+            .mhAppRuntimeBootstrap(appBootstrap)
+            .fluelAppStyle()
         }
     }
 
@@ -31,20 +34,32 @@ struct FluelApp: App {
 #if DEBUG
         if let bootstrap = try? CodexCaptureBootstrap.current() {
             captureBootstrap = bootstrap
-            platformEnvironment = .preview(
-                modelContainer: bootstrap.modelContainer
-            )
+            modelContainer = bootstrap.modelContainer
         } else {
             captureBootstrap = nil
-            platformEnvironment = .live()
+            modelContainer = Self.makeLiveModelContainer()
         }
 #else
         captureBootstrap = nil
-        platformEnvironment = .live()
+        modelContainer = Self.makeLiveModelContainer()
 #endif
+        appBootstrap = .init(
+            configuration: FluelAppConfiguration.runtimeConfiguration,
+            lifecyclePlan: FluelAppConfiguration.runtimeLifecyclePlan
+        )
 
         startupLogger.notice("startup dependencies ready")
         startupLogger.notice("startup wiring finished")
+    }
+}
+
+private extension FluelApp {
+    static func makeLiveModelContainer() -> ModelContainer {
+        do {
+            return try ModelContainerFactory.shared()
+        } catch {
+            preconditionFailure("Failed to initialize model container: \(error)")
+        }
     }
 }
 

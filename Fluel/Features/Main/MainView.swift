@@ -1,5 +1,6 @@
 import FluelLibrary
 import MHPlatform
+import SwiftData
 import SwiftUI
 
 struct MainView: View {
@@ -31,9 +32,6 @@ struct MainView: View {
             }
         }
     }
-
-    @Environment(MHAppRuntime.self)
-    private var appRuntime
 
     @StateObject private var presetStore = EntryPresetStore()
     @State private var selectedTab: Tab = .home
@@ -116,10 +114,6 @@ struct MainView: View {
                 }
             }
         }
-        .mhAppRuntimeLifecycle(
-            runtime: appRuntime,
-            plan: FluelRuntimeLifecycleSupport.makePlan()
-        )
     }
 }
 
@@ -148,8 +142,12 @@ private extension MainView {
 #Preview(traits: .modifier(FluelSampleData())) {
     if let context = try? FluelSampleData.makeSharedContext() {
         MainView()
-            .fluelPlatformEnvironment(
-                .preview(modelContainer: context.modelContainer)
+            .modelContainer(context.modelContainer)
+            .mhAppRuntimeBootstrap(
+                .init(
+                    configuration: FluelAppConfiguration.runtimeConfiguration,
+                    lifecyclePlan: FluelAppConfiguration.runtimeLifecyclePlan
+                )
             )
             .fluelAppStyle()
     } else {

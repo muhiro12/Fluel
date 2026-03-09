@@ -12,4 +12,8 @@ enum FluelAppConfiguration {
         preferencesSuiteName: preferencesSuiteName,
         showsLicenses: true
     )
+
+    nonisolated static let runtimeLifecyclePlan = MHAppRuntimeLifecyclePlan(
+        skipFirstActivePhase: true
+    )
 }

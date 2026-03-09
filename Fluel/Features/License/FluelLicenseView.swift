@@ -1,5 +1,6 @@
 import FluelLibrary
 import MHPlatform
+import SwiftData
 import SwiftUI
 
 struct FluelLicenseView: View {
@@ -19,8 +20,12 @@ struct FluelLicenseView: View {
     return NavigationStack {
         FluelLicenseView()
     }
-    .fluelPlatformEnvironment(
-        .preview(modelContainer: context.modelContainer)
+    .modelContainer(context.modelContainer)
+    .mhAppRuntimeBootstrap(
+        .init(
+            configuration: FluelAppConfiguration.runtimeConfiguration,
+            lifecyclePlan: FluelAppConfiguration.runtimeLifecyclePlan
+        )
     )
     .fluelAppStyle()
 }
