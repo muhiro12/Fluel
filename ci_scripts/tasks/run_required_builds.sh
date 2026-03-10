@@ -20,14 +20,36 @@ fi
 
 ci_root="$repository_root/.build/ci"
 runs_root="$ci_root/runs"
+compat_runs_root="$repository_root/.build/ci_runs"
 shared_directory="$ci_root/shared"
 cache_directory="$shared_directory/cache"
 derived_data_directory="$shared_directory/DerivedData"
 shared_tmp_directory="$shared_directory/tmp"
 shared_home_directory="$shared_directory/home"
 
+ensure_compat_runs_root() {
+  if [[ -L "$compat_runs_root" || ! -e "$compat_runs_root" ]]; then
+    mkdir -p "$(dirname "$compat_runs_root")"
+    ln -sfn "ci/runs" "$compat_runs_root"
+    return 0
+  fi
+
+  if [[ -d "$compat_runs_root" ]]; then
+    return 0
+  fi
+
+  echo "Compatibility path $compat_runs_root exists and is not a directory or symlink." >&2
+  exit 1
+}
+
+ensure_compat_runs_root
+
 run_directory=$(ci_run_create_dir "$runs_root")
 run_identifier=$(basename "$run_directory")
+
+if [[ -d "$compat_runs_root" && ! -L "$compat_runs_root" ]]; then
+  ln -sfn "../ci/runs/$run_identifier" "$compat_runs_root/$run_identifier"
+fi
 
 commands_file="$run_directory/commands.txt"
 summary_path="$run_directory/summary.md"
@@ -169,18 +191,6 @@ run_logged_step() {
   return 0
 }
 
-should_run_pre_commit=false
-if [[ "${CI_RUN_ENABLE_PRE_COMMIT:-0}" == "1" || "${CI_RUN_ENABLE_PRE_COMMIT:-}" == "true" ]]; then
-  should_run_pre_commit=true
-fi
-
-if $should_run_pre_commit; then
-  run_logged_step \
-    "pre_commit" \
-    "Run pre-commit hooks" \
-    bash "$repository_root/ci_scripts/tasks/pre_commit.sh"
-fi
-
 changed_files=$(
   {
     git diff --name-only --cached
@@ -190,6 +200,23 @@ changed_files=$(
 )
 
 build_relevant_changed_files=$(printf '%s\n' "$changed_files" | grep -Ev '(^|/)xcuserdata/' || true)
+pre_commit_relevant_changed_files=$(
+  printf '%s\n' "$changed_files" | grep -E '(^|/)[^/]+\.swift$|(^|/)Package\.swift$|^\.swiftlint\.yml$|^\.pre-commit-config\.yaml$' || true
+)
+
+should_run_pre_commit=false
+if [[ "${CI_RUN_ENABLE_PRE_COMMIT:-0}" == "1" || "${CI_RUN_ENABLE_PRE_COMMIT:-}" == "true" ]]; then
+  should_run_pre_commit=true
+elif [[ "${CI_RUN_ENABLE_PRE_COMMIT:-}" == "auto" && -n "$pre_commit_relevant_changed_files" ]]; then
+  should_run_pre_commit=true
+fi
+
+if $should_run_pre_commit; then
+  run_logged_step \
+    "pre_commit" \
+    "Run pre-commit hooks" \
+    bash "$repository_root/ci_scripts/tasks/pre_commit.sh"
+fi
 
 if [[ -z "$changed_files" ]]; then
   echo "No local changes detected."
