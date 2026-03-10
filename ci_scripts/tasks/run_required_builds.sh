@@ -204,7 +204,7 @@ fi
 needs_fluel_build=false
 needs_fluel_library_tests=false
 
-if grep -Eq '^Fluel/|^Fluel\.xcodeproj/' <<<"$build_relevant_changed_files"; then
+if grep -Eq '^Fluel/|^FluelWidget/|^Fluel\.xcodeproj/' <<<"$build_relevant_changed_files"; then
   needs_fluel_build=true
 fi
 
@@ -213,16 +213,21 @@ if grep -Eq '^FluelLibrary/' <<<"$build_relevant_changed_files"; then
 fi
 
 if ! $needs_fluel_build && ! $needs_fluel_library_tests; then
-  echo "No changes under Fluel/, FluelLibrary/, or Fluel.xcodeproj/."
+  echo "No changes under Fluel/, FluelWidget/, FluelLibrary/, or Fluel.xcodeproj/."
   if $should_run_pre_commit; then
-    run_note="pre-commit completed. No changes under Fluel/, FluelLibrary/, or Fluel.xcodeproj/. Build/test steps were skipped."
+    run_note="pre-commit completed. No changes under Fluel/, FluelWidget/, FluelLibrary/, or Fluel.xcodeproj/. Build/test steps were skipped."
   else
-    run_note="No changes under Fluel/, FluelLibrary/, or Fluel.xcodeproj/. Build/test steps were skipped."
+    run_note="No changes under Fluel/, FluelWidget/, FluelLibrary/, or Fluel.xcodeproj/. Build/test steps were skipped."
   fi
   exit 0
 fi
 
 run_note="Executed required CI steps based on local changes."
+
+run_logged_step \
+  "check_shared_library_boundaries" \
+  "Check shared library platform boundaries" \
+  bash "$repository_root/ci_scripts/tasks/check_shared_library_boundaries.sh"
 
 if $needs_fluel_build; then
   run_logged_step \

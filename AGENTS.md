@@ -27,6 +27,15 @@ All Markdown files should follow:
 
 https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md
 
+## Repository Documentation Layout
+
+Use these locations as the canonical documentation structure:
+
+- `README.md` for repository onboarding and build/test entrypoints
+- `Designs/Overviews/` for current product and architecture snapshots
+- `Designs/Architecture/` for durable boundary and design guidance
+- `Designs/Decisions/` for ADR-style architecture decisions
+
 ## Swift Code Guidelines
 
 ### Follow SwiftLint rules

@@ -6,6 +6,10 @@ Current as of March 10, 2026.
 
 This guide defines the `domain-in-library, UI-as-adapter` policy for Fluel.
 
+Related documents:
+[shared-entry-surface-design.md](./shared-entry-surface-design.md)
+[../Overviews/fluel-current-overview.md](../Overviews/fluel-current-overview.md)
+
 ## Responsibility Boundaries
 
 | Layer | Owns | Must not own |
@@ -73,3 +77,8 @@ Not allowed in views:
   snapshot building to `FluelLibrary`.
 - `FluelLibrary/Sources/Entry/EntryRepository.swift` remains the canonical
   mutation and query entry point for shared entry rules.
+
+## Repository Guards
+
+- `ci_scripts/tasks/check_shared_library_boundaries.sh` keeps app-only
+  frameworks out of `FluelLibrary/Sources`.
