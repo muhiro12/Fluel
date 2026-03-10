@@ -1,4 +1,4 @@
-import MHAppRuntimeCore
+import MHPlatform
 
 enum FluelAppConfiguration {
     nonisolated static let appName = "Fluel"
