@@ -79,7 +79,7 @@ public enum EntryMilestoneSnapshotQuery {
                 return lhs.title.localizedCaseInsensitiveCompare(rhs.title) == .orderedAscending
             }
             .prefix(limit)
-            .map { $0 }
+            .map(\.self)
     }
 }
 

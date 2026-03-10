@@ -1,5 +1,5 @@
-import Foundation
 @testable import FluelLibrary
+import Foundation
 import Testing
 
 struct EntryActivitySearchMatcherTests {
@@ -61,7 +61,7 @@ private extension EntryActivitySearchMatcherTests {
                 title: "Plant",
                 kind: .updated,
                 timestamp: isoDate("2026-03-08T10:00:00Z")
-            ),
+            )
         ]
     }
 }

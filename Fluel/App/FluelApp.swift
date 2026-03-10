@@ -1,6 +1,6 @@
 import FluelLibrary
-import MHLogging
 import MHAppRuntimeCore
+import MHLogging
 import SwiftData
 import SwiftUI
 
@@ -32,7 +32,7 @@ struct FluelApp: App {
         startupLogger.notice("app startup began")
         FluelTipBootstrap.configureIfNeeded()
 
-#if DEBUG
+        #if DEBUG
         if let bootstrap = try? CodexCaptureBootstrap.current() {
             captureBootstrap = bootstrap
             modelContainer = bootstrap.modelContainer
@@ -84,7 +84,7 @@ private struct CodexCaptureBootstrap {
 
         guard arguments.indices.contains(valueIndex),
               let screen = CodexCaptureScreen(
-                  rawValue: arguments[valueIndex]
+                rawValue: arguments[valueIndex]
               ) else {
             return nil
         }
@@ -137,9 +137,7 @@ private struct CodexCaptureRootView: View {
             }
         case .timeline:
             NavigationStack {
-                ActivityTimelineView(
-                    onAdd: {}
-                )
+                ActivityTimelineView {}
             }
         case .dashboard:
             NavigationStack {

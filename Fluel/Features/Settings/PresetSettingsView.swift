@@ -259,11 +259,11 @@ private struct PresetSettingsSectionCard: View {
     let title: String
     let presets: [EntryPreset]
     let emptyState: EmptyState?
-    var defaultPresetID: String? = nil
-    var onSelectDefault: ((EntryPreset) -> Void)? = nil
-    var onTogglePin: ((EntryPreset) -> Void)? = nil
-    var onEdit: ((EntryPreset) -> Void)? = nil
-    var onDelete: ((EntryPreset) -> Void)? = nil
+    var defaultPresetID: String?
+    var onSelectDefault: ((EntryPreset) -> Void)?
+    var onTogglePin: ((EntryPreset) -> Void)?
+    var onEdit: ((EntryPreset) -> Void)?
+    var onDelete: ((EntryPreset) -> Void)?
 
     var body: some View {
         VStack(alignment: .leading, spacing: theme.spacing.inline) {
@@ -289,7 +289,7 @@ private struct PresetSettingsSectionCard: View {
                             onEdit: onEdit,
                             onDelete: onDelete
                         )
-                            .padding(.vertical, 12)
+                        .padding(.vertical, 12)
 
                         if preset.id != presets.last?.id {
                             Divider()
@@ -307,10 +307,10 @@ private struct PresetSettingsSectionCard: View {
 private struct PresetSettingsRow: View {
     let preset: EntryPreset
     let isDefaultPreset: Bool
-    var onSelectDefault: ((EntryPreset) -> Void)? = nil
-    var onTogglePin: ((EntryPreset) -> Void)? = nil
-    var onEdit: ((EntryPreset) -> Void)? = nil
-    var onDelete: ((EntryPreset) -> Void)? = nil
+    var onSelectDefault: ((EntryPreset) -> Void)?
+    var onTogglePin: ((EntryPreset) -> Void)?
+    var onEdit: ((EntryPreset) -> Void)?
+    var onDelete: ((EntryPreset) -> Void)?
 
     var body: some View {
         HStack(alignment: .top, spacing: 12) {
@@ -396,7 +396,7 @@ private struct PresetSettingsRow: View {
             preset.isPinned ? FluelCopy.pinned() : nil,
             preset.lastUsedAt != nil ? FluelCopy.recent() : nil
         ]
-        .compactMap { $0 }
+        .compactMap(\.self)
 
         if labels.isEmpty {
             return nil

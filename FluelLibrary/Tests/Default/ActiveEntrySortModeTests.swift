@@ -1,5 +1,5 @@
-import Foundation
 @testable import FluelLibrary
+import Foundation
 import Testing
 
 struct ActiveEntrySortModeTests {

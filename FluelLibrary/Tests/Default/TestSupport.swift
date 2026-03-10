@@ -1,5 +1,5 @@
-import Foundation
 @testable import FluelLibrary
+import Foundation
 import SwiftData
 
 func makeTestContext() throws -> ModelContext {

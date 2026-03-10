@@ -82,7 +82,7 @@ public enum EntryActivityTimelineShareTextFormatter {
                     locale: locale
                 ),
                 value: summary.archivedCount.formatted()
-            ),
+            )
         ]
 
         if trends.isEmpty == false {
@@ -246,7 +246,7 @@ private extension EntryActivityTimelineShareTextFormatter {
                 kind: .archived,
                 count: trend.archivedCount,
                 locale: locale
-            ),
+            )
         ]
         .joined(separator: ", ")
     }
@@ -292,7 +292,7 @@ private extension EntryActivityTimelineShareTextFormatter {
             ),
             approximateText
         ]
-        .compactMap { $0 }
+        .compactMap(\.self)
         .joined(separator: " | ")
     }
 

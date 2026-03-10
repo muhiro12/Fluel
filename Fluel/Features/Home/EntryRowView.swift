@@ -149,7 +149,7 @@ private struct EntryRowPreview: View {
     private var previewContent: AnyView? {
         guard let context = try? FluelSampleData.makeSharedContext(),
               let entry = try? previewEntry(
-                  context: context.modelContainer.mainContext
+                context: context.modelContainer.mainContext
               ) else {
             return nil
         }

@@ -4,7 +4,7 @@ import WidgetKit
 
 struct LeadEntryWidgetProvider: TimelineProvider {
     func placeholder(
-        in context: Context
+        in _: Context
     ) -> LeadEntryWidgetEntry {
         .init(
             date: .now,
@@ -13,8 +13,8 @@ struct LeadEntryWidgetProvider: TimelineProvider {
     }
 
     func getSnapshot(
-        in context: Context,
-        completion: @escaping @Sendable (LeadEntryWidgetEntry) -> Void
+        in _: Context,
+        completion: @Sendable (LeadEntryWidgetEntry) -> Void
     ) {
         completion(
             .init(
@@ -26,8 +26,8 @@ struct LeadEntryWidgetProvider: TimelineProvider {
     }
 
     func getTimeline(
-        in context: Context,
-        completion: @escaping @Sendable (Timeline<LeadEntryWidgetEntry>) -> Void
+        in _: Context,
+        completion: @Sendable (Timeline<LeadEntryWidgetEntry>) -> Void
     ) {
         let entry = LeadEntryWidgetEntry(
             date: .now,

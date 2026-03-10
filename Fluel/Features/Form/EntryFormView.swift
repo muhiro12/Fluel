@@ -70,9 +70,9 @@ struct EntryFormView: View {
             EntryFormNoteSection(
                 note: $draft.note,
                 footerText: draft.noteFooterText
-            )                {
-                    draft.clearNote()
-                }
+            ) {
+                draft.clearNote()
+            }
         }
         .mhFormChrome(
             title: Text(navigationTitle),

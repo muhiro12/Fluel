@@ -1,5 +1,5 @@
-import Foundation
 @testable import FluelLibrary
+import Foundation
 import Testing
 
 struct EntryActivityScopeFilterTests {
@@ -77,7 +77,7 @@ private extension EntryActivityScopeFilterTests {
                 title: "Lamp",
                 kind: .added,
                 timestamp: isoDate("2024-11-01T09:00:00Z")
-            ),
+            )
         ]
     }
 }

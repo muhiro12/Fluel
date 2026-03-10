@@ -26,11 +26,11 @@ enum FluelTipBootstrap {
         do {
             try Tips.configure([
                 .displayFrequency(.immediate),
-                .datastoreLocation(.applicationDefault),
+                .datastoreLocation(.applicationDefault)
             ])
             logger.notice("TipKit configured")
         } catch let error as TipKitError
-            where error == .tipsDatastoreAlreadyConfigured {
+                    where error == .tipsDatastoreAlreadyConfigured {
             logger.notice("TipKit already configured")
         } catch {
             logger.error(

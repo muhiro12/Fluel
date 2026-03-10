@@ -702,9 +702,7 @@ private struct TimelineActivityRow: View {
 
 #Preview(traits: .modifier(FluelSampleData())) {
     NavigationStack {
-        ActivityTimelineView(
-            onAdd: {}
-        )
+        ActivityTimelineView {}
     }
     .fluelAppStyle()
 }

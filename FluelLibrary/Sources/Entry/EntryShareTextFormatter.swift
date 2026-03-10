@@ -66,7 +66,7 @@ public enum EntryShareTextFormatter {
                 )
             )
         ]
-        .compactMap { $0 }
+        .compactMap(\.self)
 
         if let note = entry.note,
            note.isEmpty == false {

@@ -27,7 +27,7 @@ private extension EntryActivitySearchMatcher {
     ) -> String {
         (
             [snapshot.title, snapshot.kind.rawValue]
-            + kindKeywords(for: snapshot.kind)
+                + kindKeywords(for: snapshot.kind)
         )
         .joined(separator: " ")
         .lowercased()

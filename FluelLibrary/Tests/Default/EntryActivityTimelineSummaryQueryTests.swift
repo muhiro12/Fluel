@@ -1,5 +1,5 @@
-import Foundation
 @testable import FluelLibrary
+import Foundation
 import Testing
 
 struct EntryActivityTimelineSummaryQueryTests {
@@ -10,7 +10,7 @@ struct EntryActivityTimelineSummaryQueryTests {
             displayedActivity: [
                 sampleActivity()[0],
                 sampleActivity()[1],
-                sampleActivity()[2],
+                sampleActivity()[2]
             ],
             calendar: Calendar(identifier: .gregorian)
         )
@@ -63,7 +63,7 @@ private extension EntryActivityTimelineSummaryQueryTests {
                 title: "Shoes",
                 kind: .added,
                 timestamp: isoDate("2025-11-10T09:00:00Z")
-            ),
+            )
         ]
     }
 }

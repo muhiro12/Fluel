@@ -7,7 +7,7 @@ public final class Entry {
     @Attribute(.unique)
     public private(set) var id = UUID()
     public private(set) var title = String()
-    public private(set) var startPrecision: EntryDatePrecision = EntryDatePrecision.day
+    public private(set) var startPrecision = EntryDatePrecision.day
     public private(set) var startYear = 2_000
     public private(set) var startMonth: Int?
     public private(set) var startDay: Int?

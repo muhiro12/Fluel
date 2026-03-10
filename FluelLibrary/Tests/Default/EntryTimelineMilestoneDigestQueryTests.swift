@@ -1,5 +1,5 @@
-import Foundation
 @testable import FluelLibrary
+import Foundation
 import Testing
 
 struct EntryTimelineMilestoneDigestQueryTests {
@@ -71,7 +71,7 @@ struct EntryTimelineMilestoneDigestQueryTests {
                     title: lamp.title,
                     kind: .archived,
                     timestamp: referenceDate
-                ),
+                )
             ],
             referenceDate: referenceDate,
             locale: Locale(identifier: "en_US"),
@@ -120,7 +120,7 @@ struct EntryTimelineMilestoneDigestQueryTests {
             entries: [a, b],
             visibleActivity: [
                 .init(entryID: a.id, title: a.title, kind: .added, timestamp: referenceDate),
-                .init(entryID: b.id, title: b.title, kind: .updated, timestamp: referenceDate),
+                .init(entryID: b.id, title: b.title, kind: .updated, timestamp: referenceDate)
             ],
             referenceDate: referenceDate,
             calendar: calendar,

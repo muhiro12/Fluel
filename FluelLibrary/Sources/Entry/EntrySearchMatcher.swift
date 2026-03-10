@@ -74,7 +74,7 @@ private extension EntrySearchMatcher {
                 )
             }
         ]
-        .compactMap { $0 }
+        .compactMap(\.self)
     }
 
     static func normalize(

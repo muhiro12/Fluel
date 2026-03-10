@@ -1,5 +1,5 @@
-import Foundation
 @testable import FluelLibrary
+import Foundation
 import Testing
 
 struct EntryActivityTrendSnapshotQueryTests {
@@ -67,7 +67,7 @@ private extension EntryActivityTrendSnapshotQueryTests {
                 title: "Notebook",
                 kind: .added,
                 timestamp: isoDate("2026-01-10T09:00:00Z")
-            ),
+            )
         ]
     }
 }

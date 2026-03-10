@@ -27,7 +27,7 @@ public enum EntryFormatting {
                             ? language.monthUnit(snapshot.months, locale: locale)
                             : nil
                     ]
-                    .compactMap { $0 }
+                    .compactMap(\.self)
                 )
             }
 
@@ -39,7 +39,7 @@ public enum EntryFormatting {
                             ? language.dayUnit(snapshot.days, locale: locale)
                             : nil
                     ]
-                    .compactMap { $0 }
+                    .compactMap(\.self)
                 )
             }
 
@@ -62,7 +62,7 @@ public enum EntryFormatting {
                             ? language.monthUnit(snapshot.months, locale: locale)
                             : nil
                     ]
-                    .compactMap { $0 }
+                    .compactMap(\.self)
                 )
             }
 
@@ -109,7 +109,7 @@ public enum EntryFormatting {
                         ? language.dayUnit(snapshot.days, locale: locale)
                         : nil
                 ]
-                .compactMap { $0 }
+                .compactMap(\.self)
             )
         case .month:
             guard let totalMonths = snapshot.totalMonths,
@@ -130,7 +130,7 @@ public enum EntryFormatting {
                         ? language.monthUnit(snapshot.months, locale: locale)
                         : nil
                 ]
-                .compactMap { $0 }
+                .compactMap(\.self)
             )
         case .year:
             guard snapshot.years > 0 else {

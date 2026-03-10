@@ -54,7 +54,7 @@ public enum EntryActivitySnapshotQuery {
                 return lhs.title.localizedCaseInsensitiveCompare(rhs.title) == .orderedAscending
             }
             .prefix(limit)
-            .map { $0 }
+            .map(\.self)
     }
 }
 
