@@ -17,5 +17,30 @@ if ! command -v pre-commit >/dev/null 2>&1; then
   exit 1
 fi
 
-echo "Running pre-commit checks..."
-pre-commit run --all-files
+changed_files=$(
+  {
+    git diff --name-only --cached
+    git diff --name-only
+    git ls-files --others --exclude-standard
+  } | sed '/^$/d' | sort -u
+)
+
+pre_commit_targets=()
+while IFS= read -r path; do
+  [[ -n "$path" ]] || continue
+  [[ -e "$path" ]] || continue
+
+  case "$path" in
+    *.swift|Package.swift|*/Package.swift|.swiftlint.yml|.pre-commit-config.yaml)
+      pre_commit_targets+=("$path")
+      ;;
+  esac
+done <<<"$changed_files"
+
+if [[ ${#pre_commit_targets[@]} -eq 0 ]]; then
+  echo "No relevant local changes for pre-commit."
+  exit 0
+fi
+
+echo "Running pre-commit checks on local changes..."
+pre-commit run --files "${pre_commit_targets[@]}"
