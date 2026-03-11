@@ -1,22 +1,14 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-argument_count=$#
-if [[ $argument_count -ne 0 ]]; then
-  echo "This script does not accept arguments." >&2
-  exit 2
-fi
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../lib/task_runtime.sh"
 
-script_directory=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-repository_root=$(cd "$script_directory/../.." && pwd)
-cd "$repository_root"
+ci_task_require_no_arguments "$#"
+ci_task_enter_repository_root "${BASH_SOURCE[0]}"
 
 source "$repository_root/ci_scripts/lib/xcodebuild_runner.sh"
 
-if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-  echo "This script must run inside a git repository." >&2
-  exit 1
-fi
+ci_task_require_git_repository
 
 ci_run_xcodebuild_task \
   "$repository_root" \

@@ -1,15 +1,10 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-argument_count=$#
-if [[ $argument_count -ne 0 ]]; then
-  echo "This script does not accept arguments." >&2
-  exit 2
-fi
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../lib/task_runtime.sh"
 
-script_directory=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
-repository_root=$(cd "$script_directory/../.." && pwd)
-cd "$repository_root"
+ci_task_require_no_arguments "$#"
+ci_task_enter_repository_root "${BASH_SOURCE[0]}"
 
 source "$repository_root/ci_scripts/lib/local_changes.sh"
 
