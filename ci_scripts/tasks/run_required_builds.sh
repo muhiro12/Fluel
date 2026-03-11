@@ -12,6 +12,7 @@ repository_root=$(cd "$script_directory/../.." && pwd)
 cd "$repository_root"
 
 source "$repository_root/ci_scripts/lib/ci_runs.sh"
+source "$repository_root/ci_scripts/lib/local_changes.sh"
 
 if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   echo "This script must run inside a git repository." >&2
@@ -191,18 +192,10 @@ run_logged_step() {
   return 0
 }
 
-changed_files=$(
-  {
-    git diff --name-only --cached
-    git diff --name-only
-    git ls-files --others --exclude-standard
-  } | sed '/^$/d' | sort -u
-)
+changed_files=$(ci_collect_changed_files)
 
 build_relevant_changed_files=$(printf '%s\n' "$changed_files" | grep -Ev '(^|/)xcuserdata/' || true)
-pre_commit_relevant_changed_files=$(
-  printf '%s\n' "$changed_files" | grep -E '(^|/)[^/]+\.swift$|(^|/)Package\.swift$|^\.swiftlint\.yml$|^\.pre-commit-config\.yaml$' || true
-)
+pre_commit_relevant_changed_files=$(ci_collect_pre_commit_targets "$changed_files")
 
 should_run_pre_commit=false
 if [[ "${CI_RUN_ENABLE_PRE_COMMIT:-0}" == "1" || "${CI_RUN_ENABLE_PRE_COMMIT:-}" == "true" ]]; then
