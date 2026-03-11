@@ -103,6 +103,19 @@ If you only need library tests:
 bash ci_scripts/tasks/test_shared_library.sh
 ```
 
+### CI Script Layout
+
+- `ci_scripts/tasks/` contains supported user-facing entrypoints such as
+  `verify.sh`, `run_required_builds.sh`, `build_app.sh`, and
+  `test_shared_library.sh`.
+- `ci_scripts/lib/` contains shared shell helpers used by those task scripts.
+  Reuse the existing helpers before copying setup or path-selection logic into
+  another task.
+- When you change only CI scripts or docs, `bash ci_scripts/tasks/verify.sh`
+  may intentionally skip Xcode build and test work if no files changed under
+  `Fluel/`, `FluelWidget/`, `FluelLibrary/`, or `Fluel.xcodeproj/`. In that
+  case, also run the directly affected task scripts you changed.
+
 ### CI Artifact Layout
 
 CI helper scripts write generated artifacts under `.build/ci/`.
