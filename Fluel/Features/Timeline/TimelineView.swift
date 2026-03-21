@@ -22,6 +22,7 @@ struct ActivityTimelineView: View {
         store: EntryListPreferences.store
     )
     private var storedScopeFilter = EntryActivityScopeMode.recentSixMonths.rawValue
+    @Namespace private var detailTransition
 
     let onAdd: () -> Void
 
@@ -170,6 +171,7 @@ struct ActivityTimelineView: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarRole(.editor)
         .searchable(
             text: $searchText,
             prompt: FluelCopy.searchTimeline()
@@ -325,8 +327,18 @@ struct ActivityTimelineView: View {
                         if let entry = entryLookup[item.entryID] {
                             NavigationLink {
                                 EntryDetailView(entry: entry)
+                                    .navigationTransition(
+                                        .zoom(
+                                            sourceID: transitionSourceID(for: item),
+                                            in: detailTransition
+                                        )
+                                    )
                             } label: {
                                 TimelineActivityRow(activity: item)
+                                    .matchedTransitionSource(
+                                        id: transitionSourceID(for: item),
+                                        in: detailTransition
+                                    )
                             }
                         } else {
                             TimelineActivityRow(activity: item)
@@ -382,6 +394,12 @@ struct ActivityTimelineView: View {
     private func clearFilters() {
         storedActivityFilter = EntryActivityFilterMode.all.rawValue
         storedScopeFilter = EntryActivityScopeMode.recentSixMonths.rawValue
+    }
+
+    private func transitionSourceID(
+        for activity: EntryActivitySnapshot
+    ) -> String {
+        "\(activity.entryID.uuidString)-\(activity.kind.rawValue)-\(activity.timestamp.timeIntervalSinceReferenceDate)"
     }
 }
 

@@ -19,7 +19,8 @@ struct HomeView: View {
     private var theme
     @Environment(\.modelContext)
     private var context
-    @EnvironmentObject private var presetStore: EntryPresetStore
+    @Environment(EntryPresetStore.self)
+    private var presetStore
 
     @Query(
         filter: #Predicate<Entry> { entry in
@@ -55,6 +56,7 @@ struct HomeView: View {
         store: DisplayPreferences.store
     )
     private var showsMetadataBadges = true
+    @Namespace private var detailTransition
 
     let onAdd: () -> Void
     let onCreateFromPreset: (String) -> Void
@@ -175,6 +177,7 @@ struct HomeView: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarRole(.editor)
         .toolbar {
             ToolbarItem(placement: .topBarLeading) {
                 Menu {
@@ -342,6 +345,9 @@ struct HomeView: View {
             ForEach(displayedEntries) { entry in
                 NavigationLink {
                     EntryDetailView(entry: entry)
+                        .navigationTransition(
+                            .zoom(sourceID: entry.id, in: detailTransition)
+                        )
                 } label: {
                     EntryRowView(
                         entry: entry,
@@ -353,6 +359,7 @@ struct HomeView: View {
                             : nil,
                         showsMetadataBadges: showsMetadataBadges
                     )
+                    .matchedTransitionSource(id: entry.id, in: detailTransition)
                 }
                 .swipeActions(
                     edge: .trailing,
@@ -443,6 +450,8 @@ struct HomeView: View {
 }
 
 #Preview(traits: .modifier(FluelSampleData())) {
+    @Previewable var presetStore = EntryPresetStore.preview()
+
     NavigationStack {
         HomeView(
             onAdd: {},
@@ -451,6 +460,6 @@ struct HomeView: View {
             onShowLicenses: {}
         )
     }
-    .environmentObject(EntryPresetStore.preview())
+    .environment(presetStore)
     .fluelAppStyle()
 }

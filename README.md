@@ -53,10 +53,15 @@ logic in `FluelLibrary`.
   `group.com.muhiro12.Fluel/Fluel.sqlite`.
 - **Shared library source of truth** - reusable mutation, query, formatting,
   and widget snapshot logic belongs in `FluelLibrary`.
+- **Observation-first app shell** - app-owned preset state is injected once
+  from the app assembly through typed SwiftUI environment values.
 - **Thin adapters** - `Fluel` owns an app assembly around
   `MHAppRuntimeBootstrap`, SwiftUI presentation, preferences, TipKit, and
   mutation follow-up side effects, while `FluelWidget` owns WidgetKit timeline
   delivery.
+- **Per-tab navigation roots** - the main shell keeps a separate
+  `NavigationStack` per primary tab so each tab preserves its own navigation
+  history while keeping create and licenses presentation local to that tab.
 - **Default runtime adapters** - the app uses `MHAppRuntime` for the runtime-
   owned license surface and keeps the debug-only native ad unit in live runtime
   configuration while disabling it for Codex capture mode.
@@ -65,10 +70,10 @@ logic in `FluelLibrary`.
 
 ## Requirements
 
-- Xcode 16 or later with the iOS 18 SDK installed.
+- Xcode 26 or later with the iOS 26 SDK installed.
 - An Apple Developer account configured for App Groups and widget entitlements
   if you plan to sign and run your own build.
-- An iPhone simulator or device that supports iOS 18.
+- An iPhone simulator or device that supports iOS 26.
 
 ## Setup
 
@@ -77,7 +82,7 @@ logic in `FluelLibrary`.
    `FluelLibrary/Sources/Common/AppGroup.swift` if you are not using the
    production identifiers.
 3. Open `Fluel.xcodeproj` in Xcode, select the **Fluel** scheme, and run on an
-   iOS 18 simulator or device.
+   iOS 26 simulator or device.
 4. Enable the **FluelWidget** scheme as needed when testing the widget
    extension.
 

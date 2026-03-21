@@ -49,6 +49,7 @@ struct ArchiveListView: View {
         store: DisplayPreferences.store
     )
     private var showsMetadataBadges = true
+    @Namespace private var detailTransition
 
     private let contentFiltersTip = FluelTips.ContentFiltersTip()
 
@@ -142,6 +143,7 @@ struct ArchiveListView: View {
             }
         }
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarRole(.editor)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Menu {
@@ -287,6 +289,9 @@ struct ArchiveListView: View {
             ForEach(displayedEntries) { entry in
                 NavigationLink {
                     EntryDetailView(entry: entry)
+                        .navigationTransition(
+                            .zoom(sourceID: entry.id, in: detailTransition)
+                        )
                 } label: {
                     EntryRowView(
                         entry: entry,
@@ -301,6 +306,7 @@ struct ArchiveListView: View {
                         },
                         showsMetadataBadges: showsMetadataBadges
                     )
+                    .matchedTransitionSource(id: entry.id, in: detailTransition)
                 }
                 .swipeActions(
                     edge: .leading,

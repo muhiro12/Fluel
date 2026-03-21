@@ -6,7 +6,7 @@ let package = Package( // swiftlint:disable:this prefixed_toplevel_constant
     name: "FluelLibrary",
     defaultLocalization: "en",
     platforms: [
-        .iOS(.v18)
+        .iOS(.v26)
     ],
     products: [
         .library(

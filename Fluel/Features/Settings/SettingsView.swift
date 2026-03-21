@@ -7,7 +7,8 @@ import TipKit
 struct SettingsView: View {
     @Environment(\.mhTheme)
     private var theme
-    @EnvironmentObject private var presetStore: EntryPresetStore
+    @Environment(EntryPresetStore.self)
+    private var presetStore
 
     @Query
     private var entries: [Entry]
@@ -56,6 +57,7 @@ struct SettingsView: View {
             subtitle: Text(FluelCopy.settingsScreenSubtitle())
         )
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarRole(.editor)
     }
 
     private var displayCard: some View {
@@ -208,12 +210,14 @@ struct SettingsView: View {
 }
 
 #Preview(traits: .modifier(FluelSampleData())) {
+    @Previewable var presetStore = EntryPresetStore.preview()
+
     NavigationStack {
         SettingsView(
             onShowArchive: {},
             onShowLicenses: {}
         )
     }
-    .environmentObject(EntryPresetStore.preview())
+    .environment(presetStore)
     .fluelAppStyle()
 }

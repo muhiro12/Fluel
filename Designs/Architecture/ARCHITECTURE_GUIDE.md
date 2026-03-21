@@ -69,9 +69,9 @@ Not allowed in views:
 
 ## Current Alignment Notes
 
-- `Fluel/App/FluelAppAssembly.swift` and `Fluel/App/FluelApp.swift` keep app
-  startup, runtime bootstrap assembly, and capture/live model-container
-  selection in the app target.
+- `Fluel/App/FluelAppAssembly.swift`, `Fluel/App/FluelApp.swift`, and
+  `Fluel/Features/Main/MainView.swift` keep app startup, typed environment
+  injection, and the per-tab navigation shell in the app target.
 - `Fluel/Support/Mutation/FluelEntryMutationWorkflow.swift` is the right place
   for widget reload follow-up orchestration.
 - `Fluel/Features/License/FluelLicenseView.swift` keeps app-owned presentation

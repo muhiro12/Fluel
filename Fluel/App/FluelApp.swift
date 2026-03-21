@@ -12,6 +12,7 @@ struct FluelApp: App {
         WindowGroup {
             assembly.rootView()
                 .modelContainer(assembly.modelContainer)
+                .environment(assembly.presetStore)
                 .mhAppRuntimeBootstrap(assembly.appBootstrap)
                 .fluelAppStyle()
         }

@@ -45,7 +45,8 @@ struct FluelDashboardLeadEntry {
 struct DashboardQuickActionsCard: View {
     @Environment(\.mhTheme)
     private var theme
-    @EnvironmentObject private var presetStore: EntryPresetStore
+    @Environment(EntryPresetStore.self)
+    private var presetStore
 
     let onAdd: () -> Void
     let onCreateFromPreset: (String) -> Void

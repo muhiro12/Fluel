@@ -79,6 +79,7 @@ struct DashboardView: View {
             )
         }
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarRole(.editor)
         .onDisappear {
             if entries.isEmpty == false {
                 FluelTipState.markDashboardOverviewLearned()
@@ -108,6 +109,8 @@ private extension DashboardView {
 }
 
 #Preview(traits: .modifier(FluelSampleData())) {
+    @Previewable var presetStore = EntryPresetStore.preview()
+
     NavigationStack {
         DashboardView(
             onAdd: {},
@@ -116,6 +119,6 @@ private extension DashboardView {
             onShowLicenses: {}
         )
     }
-    .environmentObject(EntryPresetStore.preview())
+    .environment(presetStore)
     .fluelAppStyle()
 }

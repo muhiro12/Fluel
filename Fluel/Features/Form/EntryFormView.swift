@@ -15,7 +15,8 @@ struct EntryFormView: View {
     private var dismiss
     @Environment(\.modelContext)
     private var context
-    @EnvironmentObject private var presetStore: EntryPresetStore
+    @Environment(EntryPresetStore.self)
+    private var presetStore
 
     @State private var draft: EntryFormDraft
     @State private var selectedPhotoItem: PhotosPickerItem?
@@ -79,6 +80,7 @@ struct EntryFormView: View {
             subtitle: Text(screenSubtitle)
         )
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarRole(.editor)
         .interactiveDismissDisabled(draft.hasUnsavedChanges)
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
@@ -95,12 +97,10 @@ struct EntryFormView: View {
                 .disabled(draft.canSave == false)
             }
         }
-        .onChange(of: selectedPhotoItem) {
-            Task {
-                await loadSelectedPhotoIfNeeded()
-            }
+        .task(id: selectedPhotoItem) {
+            await loadSelectedPhotoIfNeeded()
         }
-        .onChange(of: draft.precision) {
+        .onChange(of: draft.precision, initial: false) {
             draft.syncForPrecision()
 
             if case .create = mode {
@@ -258,15 +258,20 @@ private extension EntryFormView {
 }
 
 #Preview(traits: .modifier(FluelSampleData())) {
+    @Previewable var presetStore = EntryPresetStore.preview()
+
     NavigationStack {
         EntryFormView(
             mode: .create
         )
     }
+    .environment(presetStore)
     .fluelAppStyle()
 }
 
 #Preview("Edit", traits: .modifier(FluelSampleData())) {
+    @Previewable var presetStore = EntryPresetStore.preview()
+
     if let context = try? FluelSampleData.makeSharedContext(),
        let entries = try? context.modelContainer.mainContext.fetch(FetchDescriptor<Entry>()),
        let entry = EntryListOrdering.active(entries).first ?? entries.first {
@@ -276,6 +281,7 @@ private extension EntryFormView {
             )
         }
         .modelContainer(context.modelContainer)
+        .environment(presetStore)
         .fluelAppStyle()
     } else {
         Text(FluelCopy.failedToLoadPreview())

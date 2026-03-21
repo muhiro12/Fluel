@@ -1,16 +1,20 @@
-import Combine
 import FluelLibrary
 import Foundation
+import Observation
 
+@Observable
 @MainActor
-final class EntryPresetStore: ObservableObject {
-    @Published private(set) var customRecords: [EntryCustomPresetRecord]
-    @Published private(set) var presetStates: [String: EntryPresetState]
-    @Published private(set) var defaultPresetID: String?
-    @Published private(set) var usesDefaultPreset: Bool
+final class EntryPresetStore {
+    private(set) var customRecords: [EntryCustomPresetRecord]
+    private(set) var presetStates: [String: EntryPresetState]
+    private(set) var defaultPresetID: String?
+    private(set) var usesDefaultPreset: Bool
 
+    @ObservationIgnored
     private let defaults: UserDefaults
+    @ObservationIgnored
     private let encoder = JSONEncoder()
+    @ObservationIgnored
     private let decoder = JSONDecoder()
 
     init(

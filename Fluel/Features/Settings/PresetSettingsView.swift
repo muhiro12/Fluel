@@ -5,7 +5,8 @@ import TipKit
 struct PresetSettingsView: View {
     @Environment(\.mhTheme)
     private var theme
-    @EnvironmentObject private var presetStore: EntryPresetStore
+    @Environment(EntryPresetStore.self)
+    private var presetStore
     @State private var isPresentingCreateSheet = false
     @State private var editingPreset: EntryPreset?
     @State private var deletingPreset: EntryPreset?
@@ -87,6 +88,7 @@ struct PresetSettingsView: View {
             subtitle: Text(FluelCopy.presetScreenSubtitle())
         )
         .navigationBarTitleDisplayMode(.inline)
+        .toolbarRole(.editor)
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
@@ -437,9 +439,11 @@ private struct PresetStatusBadge: Identifiable {
 }
 
 #Preview {
+    @Previewable var presetStore = EntryPresetStore.preview()
+
     NavigationStack {
         PresetSettingsView()
     }
-    .environmentObject(EntryPresetStore.preview())
+    .environment(presetStore)
     .fluelAppStyle()
 }
