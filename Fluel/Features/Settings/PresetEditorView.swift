@@ -71,6 +71,8 @@ struct PresetEditorView: View {
                 .mhInputChrome()
             } header: {
                 Text(FluelCopy.titleFieldLabel())
+                    .mhSectionHeaderTitle()
+                    .mhSectionHeader()
             }
 
             Section {
@@ -89,6 +91,8 @@ struct PresetEditorView: View {
                 .pickerStyle(.menu)
             } header: {
                 Text(FluelCopy.presetSymbolLabel())
+                    .mhSectionHeaderTitle()
+                    .mhSectionHeader()
             }
 
             Section {
@@ -125,6 +129,8 @@ struct PresetEditorView: View {
                 }
             } header: {
                 Text(FluelCopy.presetOffsetLabel())
+                    .mhSectionHeaderTitle()
+                    .mhSectionHeader()
             }
 
             Section {
@@ -133,12 +139,15 @@ struct PresetEditorView: View {
                     .mhInputChrome()
             } header: {
                 Text(FluelCopy.noteSectionTitle())
+                    .mhSectionHeaderTitle()
+                    .mhSectionHeader()
             } footer: {
                 Text(
                     EntryPresetFormatting.detailText(
                         for: previewPreset
                     )
                 )
+                .mhSectionFooterText()
             }
         }
         .mhFormChrome(

@@ -15,6 +15,7 @@ struct EntryRowView: View {
     private var theme
     @Environment(\.locale)
     private var locale
+    @Namespace private var metadataBadgeNamespace
 
     let entry: Entry
     let referenceDate: Date
@@ -83,19 +84,19 @@ struct EntryRowView: View {
 
                 if showsMetadataBadges,
                    metadataBadges.isEmpty == false {
-                    HStack(spacing: Metrics.badgeSpacing) {
-                        ForEach(metadataBadges, id: \.self) { badge in
-                            Text(badge)
-                                .font(.caption.weight(.semibold))
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 4)
-                                .foregroundStyle(.secondary)
-                                .background {
-                                    Capsule(style: .continuous)
-                                        .fill(
-                                            Color.secondary.opacity(0.14)
-                                        )
-                                }
+                    MHGlassContainer(spacing: Metrics.badgeSpacing) {
+                        HStack(spacing: Metrics.badgeSpacing) {
+                            ForEach(
+                                Array(metadataBadges.enumerated()),
+                                id: \.offset
+                            ) { item in
+                                Text(item.element)
+                                    .mhBadge(style: .neutral)
+                                    .mhGlassEffectID(
+                                        "entry-\(entry.id.uuidString)-metadata-\(item.offset)",
+                                        in: metadataBadgeNamespace
+                                    )
+                            }
                         }
                     }
                 }

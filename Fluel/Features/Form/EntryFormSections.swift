@@ -40,8 +40,11 @@ struct EntryFormTitleSection: View {
             .mhInputChrome()
         } header: {
             Text(FluelCopy.titleFieldLabel())
+                .mhSectionHeaderTitle()
+                .mhSectionHeader()
         } footer: {
             Text(FluelCopy.titleFooter())
+                .mhSectionFooterText()
         }
     }
 }
@@ -105,9 +108,12 @@ struct EntryFormStartSection: View {
             }
         } header: {
             Text(FluelCopy.startSectionTitle())
+                .mhSectionHeaderTitle()
+                .mhSectionHeader()
         } footer: {
             if let startSectionFooterText = draft.startSectionFooterText {
                 Text(startSectionFooterText)
+                    .mhSectionFooterText()
             }
         }
     }
@@ -159,6 +165,8 @@ struct EntryFormPhotoSection: View {
             }
         } header: {
             Text(FluelCopy.photoSectionTitle())
+                .mhSectionHeaderTitle()
+                .mhSectionHeader()
         }
     }
 }
@@ -185,8 +193,11 @@ struct EntryFormNoteSection: View {
             }
         } header: {
             Text(FluelCopy.noteSectionTitle())
+                .mhSectionHeaderTitle()
+                .mhSectionHeader()
         } footer: {
             Text(footerText)
+                .mhSectionFooterText()
         }
     }
 }

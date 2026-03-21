@@ -4,6 +4,7 @@ import SwiftUI
 struct EntryPresetStrip: View {
     @Environment(\.mhTheme)
     private var theme
+    @Namespace private var presetNamespace
 
     var title: String = FluelCopy.quickPresets()
     var subtitle: String = FluelCopy.quickPresetsBody()
@@ -14,23 +15,29 @@ struct EntryPresetStrip: View {
     var body: some View {
         VStack(alignment: .leading, spacing: theme.spacing.inline) {
             Text(title)
-                .font(.headline)
+                .mhTextStyle(.sectionTitle)
 
             Text(subtitle)
-                .mhTextStyle(.supporting, colorRole: .secondaryText)
+                .mhSectionHeaderSupporting()
 
             ScrollView(.horizontal, showsIndicators: false) {
-                HStack(spacing: theme.spacing.inline) {
-                    ForEach(presets) { preset in
-                        Button {
-                            onSelect(preset)
-                        } label: {
-                            presetCard(for: preset)
+                MHGlassContainer(spacing: theme.spacing.inline) {
+                    HStack(spacing: theme.spacing.inline) {
+                        ForEach(presets) { preset in
+                            Button {
+                                onSelect(preset)
+                            } label: {
+                                presetCard(for: preset)
+                                    .mhGlassEffectID(
+                                        preset.id,
+                                        in: presetNamespace
+                                    )
+                            }
+                            .buttonStyle(.plain)
                         }
-                        .buttonStyle(.plain)
                     }
+                    .padding(.vertical, 2)
                 }
-                .padding(.vertical, 2)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -41,14 +48,13 @@ struct EntryPresetStrip: View {
     ) -> some View {
         let isSelected = selectedPresetID == preset.id
 
-        return VStack(alignment: .leading, spacing: 8) {
-            HStack(alignment: .firstTextBaseline, spacing: 8) {
+        return VStack(alignment: .leading, spacing: theme.spacing.inline) {
+            HStack(alignment: .firstTextBaseline, spacing: theme.spacing.inline) {
                 Label(
                     preset.title,
                     systemImage: preset.symbolName
                 )
-                .font(.subheadline.weight(.semibold))
-                .foregroundStyle(Color.primary)
+                .mhRowTitle()
 
                 Spacer(minLength: 0)
 
@@ -70,8 +76,7 @@ struct EntryPresetStrip: View {
             }
         }
         .frame(width: 220, alignment: .leading)
-        .padding(.horizontal, 14)
-        .padding(.vertical, 12)
+        .mhSurfaceInset()
         .mhSurface(role: isSelected ? .standard : .muted)
     }
 }

@@ -61,7 +61,7 @@ struct SettingsView: View {
     private var displayCard: some View {
         VStack(alignment: .leading, spacing: theme.spacing.inline) {
             Text(FluelCopy.display())
-                .font(.headline)
+                .mhTextStyle(.sectionTitle)
 
             Toggle(
                 FluelCopy.showListSummaryCards(),
@@ -93,7 +93,7 @@ struct SettingsView: View {
     ) -> some View {
         VStack(alignment: .leading, spacing: theme.spacing.inline) {
             Text(FluelCopy.dataStatus())
-                .font(.headline)
+                .mhTextStyle(.sectionTitle)
 
             Text(FluelCopy.totalEntriesCount(snapshot.totalCount))
                 .mhRowTitle()
@@ -119,7 +119,7 @@ struct SettingsView: View {
     private var presetCard: some View {
         VStack(alignment: .leading, spacing: theme.spacing.inline) {
             Text(FluelCopy.presets())
-                .font(.headline)
+                .mhTextStyle(.sectionTitle)
 
             NavigationLink {
                 PresetSettingsView()
@@ -168,7 +168,7 @@ struct SettingsView: View {
     private var supportCard: some View {
         VStack(alignment: .leading, spacing: theme.spacing.inline) {
             Text(FluelCopy.support())
-                .font(.headline)
+                .mhTextStyle(.sectionTitle)
 
             MHActionGroup(layout: .vertical) {
                 Button(action: onShowArchive) {

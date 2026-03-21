@@ -59,7 +59,7 @@ struct DashboardQuickActionsCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: theme.spacing.inline) {
             Text(FluelCopy.quickActions())
-                .font(.headline)
+                .mhTextStyle(.sectionTitle)
 
             MHActionGroup {
                 Button(action: onAdd) {
@@ -141,7 +141,7 @@ struct DashboardOverviewCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: theme.spacing.inline) {
             Text(FluelCopy.overview())
-                .font(.headline)
+                .mhTextStyle(.sectionTitle)
 
             LazyVGrid(
                 columns: Metrics.metricColumns,
@@ -200,7 +200,7 @@ struct DashboardLeadEntryCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: theme.spacing.inline) {
             Text(FluelCopy.leadEntry())
-                .font(.headline)
+                .mhTextStyle(.sectionTitle)
 
             Text(leadEntry.title)
                 .mhRowTitle()
@@ -217,7 +217,7 @@ struct DashboardLeadEntryCard: View {
                     for: leadEntry.elapsedSnapshot
                 )
             )
-            .font(.title2.weight(.semibold))
+            .mhTextStyle(.screenTitle)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .mhRow()
@@ -234,7 +234,7 @@ struct DashboardMilestoneSection: View {
     var body: some View {
         VStack(alignment: .leading, spacing: theme.spacing.inline) {
             Text(FluelCopy.upcomingMilestones())
-                .font(.headline)
+                .mhTextStyle(.sectionTitle)
 
             VStack(spacing: 0) {
                 ForEach(milestones, id: \.entryID) { milestone in
@@ -252,7 +252,7 @@ struct DashboardMilestoneSection: View {
                         }
 
                         Text(milestone.milestoneText)
-                            .font(.title3.weight(.semibold))
+                            .mhTextStyle(.sectionTitle)
 
                         Text(
                             milestone.milestoneDate.formatted(
@@ -265,7 +265,7 @@ struct DashboardMilestoneSection: View {
 
                         if milestone.isApproximate {
                             Text(FluelCopy.approximateMilestone())
-                                .mhTextStyle(.metadata, colorRole: .secondaryText)
+                                .mhBadge(style: .warning)
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -292,7 +292,7 @@ struct DashboardActivitySection: View {
     var body: some View {
         VStack(alignment: .leading, spacing: theme.spacing.inline) {
             Text(FluelCopy.recentActivity())
-                .font(.headline)
+                .mhTextStyle(.sectionTitle)
 
             VStack(spacing: 0) {
                 ForEach(activity, id: \.entryID) { item in
@@ -316,7 +316,7 @@ struct DashboardActivitySection: View {
                         }
 
                         Text(FluelCopy.entryActivityKind(item.kind))
-                            .mhRowSupporting()
+                            .mhBadge(style: item.kind.fluelBadgeStyle)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.vertical, 12)
@@ -340,20 +340,14 @@ private struct DashboardMetricTile: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(value)
-                .font(.title2.weight(.semibold))
+                .mhTextStyle(.screenTitle)
 
             Text(title)
-                .mhTextStyle(.supporting, colorRole: .secondaryText)
+                .mhRowSupporting()
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(16)
-        .background {
-            RoundedRectangle(
-                cornerRadius: 20,
-                style: .continuous
-            )
-            .fill(Color.secondary.opacity(0.08))
-        }
+        .mhSurfaceInset()
+        .mhSurface()
     }
 }
 

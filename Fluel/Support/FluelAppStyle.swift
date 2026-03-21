@@ -1,3 +1,4 @@
+import FluelLibrary
 import MHUI
 import SwiftUI
 
@@ -10,5 +11,19 @@ extension View {
     func fluelAppStyle() -> some View {
         tint(FluelAppStyle.tintColor)
             .mhTheme(FluelAppStyle.theme)
+            .mhGlassPolicy(.enabled)
+    }
+}
+
+extension EntryActivityKind {
+    var fluelBadgeStyle: MHBadgeStyle {
+        switch self {
+        case .added:
+            .positive
+        case .updated:
+            .accent
+        case .archived:
+            .warning
+        }
     }
 }

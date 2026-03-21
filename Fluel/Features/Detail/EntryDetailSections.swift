@@ -142,14 +142,17 @@ struct EntryDetailMoreMenu: View {
 }
 
 struct EntryDetailElapsedSection: View {
+    @Environment(\.mhTheme)
+    private var theme
+
     let snapshot: EntryElapsedSnapshot
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: theme.spacing.inline) {
             Text(
                 EntryFormatting.primaryElapsedText(for: snapshot)
             )
-            .font(.system(size: 44, weight: .semibold, design: .rounded))
+            .mhTextStyle(.screenTitle)
             .multilineTextAlignment(.leading)
 
             Text(

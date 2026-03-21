@@ -162,7 +162,7 @@ struct PresetSettingsView: View {
     private var defaultPresetCard: some View {
         VStack(alignment: .leading, spacing: theme.spacing.inline) {
             Text(FluelCopy.defaultPreset())
-                .font(.headline)
+                .mhTextStyle(.sectionTitle)
 
             Toggle(
                 FluelCopy.useDefaultPresetForNewEntries(),
@@ -268,7 +268,7 @@ private struct PresetSettingsSectionCard: View {
     var body: some View {
         VStack(alignment: .leading, spacing: theme.spacing.inline) {
             Text(title)
-                .font(.headline)
+                .mhTextStyle(.sectionTitle)
 
             if presets.isEmpty, let emptyState {
                 VStack(alignment: .leading, spacing: 6) {
@@ -305,6 +305,8 @@ private struct PresetSettingsSectionCard: View {
 }
 
 private struct PresetSettingsRow: View {
+    @Namespace private var statusBadgeNamespace
+
     let preset: EntryPreset
     let isDefaultPreset: Bool
     var onSelectDefault: ((EntryPreset) -> Void)?
@@ -331,9 +333,19 @@ private struct PresetSettingsRow: View {
                         .mhTextStyle(.metadata, colorRole: .secondaryText)
                 }
 
-                if let statusText {
-                    Text(statusText)
-                        .mhTextStyle(.metadata, colorRole: .secondaryText)
+                if statusBadges.isEmpty == false {
+                    MHGlassContainer(spacing: 8) {
+                        HStack(spacing: 8) {
+                            ForEach(statusBadges) { badge in
+                                Text(badge.title)
+                                    .mhBadge(style: badge.style)
+                                    .mhGlassEffectID(
+                                        "\(preset.id)-status-\(badge.id)",
+                                        in: statusBadgeNamespace
+                                    )
+                            }
+                        }
+                    }
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -390,20 +402,38 @@ private struct PresetSettingsRow: View {
         onSelectDefault != nil || onTogglePin != nil || (preset.isEditable && (onEdit != nil || onDelete != nil))
     }
 
-    private var statusText: String? {
-        let labels = [
-            isDefaultPreset ? FluelCopy.defaultPresetBadge() : nil,
-            preset.isPinned ? FluelCopy.pinned() : nil,
-            preset.lastUsedAt != nil ? FluelCopy.recent() : nil
+    private var statusBadges: [PresetStatusBadge] {
+        [
+            isDefaultPreset
+                ? .init(
+                    id: "default",
+                    title: FluelCopy.defaultPresetBadge(),
+                    style: .accent
+                )
+                : nil,
+            preset.isPinned
+                ? .init(
+                    id: "pinned",
+                    title: FluelCopy.pinned(),
+                    style: .positive
+                )
+                : nil,
+            preset.lastUsedAt != nil
+                ? .init(
+                    id: "recent",
+                    title: FluelCopy.recent(),
+                    style: .neutral
+                )
+                : nil
         ]
         .compactMap(\.self)
-
-        if labels.isEmpty {
-            return nil
-        }
-
-        return labels.joined(separator: " • ")
     }
+}
+
+private struct PresetStatusBadge: Identifiable {
+    let id: String
+    let title: String
+    let style: MHBadgeStyle
 }
 
 #Preview {
