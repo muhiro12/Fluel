@@ -1,6 +1,6 @@
 # Fluel Current Product and Architecture Overview
 
-Current as of March 10, 2026.
+Current as of March 21, 2026.
 
 ## Purpose
 
@@ -115,9 +115,9 @@ living in the app and widget targets.
 
 - `FluelLibrary` owns reusable mutation and query rules through types such as
   `EntryRepository`, `EntryListOrdering`, and snapshot query helpers.
-- `Fluel` owns SwiftUI presentation, runtime bootstrap, preferences, TipKit,
-  and mutation follow-up orchestration through app-side adapters such as
-  `FluelEntryMutationWorkflow`.
+- `Fluel` owns the app assembly, SwiftUI presentation, runtime bootstrap,
+  preferences, TipKit, and mutation follow-up orchestration through app-side
+  adapters such as `FluelEntryMutationWorkflow`.
 - `FluelWidget` stays thin by building timeline entries from shared
   `EntryWidgetSnapshotQuery` results rather than owning duplicate business
   logic.
@@ -127,6 +127,8 @@ living in the app and widget targets.
 - WidgetKit with shared App Group storage
 - PhotosUI for optional entry photos
 - `ShareLink`-based sharing from detail and timeline views
-- MH app runtime integration with licenses enabled
-- A debug-only native AdMob path in runtime configuration
+- `MHAppRuntime` default adapter integration with the runtime-owned license
+  surface enabled
+- A debug-only native AdMob path in live runtime configuration, disabled for
+  Codex capture mode
 - No App Intents or App Shortcuts targets in the current repository

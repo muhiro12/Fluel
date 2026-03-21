@@ -1,14 +1,14 @@
 import FluelLibrary
 import Foundation
-import MHPlatform
+import MHMutationFlow
 import SwiftData
 
 @MainActor
 struct FluelEntryMutationWorkflow {
     let context: ModelContext
     var calendar: Calendar = .autoupdatingCurrent
-    var onSuccess: @MainActor () -> Void = {}
-    var onError: @MainActor (String) -> Void = { _ in }
+    var onSuccess: @MainActor () -> Void = { () }
+    var onError: @MainActor (String) -> Void = { _ in () }
 
     func create(
         input: EntryFormInput

@@ -1,19 +1,23 @@
-import FluelLibrary
-import LicenseList
+import MHAppRuntime
 import SwiftUI
 
 struct FluelLicenseView: View {
+    @Environment(MHAppRuntime.self)
+    private var runtime
+
     var body: some View {
-        LicenseList.LicenseListView()
-            .licenseViewStyle(.withRepositoryAnchorLink)
+        runtime.licensesView()
             .navigationTitle(FluelCopy.licenses())
             .navigationBarTitleDisplayMode(.inline)
     }
 }
 
-#Preview(traits: .modifier(FluelSampleData())) {
+#Preview {
     NavigationStack {
         FluelLicenseView()
     }
+    .mhAppRuntimeEnvironment(
+        .init(configuration: FluelAppConfiguration.captureRuntimeConfiguration)
+    )
     .fluelAppStyle()
 }

@@ -1,5 +1,5 @@
 import Foundation
-import MHPlatform
+import MHLogging
 import TipKit
 
 enum FluelTipBootstrap {

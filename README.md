@@ -53,9 +53,13 @@ logic in `FluelLibrary`.
   `group.com.muhiro12.Fluel/Fluel.sqlite`.
 - **Shared library source of truth** - reusable mutation, query, formatting,
   and widget snapshot logic belongs in `FluelLibrary`.
-- **Thin adapters** - `Fluel` owns SwiftUI presentation, runtime wiring,
-  preferences, TipKit, and mutation follow-up side effects, while
-  `FluelWidget` owns WidgetKit timeline delivery.
+- **Thin adapters** - `Fluel` owns an app assembly around
+  `MHAppRuntimeBootstrap`, SwiftUI presentation, preferences, TipKit, and
+  mutation follow-up side effects, while `FluelWidget` owns WidgetKit timeline
+  delivery.
+- **Default runtime adapters** - the app uses `MHAppRuntime` for the runtime-
+  owned license surface and keeps the debug-only native ad unit in live runtime
+  configuration while disabling it for Codex capture mode.
 - **Preview and capture support** - the app can boot sample data for previews
   and Codex capture flows without changing live storage.
 

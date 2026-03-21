@@ -1,6 +1,6 @@
 # Fluel Architecture Guide
 
-Current as of March 10, 2026.
+Current as of March 21, 2026.
 
 ## Scope
 
@@ -69,10 +69,13 @@ Not allowed in views:
 
 ## Current Alignment Notes
 
-- `Fluel/App/FluelApp.swift` is correctly focused on app startup and dependency
-  wiring.
+- `Fluel/App/FluelAppAssembly.swift` and `Fluel/App/FluelApp.swift` keep app
+  startup, runtime bootstrap assembly, and capture/live model-container
+  selection in the app target.
 - `Fluel/Support/Mutation/FluelEntryMutationWorkflow.swift` is the right place
   for widget reload follow-up orchestration.
+- `Fluel/Features/License/FluelLicenseView.swift` keeps app-owned presentation
+  while delegating the license list surface to `MHAppRuntime`.
 - `FluelWidget/Sources/LeadEntryWidgetProvider.swift` stays thin by delegating
   snapshot building to `FluelLibrary`.
 - `FluelLibrary/Sources/Entry/EntryRepository.swift` remains the canonical
