@@ -31,7 +31,18 @@ if rg -q 'XCLocalSwiftPackageReference "MHPlatform"|relativePath = \.\./MHPlatfo
   fail_check "MHPlatform must not be referenced as a local path dependency."
 fi
 
-if rg -q 'branch = main;|kind = branch;' "$pbxproj_path"; then
+mhplatform_reference_block=$(grep -A6 'repositoryURL = "https://github.com/muhiro12/MHPlatform.git";' "$pbxproj_path" || true)
+
+if [[ -z "$mhplatform_reference_block" ]]; then
+  fail_check "MHPlatform remote package requirement block is missing from project.pbxproj."
+fi
+
+if ! grep -q 'kind = upToNextMajorVersion;' <<<"$mhplatform_reference_block" || \
+  ! grep -q 'minimumVersion = 1.0.0;' <<<"$mhplatform_reference_block"; then
+  fail_check "MHPlatform must use an up-to-next-major requirement with minimumVersion = 1.0.0."
+fi
+
+if grep -q 'kind = branch;' <<<"$mhplatform_reference_block" || grep -q 'branch = ' <<<"$mhplatform_reference_block"; then
   fail_check "MHPlatform must not track a floating branch in project.pbxproj."
 fi
 
@@ -49,8 +60,12 @@ if grep -q '"branch"' <<<"$mhplatform_pin_block"; then
   fail_check "MHPlatform must not track a floating branch in Package.resolved."
 fi
 
-if ! grep -Eq '"version" : "[^"]+"' <<<"$mhplatform_pin_block" && ! grep -Eq '"revision" : "[0-9a-f]{40}"' <<<"$mhplatform_pin_block"; then
-  fail_check "MHPlatform must be pinned by exact version or exact revision."
+if ! grep -Eq '"version" : "1\.[0-9]+\.[0-9]+"' <<<"$mhplatform_pin_block"; then
+  fail_check "MHPlatform must resolve within the approved 1.x semver range."
+fi
+
+if ! grep -Eq '"revision" : "[0-9a-f]{40}"' <<<"$mhplatform_pin_block"; then
+  fail_check "MHPlatform must be pinned to a concrete revision in Package.resolved."
 fi
 
 forbidden_import_matches=$(

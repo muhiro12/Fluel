@@ -97,8 +97,8 @@ Not allowed in views:
 
 ## Repository Guards
 
-- `Fluel.xcodeproj` pins remote `MHPlatform` to the exact `1.0` release rather
-  than a floating branch.
+- `Fluel.xcodeproj` consumes `MHPlatform` from the remote GitHub package and
+  allows semver-compatible `1.x` updates starting at `1.0.0`.
 - `Fluel.xcodeproj` consumes `MHUI` from the remote GitHub package and allows
   semver-compatible `1.x` updates starting at `1.0.0`.
 - `ci_scripts/tasks/check_mhplatform_adoption.sh` blocks local-path
