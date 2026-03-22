@@ -1,5 +1,4 @@
 import FluelLibrary
-import MHUI
 import SwiftData
 import SwiftUI
 import TipKit
@@ -27,41 +26,47 @@ struct EntryDetailView: View {
             )
             let shareText = shareText(referenceDate: timeline.date)
 
-            VStack(alignment: .leading, spacing: 24) {
-                EntryDetailQuickActions(
-                    entry: entry,
-                    shareText: shareText,
-                    onDuplicate: presentDuplicateForm,
-                    onEdit: presentEditor,
-                    onArchive: archive,
-                    onRestore: restore
-                )
-                .popoverTip(
-                    showsDetailQuickActionsTip ? detailQuickActionsTip : nil,
-                    arrowEdge: .top
-                )
-                EntryDetailElapsedSection(snapshot: snapshot)
-                EntryDetailDetailsSection(
-                    entry: entry,
-                    snapshot: snapshot
-                )
-
-                if let note = entry.note,
-                   note.isEmpty == false {
-                    EntryDetailNoteSection(note: note)
-                }
-            }
-            .mhScreen(
-                title: Text(entry.title),
-                subtitle: Text(
-                    EntryFormatting.startLabelText(
-                        for: entry.startComponents
+            ScrollView {
+                VStack(
+                    alignment: .leading,
+                    spacing: FluelPresentationStyle.sectionSpacing
+                ) {
+                    FluelScreenIntroCard(
+                        title: entry.title,
+                        subtitle: EntryFormatting.startLabelText(
+                            for: entry.startComponents
+                        )
                     )
-                )
-            ) {
-                EntryDetailHeaderContent(entry: entry)
+
+                    EntryDetailHeaderContent(entry: entry)
+
+                    EntryDetailQuickActions(
+                        entry: entry,
+                        shareText: shareText,
+                        onDuplicate: presentDuplicateForm,
+                        onEdit: presentEditor,
+                        onArchive: archive,
+                        onRestore: restore
+                    )
+                    .popoverTip(
+                        showsDetailQuickActionsTip ? detailQuickActionsTip : nil,
+                        arrowEdge: .top
+                    )
+
+                    EntryDetailElapsedSection(snapshot: snapshot)
+                    EntryDetailDetailsSection(
+                        entry: entry,
+                        snapshot: snapshot
+                    )
+
+                    if let note = entry.note,
+                       note.isEmpty == false {
+                        EntryDetailNoteSection(note: note)
+                    }
+                }
+                .padding(FluelPresentationStyle.screenPadding)
             }
-            .navigationBarTitleDisplayMode(.inline)
+            .fluelAppBackground()
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     EntryDetailMoreMenu(
@@ -76,6 +81,8 @@ struct EntryDetailView: View {
                 }
             }
         }
+        .navigationTitle(entry.title)
+        .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $isPresentingEditor) {
             NavigationStack {
                 EntryFormView(

@@ -251,6 +251,11 @@ if $needs_fluel_build; then
     "build_app" \
     "Build Fluel scheme" \
     bash "$repository_root/ci_scripts/tasks/build_app.sh"
+
+  run_logged_step \
+    "capture_screens" \
+    "Capture Fluel screens" \
+    bash "$repository_root/ci_scripts/tasks/test_capture_screens.sh"
 fi
 
 if $needs_fluel_library_tests; then

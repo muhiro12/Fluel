@@ -1,5 +1,4 @@
 import FluelLibrary
-import MHUI
 import SwiftData
 import SwiftUI
 import TipKit
@@ -9,8 +8,6 @@ struct ArchiveListView: View {
         static let rowSpacing: CGFloat = 12
     }
 
-    @Environment(\.mhTheme)
-    private var theme
     @Environment(\.modelContext)
     private var context
 
@@ -142,6 +139,7 @@ struct ArchiveListView: View {
                 }
             }
         }
+        .navigationTitle(FluelCopy.archived())
         .navigationBarTitleDisplayMode(.inline)
         .toolbarRole(.editor)
         .toolbar {
@@ -233,45 +231,102 @@ struct ArchiveListView: View {
     }
 
     private var emptyState: some View {
-        ContentUnavailableView {
-            Label(
-                FluelCopy.archiveEmptyTitle(),
-                systemImage: "archivebox"
-            )
-        } description: {
-            Text(FluelCopy.archiveEmptyBody())
+        ScrollView {
+            VStack(
+                alignment: .leading,
+                spacing: FluelPresentationStyle.sectionSpacing
+            ) {
+                FluelScreenIntroCard(
+                    title: FluelCopy.archived(),
+                    subtitle: FluelCopy.archiveScreenSubtitle()
+                )
+
+                ContentUnavailableView {
+                    Label(
+                        FluelCopy.archiveEmptyTitle(),
+                        systemImage: "archivebox"
+                    )
+                } description: {
+                    Text(FluelCopy.archiveEmptyBody())
+                }
+                .fluelCard(tone: .muted)
+            }
+            .padding(FluelPresentationStyle.screenPadding)
         }
-        .mhEmptyStateLayout()
-        .mhSurfaceInset()
-        .mhSurface(role: .muted)
-        .mhScreen(
-            title: Text(FluelCopy.archived()),
-            subtitle: Text(FluelCopy.archiveScreenSubtitle())
-        )
+        .fluelAppBackground()
     }
 
     private var searchEmptyState: some View {
-        ContentUnavailableView {
-            Label(
-                FluelCopy.archiveSearchEmptyTitle(),
-                systemImage: "magnifyingglass"
-            )
-        } description: {
-            Text(FluelCopy.archiveSearchEmptyBody())
+        ScrollView {
+            VStack(
+                alignment: .leading,
+                spacing: FluelPresentationStyle.sectionSpacing
+            ) {
+                FluelScreenIntroCard(
+                    title: FluelCopy.archived(),
+                    subtitle: FluelCopy.archiveScreenSubtitle()
+                )
+
+                ContentUnavailableView {
+                    Label(
+                        FluelCopy.archiveSearchEmptyTitle(),
+                        systemImage: "magnifyingglass"
+                    )
+                } description: {
+                    Text(FluelCopy.archiveSearchEmptyBody())
+                }
+                .fluelCard(tone: .muted)
+            }
+            .padding(FluelPresentationStyle.screenPadding)
         }
-        .mhEmptyStateLayout()
-        .mhSurfaceInset()
-        .mhSurface(role: .muted)
-        .mhScreen(
-            title: Text(FluelCopy.archived()),
-            subtitle: Text(FluelCopy.archiveScreenSubtitle())
-        )
+        .fluelAppBackground()
     }
 
     private func listContent(
         referenceDate: Date
     ) -> some View {
         List {
+            FluelScreenIntroCard(
+                title: FluelCopy.archived(),
+                subtitle: FluelCopy.archiveScreenSubtitle()
+            )
+            .listRowInsets(.init())
+            .listRowSeparator(.hidden)
+            .listRowBackground(Color.clear)
+
+            VStack(
+                alignment: .leading,
+                spacing: FluelPresentationStyle.inlineSpacing
+            ) {
+                EntryContentFilterBar(
+                    selection: contentFilterBinding
+                )
+                .popoverTip(
+                    showsContentFiltersTip ? contentFiltersTip : nil,
+                    arrowEdge: .top
+                )
+
+                if hasActiveSearch || hasActiveFilter {
+                    FluelEntryListStateActions(
+                        showsClearSearch: hasActiveSearch,
+                        showsClearFilter: hasActiveFilter,
+                        onClearSearch: clearSearch,
+                        onClearFilter: clearFilter
+                    )
+                }
+            }
+            .fluelCard(tone: .muted)
+            .listRowInsets(
+                .init(
+                    top: 0,
+                    leading: 0,
+                    bottom: Metrics.rowSpacing,
+                    trailing: 0
+                )
+            )
+            .listRowSeparator(.hidden)
+            .listRowBackground(Color.clear)
+
             if showsListSummaryCards {
                 FluelEntryListSummaryCard(summary: summary)
                     .listRowInsets(
@@ -349,29 +404,9 @@ struct ArchiveListView: View {
                 .listRowBackground(Color.clear)
             }
         }
-        .mhListChrome(
-            title: Text(FluelCopy.archived()),
-            subtitle: Text(FluelCopy.archiveScreenSubtitle())
-        ) {
-            VStack(alignment: .leading, spacing: theme.spacing.inline) {
-                EntryContentFilterBar(
-                    selection: contentFilterBinding
-                )
-                .popoverTip(
-                    showsContentFiltersTip ? contentFiltersTip : nil,
-                    arrowEdge: .top
-                )
-
-                if hasActiveSearch || hasActiveFilter {
-                    FluelEntryListStateActions(
-                        showsClearSearch: hasActiveSearch,
-                        showsClearFilter: hasActiveFilter,
-                        onClearSearch: clearSearch,
-                        onClearFilter: clearFilter
-                    )
-                }
-            }
-        }
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+        .fluelAppBackground()
     }
 
     private func restore(

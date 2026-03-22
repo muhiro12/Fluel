@@ -1,5 +1,4 @@
 import FluelLibrary
-import MHUI
 import SwiftData
 import SwiftUI
 import UIKit
@@ -11,8 +10,6 @@ struct EntryRowView: View {
         static let badgeSpacing: CGFloat = 6
     }
 
-    @Environment(\.mhTheme)
-    private var theme
     @Environment(\.locale)
     private var locale
     @Namespace private var metadataBadgeNamespace
@@ -53,7 +50,10 @@ struct EntryRowView: View {
             locale: locale
         )
 
-        return HStack(alignment: .top, spacing: theme.spacing.control) {
+        return HStack(
+            alignment: .top,
+            spacing: FluelPresentationStyle.rowSpacing
+        ) {
             if let image = entryImage {
                 Image(uiImage: image)
                     .resizable()
@@ -64,35 +64,39 @@ struct EntryRowView: View {
                     )
                     .clipShape(
                         RoundedRectangle(
-                            cornerRadius: theme.radius.control,
+                            cornerRadius: FluelPresentationStyle.imageCornerRadius,
                             style: .continuous
                         )
                     )
                     .accessibilityHidden(true)
             }
 
-            VStack(alignment: .leading, spacing: theme.spacing.inline) {
+            VStack(
+                alignment: .leading,
+                spacing: FluelPresentationStyle.inlineSpacing
+            ) {
                 Text(
                     EntryFormatting.startLabelText(
                         for: entry.startComponents
                     )
                 )
-                .mhRowOverline()
+                .fluelOverlineStyle()
 
                 Text(entry.title)
-                    .mhRowTitle()
+                    .fluelRowTitleStyle()
 
                 if showsMetadataBadges,
                    metadataBadges.isEmpty == false {
-                    MHGlassContainer(spacing: Metrics.badgeSpacing) {
+                    GlassEffectContainer(
+                        spacing: Metrics.badgeSpacing
+                    ) {
                         HStack(spacing: Metrics.badgeSpacing) {
                             ForEach(
                                 Array(metadataBadges.enumerated()),
                                 id: \.offset
                             ) { item in
-                                Text(item.element)
-                                    .mhBadge(style: .neutral)
-                                    .mhGlassEffectID(
+                                FluelGlassPill(title: item.element)
+                                    .glassEffectID(
                                         "entry-\(entry.id.uuidString)-metadata-\(item.offset)",
                                         in: metadataBadgeNamespace
                                     )
@@ -103,25 +107,23 @@ struct EntryRowView: View {
 
                 if let footerText {
                     Text(footerText)
-                        .mhRowSupporting()
+                        .fluelSupportingStyle()
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            Spacer(minLength: theme.layout.rowAccessorySpacing)
+            Spacer(minLength: FluelPresentationStyle.rowSpacing)
 
             Text(
                 EntryFormatting.primaryElapsedText(
                     for: snapshot
                 )
             )
-            .mhTextStyle(.bodyStrong, colorRole: .primaryText)
+            .fluelRowTitleStyle()
             .multilineTextAlignment(.trailing)
             .frame(maxWidth: Metrics.elapsedWidth, alignment: .trailing)
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .mhRow()
-        .mhSurface(role: entry.isArchived ? .muted : .standard)
+        .fluelCard(tone: entry.isArchived ? .muted : .standard)
     }
 
     private var entryImage: UIImage? {

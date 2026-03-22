@@ -1,13 +1,9 @@
 import FluelLibrary
-import MHUI
 import SwiftData
 import SwiftUI
 import TipKit
 
 struct DashboardView: View {
-    @Environment(\.mhTheme)
-    private var theme
-
     @Query
     private var entries: [Entry]
     @AppStorage(
@@ -31,7 +27,15 @@ struct DashboardView: View {
             )
 
             ScrollView {
-                VStack(alignment: .leading, spacing: theme.spacing.section) {
+                VStack(
+                    alignment: .leading,
+                    spacing: FluelPresentationStyle.sectionSpacing
+                ) {
+                    FluelScreenIntroCard(
+                        title: FluelCopy.dashboard(),
+                        subtitle: FluelCopy.dashboardScreenSubtitle()
+                    )
+
                     DashboardQuickActionsCard(
                         onAdd: onAdd,
                         onCreateFromPreset: onCreateFromPreset,
@@ -71,13 +75,11 @@ struct DashboardView: View {
                         }
                     }
                 }
-                .mhSurfaceInset()
+                .padding(FluelPresentationStyle.screenPadding)
             }
-            .mhScreen(
-                title: Text(FluelCopy.dashboard()),
-                subtitle: Text(FluelCopy.dashboardScreenSubtitle())
-            )
+            .fluelAppBackground()
         }
+        .navigationTitle(FluelCopy.dashboard())
         .navigationBarTitleDisplayMode(.inline)
         .toolbarRole(.editor)
         .onDisappear {

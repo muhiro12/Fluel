@@ -59,6 +59,9 @@ logic in `FluelLibrary`.
   `MHAppRuntimeBootstrap`, SwiftUI presentation, preferences, TipKit, and
   mutation follow-up side effects, while `FluelWidget` owns WidgetKit timeline
   delivery.
+- **App-owned presentation** - Fluel styles its own SwiftUI screens directly
+  with readable grouped surfaces and selective Liquid Glass on compact
+  affordances such as chips and small action controls.
 - **Per-tab navigation roots** - the main shell keeps a separate
   `NavigationStack` per primary tab so each tab preserves its own navigation
   history while keeping create and licenses presentation local to that tab.
@@ -109,6 +112,12 @@ If you only need the app build:
 
 ```sh
 bash ci_scripts/tasks/build_app.sh
+```
+
+If you want to verify the existing Codex capture screens after an app build:
+
+```sh
+bash ci_scripts/tasks/test_capture_screens.sh
 ```
 
 If you only need library tests:

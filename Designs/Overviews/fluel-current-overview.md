@@ -118,6 +118,8 @@ living in the app and widget targets.
 - `Fluel` owns the app assembly, SwiftUI presentation, runtime bootstrap,
   preferences, TipKit, and mutation follow-up orchestration through app-side
   adapters such as `FluelEntryMutationWorkflow`.
+- The app keeps dense content readable with native grouped surfaces and uses
+  Liquid Glass only for compact chips, badges, and small action controls.
 - The app shell injects `EntryPresetStore` once through typed SwiftUI
   environment values and uses Observation for app-owned preset state.
 - `MainView` keeps one `NavigationStack` per primary tab so Home, Timeline,

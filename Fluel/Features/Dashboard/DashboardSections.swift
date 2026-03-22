@@ -1,5 +1,4 @@
 import FluelLibrary
-import MHUI
 import SwiftUI
 
 struct FluelDashboardContent {
@@ -43,8 +42,6 @@ struct FluelDashboardLeadEntry {
 }
 
 struct DashboardQuickActionsCard: View {
-    @Environment(\.mhTheme)
-    private var theme
     @Environment(EntryPresetStore.self)
     private var presetStore
 
@@ -58,18 +55,21 @@ struct DashboardQuickActionsCard: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+        VStack(
+            alignment: .leading,
+            spacing: FluelPresentationStyle.inlineSpacing
+        ) {
             Text(FluelCopy.quickActions())
-                .mhTextStyle(.sectionTitle)
+                .fluelSectionTitleStyle()
 
-            MHActionGroup {
+            VStack(alignment: .leading, spacing: FluelPresentationStyle.inlineSpacing) {
                 Button(action: onAdd) {
                     Label(
                         FluelCopy.add(),
                         systemImage: "plus.circle"
                     )
                 }
-                .buttonStyle(.mhPrimary)
+                .buttonStyle(.borderedProminent)
 
                 Button(action: onShowArchive) {
                     Label(
@@ -77,7 +77,7 @@ struct DashboardQuickActionsCard: View {
                         systemImage: "archivebox"
                     )
                 }
-                .buttonStyle(.mhSecondary)
+                .buttonStyle(.bordered)
 
                 Button(action: onShowLicenses) {
                     Label(
@@ -85,7 +85,7 @@ struct DashboardQuickActionsCard: View {
                         systemImage: "doc.text"
                     )
                 }
-                .buttonStyle(.mhSecondary)
+                .buttonStyle(.bordered)
             }
 
             if featuredPresets.isEmpty == false {
@@ -96,9 +96,7 @@ struct DashboardQuickActionsCard: View {
                 )
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .mhRow()
-        .mhSurface(role: .muted)
+        .fluelCard(tone: .muted)
     }
 }
 
@@ -118,11 +116,9 @@ struct DashboardEmptyState: View {
                 FluelCopy.addFirstEntry(),
                 action: onAdd
             )
-            .buttonStyle(.mhPrimary)
+            .buttonStyle(.borderedProminent)
         }
-        .mhEmptyStateLayout()
-        .mhSurfaceInset()
-        .mhSurface(role: .muted)
+        .fluelCard(tone: .muted)
     }
 }
 
@@ -134,20 +130,20 @@ struct DashboardOverviewCard: View {
         ]
     }
 
-    @Environment(\.mhTheme)
-    private var theme
-
     let snapshot: EntryCollectionSnapshot
 
     var body: some View {
-        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+        VStack(
+            alignment: .leading,
+            spacing: FluelPresentationStyle.inlineSpacing
+        ) {
             Text(FluelCopy.overview())
-                .mhTextStyle(.sectionTitle)
+                .fluelSectionTitleStyle()
 
             LazyVGrid(
                 columns: Metrics.metricColumns,
                 alignment: .leading,
-                spacing: theme.spacing.inline
+                spacing: FluelPresentationStyle.inlineSpacing
             ) {
                 DashboardMetricTile(
                     title: FluelCopy.totalEntriesCount(snapshot.totalCount),
@@ -186,74 +182,73 @@ struct DashboardOverviewCard: View {
                 }
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .mhRow()
-        .mhSurface(role: .muted)
+        .fluelCard(tone: .muted)
     }
 }
 
 struct DashboardLeadEntryCard: View {
-    @Environment(\.mhTheme)
-    private var theme
-
     let leadEntry: FluelDashboardLeadEntry
 
     var body: some View {
-        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+        VStack(
+            alignment: .leading,
+            spacing: FluelPresentationStyle.inlineSpacing
+        ) {
             Text(FluelCopy.leadEntry())
-                .mhTextStyle(.sectionTitle)
+                .fluelSectionTitleStyle()
 
             Text(leadEntry.title)
-                .mhRowTitle()
+                .fluelRowTitleStyle()
 
             Text(
                 EntryFormatting.startLabelText(
                     for: leadEntry.startComponents
                 )
             )
-            .mhRowSupporting()
+            .fluelSupportingStyle()
 
             Text(
                 EntryFormatting.primaryElapsedText(
                     for: leadEntry.elapsedSnapshot
                 )
             )
-            .mhTextStyle(.screenTitle)
+            .fluelDisplayStyle()
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .mhRow()
-        .mhSurface()
+        .fluelCard()
     }
 }
 
 struct DashboardMilestoneSection: View {
-    @Environment(\.mhTheme)
-    private var theme
-
     let milestones: [EntryMilestoneSnapshot]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+        VStack(
+            alignment: .leading,
+            spacing: FluelPresentationStyle.inlineSpacing
+        ) {
             Text(FluelCopy.upcomingMilestones())
-                .mhTextStyle(.sectionTitle)
+                .fluelSectionTitleStyle()
 
             VStack(spacing: 0) {
                 ForEach(milestones, id: \.entryID) { milestone in
                     VStack(alignment: .leading, spacing: 6) {
-                        HStack(alignment: .firstTextBaseline, spacing: theme.spacing.inline) {
+                        HStack(
+                            alignment: .firstTextBaseline,
+                            spacing: FluelPresentationStyle.inlineSpacing
+                        ) {
                             Text(milestone.title)
-                                .mhRowTitle()
+                                .fluelRowTitleStyle()
 
                             Spacer(minLength: 0)
 
                             Text(
                                 FluelCopy.daysRemaining(milestone.daysRemaining)
                             )
-                            .mhTextStyle(.metadata, colorRole: .secondaryText)
+                            .fluelMetadataStyle()
                         }
 
                         Text(milestone.milestoneText)
-                            .mhTextStyle(.sectionTitle)
+                            .fluelSectionTitleStyle()
 
                         Text(
                             milestone.milestoneDate.formatted(
@@ -262,11 +257,13 @@ struct DashboardMilestoneSection: View {
                                     .day()
                             )
                         )
-                        .mhRowSupporting()
+                        .fluelSupportingStyle()
 
                         if milestone.isApproximate {
-                            Text(FluelCopy.approximateMilestone())
-                                .mhBadge(style: .warning)
+                            FluelGlassPill(
+                                title: FluelCopy.approximateMilestone(),
+                                kind: .warning
+                            )
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -278,29 +275,30 @@ struct DashboardMilestoneSection: View {
                 }
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .mhRow()
-        .mhSurface(role: .muted)
+        .fluelCard(tone: .muted)
     }
 }
 
 struct DashboardActivitySection: View {
-    @Environment(\.mhTheme)
-    private var theme
-
     let activity: [EntryActivitySnapshot]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+        VStack(
+            alignment: .leading,
+            spacing: FluelPresentationStyle.inlineSpacing
+        ) {
             Text(FluelCopy.recentActivity())
-                .mhTextStyle(.sectionTitle)
+                .fluelSectionTitleStyle()
 
             VStack(spacing: 0) {
                 ForEach(activity, id: \.entryID) { item in
                     VStack(alignment: .leading, spacing: 6) {
-                        HStack(alignment: .firstTextBaseline, spacing: theme.spacing.inline) {
+                        HStack(
+                            alignment: .firstTextBaseline,
+                            spacing: FluelPresentationStyle.inlineSpacing
+                        ) {
                             Text(item.title)
-                                .mhRowTitle()
+                                .fluelRowTitleStyle()
 
                             Spacer(minLength: 0)
 
@@ -310,14 +308,16 @@ struct DashboardActivitySection: View {
                                         .month(.abbreviated)
                                         .day()
                                         .hour()
-                                        .minute()
+                                    .minute()
                                 )
                             )
-                            .mhTextStyle(.metadata, colorRole: .secondaryText)
+                            .fluelMetadataStyle()
                         }
 
-                        Text(FluelCopy.entryActivityKind(item.kind))
-                            .mhBadge(style: item.kind.fluelBadgeStyle)
+                        FluelGlassPill(
+                            title: FluelCopy.entryActivityKind(item.kind),
+                            kind: item.kind.fluelBadgeKind
+                        )
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.vertical, 12)
@@ -328,9 +328,7 @@ struct DashboardActivitySection: View {
                 }
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .mhRow()
-        .mhSurface(role: .muted)
+        .fluelCard(tone: .muted)
     }
 }
 
@@ -341,14 +339,12 @@ private struct DashboardMetricTile: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(value)
-                .mhTextStyle(.screenTitle)
+                .fluelMetricStyle()
 
             Text(title)
-                .mhRowSupporting()
+                .fluelSupportingStyle()
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .mhSurfaceInset()
-        .mhSurface()
+        .fluelCard()
     }
 }
 

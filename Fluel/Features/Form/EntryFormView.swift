@@ -1,5 +1,4 @@
 import FluelLibrary
-import MHUI
 import PhotosUI
 import SwiftData
 import SwiftUI
@@ -50,6 +49,12 @@ struct EntryFormView: View {
 
     var body: some View {
         Form {
+            Section {
+                Text(screenSubtitle)
+                    .fluelSupportingStyle()
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
             if case .create = mode, quickPresets.isEmpty == false {
                 EntryFormPresetSection(
                     presets: quickPresets,
@@ -75,13 +80,12 @@ struct EntryFormView: View {
                 draft.clearNote()
             }
         }
-        .mhFormChrome(
-            title: Text(navigationTitle),
-            subtitle: Text(screenSubtitle)
-        )
+        .navigationTitle(navigationTitle)
         .navigationBarTitleDisplayMode(.inline)
         .toolbarRole(.editor)
         .interactiveDismissDisabled(draft.hasUnsavedChanges)
+        .scrollContentBackground(.hidden)
+        .fluelAppBackground()
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
                 Button(FluelCopy.cancel()) {

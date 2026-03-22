@@ -1,5 +1,4 @@
 import FluelLibrary
-import MHUI
 import SwiftUI
 
 struct FluelEntryListSummary {
@@ -37,15 +36,15 @@ struct FluelEntryListSummary {
 }
 
 struct FluelEntryListSummaryCard: View {
-    @Environment(\.mhTheme)
-    private var theme
-
     let summary: FluelEntryListSummary
 
     var body: some View {
-        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+        VStack(
+            alignment: .leading,
+            spacing: FluelPresentationStyle.inlineSpacing
+        ) {
             Text(summary.headline)
-                .mhTextStyle(.sectionTitle)
+                .fluelSectionTitleStyle()
 
             Text(
                 FluelCopy.showingEntries(
@@ -53,64 +52,62 @@ struct FluelEntryListSummaryCard: View {
                     totalCount: summary.totalCount
                 )
             )
-            .mhTextStyle(.bodyStrong)
+            .fluelRowTitleStyle()
 
             Text(
                 FluelCopy.withNotesCount(summary.noteCount)
             )
-            .mhTextStyle(.metadata, colorRole: .secondaryText)
+            .fluelMetadataStyle()
 
             Text(
                 FluelCopy.withPhotosCount(summary.photoCount)
             )
-            .mhTextStyle(.metadata, colorRole: .secondaryText)
+            .fluelMetadataStyle()
 
             Text(
                 "\(FluelCopy.sort()): \(summary.sortLabel)"
             )
-            .mhTextStyle(.metadata, colorRole: .secondaryText)
+            .fluelMetadataStyle()
 
             Text(
                 "\(FluelCopy.filter()): \(summary.filterLabel)"
             )
-            .mhTextStyle(.metadata, colorRole: .secondaryText)
+            .fluelMetadataStyle()
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .mhRow()
-        .mhSurface(role: .muted)
+        .fluelCard(tone: .muted)
     }
 }
 
 struct FluelEntryListStateActions: View {
-    @Environment(\.mhTheme)
-    private var theme
-
     let showsClearSearch: Bool
     let showsClearFilter: Bool
     let onClearSearch: () -> Void
     let onClearFilter: () -> Void
 
     var body: some View {
-        MHGlassContainer(spacing: theme.spacing.inline) {
-            MHActionGroup {
+        HStack(spacing: FluelPresentationStyle.inlineSpacing) {
+            if showsClearSearch {
+                Button(
+                    FluelCopy.clearSearch(),
+                    action: onClearSearch
+                )
+                .buttonStyle(.bordered)
+                .controlSize(.small)
+            }
+
+            if showsClearFilter {
                 if showsClearSearch {
-                    Button(
-                        FluelCopy.clearSearch(),
-                        action: onClearSearch
-                    )
-                    .buttonStyle(.mhSecondary)
+                    Spacer(minLength: 0)
                 }
 
-                if showsClearFilter {
-                    Button(
-                        FluelCopy.clearFilter(),
-                        action: onClearFilter
-                    )
-                    .buttonStyle(.mhSecondary)
-                }
+                Button(
+                    FluelCopy.clearFilter(),
+                    action: onClearFilter
+                )
+                .buttonStyle(.bordered)
+                .controlSize(.small)
             }
         }
-        .mhSurfaceInset()
-        .mhSurface(role: .muted)
+        .fluelCard(tone: .muted)
     }
 }

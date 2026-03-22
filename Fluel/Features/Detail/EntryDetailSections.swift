@@ -1,5 +1,4 @@
 import FluelLibrary
-import MHUI
 import SwiftUI
 import UIKit
 
@@ -25,7 +24,7 @@ struct EntryDetailHeaderContent: View {
             Text(
                 EntryFormatting.archivedOnText(archivedAt)
             )
-            .mhTextStyle(.metadata, colorRole: .secondaryText)
+            .fluelMetadataStyle()
         }
     }
 }
@@ -39,49 +38,51 @@ struct EntryDetailQuickActions: View {
     let onRestore: () -> Void
 
     var body: some View {
-        MHActionGroup {
-            ShareLink(
-                item: shareText
-            ) {
-                Label(
-                    FluelCopy.share(),
-                    systemImage: "square.and.arrow.up"
-                )
-            }
-            .buttonStyle(.mhSecondary)
-
-            Button(action: onDuplicate) {
-                Label(
-                    FluelCopy.duplicate(),
-                    systemImage: "plus.square.on.square"
-                )
-            }
-            .buttonStyle(.mhSecondary)
-
-            Button(action: onEdit) {
-                Label(
-                    FluelCopy.edit(),
-                    systemImage: "pencil"
-                )
-            }
-            .buttonStyle(.mhSecondary)
-
-            if entry.isArchived {
-                Button(action: onRestore) {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: FluelPresentationStyle.inlineSpacing) {
+                ShareLink(
+                    item: shareText
+                ) {
                     Label(
-                        FluelCopy.restore(),
-                        systemImage: "arrow.uturn.backward"
+                        FluelCopy.share(),
+                        systemImage: "square.and.arrow.up"
                     )
                 }
-                .buttonStyle(.mhSecondary)
-            } else {
-                Button(action: onArchive) {
+                .buttonStyle(.glass)
+
+                Button(action: onDuplicate) {
                     Label(
-                        FluelCopy.archive(),
-                        systemImage: "archivebox"
+                        FluelCopy.duplicate(),
+                        systemImage: "plus.square.on.square"
                     )
                 }
-                .buttonStyle(.mhSecondary)
+                .buttonStyle(.glass)
+
+                Button(action: onEdit) {
+                    Label(
+                        FluelCopy.edit(),
+                        systemImage: "pencil"
+                    )
+                }
+                .buttonStyle(.glass)
+
+                if entry.isArchived {
+                    Button(action: onRestore) {
+                        Label(
+                            FluelCopy.restore(),
+                            systemImage: "arrow.uturn.backward"
+                        )
+                    }
+                    .buttonStyle(.glass)
+                } else {
+                    Button(action: onArchive) {
+                        Label(
+                            FluelCopy.archive(),
+                            systemImage: "archivebox"
+                        )
+                    }
+                    .buttonStyle(.glass)
+                }
             }
         }
     }
@@ -142,29 +143,31 @@ struct EntryDetailMoreMenu: View {
 }
 
 struct EntryDetailElapsedSection: View {
-    @Environment(\.mhTheme)
-    private var theme
-
     let snapshot: EntryElapsedSnapshot
 
     var body: some View {
-        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+        VStack(
+            alignment: .leading,
+            spacing: FluelPresentationStyle.inlineSpacing
+        ) {
+            Text(FluelCopy.timeTogetherSectionTitle())
+                .fluelSectionTitleStyle()
+
             Text(
                 EntryFormatting.primaryElapsedText(for: snapshot)
             )
-            .mhTextStyle(.screenTitle)
+            .fluelDisplayStyle()
             .multilineTextAlignment(.leading)
 
             Text(
                 EntryFormatting.detailElapsedText(for: snapshot)
             )
-            .mhTextStyle(.supporting, colorRole: .secondaryText)
+            .fluelSupportingStyle()
+
+            Text(FluelCopy.timeTogetherSectionBody())
+                .fluelMetadataStyle()
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .mhSection(
-            title: Text(FluelCopy.timeTogetherSectionTitle()),
-            supporting: Text(FluelCopy.timeTogetherSectionBody())
-        )
+        .fluelCard()
     }
 }
 
@@ -173,81 +176,80 @@ struct EntryDetailDetailsSection: View {
     let snapshot: EntryElapsedSnapshot
 
     var body: some View {
-        VStack(spacing: 0) {
-            LabeledContent(
-                FluelCopy.started(),
-                value: EntryFormatting.startDateText(
-                    for: entry.startComponents
-                )
-            )
-            .labeledContentStyle(.mhKeyValue)
+        VStack(
+            alignment: .leading,
+            spacing: FluelPresentationStyle.inlineSpacing
+        ) {
+            Text(FluelCopy.detailsSectionTitle())
+                .fluelSectionTitleStyle()
 
-            if let startRangeText = EntryFormatting.startRangeText(
-                for: entry.startComponents
-            ) {
-                LabeledContent(
-                    FluelCopy.startRange(),
-                    value: startRangeText
-                )
-                .labeledContentStyle(.mhKeyValue)
-            }
+            Text(detailsSectionSupportingText)
+                .fluelSupportingStyle()
 
-            LabeledContent(
-                FluelCopy.knownAs(),
-                value: EntryFormatting.precisionText(
-                    for: entry.startPrecision
-                )
-            )
-            .labeledContentStyle(.mhKeyValue)
-
-            LabeledContent(
-                FluelCopy.elapsedInFull(),
-                value: EntryFormatting.detailElapsedText(
-                    for: snapshot
-                )
-            )
-            .labeledContentStyle(.mhKeyValue)
-
-            if let totalMeasureText = EntryFormatting.totalMeasureText(
-                for: snapshot
-            ) {
-                LabeledContent(
-                    snapshot.totalDays != nil
-                        ? FluelCopy.totalDays()
-                        : FluelCopy.totalMonths(),
-                    value: totalMeasureText
-                )
-                .labeledContentStyle(.mhKeyValue)
-            }
-
-            if let archivedAt = entry.archivedAt {
-                LabeledContent(
-                    FluelCopy.archivedAfter(),
-                    value: EntryFormatting.archivedDurationText(
-                        startComponents: entry.startComponents,
-                        archivedAt: archivedAt
+            VStack(spacing: 12) {
+                EntryDetailFieldRow(
+                    label: FluelCopy.started(),
+                    value: EntryFormatting.startDateText(
+                        for: entry.startComponents
                     )
                 )
-                .labeledContentStyle(.mhKeyValue)
+
+                if let startRangeText = EntryFormatting.startRangeText(
+                    for: entry.startComponents
+                ) {
+                    EntryDetailFieldRow(
+                        label: FluelCopy.startRange(),
+                        value: startRangeText
+                    )
+                }
+
+                EntryDetailFieldRow(
+                    label: FluelCopy.knownAs(),
+                    value: EntryFormatting.precisionText(
+                        for: entry.startPrecision
+                    )
+                )
+
+                EntryDetailFieldRow(
+                    label: FluelCopy.elapsedInFull(),
+                    value: EntryFormatting.detailElapsedText(
+                        for: snapshot
+                    )
+                )
+
+                if let totalMeasureText = EntryFormatting.totalMeasureText(
+                    for: snapshot
+                ) {
+                    EntryDetailFieldRow(
+                        label: snapshot.totalDays != nil
+                            ? FluelCopy.totalDays()
+                            : FluelCopy.totalMonths(),
+                        value: totalMeasureText
+                    )
+                }
+
+                if let archivedAt = entry.archivedAt {
+                    EntryDetailFieldRow(
+                        label: FluelCopy.archivedAfter(),
+                        value: EntryFormatting.archivedDurationText(
+                            startComponents: entry.startComponents,
+                            archivedAt: archivedAt
+                        )
+                    )
+                }
+
+                EntryDetailFieldRow(
+                    label: FluelCopy.createdOn(),
+                    value: EntryFormatting.createdOnText(entry.createdAt)
+                )
+
+                EntryDetailFieldRow(
+                    label: FluelCopy.updatedOn(),
+                    value: EntryFormatting.updatedOnText(entry.updatedAt)
+                )
             }
-
-            LabeledContent(
-                FluelCopy.createdOn(),
-                value: EntryFormatting.createdOnText(entry.createdAt)
-            )
-            .labeledContentStyle(.mhKeyValue)
-
-            LabeledContent(
-                FluelCopy.updatedOn(),
-                value: EntryFormatting.updatedOnText(entry.updatedAt)
-            )
-            .labeledContentStyle(.mhKeyValue)
         }
-        .mhGroupedRows()
-        .mhSection(
-            title: Text(FluelCopy.detailsSectionTitle()),
-            supporting: Text(detailsSectionSupportingText)
-        )
+        .fluelCard(tone: .muted)
     }
 }
 
@@ -255,13 +257,30 @@ struct EntryDetailNoteSection: View {
     let note: String
 
     var body: some View {
-        Text(note)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .mhTextStyle(.body)
-            .mhSection(
-                title: Text(FluelCopy.noteSectionTitle()),
-                supporting: Text(FluelCopy.notePlaceholder())
-            )
+        VStack(
+            alignment: .leading,
+            spacing: FluelPresentationStyle.inlineSpacing
+        ) {
+            Text(FluelCopy.noteSectionTitle())
+                .fluelSectionTitleStyle()
+
+            Text(FluelCopy.notePlaceholder())
+                .fluelSupportingStyle()
+
+            Text(note)
+                .frame(maxWidth: .infinity, alignment: .leading)
+        }
+        .fluelCard()
+    }
+}
+
+private struct EntryDetailFieldRow: View {
+    let label: String
+    let value: String
+
+    var body: some View {
+        LabeledContent(label, value: value)
+            .font(.subheadline)
     }
 }
 

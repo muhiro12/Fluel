@@ -1,10 +1,7 @@
-import MHUI
 import SwiftUI
 import TipKit
 
 struct PresetSettingsView: View {
-    @Environment(\.mhTheme)
-    private var theme
     @Environment(EntryPresetStore.self)
     private var presetStore
     @State private var isPresentingCreateSheet = false
@@ -15,7 +12,15 @@ struct PresetSettingsView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: theme.spacing.section) {
+            VStack(
+                alignment: .leading,
+                spacing: FluelPresentationStyle.sectionSpacing
+            ) {
+                FluelScreenIntroCard(
+                    title: FluelCopy.presets(),
+                    subtitle: FluelCopy.presetScreenSubtitle()
+                )
+
                 defaultPresetCard
 
                 PresetSettingsSectionCard(
@@ -81,12 +86,10 @@ struct PresetSettingsView: View {
                     }
                 )
             }
-            .mhSurfaceInset()
+            .padding(FluelPresentationStyle.screenPadding)
         }
-        .mhScreen(
-            title: Text(FluelCopy.presets()),
-            subtitle: Text(FluelCopy.presetScreenSubtitle())
-        )
+        .fluelAppBackground()
+        .navigationTitle(FluelCopy.presets())
         .navigationBarTitleDisplayMode(.inline)
         .toolbarRole(.editor)
         .toolbar {
@@ -162,9 +165,12 @@ struct PresetSettingsView: View {
     }
 
     private var defaultPresetCard: some View {
-        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+        VStack(
+            alignment: .leading,
+            spacing: FluelPresentationStyle.inlineSpacing
+        ) {
             Text(FluelCopy.defaultPreset())
-                .mhTextStyle(.sectionTitle)
+                .fluelSectionTitleStyle()
 
             Toggle(
                 FluelCopy.useDefaultPresetForNewEntries(),
@@ -185,16 +191,16 @@ struct PresetSettingsView: View {
                     defaultPreset.title,
                     systemImage: defaultPreset.symbolName
                 )
-                .mhRowTitle()
+                .fluelRowTitleStyle()
 
                 Text(
                     EntryPresetFormatting.detailText(for: defaultPreset)
                 )
-                .mhRowSupporting()
+                .fluelSupportingStyle()
 
                 if let note = defaultPreset.note {
                     Text(note)
-                        .mhTextStyle(.metadata, colorRole: .secondaryText)
+                        .fluelMetadataStyle()
                 }
 
                 Button(
@@ -203,18 +209,16 @@ struct PresetSettingsView: View {
                     FluelTipState.markDefaultPresetLearned()
                     presetStore.setDefaultPreset(id: nil)
                 }
-                .buttonStyle(.mhSecondary)
+                .buttonStyle(.bordered)
             } else {
                 Text(FluelCopy.noDefaultPresetTitle())
-                    .mhRowTitle()
+                    .fluelRowTitleStyle()
 
                 Text(FluelCopy.noDefaultPresetBody())
-                    .mhRowSupporting()
+                    .fluelSupportingStyle()
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .mhRow()
-        .mhSurface(role: .muted)
+        .fluelCard(tone: .muted)
         .popoverTip(
             showsDefaultPresetTip ? defaultPresetTip : nil,
             arrowEdge: .top
@@ -255,9 +259,6 @@ private struct PresetSettingsSectionCard: View {
         let body: String
     }
 
-    @Environment(\.mhTheme)
-    private var theme
-
     let title: String
     let presets: [EntryPreset]
     let emptyState: EmptyState?
@@ -268,17 +269,20 @@ private struct PresetSettingsSectionCard: View {
     var onDelete: ((EntryPreset) -> Void)?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+        VStack(
+            alignment: .leading,
+            spacing: FluelPresentationStyle.inlineSpacing
+        ) {
             Text(title)
-                .mhTextStyle(.sectionTitle)
+                .fluelSectionTitleStyle()
 
             if presets.isEmpty, let emptyState {
                 VStack(alignment: .leading, spacing: 6) {
                     Text(emptyState.title)
-                        .mhRowTitle()
+                        .fluelRowTitleStyle()
 
                     Text(emptyState.body)
-                        .mhRowSupporting()
+                        .fluelSupportingStyle()
                 }
             } else {
                 VStack(spacing: 0) {
@@ -300,9 +304,7 @@ private struct PresetSettingsSectionCard: View {
                 }
             }
         }
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .mhRow()
-        .mhSurface(role: .muted)
+        .fluelCard(tone: .muted)
     }
 }
 
@@ -323,28 +325,30 @@ private struct PresetSettingsRow: View {
                     preset.title,
                     systemImage: preset.symbolName
                 )
-                .mhRowTitle()
+                .fluelRowTitleStyle()
 
                 Text(
                     EntryPresetFormatting.detailText(for: preset)
                 )
-                .mhRowSupporting()
+                .fluelSupportingStyle()
 
                 if let note = preset.note {
                     Text(note)
-                        .mhTextStyle(.metadata, colorRole: .secondaryText)
+                        .fluelMetadataStyle()
                 }
 
                 if statusBadges.isEmpty == false {
-                    MHGlassContainer(spacing: 8) {
+                    GlassEffectContainer(spacing: 8) {
                         HStack(spacing: 8) {
                             ForEach(statusBadges) { badge in
-                                Text(badge.title)
-                                    .mhBadge(style: badge.style)
-                                    .mhGlassEffectID(
-                                        "\(preset.id)-status-\(badge.id)",
-                                        in: statusBadgeNamespace
-                                    )
+                                FluelGlassPill(
+                                    title: badge.title,
+                                    kind: badge.kind
+                                )
+                                .glassEffectID(
+                                    "\(preset.id)-status-\(badge.id)",
+                                    in: statusBadgeNamespace
+                                )
                             }
                         }
                     }
@@ -410,21 +414,21 @@ private struct PresetSettingsRow: View {
                 ? .init(
                     id: "default",
                     title: FluelCopy.defaultPresetBadge(),
-                    style: .accent
+                    kind: .accent
                 )
                 : nil,
             preset.isPinned
                 ? .init(
                     id: "pinned",
                     title: FluelCopy.pinned(),
-                    style: .positive
+                    kind: .positive
                 )
                 : nil,
             preset.lastUsedAt != nil
                 ? .init(
                     id: "recent",
                     title: FluelCopy.recent(),
-                    style: .neutral
+                    kind: .neutral
                 )
                 : nil
         ]
@@ -435,7 +439,7 @@ private struct PresetSettingsRow: View {
 private struct PresetStatusBadge: Identifiable {
     let id: String
     let title: String
-    let style: MHBadgeStyle
+    let kind: FluelBadgeKind
 }
 
 #Preview {

@@ -1,5 +1,4 @@
 import FluelLibrary
-import MHUI
 import PhotosUI
 import SwiftUI
 
@@ -37,14 +36,10 @@ struct EntryFormTitleSection: View {
                 text: $title
             )
             .textInputAutocapitalization(.words)
-            .mhInputChrome()
         } header: {
             Text(FluelCopy.titleFieldLabel())
-                .mhSectionHeaderTitle()
-                .mhSectionHeader()
         } footer: {
             Text(FluelCopy.titleFooter())
-                .mhSectionFooterText()
         }
     }
 }
@@ -108,12 +103,9 @@ struct EntryFormStartSection: View {
             }
         } header: {
             Text(FluelCopy.startSectionTitle())
-                .mhSectionHeaderTitle()
-                .mhSectionHeader()
         } footer: {
             if let startSectionFooterText = draft.startSectionFooterText {
                 Text(startSectionFooterText)
-                    .mhSectionFooterText()
             }
         }
     }
@@ -151,7 +143,7 @@ struct EntryFormPhotoSection: View {
                     systemImage: "photo"
                 )
             }
-            .buttonStyle(.mhSecondary)
+            .buttonStyle(.bordered)
 
             if draft.photoData != nil {
                 Button(
@@ -161,12 +153,11 @@ struct EntryFormPhotoSection: View {
                     draft.removePhoto()
                     selectedPhotoItem = nil
                 }
-                .buttonStyle(.mhDestructive)
+                .buttonStyle(.bordered)
+                .tint(.red)
             }
         } header: {
             Text(FluelCopy.photoSectionTitle())
-                .mhSectionHeaderTitle()
-                .mhSectionHeader()
         }
     }
 }
@@ -180,7 +171,6 @@ struct EntryFormNoteSection: View {
         Section {
             TextEditor(text: $note)
                 .frame(minHeight: 120)
-                .mhInputChrome()
 
             if note.isEmpty == false {
                 Button(
@@ -189,15 +179,13 @@ struct EntryFormNoteSection: View {
                 ) {
                     onClear()
                 }
-                .buttonStyle(.mhDestructive)
+                .buttonStyle(.bordered)
+                .tint(.red)
             }
         } header: {
             Text(FluelCopy.noteSectionTitle())
-                .mhSectionHeaderTitle()
-                .mhSectionHeader()
         } footer: {
             Text(footerText)
-                .mhSectionFooterText()
         }
     }
 }

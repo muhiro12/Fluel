@@ -1,9 +1,6 @@
-import MHUI
 import SwiftUI
 
 struct EntryPresetStrip: View {
-    @Environment(\.mhTheme)
-    private var theme
     @Namespace private var presetNamespace
 
     var title: String = FluelCopy.quickPresets()
@@ -13,22 +10,27 @@ struct EntryPresetStrip: View {
     let onSelect: (EntryPreset) -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+        VStack(
+            alignment: .leading,
+            spacing: FluelPresentationStyle.inlineSpacing
+        ) {
             Text(title)
-                .mhTextStyle(.sectionTitle)
+                .fluelSectionTitleStyle()
 
             Text(subtitle)
-                .mhSectionHeaderSupporting()
+                .fluelSupportingStyle()
 
             ScrollView(.horizontal, showsIndicators: false) {
-                MHGlassContainer(spacing: theme.spacing.inline) {
-                    HStack(spacing: theme.spacing.inline) {
+                GlassEffectContainer(
+                    spacing: FluelPresentationStyle.inlineSpacing
+                ) {
+                    HStack(spacing: FluelPresentationStyle.inlineSpacing) {
                         ForEach(presets) { preset in
                             Button {
                                 onSelect(preset)
                             } label: {
                                 presetCard(for: preset)
-                                    .mhGlassEffectID(
+                                    .glassEffectID(
                                         preset.id,
                                         in: presetNamespace
                                     )
@@ -48,13 +50,20 @@ struct EntryPresetStrip: View {
     ) -> some View {
         let isSelected = selectedPresetID == preset.id
 
-        return VStack(alignment: .leading, spacing: theme.spacing.inline) {
-            HStack(alignment: .firstTextBaseline, spacing: theme.spacing.inline) {
+        return VStack(
+            alignment: .leading,
+            spacing: FluelPresentationStyle.compactSpacing
+        ) {
+            HStack(
+                alignment: .firstTextBaseline,
+                spacing: FluelPresentationStyle.inlineSpacing
+            ) {
                 Label(
                     preset.title,
                     systemImage: preset.symbolName
                 )
-                .mhRowTitle()
+                .font(.subheadline.weight(.semibold))
+                .foregroundStyle(.primary)
 
                 Spacer(minLength: 0)
 
@@ -67,16 +76,35 @@ struct EntryPresetStrip: View {
             Text(
                 EntryPresetFormatting.detailText(for: preset)
             )
-            .mhTextStyle(.metadata, colorRole: .secondaryText)
+            .fluelMetadataStyle(
+                color: isSelected ? .accentColor : .secondary
+            )
 
             if let note = preset.note {
                 Text(note)
                     .lineLimit(2)
-                    .mhTextStyle(.metadata, colorRole: .secondaryText)
+                    .fluelMetadataStyle()
             }
         }
         .frame(width: 220, alignment: .leading)
-        .mhSurfaceInset()
-        .mhSurface(role: isSelected ? .standard : .muted)
+        .padding(14)
+        .glassEffect(
+            .regular,
+            in: RoundedRectangle(
+                cornerRadius: 20,
+                style: .continuous
+            )
+        )
+        .overlay {
+            RoundedRectangle(
+                cornerRadius: 20,
+                style: .continuous
+            )
+            .strokeBorder(
+                (isSelected ? Color.accentColor : Color.primary)
+                    .opacity(isSelected ? 0.35 : 0.08),
+                lineWidth: isSelected ? 1.5 : 1
+            )
+        }
     }
 }
