@@ -189,6 +189,11 @@ run_logged_step \
   "Check public repository safety" \
   bash "$repository_root/ci_scripts/tasks/check_public_repo_safety.sh"
 
+run_logged_step \
+  "check_mhplatform_adoption" \
+  "Check MHPlatform adoption boundaries" \
+  bash "$repository_root/ci_scripts/tasks/check_mhplatform_adoption.sh"
+
 changed_files=$(ci_collect_changed_files)
 
 build_relevant_changed_files=$(printf '%s\n' "$changed_files" | grep -Ev '(^|/)xcuserdata/' || true)
