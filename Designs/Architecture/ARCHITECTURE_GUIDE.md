@@ -1,6 +1,6 @@
 # Fluel Architecture Guide
 
-Current as of March 21, 2026.
+Current as of March 22, 2026.
 
 ## Scope
 
@@ -17,6 +17,20 @@ Related documents:
 | Domain (`FluelLibrary`) | `Entry` model, entry mutation and query rules, search/filter helpers, formatting, shared database location helpers, widget snapshot projection | App runtime wiring, TipKit bootstrap, WidgetKit reloads, `UserDefaults` suite access, SwiftUI navigation state |
 | Adapter (`Fluel`, `FluelWidget`) | App bootstrap, platform preferences, mutation follow-up side effects, widget timeline policy, shared container wiring | Re-implementing entry validation, archive/delete rules, elapsed-time rules, widget snapshot calculations |
 | View (SwiftUI) | Navigation, sheet state, focus, display composition, display-only formatting, user interaction flow | Reusable validation rules, persistence branching, domain calculations |
+
+## MHPlatform Consumer Classification
+
+| Target | Consumer type | Allowed MHPlatform-facing surface | Not adopted |
+| --- | --- | --- | --- |
+| `Fluel` | UI and composition root | `MHAppRuntime`, `MHMutationFlow`, and `MHLogging` | `MHPlatform` umbrella, route shell, review shell |
+| `FluelWidget` | Passive UI extension | No direct MHPlatform dependency; consume shared `FluelLibrary` output only | `MHPlatform` umbrella, runtime shell, mutation shell, review shell |
+| `FluelLibrary` | Shared logic library | No MHPlatform product imports | `MHPlatform` umbrella, `MHAppRuntime`, `MHMutationFlow`, `MHReviewPolicy` |
+| `FluelTests` | App integration bundle | Test the app-owned workflow through `Fluel` and `FluelLibrary` | `MHPlatform` umbrella imports in test support |
+
+The current app is a default-runtime consumer that adopts the app-facing
+runtime surface plus the optional mutation shell. It does not currently adopt
+route or review flows, so those shells remain out of the app target until the
+product actually needs them.
 
 ## Canonical Mutation Flow
 
@@ -83,5 +97,15 @@ Not allowed in views:
 
 ## Repository Guards
 
+- `Fluel.xcodeproj` pins remote `MHPlatform` to the exact `1.0` release rather
+  than a floating branch.
+- `ci_scripts/tasks/check_mhplatform_adoption.sh` blocks local-path
+  `MHPlatform`, floating branch tracking, `import MHPlatform`, and umbrella
+  dependency drift.
 - `ci_scripts/tasks/check_shared_library_boundaries.sh` keeps app-only
-  frameworks out of `FluelLibrary/Sources`.
+  frameworks and app-facing MHPlatform shells out of `FluelLibrary/Sources`.
+- `ci_scripts/tasks/test_app_integration.sh` verifies the app-owned mutation
+  workflow against an in-memory SwiftData container.
+- `ci_scripts/tasks/run_required_builds.sh` runs the MHPlatform adoption check,
+  shared-library boundary check, app build, app integration test, and screen
+  capture flow when the changed paths require them.
