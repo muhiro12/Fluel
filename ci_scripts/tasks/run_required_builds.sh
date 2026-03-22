@@ -224,17 +224,22 @@ if [[ -z "$changed_files" ]]; then
 fi
 
 needs_fluel_build=false
+needs_fluel_app_tests=false
 needs_fluel_library_tests=false
 
 if grep -Eq '^Fluel/|^FluelWidget/|^Fluel\.xcodeproj/' <<<"$build_relevant_changed_files"; then
   needs_fluel_build=true
 fi
 
+if grep -Eq '^Fluel/|^FluelWidget/|^FluelLibrary/|^Fluel\.xcodeproj/' <<<"$build_relevant_changed_files"; then
+  needs_fluel_app_tests=true
+fi
+
 if grep -Eq '^FluelLibrary/' <<<"$build_relevant_changed_files"; then
   needs_fluel_library_tests=true
 fi
 
-if ! $needs_fluel_build && ! $needs_fluel_library_tests; then
+if ! $needs_fluel_build && ! $needs_fluel_app_tests && ! $needs_fluel_library_tests; then
   echo "No changes under Fluel/, FluelWidget/, FluelLibrary/, or Fluel.xcodeproj/."
   if $should_run_pre_commit; then
     run_note="pre-commit completed. No changes under Fluel/, FluelWidget/, FluelLibrary/, or Fluel.xcodeproj/. Build/test steps were skipped."
@@ -256,7 +261,16 @@ if $needs_fluel_build; then
     "build_app" \
     "Build Fluel scheme" \
     bash "$repository_root/ci_scripts/tasks/build_app.sh"
+fi
 
+if $needs_fluel_app_tests; then
+  run_logged_step \
+    "test_app_integration" \
+    "Test Fluel app integration" \
+    bash "$repository_root/ci_scripts/tasks/test_app_integration.sh"
+fi
+
+if $needs_fluel_build; then
   run_logged_step \
     "capture_screens" \
     "Capture Fluel screens" \

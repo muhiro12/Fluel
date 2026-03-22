@@ -111,6 +111,12 @@ If you only need the app build:
 bash ci_scripts/tasks/build_app.sh
 ```
 
+If you only need the app integration test bundle:
+
+```sh
+bash ci_scripts/tasks/test_app_integration.sh
+```
+
 If you want to verify the existing Codex capture screens after an app build:
 
 ```sh
@@ -138,8 +144,8 @@ The same safety check also runs inside
 ### CI Script Layout
 
 - `ci_scripts/tasks/` contains supported user-facing entrypoints such as
-  `verify.sh`, `run_required_builds.sh`, `build_app.sh`, and
-  `test_shared_library.sh`.
+  `verify.sh`, `run_required_builds.sh`, `build_app.sh`,
+  `test_app_integration.sh`, and `test_shared_library.sh`.
 - `ci_scripts/lib/` contains shared shell helpers used by those task scripts.
   Reuse the existing helpers before copying setup or path-selection logic into
   another task.

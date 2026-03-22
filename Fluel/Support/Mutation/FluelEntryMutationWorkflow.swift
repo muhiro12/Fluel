@@ -9,6 +9,9 @@ struct FluelEntryMutationWorkflow {
     var calendar: Calendar = .autoupdatingCurrent
     var onSuccess: @MainActor () -> Void = { () }
     var onError: @MainActor (String) -> Void = { _ in () }
+    var reloadTimelines: @MainActor () -> Void = {
+        FluelWidgetReloader.reloadAllTimelines()
+    }
 
     func create(
         input: EntryFormInput
@@ -78,7 +81,7 @@ private extension FluelEntryMutationWorkflow {
     var successAdapter: MHMutationAdapter<Void> {
         .fixed {
             MHMutationStep.mainActor(name: "reloadWidgetTimelines") {
-                FluelWidgetReloader.reloadAllTimelines()
+                reloadTimelines()
             }
             MHMutationStep.mainActor(name: "handleMutationSuccess") {
                 onSuccess()
