@@ -184,6 +184,11 @@ run_logged_step() {
   return 0
 }
 
+run_logged_step \
+  "check_public_repo_safety" \
+  "Check public repository safety" \
+  bash "$repository_root/ci_scripts/tasks/check_public_repo_safety.sh"
+
 changed_files=$(ci_collect_changed_files)
 
 build_relevant_changed_files=$(printf '%s\n' "$changed_files" | grep -Ev '(^|/)xcuserdata/' || true)

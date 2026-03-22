@@ -81,9 +81,14 @@ logic in `FluelLibrary`.
 2. Update bundle identifiers, entitlements, and
    `FluelLibrary/Sources/Common/AppGroup.swift` if you are not using the
    production identifiers.
-3. Open `Fluel.xcodeproj` in Xcode, select the **Fluel** scheme, and run on an
+3. If you add provider credentials or release-only identifiers later, keep
+   them in ignored local files instead of tracked source files. Keep
+   `Secret.swift`, `GoogleService-Info.plist`, `.env`, and signing assets out
+   of git, and validate with
+   `bash ci_scripts/tasks/check_public_repo_safety.sh` before publishing.
+4. Open `Fluel.xcodeproj` in Xcode, select the **Fluel** scheme, and run on an
    iOS 26 simulator or device.
-4. Enable the **FluelWidget** scheme as needed when testing the widget
+5. Enable the **FluelWidget** scheme as needed when testing the widget
    extension.
 
 ## Build And Test
@@ -111,6 +116,18 @@ If you only need library tests:
 ```sh
 bash ci_scripts/tasks/test_shared_library.sh
 ```
+
+### Public Repository Safety
+
+Before creating a public GitHub repository, run:
+
+```sh
+bash ci_scripts/tasks/check_public_repo_safety.sh
+```
+
+The same safety check also runs inside
+`bash ci_scripts/tasks/run_required_builds.sh` and
+`bash ci_scripts/tasks/verify.sh`.
 
 ### CI Script Layout
 
