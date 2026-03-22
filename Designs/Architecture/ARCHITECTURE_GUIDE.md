@@ -99,9 +99,14 @@ Not allowed in views:
 
 - `Fluel.xcodeproj` pins remote `MHPlatform` to the exact `1.0` release rather
   than a floating branch.
+- `Fluel.xcodeproj` consumes `MHUI` from the remote GitHub package and allows
+  semver-compatible `1.x` updates starting at `1.0.0`.
 - `ci_scripts/tasks/check_mhplatform_adoption.sh` blocks local-path
   `MHPlatform`, floating branch tracking, `import MHPlatform`, and umbrella
   dependency drift.
+- `ci_scripts/tasks/check_mhui_adoption.sh` blocks local-path `MHUI`,
+  floating-branch tracking, and remote-package drift away from the approved
+  `1.x` semver range.
 - `ci_scripts/tasks/check_shared_library_boundaries.sh` keeps app-only
   frameworks and app-facing MHPlatform shells out of `FluelLibrary/Sources`.
 - `ci_scripts/tasks/test_app_integration.sh` verifies the app-owned mutation

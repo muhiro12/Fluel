@@ -14,7 +14,7 @@ struct EntryPresetStrip: View {
     let onSelect: (EntryPreset) -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
             Text(title)
                 .mhTextStyle(.sectionTitle)
 
@@ -22,14 +22,14 @@ struct EntryPresetStrip: View {
                 .mhSectionHeaderSupporting()
 
             ScrollView(.horizontal, showsIndicators: false) {
-                MHGlassContainer(spacing: theme.spacing.inline) {
-                    HStack(spacing: theme.spacing.inline) {
+                FluelGlassContainer(spacing: theme.fluelInlineSpacing) {
+                    HStack(spacing: theme.fluelInlineSpacing) {
                         ForEach(presets) { preset in
                             Button {
                                 onSelect(preset)
                             } label: {
                                 presetCard(for: preset)
-                                    .mhGlassEffectID(
+                                    .fluelGlassEffectID(
                                         preset.id,
                                         in: presetNamespace
                                     )
@@ -49,8 +49,8 @@ struct EntryPresetStrip: View {
     ) -> some View {
         let isSelected = selectedPresetID == preset.id
 
-        return VStack(alignment: .leading, spacing: theme.spacing.inline) {
-            HStack(alignment: .firstTextBaseline, spacing: theme.spacing.inline) {
+        return VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
+            HStack(alignment: .firstTextBaseline, spacing: theme.fluelInlineSpacing) {
                 Label(
                     preset.title,
                     systemImage: preset.symbolName

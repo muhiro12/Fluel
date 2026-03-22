@@ -18,7 +18,7 @@ struct PresetSettingsView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: theme.spacing.section) {
+            VStack(alignment: .leading, spacing: theme.fluelSectionSpacing) {
                 defaultPresetCard
 
                 PresetSettingsSectionCard(
@@ -165,7 +165,7 @@ struct PresetSettingsView: View {
     }
 
     private var defaultPresetCard: some View {
-        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
             Text(FluelCopy.defaultPreset())
                 .mhTextStyle(.sectionTitle)
 
@@ -271,7 +271,7 @@ private struct PresetSettingsSectionCard: View {
     var onDelete: ((EntryPreset) -> Void)?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
             Text(title)
                 .mhTextStyle(.sectionTitle)
 
@@ -339,12 +339,12 @@ private struct PresetSettingsRow: View {
                 }
 
                 if statusBadges.isEmpty == false {
-                    MHGlassContainer(spacing: 8) {
+                    FluelGlassContainer(spacing: 8) {
                         HStack(spacing: 8) {
                             ForEach(statusBadges) { badge in
                                 Text(badge.title)
                                     .mhBadge(style: badge.style)
-                                    .mhGlassEffectID(
+                                    .fluelGlassEffectID(
                                         "\(preset.id)-status-\(badge.id)",
                                         in: statusBadgeNamespace
                                     )

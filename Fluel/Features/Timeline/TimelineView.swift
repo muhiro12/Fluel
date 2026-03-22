@@ -232,7 +232,7 @@ struct ActivityTimelineView: View {
     }
 
     private var searchEmptyState: some View {
-        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
             listHeaderControls
 
             ContentUnavailableView {
@@ -254,7 +254,7 @@ struct ActivityTimelineView: View {
     }
 
     private var filteredEmptyState: some View {
-        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
             listHeaderControls
 
             ContentUnavailableView {
@@ -365,7 +365,7 @@ struct ActivityTimelineView: View {
     }
 
     private var listHeaderControls: some View {
-        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
             filterControls
 
             if hasActiveSearch || hasActiveFilter {
@@ -380,7 +380,7 @@ struct ActivityTimelineView: View {
     }
 
     private var filterControls: some View {
-        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
             EntryActivityKindFilterBar(
                 selection: activityFilterBinding
             )
@@ -420,7 +420,7 @@ private struct TimelineSummaryCard: View {
     let scopeLabel: String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
             Text(FluelCopy.timelineSummary())
                 .mhTextStyle(.sectionTitle)
 
@@ -484,14 +484,14 @@ private struct TimelineTrendCard: View {
     let trends: [EntryActivityTrendSnapshot]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
             Text(FluelCopy.timelineTrends())
                 .mhTextStyle(.sectionTitle)
 
             VStack(spacing: 0) {
                 ForEach(trends, id: \.monthStart) { trend in
                     VStack(alignment: .leading, spacing: 8) {
-                        HStack(alignment: .firstTextBaseline, spacing: theme.spacing.inline) {
+                        HStack(alignment: .firstTextBaseline, spacing: theme.fluelInlineSpacing) {
                             Text(trend.title)
                                 .mhRowTitle()
 
@@ -507,8 +507,8 @@ private struct TimelineTrendCard: View {
 
                         TimelineTrendBar(trend: trend)
 
-                        MHGlassContainer(spacing: theme.spacing.inline) {
-                            HStack(spacing: theme.spacing.inline) {
+                        FluelGlassContainer(spacing: theme.fluelInlineSpacing) {
+                            HStack(spacing: theme.fluelInlineSpacing) {
                                 TimelineTrendPill(
                                     label: FluelCopy.timelineActivityCount(
                                         kind: .added,
@@ -601,12 +601,12 @@ private struct TimelineMilestoneDigestCard: View {
     let digest: EntryTimelineMilestoneDigest
 
     var body: some View {
-        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
             Text(FluelCopy.timelineMilestones())
                 .mhTextStyle(.sectionTitle)
 
-            MHGlassContainer(spacing: theme.spacing.inline) {
-                HStack(spacing: theme.spacing.inline) {
+            FluelGlassContainer(spacing: theme.fluelInlineSpacing) {
+                HStack(spacing: theme.fluelInlineSpacing) {
                     TimelineTrendPill(
                         label: FluelCopy.timelineVisibleEntryCount(
                             digest.visibleEntryCount
@@ -628,7 +628,7 @@ private struct TimelineMilestoneDigestCard: View {
             VStack(spacing: 0) {
                 ForEach(digest.milestones, id: \.entryID) { milestone in
                     VStack(alignment: .leading, spacing: 6) {
-                        HStack(alignment: .firstTextBaseline, spacing: theme.spacing.inline) {
+                        HStack(alignment: .firstTextBaseline, spacing: theme.fluelInlineSpacing) {
                             Text(milestone.title)
                                 .mhRowTitle()
 

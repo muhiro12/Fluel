@@ -46,7 +46,7 @@ struct SettingsView: View {
         )
 
         ScrollView {
-            VStack(alignment: .leading, spacing: theme.spacing.section) {
+            VStack(alignment: .leading, spacing: theme.fluelSectionSpacing) {
                 displayCard
                 presetCard
                 dataCard(snapshot)
@@ -63,7 +63,7 @@ struct SettingsView: View {
     }
 
     private var displayCard: some View {
-        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
             Text(FluelCopy.display())
                 .mhTextStyle(.sectionTitle)
 
@@ -95,7 +95,7 @@ struct SettingsView: View {
     private func dataCard(
         _ snapshot: EntryCollectionSnapshot
     ) -> some View {
-        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
             Text(FluelCopy.dataStatus())
                 .mhTextStyle(.sectionTitle)
 
@@ -121,7 +121,7 @@ struct SettingsView: View {
     }
 
     private var presetCard: some View {
-        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
             Text(FluelCopy.presets())
                 .mhTextStyle(.sectionTitle)
 
@@ -170,7 +170,7 @@ struct SettingsView: View {
     }
 
     private var supportCard: some View {
-        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
             Text(FluelCopy.support())
                 .mhTextStyle(.sectionTitle)
 

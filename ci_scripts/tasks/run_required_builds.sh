@@ -194,6 +194,11 @@ run_logged_step \
   "Check MHPlatform adoption boundaries" \
   bash "$repository_root/ci_scripts/tasks/check_mhplatform_adoption.sh"
 
+run_logged_step \
+  "check_mhui_adoption" \
+  "Check MHUI adoption boundaries" \
+  bash "$repository_root/ci_scripts/tasks/check_mhui_adoption.sh"
+
 changed_files=$(ci_collect_changed_files)
 
 build_relevant_changed_files=$(printf '%s\n' "$changed_files" | grep -Ev '(^|/)xcuserdata/' || true)

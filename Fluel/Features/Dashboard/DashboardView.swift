@@ -32,7 +32,7 @@ struct DashboardView: View {
             )
 
             ScrollView {
-                VStack(alignment: .leading, spacing: theme.spacing.section) {
+                VStack(alignment: .leading, spacing: theme.fluelSectionSpacing) {
                     DashboardQuickActionsCard(
                         onAdd: onAdd,
                         onCreateFromPreset: onCreateFromPreset,

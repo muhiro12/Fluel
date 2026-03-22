@@ -357,7 +357,7 @@ struct ArchiveListView: View {
             title: Text(FluelCopy.archived()),
             subtitle: Text(FluelCopy.archiveScreenSubtitle())
         ) {
-            VStack(alignment: .leading, spacing: theme.spacing.inline) {
+            VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
                 EntryContentFilterBar(
                     selection: contentFilterBinding
                 )

@@ -48,7 +48,7 @@ struct FluelEntryListSummaryCard: View {
     let summary: FluelEntryListSummary
 
     var body: some View {
-        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
             Text(summary.headline)
                 .mhTextStyle(.sectionTitle)
 
@@ -96,7 +96,7 @@ struct FluelEntryListStateActions: View {
     let onClearFilter: () -> Void
 
     var body: some View {
-        MHGlassContainer(spacing: theme.spacing.inline) {
+        FluelGlassContainer(spacing: theme.fluelInlineSpacing) {
             MHActionGroup {
                 if showsClearSearch {
                     Button(

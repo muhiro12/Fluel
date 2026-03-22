@@ -56,7 +56,7 @@ struct EntryRowView: View {
             locale: locale
         )
 
-        return HStack(alignment: .top, spacing: theme.spacing.control) {
+        return HStack(alignment: .top, spacing: theme.fluelControlSpacing) {
             if let image = entryImage {
                 Image(uiImage: image)
                     .resizable()
@@ -67,14 +67,14 @@ struct EntryRowView: View {
                     )
                     .clipShape(
                         RoundedRectangle(
-                            cornerRadius: theme.radius.control,
+                            cornerRadius: theme.fluelControlCornerRadius,
                             style: .continuous
                         )
                     )
                     .accessibilityHidden(true)
             }
 
-            VStack(alignment: .leading, spacing: theme.spacing.inline) {
+            VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
                 Text(
                     EntryFormatting.startLabelText(
                         for: entry.startComponents
@@ -87,7 +87,7 @@ struct EntryRowView: View {
 
                 if showsMetadataBadges,
                    metadataBadges.isEmpty == false {
-                    MHGlassContainer(spacing: Metrics.badgeSpacing) {
+                    FluelGlassContainer(spacing: Metrics.badgeSpacing) {
                         HStack(spacing: Metrics.badgeSpacing) {
                             ForEach(
                                 Array(metadataBadges.enumerated()),
@@ -95,7 +95,7 @@ struct EntryRowView: View {
                             ) { item in
                                 Text(item.element)
                                     .mhBadge(style: .neutral)
-                                    .mhGlassEffectID(
+                                    .fluelGlassEffectID(
                                         "entry-\(entry.id.uuidString)-metadata-\(item.offset)",
                                         in: metadataBadgeNamespace
                                     )
@@ -111,7 +111,7 @@ struct EntryRowView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            Spacer(minLength: theme.layout.rowAccessorySpacing)
+            Spacer(minLength: theme.fluelRowAccessorySpacing)
 
             Text(
                 EntryFormatting.primaryElapsedText(

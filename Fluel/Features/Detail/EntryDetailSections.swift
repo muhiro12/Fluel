@@ -155,7 +155,7 @@ struct EntryDetailElapsedSection: View {
     let snapshot: EntryElapsedSnapshot
 
     var body: some View {
-        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
             Text(
                 EntryFormatting.primaryElapsedText(for: snapshot)
             )

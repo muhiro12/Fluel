@@ -12,8 +12,8 @@ struct EntryContentFilterBar: View {
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            MHGlassContainer(spacing: theme.spacing.inline) {
-                HStack(spacing: theme.spacing.inline) {
+            FluelGlassContainer(spacing: theme.fluelInlineSpacing) {
+                HStack(spacing: theme.fluelInlineSpacing) {
                     ForEach(EntryContentFilterMode.allCases, id: \.self) { mode in
                         Button {
                             selection = mode
@@ -24,7 +24,7 @@ struct EntryContentFilterBar: View {
                                         ? .accent
                                         : .neutral
                                 )
-                                .mhGlassEffectID(mode, in: chipNamespace)
+                                .fluelGlassEffectID(mode, in: chipNamespace)
                         }
                         .buttonStyle(.plain)
                     }

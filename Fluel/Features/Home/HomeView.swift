@@ -267,7 +267,7 @@ struct HomeView: View {
 
     private var emptyState: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: theme.spacing.section) {
+            VStack(alignment: .leading, spacing: theme.fluelSectionSpacing) {
                 ContentUnavailableView {
                     Label(
                         FluelCopy.homeEmptyTitle(),
@@ -397,7 +397,7 @@ struct HomeView: View {
             title: Text(FluelAppConfiguration.appName),
             subtitle: Text(FluelCopy.homeScreenSubtitle())
         ) {
-            VStack(alignment: .leading, spacing: theme.spacing.inline) {
+            VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
                 EntryContentFilterBar(
                     selection: contentFilterBinding
                 )

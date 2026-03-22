@@ -64,7 +64,7 @@ struct DashboardQuickActionsCard: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
             Text(FluelCopy.quickActions())
                 .mhTextStyle(.sectionTitle)
 
@@ -146,14 +146,14 @@ struct DashboardOverviewCard: View {
     let snapshot: EntryCollectionSnapshot
 
     var body: some View {
-        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
             Text(FluelCopy.overview())
                 .mhTextStyle(.sectionTitle)
 
             LazyVGrid(
                 columns: Metrics.metricColumns,
                 alignment: .leading,
-                spacing: theme.spacing.inline
+                spacing: theme.fluelInlineSpacing
             ) {
                 DashboardMetricTile(
                     title: FluelCopy.totalEntriesCount(snapshot.totalCount),
@@ -205,7 +205,7 @@ struct DashboardLeadEntryCard: View {
     let leadEntry: FluelDashboardLeadEntry
 
     var body: some View {
-        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
             Text(FluelCopy.leadEntry())
                 .mhTextStyle(.sectionTitle)
 
@@ -239,14 +239,14 @@ struct DashboardMilestoneSection: View {
     let milestones: [EntryMilestoneSnapshot]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
             Text(FluelCopy.upcomingMilestones())
                 .mhTextStyle(.sectionTitle)
 
             VStack(spacing: 0) {
                 ForEach(milestones, id: \.entryID) { milestone in
                     VStack(alignment: .leading, spacing: 6) {
-                        HStack(alignment: .firstTextBaseline, spacing: theme.spacing.inline) {
+                        HStack(alignment: .firstTextBaseline, spacing: theme.fluelInlineSpacing) {
                             Text(milestone.title)
                                 .mhRowTitle()
 
@@ -297,14 +297,14 @@ struct DashboardActivitySection: View {
     let activity: [EntryActivitySnapshot]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
             Text(FluelCopy.recentActivity())
                 .mhTextStyle(.sectionTitle)
 
             VStack(spacing: 0) {
                 ForEach(activity, id: \.entryID) { item in
                     VStack(alignment: .leading, spacing: 6) {
-                        HStack(alignment: .firstTextBaseline, spacing: theme.spacing.inline) {
+                        HStack(alignment: .firstTextBaseline, spacing: theme.fluelInlineSpacing) {
                             Text(item.title)
                                 .mhRowTitle()
 
