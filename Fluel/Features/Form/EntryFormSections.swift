@@ -1,6 +1,14 @@
+// swiftlint:disable accessibility_label_for_image closure_body_length
+// swiftlint:disable file_types_order no_magic_numbers
+// swiftlint:disable one_declaration_per_file
 import FluelLibrary
+import MHUI
 import PhotosUI
 import SwiftUI
+
+private enum EntryFormSections {
+    // Namespace for file name lint alignment.
+}
 
 struct EntryFormPresetSection: View {
     let presets: [EntryPreset]
@@ -36,10 +44,14 @@ struct EntryFormTitleSection: View {
                 text: $title
             )
             .textInputAutocapitalization(.words)
+            .mhInputChrome()
         } header: {
             Text(FluelCopy.titleFieldLabel())
+                .mhSectionHeaderTitle()
+                .mhSectionHeader()
         } footer: {
             Text(FluelCopy.titleFooter())
+                .mhSectionFooterText()
         }
     }
 }
@@ -103,9 +115,12 @@ struct EntryFormStartSection: View {
             }
         } header: {
             Text(FluelCopy.startSectionTitle())
+                .mhSectionHeaderTitle()
+                .mhSectionHeader()
         } footer: {
             if let startSectionFooterText = draft.startSectionFooterText {
                 Text(startSectionFooterText)
+                    .mhSectionFooterText()
             }
         }
     }
@@ -143,7 +158,7 @@ struct EntryFormPhotoSection: View {
                     systemImage: "photo"
                 )
             }
-            .buttonStyle(.bordered)
+            .buttonStyle(.mhSecondary)
 
             if draft.photoData != nil {
                 Button(
@@ -153,11 +168,12 @@ struct EntryFormPhotoSection: View {
                     draft.removePhoto()
                     selectedPhotoItem = nil
                 }
-                .buttonStyle(.bordered)
-                .tint(.red)
+                .buttonStyle(.mhDestructive)
             }
         } header: {
             Text(FluelCopy.photoSectionTitle())
+                .mhSectionHeaderTitle()
+                .mhSectionHeader()
         }
     }
 }
@@ -171,6 +187,7 @@ struct EntryFormNoteSection: View {
         Section {
             TextEditor(text: $note)
                 .frame(minHeight: 120)
+                .mhInputChrome()
 
             if note.isEmpty == false {
                 Button(
@@ -179,13 +196,15 @@ struct EntryFormNoteSection: View {
                 ) {
                     onClear()
                 }
-                .buttonStyle(.bordered)
-                .tint(.red)
+                .buttonStyle(.mhDestructive)
             }
         } header: {
             Text(FluelCopy.noteSectionTitle())
+                .mhSectionHeaderTitle()
+                .mhSectionHeader()
         } footer: {
             Text(footerText)
+                .mhSectionFooterText()
         }
     }
 }

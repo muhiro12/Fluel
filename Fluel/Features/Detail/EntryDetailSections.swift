@@ -1,6 +1,14 @@
+// swiftlint:disable accessibility_label_for_image closure_body_length
+// swiftlint:disable file_types_order no_magic_numbers
+// swiftlint:disable one_declaration_per_file
 import FluelLibrary
+import MHUI
 import SwiftUI
 import UIKit
+
+private enum EntryDetailSections {
+    // Namespace for file name lint alignment.
+}
 
 struct EntryDetailHeaderContent: View {
     let entry: Entry
@@ -24,7 +32,7 @@ struct EntryDetailHeaderContent: View {
             Text(
                 EntryFormatting.archivedOnText(archivedAt)
             )
-            .fluelMetadataStyle()
+            .mhTextStyle(.metadata, colorRole: .secondaryText)
         }
     }
 }
@@ -38,51 +46,49 @@ struct EntryDetailQuickActions: View {
     let onRestore: () -> Void
 
     var body: some View {
-        ScrollView(.horizontal, showsIndicators: false) {
-            HStack(spacing: FluelPresentationStyle.inlineSpacing) {
-                ShareLink(
-                    item: shareText
-                ) {
+        MHActionGroup {
+            ShareLink(
+                item: shareText
+            ) {
+                Label(
+                    FluelCopy.share(),
+                    systemImage: "square.and.arrow.up"
+                )
+            }
+            .buttonStyle(.mhSecondary)
+
+            Button(action: onDuplicate) {
+                Label(
+                    FluelCopy.duplicate(),
+                    systemImage: "plus.square.on.square"
+                )
+            }
+            .buttonStyle(.mhSecondary)
+
+            Button(action: onEdit) {
+                Label(
+                    FluelCopy.edit(),
+                    systemImage: "pencil"
+                )
+            }
+            .buttonStyle(.mhSecondary)
+
+            if entry.isArchived {
+                Button(action: onRestore) {
                     Label(
-                        FluelCopy.share(),
-                        systemImage: "square.and.arrow.up"
+                        FluelCopy.restore(),
+                        systemImage: "arrow.uturn.backward"
                     )
                 }
-                .buttonStyle(.glass)
-
-                Button(action: onDuplicate) {
+                .buttonStyle(.mhSecondary)
+            } else {
+                Button(action: onArchive) {
                     Label(
-                        FluelCopy.duplicate(),
-                        systemImage: "plus.square.on.square"
+                        FluelCopy.archive(),
+                        systemImage: "archivebox"
                     )
                 }
-                .buttonStyle(.glass)
-
-                Button(action: onEdit) {
-                    Label(
-                        FluelCopy.edit(),
-                        systemImage: "pencil"
-                    )
-                }
-                .buttonStyle(.glass)
-
-                if entry.isArchived {
-                    Button(action: onRestore) {
-                        Label(
-                            FluelCopy.restore(),
-                            systemImage: "arrow.uturn.backward"
-                        )
-                    }
-                    .buttonStyle(.glass)
-                } else {
-                    Button(action: onArchive) {
-                        Label(
-                            FluelCopy.archive(),
-                            systemImage: "archivebox"
-                        )
-                    }
-                    .buttonStyle(.glass)
-                }
+                .buttonStyle(.mhSecondary)
             }
         }
     }
@@ -143,31 +149,29 @@ struct EntryDetailMoreMenu: View {
 }
 
 struct EntryDetailElapsedSection: View {
+    @Environment(\.mhTheme)
+    private var theme
+
     let snapshot: EntryElapsedSnapshot
 
     var body: some View {
-        VStack(
-            alignment: .leading,
-            spacing: FluelPresentationStyle.inlineSpacing
-        ) {
-            Text(FluelCopy.timeTogetherSectionTitle())
-                .fluelSectionTitleStyle()
-
+        VStack(alignment: .leading, spacing: theme.spacing.inline) {
             Text(
                 EntryFormatting.primaryElapsedText(for: snapshot)
             )
-            .fluelDisplayStyle()
+            .mhTextStyle(.screenTitle)
             .multilineTextAlignment(.leading)
 
             Text(
                 EntryFormatting.detailElapsedText(for: snapshot)
             )
-            .fluelSupportingStyle()
-
-            Text(FluelCopy.timeTogetherSectionBody())
-                .fluelMetadataStyle()
+            .mhTextStyle(.supporting, colorRole: .secondaryText)
         }
-        .fluelCard()
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .mhSection(
+            title: Text(FluelCopy.timeTogetherSectionTitle()),
+            supporting: Text(FluelCopy.timeTogetherSectionBody())
+        )
     }
 }
 
@@ -176,80 +180,81 @@ struct EntryDetailDetailsSection: View {
     let snapshot: EntryElapsedSnapshot
 
     var body: some View {
-        VStack(
-            alignment: .leading,
-            spacing: FluelPresentationStyle.inlineSpacing
-        ) {
-            Text(FluelCopy.detailsSectionTitle())
-                .fluelSectionTitleStyle()
-
-            Text(detailsSectionSupportingText)
-                .fluelSupportingStyle()
-
-            VStack(spacing: 12) {
-                EntryDetailFieldRow(
-                    label: FluelCopy.started(),
-                    value: EntryFormatting.startDateText(
-                        for: entry.startComponents
-                    )
-                )
-
-                if let startRangeText = EntryFormatting.startRangeText(
+        VStack(spacing: 0) {
+            LabeledContent(
+                FluelCopy.started(),
+                value: EntryFormatting.startDateText(
                     for: entry.startComponents
-                ) {
-                    EntryDetailFieldRow(
-                        label: FluelCopy.startRange(),
-                        value: startRangeText
-                    )
-                }
-
-                EntryDetailFieldRow(
-                    label: FluelCopy.knownAs(),
-                    value: EntryFormatting.precisionText(
-                        for: entry.startPrecision
-                    )
                 )
+            )
+            .labeledContentStyle(.mhKeyValue)
 
-                EntryDetailFieldRow(
-                    label: FluelCopy.elapsedInFull(),
-                    value: EntryFormatting.detailElapsedText(
-                        for: snapshot
-                    )
+            if let startRangeText = EntryFormatting.startRangeText(
+                for: entry.startComponents
+            ) {
+                LabeledContent(
+                    FluelCopy.startRange(),
+                    value: startRangeText
                 )
-
-                if let totalMeasureText = EntryFormatting.totalMeasureText(
-                    for: snapshot
-                ) {
-                    EntryDetailFieldRow(
-                        label: snapshot.totalDays != nil
-                            ? FluelCopy.totalDays()
-                            : FluelCopy.totalMonths(),
-                        value: totalMeasureText
-                    )
-                }
-
-                if let archivedAt = entry.archivedAt {
-                    EntryDetailFieldRow(
-                        label: FluelCopy.archivedAfter(),
-                        value: EntryFormatting.archivedDurationText(
-                            startComponents: entry.startComponents,
-                            archivedAt: archivedAt
-                        )
-                    )
-                }
-
-                EntryDetailFieldRow(
-                    label: FluelCopy.createdOn(),
-                    value: EntryFormatting.createdOnText(entry.createdAt)
-                )
-
-                EntryDetailFieldRow(
-                    label: FluelCopy.updatedOn(),
-                    value: EntryFormatting.updatedOnText(entry.updatedAt)
-                )
+                .labeledContentStyle(.mhKeyValue)
             }
+
+            LabeledContent(
+                FluelCopy.knownAs(),
+                value: EntryFormatting.precisionText(
+                    for: entry.startPrecision
+                )
+            )
+            .labeledContentStyle(.mhKeyValue)
+
+            LabeledContent(
+                FluelCopy.elapsedInFull(),
+                value: EntryFormatting.detailElapsedText(
+                    for: snapshot
+                )
+            )
+            .labeledContentStyle(.mhKeyValue)
+
+            if let totalMeasureText = EntryFormatting.totalMeasureText(
+                for: snapshot
+            ) {
+                LabeledContent(
+                    snapshot.totalDays != nil
+                        ? FluelCopy.totalDays()
+                        : FluelCopy.totalMonths(),
+                    value: totalMeasureText
+                )
+                .labeledContentStyle(.mhKeyValue)
+            }
+
+            if let archivedAt = entry.archivedAt {
+                LabeledContent(
+                    FluelCopy.archivedAfter(),
+                    value: EntryFormatting.archivedDurationText(
+                        startComponents: entry.startComponents,
+                        archivedAt: archivedAt
+                    )
+                )
+                .labeledContentStyle(.mhKeyValue)
+            }
+
+            LabeledContent(
+                FluelCopy.createdOn(),
+                value: EntryFormatting.createdOnText(entry.createdAt)
+            )
+            .labeledContentStyle(.mhKeyValue)
+
+            LabeledContent(
+                FluelCopy.updatedOn(),
+                value: EntryFormatting.updatedOnText(entry.updatedAt)
+            )
+            .labeledContentStyle(.mhKeyValue)
         }
-        .fluelCard(tone: .muted)
+        .mhGroupedRows()
+        .mhSection(
+            title: Text(FluelCopy.detailsSectionTitle()),
+            supporting: Text(detailsSectionSupportingText)
+        )
     }
 }
 
@@ -257,30 +262,13 @@ struct EntryDetailNoteSection: View {
     let note: String
 
     var body: some View {
-        VStack(
-            alignment: .leading,
-            spacing: FluelPresentationStyle.inlineSpacing
-        ) {
-            Text(FluelCopy.noteSectionTitle())
-                .fluelSectionTitleStyle()
-
-            Text(FluelCopy.notePlaceholder())
-                .fluelSupportingStyle()
-
-            Text(note)
-                .frame(maxWidth: .infinity, alignment: .leading)
-        }
-        .fluelCard()
-    }
-}
-
-private struct EntryDetailFieldRow: View {
-    let label: String
-    let value: String
-
-    var body: some View {
-        LabeledContent(label, value: value)
-            .font(.subheadline)
+        Text(note)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .mhTextStyle(.body)
+            .mhSection(
+                title: Text(FluelCopy.noteSectionTitle()),
+                supporting: Text(FluelCopy.notePlaceholder())
+            )
     }
 }
 

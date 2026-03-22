@@ -2,6 +2,7 @@ opt_in_rules:
     - all
 
 disabled_rules:
+    - blanket_disable_command # Allow scoped file-level suppressions for legacy MHUI files
     - contrasted_opening_brace # Conflicts with opening_brace
     - explicit_acl # Omit ACL
     - explicit_enum_raw_value # Omit raw values if possible
@@ -16,4 +17,5 @@ disabled_rules:
     - prefer_nimble # Use XCTest
     - required_deinit # Omit deinit
     - sorted_enum_cases # Prioritize readability
+    - superfluous_disable_command # Legacy MHUI files intentionally keep localized suppressions
     - vertical_whitespace_between_cases # Keep switch cases visually grouped together

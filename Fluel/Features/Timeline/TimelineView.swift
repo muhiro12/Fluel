@@ -1,9 +1,21 @@
+// swiftlint:disable attributes closure_body_length file_length
+// swiftlint:disable file_types_order no_empty_block
+// swiftlint:disable no_magic_numbers one_declaration_per_file
+// swiftlint:disable type_body_length
 import FluelLibrary
+import MHUI
 import SwiftData
 import SwiftUI
 import TipKit
 
+private enum TimelineView {
+    // Namespace for file name lint alignment.
+}
+
 struct ActivityTimelineView: View {
+    @Environment(\.mhTheme)
+    private var theme
+
     @Query
     private var entries: [Entry]
 
@@ -166,9 +178,12 @@ struct ActivityTimelineView: View {
                 timelineList
             }
         }
-        .navigationTitle(FluelCopy.timeline())
         .navigationBarTitleDisplayMode(.inline)
         .toolbarRole(.editor)
+        .searchable(
+            text: $searchText,
+            prompt: FluelCopy.searchTimeline()
+        )
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 if searchedActivity.isEmpty == false {
@@ -193,123 +208,75 @@ struct ActivityTimelineView: View {
     }
 
     private var emptyState: some View {
-        ScrollView {
-            VStack(
-                alignment: .leading,
-                spacing: FluelPresentationStyle.sectionSpacing
-            ) {
-                FluelScreenIntroCard(
-                    title: nil,
-                    subtitle: FluelCopy.timelineScreenSubtitle()
-                )
-
-                ContentUnavailableView {
-                    Label(
-                        FluelCopy.timelineEmptyTitle(),
-                        systemImage: "clock.arrow.trianglehead.counterclockwise.rotate.90"
-                    )
-                } description: {
-                    Text(FluelCopy.timelineEmptyBody())
-                } actions: {
-                    Button(
-                        FluelCopy.addFirstEntry(),
-                        action: onAdd
-                    )
-                    .buttonStyle(.borderedProminent)
-                }
-                .fluelCard(tone: .muted)
-            }
-            .padding(FluelPresentationStyle.screenPadding)
+        ContentUnavailableView {
+            Label(
+                FluelCopy.timelineEmptyTitle(),
+                systemImage: "clock.arrow.trianglehead.counterclockwise.rotate.90"
+            )
+        } description: {
+            Text(FluelCopy.timelineEmptyBody())
+        } actions: {
+            Button(
+                FluelCopy.addFirstEntry(),
+                action: onAdd
+            )
+            .buttonStyle(.mhPrimary)
         }
-        .fluelAppBackground()
+        .mhEmptyStateLayout()
+        .mhSurfaceInset()
+        .mhSurface(role: .muted)
+        .mhScreen(
+            title: Text(FluelCopy.timeline()),
+            subtitle: Text(FluelCopy.timelineScreenSubtitle())
+        )
     }
 
     private var searchEmptyState: some View {
-        ScrollView {
-            VStack(
-                alignment: .leading,
-                spacing: FluelPresentationStyle.sectionSpacing
-            ) {
-                FluelScreenIntroCard(
-                    title: nil,
-                    subtitle: FluelCopy.timelineScreenSubtitle()
+        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+            listHeaderControls
+
+            ContentUnavailableView {
+                Label(
+                    FluelCopy.timelineSearchEmptyTitle(),
+                    systemImage: "magnifyingglass"
                 )
-
-                listHeaderControls
-
-                ContentUnavailableView {
-                    Label(
-                        FluelCopy.timelineSearchEmptyTitle(),
-                        systemImage: "magnifyingglass"
-                    )
-                } description: {
-                    Text(FluelCopy.timelineSearchEmptyBody())
-                }
-                .fluelCard(tone: .muted)
+            } description: {
+                Text(FluelCopy.timelineSearchEmptyBody())
             }
-            .padding(FluelPresentationStyle.screenPadding)
+            .mhEmptyStateLayout()
+            .mhSurfaceInset()
+            .mhSurface(role: .muted)
         }
-        .fluelAppBackground()
-        .fluelPrimarySearchable(
-            text: $searchText,
-            prompt: FluelCopy.searchTimeline()
+        .mhScreen(
+            title: Text(FluelCopy.timeline()),
+            subtitle: Text(FluelCopy.timelineScreenSubtitle())
         )
     }
 
     private var filteredEmptyState: some View {
-        ScrollView {
-            VStack(
-                alignment: .leading,
-                spacing: FluelPresentationStyle.sectionSpacing
-            ) {
-                FluelScreenIntroCard(
-                    title: nil,
-                    subtitle: FluelCopy.timelineScreenSubtitle()
+        VStack(alignment: .leading, spacing: theme.spacing.inline) {
+            listHeaderControls
+
+            ContentUnavailableView {
+                Label(
+                    FluelCopy.timelineFilterEmptyTitle(),
+                    systemImage: "line.3.horizontal.decrease.circle"
                 )
-
-                listHeaderControls
-
-                ContentUnavailableView {
-                    Label(
-                        FluelCopy.timelineFilterEmptyTitle(),
-                        systemImage: "line.3.horizontal.decrease.circle"
-                    )
-                } description: {
-                    Text(FluelCopy.timelineFilterEmptyBody())
-                }
-                .fluelCard(tone: .muted)
+            } description: {
+                Text(FluelCopy.timelineFilterEmptyBody())
             }
-            .padding(FluelPresentationStyle.screenPadding)
+            .mhEmptyStateLayout()
+            .mhSurfaceInset()
+            .mhSurface(role: .muted)
         }
-        .fluelAppBackground()
-        .fluelPrimarySearchable(
-            text: $searchText,
-            prompt: FluelCopy.searchTimeline()
+        .mhScreen(
+            title: Text(FluelCopy.timeline()),
+            subtitle: Text(FluelCopy.timelineScreenSubtitle())
         )
     }
 
     private var timelineList: some View {
         List {
-            FluelScreenIntroCard(
-                title: nil,
-                subtitle: FluelCopy.timelineScreenSubtitle()
-            )
-            .listRowInsets(.init())
-            .listRowSeparator(.hidden)
-            .listRowBackground(Color.clear)
-
-            listHeaderControls
-                .listRowInsets(
-                    .init(
-                        top: 0,
-                        leading: 0,
-                        bottom: 12,
-                        trailing: 0
-                    )
-                )
-                .listRowSeparator(.hidden)
-                .listRowBackground(Color.clear)
-
             TimelineSummaryCard(
                 summary: summary,
                 activityFilterLabel: FluelCopy.entryActivityFilterMode(
@@ -389,19 +356,16 @@ struct ActivityTimelineView: View {
             }
         }
         .listStyle(.insetGrouped)
-        .scrollContentBackground(.hidden)
-        .fluelAppBackground()
-        .fluelPrimarySearchable(
-            text: $searchText,
-            prompt: FluelCopy.searchTimeline()
-        )
+        .mhListChrome(
+            title: Text(FluelCopy.timeline()),
+            subtitle: Text(FluelCopy.timelineScreenSubtitle())
+        ) {
+            listHeaderControls
+        }
     }
 
     private var listHeaderControls: some View {
-        VStack(
-            alignment: .leading,
-            spacing: FluelPresentationStyle.inlineSpacing
-        ) {
+        VStack(alignment: .leading, spacing: theme.spacing.inline) {
             filterControls
 
             if hasActiveSearch || hasActiveFilter {
@@ -413,14 +377,10 @@ struct ActivityTimelineView: View {
                 )
             }
         }
-        .fluelCard(tone: .muted)
     }
 
     private var filterControls: some View {
-        VStack(
-            alignment: .leading,
-            spacing: FluelPresentationStyle.inlineSpacing
-        ) {
+        VStack(alignment: .leading, spacing: theme.spacing.inline) {
             EntryActivityKindFilterBar(
                 selection: activityFilterBinding
             )
@@ -452,17 +412,17 @@ struct ActivityTimelineView: View {
 }
 
 private struct TimelineSummaryCard: View {
+    @Environment(\.mhTheme)
+    private var theme
+
     let summary: EntryActivityTimelineSummary
     let activityFilterLabel: String
     let scopeLabel: String
 
     var body: some View {
-        VStack(
-            alignment: .leading,
-            spacing: FluelPresentationStyle.inlineSpacing
-        ) {
+        VStack(alignment: .leading, spacing: theme.spacing.inline) {
             Text(FluelCopy.timelineSummary())
-                .fluelSectionTitleStyle()
+                .mhTextStyle(.sectionTitle)
 
             Text(
                 FluelCopy.timelineShowingActivity(
@@ -470,12 +430,12 @@ private struct TimelineSummaryCard: View {
                     totalCount: summary.totalCount
                 )
             )
-            .fluelRowTitleStyle()
+            .mhTextStyle(.bodyStrong)
 
             Text(
                 FluelCopy.timelineMonthsShown(summary.monthCount)
             )
-            .fluelMetadataStyle()
+            .mhTextStyle(.metadata, colorRole: .secondaryText)
 
             Text(
                 FluelCopy.timelineActivityCount(
@@ -483,7 +443,7 @@ private struct TimelineSummaryCard: View {
                     count: summary.addedCount
                 )
             )
-            .fluelMetadataStyle()
+            .mhTextStyle(.metadata, colorRole: .secondaryText)
 
             Text(
                 FluelCopy.timelineActivityCount(
@@ -491,7 +451,7 @@ private struct TimelineSummaryCard: View {
                     count: summary.updatedCount
                 )
             )
-            .fluelMetadataStyle()
+            .mhTextStyle(.metadata, colorRole: .secondaryText)
 
             Text(
                 FluelCopy.timelineActivityCount(
@@ -499,42 +459,41 @@ private struct TimelineSummaryCard: View {
                     count: summary.archivedCount
                 )
             )
-            .fluelMetadataStyle()
+            .mhTextStyle(.metadata, colorRole: .secondaryText)
 
             Text(
                 "\(FluelCopy.filter()): \(activityFilterLabel)"
             )
-            .fluelMetadataStyle()
+            .mhTextStyle(.metadata, colorRole: .secondaryText)
 
             Text(
                 "\(FluelCopy.timelineScope()): \(scopeLabel)"
             )
-            .fluelMetadataStyle()
+            .mhTextStyle(.metadata, colorRole: .secondaryText)
         }
-        .fluelCard(tone: .muted)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .mhRow()
+        .mhSurface(role: .muted)
     }
 }
 
 private struct TimelineTrendCard: View {
+    @Environment(\.mhTheme)
+    private var theme
+
     let trends: [EntryActivityTrendSnapshot]
 
     var body: some View {
-        VStack(
-            alignment: .leading,
-            spacing: FluelPresentationStyle.inlineSpacing
-        ) {
+        VStack(alignment: .leading, spacing: theme.spacing.inline) {
             Text(FluelCopy.timelineTrends())
-                .fluelSectionTitleStyle()
+                .mhTextStyle(.sectionTitle)
 
             VStack(spacing: 0) {
                 ForEach(trends, id: \.monthStart) { trend in
                     VStack(alignment: .leading, spacing: 8) {
-                        HStack(
-                            alignment: .firstTextBaseline,
-                            spacing: FluelPresentationStyle.inlineSpacing
-                        ) {
+                        HStack(alignment: .firstTextBaseline, spacing: theme.spacing.inline) {
                             Text(trend.title)
-                                .fluelRowTitleStyle()
+                                .mhRowTitle()
 
                             Spacer(minLength: 0)
 
@@ -543,37 +502,33 @@ private struct TimelineTrendCard: View {
                                     trend.totalCount
                                 )
                             )
-                            .fluelMetadataStyle()
+                            .mhTextStyle(.metadata, colorRole: .secondaryText)
                         }
 
                         TimelineTrendBar(trend: trend)
 
-                        GlassEffectContainer(
-                            spacing: FluelPresentationStyle.inlineSpacing
-                        ) {
-                            HStack(
-                                spacing: FluelPresentationStyle.inlineSpacing
-                            ) {
+                        MHGlassContainer(spacing: theme.spacing.inline) {
+                            HStack(spacing: theme.spacing.inline) {
                                 TimelineTrendPill(
                                     label: FluelCopy.timelineActivityCount(
                                         kind: .added,
                                         count: trend.addedCount
                                     ),
-                                    kind: .positive
+                                    style: .positive
                                 )
                                 TimelineTrendPill(
                                     label: FluelCopy.timelineActivityCount(
                                         kind: .updated,
                                         count: trend.updatedCount
                                     ),
-                                    kind: .accent
+                                    style: .accent
                                 )
                                 TimelineTrendPill(
                                     label: FluelCopy.timelineActivityCount(
                                         kind: .archived,
                                         count: trend.archivedCount
                                     ),
-                                    kind: .warning
+                                    style: .warning
                                 )
                             }
                         }
@@ -587,7 +542,9 @@ private struct TimelineTrendCard: View {
                 }
             }
         }
-        .fluelCard(tone: .muted)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .mhRow()
+        .mhSurface(role: .muted)
     }
 }
 
@@ -629,33 +586,32 @@ private struct TimelineTrendBar: View {
 
 private struct TimelineTrendPill: View {
     let label: String
-    let kind: FluelBadgeKind
+    let style: MHBadgeStyle
 
     var body: some View {
-        FluelGlassPill(title: label, kind: kind)
+        Text(label)
+            .mhBadge(style: style)
     }
 }
 
 private struct TimelineMilestoneDigestCard: View {
+    @Environment(\.mhTheme)
+    private var theme
+
     let digest: EntryTimelineMilestoneDigest
 
     var body: some View {
-        VStack(
-            alignment: .leading,
-            spacing: FluelPresentationStyle.inlineSpacing
-        ) {
+        VStack(alignment: .leading, spacing: theme.spacing.inline) {
             Text(FluelCopy.timelineMilestones())
-                .fluelSectionTitleStyle()
+                .mhTextStyle(.sectionTitle)
 
-            GlassEffectContainer(
-                spacing: FluelPresentationStyle.inlineSpacing
-            ) {
-                HStack(spacing: FluelPresentationStyle.inlineSpacing) {
+            MHGlassContainer(spacing: theme.spacing.inline) {
+                HStack(spacing: theme.spacing.inline) {
                     TimelineTrendPill(
                         label: FluelCopy.timelineVisibleEntryCount(
                             digest.visibleEntryCount
                         ),
-                        kind: .accent
+                        style: .accent
                     )
 
                     if digest.approximateCount > 0 {
@@ -663,7 +619,7 @@ private struct TimelineMilestoneDigestCard: View {
                             label: FluelCopy.timelineApproximateMilestones(
                                 digest.approximateCount
                             ),
-                            kind: .warning
+                            style: .warning
                         )
                     }
                 }
@@ -672,12 +628,9 @@ private struct TimelineMilestoneDigestCard: View {
             VStack(spacing: 0) {
                 ForEach(digest.milestones, id: \.entryID) { milestone in
                     VStack(alignment: .leading, spacing: 6) {
-                        HStack(
-                            alignment: .firstTextBaseline,
-                            spacing: FluelPresentationStyle.inlineSpacing
-                        ) {
+                        HStack(alignment: .firstTextBaseline, spacing: theme.spacing.inline) {
                             Text(milestone.title)
-                                .fluelRowTitleStyle()
+                                .mhRowTitle()
 
                             Spacer(minLength: 0)
 
@@ -686,11 +639,11 @@ private struct TimelineMilestoneDigestCard: View {
                                     milestone.daysRemaining
                                 )
                             )
-                            .fluelMetadataStyle()
+                            .mhTextStyle(.metadata, colorRole: .secondaryText)
                         }
 
                         Text(milestone.milestoneText)
-                            .fluelSectionTitleStyle()
+                            .mhTextStyle(.sectionTitle)
 
                         Text(
                             milestone.milestoneDate.formatted(
@@ -699,13 +652,11 @@ private struct TimelineMilestoneDigestCard: View {
                                     .day()
                             )
                         )
-                        .fluelSupportingStyle()
+                        .mhRowSupporting()
 
                         if milestone.isApproximate {
-                            FluelGlassPill(
-                                title: FluelCopy.approximateMilestone(),
-                                kind: .warning
-                            )
+                            Text(FluelCopy.approximateMilestone())
+                                .mhBadge(style: .warning)
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
@@ -717,7 +668,9 @@ private struct TimelineMilestoneDigestCard: View {
                 }
             }
         }
-        .fluelCard(tone: .muted)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .mhRow()
+        .mhSurface(role: .muted)
     }
 }
 
@@ -727,16 +680,17 @@ private struct TimelineActivityRow: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(activity.title)
-                .fluelRowTitleStyle()
+                .mhRowTitle()
 
             HStack(spacing: 8) {
-                FluelGlassPill(
-                    title: FluelCopy.entryActivityKind(activity.kind),
-                    kind: activity.kind.fluelBadgeKind
-                )
+                Text(FluelCopy.entryActivityKind(activity.kind))
+                    .mhBadge(style: activity.kind.fluelBadgeStyle)
 
                 Text(activityTimestampText)
-                    .fluelMetadataStyle()
+                    .mhTextStyle(
+                        .metadata,
+                        colorRole: .secondaryText
+                    )
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)

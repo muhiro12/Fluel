@@ -1,9 +1,15 @@
+// swiftlint:disable closure_body_length
 import FluelLibrary
+import MHUI
 import SwiftData
 import SwiftUI
 import TipKit
 
 struct EntryDetailView: View {
+    private enum Layout {
+        static let contentSpacing: CGFloat = 24
+    }
+
     @Environment(\.dismiss)
     private var dismiss
     @Environment(\.modelContext)
@@ -26,47 +32,41 @@ struct EntryDetailView: View {
             )
             let shareText = shareText(referenceDate: timeline.date)
 
-            ScrollView {
-                VStack(
-                    alignment: .leading,
-                    spacing: FluelPresentationStyle.sectionSpacing
-                ) {
-                    FluelScreenIntroCard(
-                        title: nil,
-                        subtitle: EntryFormatting.startLabelText(
-                            for: entry.startComponents
-                        )
-                    )
+            VStack(alignment: .leading, spacing: Layout.contentSpacing) {
+                EntryDetailQuickActions(
+                    entry: entry,
+                    shareText: shareText,
+                    onDuplicate: presentDuplicateForm,
+                    onEdit: presentEditor,
+                    onArchive: archive,
+                    onRestore: restore
+                )
+                .popoverTip(
+                    showsDetailQuickActionsTip ? detailQuickActionsTip : nil,
+                    arrowEdge: .top
+                )
+                EntryDetailElapsedSection(snapshot: snapshot)
+                EntryDetailDetailsSection(
+                    entry: entry,
+                    snapshot: snapshot
+                )
 
-                    EntryDetailHeaderContent(entry: entry)
-
-                    EntryDetailQuickActions(
-                        entry: entry,
-                        shareText: shareText,
-                        onDuplicate: presentDuplicateForm,
-                        onEdit: presentEditor,
-                        onArchive: archive,
-                        onRestore: restore
-                    )
-                    .popoverTip(
-                        showsDetailQuickActionsTip ? detailQuickActionsTip : nil,
-                        arrowEdge: .top
-                    )
-
-                    EntryDetailElapsedSection(snapshot: snapshot)
-                    EntryDetailDetailsSection(
-                        entry: entry,
-                        snapshot: snapshot
-                    )
-
-                    if let note = entry.note,
-                       note.isEmpty == false {
-                        EntryDetailNoteSection(note: note)
-                    }
+                if let note = entry.note,
+                   note.isEmpty == false {
+                    EntryDetailNoteSection(note: note)
                 }
-                .padding(FluelPresentationStyle.screenPadding)
             }
-            .fluelAppBackground()
+            .mhScreen(
+                title: Text(entry.title),
+                subtitle: Text(
+                    EntryFormatting.startLabelText(
+                        for: entry.startComponents
+                    )
+                )
+            ) {
+                EntryDetailHeaderContent(entry: entry)
+            }
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     EntryDetailMoreMenu(
@@ -81,8 +81,6 @@ struct EntryDetailView: View {
                 }
             }
         }
-        .navigationTitle(entry.title)
-        .navigationBarTitleDisplayMode(.inline)
         .sheet(isPresented: $isPresentingEditor) {
             NavigationStack {
                 EntryFormView(

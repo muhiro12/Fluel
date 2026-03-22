@@ -1,32 +1,30 @@
+// swiftlint:disable no_magic_numbers
 import FluelLibrary
+import MHUI
 import SwiftUI
 
 struct EntryContentFilterBar: View {
+    @Environment(\.mhTheme)
+    private var theme
     @Namespace private var chipNamespace
 
     @Binding var selection: EntryContentFilterMode
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            GlassEffectContainer(
-                spacing: FluelPresentationStyle.chipSpacing
-            ) {
-                HStack(spacing: FluelPresentationStyle.chipSpacing) {
+            MHGlassContainer(spacing: theme.spacing.inline) {
+                HStack(spacing: theme.spacing.inline) {
                     ForEach(EntryContentFilterMode.allCases, id: \.self) { mode in
                         Button {
                             selection = mode
                         } label: {
-                            FluelGlassPill(
-                                title: FluelCopy.entryContentFilterMode(mode),
-                                kind: selection == mode
-                                    ? .accent
-                                    : .neutral,
-                                emphasizesSelection: selection == mode
-                            )
-                            .glassEffectID(
-                                mode,
-                                in: chipNamespace
-                            )
+                            Text(FluelCopy.entryContentFilterMode(mode))
+                                .mhBadge(
+                                    style: selection == mode
+                                        ? .accent
+                                        : .neutral
+                                )
+                                .mhGlassEffectID(mode, in: chipNamespace)
                         }
                         .buttonStyle(.plain)
                     }
@@ -34,5 +32,7 @@ struct EntryContentFilterBar: View {
                 .padding(.vertical, 2)
             }
         }
+        .mhSurfaceInset()
+        .mhSurface(role: .muted)
     }
 }

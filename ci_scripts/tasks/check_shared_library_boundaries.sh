@@ -8,7 +8,7 @@ ci_task_enter_repository_root "${BASH_SOURCE[0]}"
 
 forbidden_import_matches=$(
   rg --line-number \
-    '^import (SwiftUI|TipKit|PhotosUI|WidgetKit|MHAppRuntimeCore|AppIntents|StoreKit|StoreKitWrapper|GoogleMobileAds|GoogleMobileAdsWrapper|UserNotifications)$' \
+    '^import (SwiftUI|TipKit|PhotosUI|WidgetKit|MHAppRuntimeCore|MHUI|AppIntents|StoreKit|StoreKitWrapper|GoogleMobileAds|GoogleMobileAdsWrapper|UserNotifications)$' \
     --glob '!FluelLibrary/Sources/Preview/**' \
     FluelLibrary/Sources || true
 )

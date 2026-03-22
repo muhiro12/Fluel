@@ -1,9 +1,14 @@
+// swiftlint:disable attributes closure_body_length no_empty_block
+// swiftlint:disable no_magic_numbers type_contents_order
 import FluelLibrary
+import MHUI
 import SwiftData
 import SwiftUI
 import TipKit
 
 struct SettingsView: View {
+    @Environment(\.mhTheme)
+    private var theme
     @Environment(EntryPresetStore.self)
     private var presetStore
 
@@ -41,35 +46,26 @@ struct SettingsView: View {
         )
 
         ScrollView {
-            VStack(
-                alignment: .leading,
-                spacing: FluelPresentationStyle.sectionSpacing
-            ) {
-                FluelScreenIntroCard(
-                    title: nil,
-                    subtitle: FluelCopy.settingsScreenSubtitle()
-                )
-
+            VStack(alignment: .leading, spacing: theme.spacing.section) {
                 displayCard
                 presetCard
                 dataCard(snapshot)
                 supportCard
             }
-            .padding(FluelPresentationStyle.screenPadding)
+            .mhSurfaceInset()
         }
-        .fluelAppBackground()
-        .navigationTitle(FluelCopy.settings())
+        .mhScreen(
+            title: Text(FluelCopy.settings()),
+            subtitle: Text(FluelCopy.settingsScreenSubtitle())
+        )
         .navigationBarTitleDisplayMode(.inline)
         .toolbarRole(.editor)
     }
 
     private var displayCard: some View {
-        VStack(
-            alignment: .leading,
-            spacing: FluelPresentationStyle.inlineSpacing
-        ) {
+        VStack(alignment: .leading, spacing: theme.spacing.inline) {
             Text(FluelCopy.display())
-                .fluelSectionTitleStyle()
+                .mhTextStyle(.sectionTitle)
 
             Toggle(
                 FluelCopy.showListSummaryCards(),
@@ -91,82 +87,82 @@ struct SettingsView: View {
                 isOn: $showsDashboardHighlights
             )
         }
-        .fluelCard(tone: .muted)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .mhRow()
+        .mhSurface(role: .muted)
     }
 
     private func dataCard(
         _ snapshot: EntryCollectionSnapshot
     ) -> some View {
-        VStack(
-            alignment: .leading,
-            spacing: FluelPresentationStyle.inlineSpacing
-        ) {
+        VStack(alignment: .leading, spacing: theme.spacing.inline) {
             Text(FluelCopy.dataStatus())
-                .fluelSectionTitleStyle()
+                .mhTextStyle(.sectionTitle)
 
             Text(FluelCopy.totalEntriesCount(snapshot.totalCount))
-                .fluelRowTitleStyle()
+                .mhRowTitle()
 
             Text(FluelCopy.activeEntryCount(snapshot.activeCount))
-                .fluelSupportingStyle()
+                .mhRowSupporting()
 
             Text(FluelCopy.archivedEntryCount(snapshot.archivedCount))
-                .fluelSupportingStyle()
+                .mhRowSupporting()
 
             if let leadActiveTitle = snapshot.leadActiveTitle {
                 Text(
                     "\(FluelCopy.leadEntry()): \(leadActiveTitle)"
                 )
-                .fluelMetadataStyle()
+                .mhTextStyle(.metadata, colorRole: .secondaryText)
             }
         }
-        .fluelCard(tone: .muted)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .mhRow()
+        .mhSurface(role: .muted)
     }
 
     private var presetCard: some View {
-        VStack(
-            alignment: .leading,
-            spacing: FluelPresentationStyle.inlineSpacing
-        ) {
+        VStack(alignment: .leading, spacing: theme.spacing.inline) {
             Text(FluelCopy.presets())
-                .fluelSectionTitleStyle()
+                .mhTextStyle(.sectionTitle)
 
             NavigationLink {
                 PresetSettingsView()
                     .onAppear {
                         FluelTipState.markPresetManagementLearned()
                     }
-                } label: {
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text(FluelCopy.openPresets())
-                            .fluelRowTitleStyle()
+            } label: {
+                VStack(alignment: .leading, spacing: 6) {
+                    Text(FluelCopy.openPresets())
+                        .mhRowTitle()
 
-                        Text(
-                            FluelCopy.presetCount(
-                                presetStore.allPresets.count
-                            )
+                    Text(
+                        FluelCopy.presetCount(
+                            presetStore.allPresets.count
                         )
-                        .fluelSupportingStyle()
+                    )
+                    .mhRowSupporting()
 
-                        Text(
-                            FluelCopy.pinnedPresetCount(
-                                presetStore.pinnedPresets.count
-                            )
+                    Text(
+                        FluelCopy.pinnedPresetCount(
+                            presetStore.pinnedPresets.count
                         )
-                        .fluelMetadataStyle()
+                    )
+                    .mhTextStyle(.metadata, colorRole: .secondaryText)
 
-                        Text(
-                            FluelCopy.customPresetCount(
-                                presetStore.customPresets.count
-                            )
+                    Text(
+                        FluelCopy.customPresetCount(
+                            presetStore.customPresets.count
                         )
-                        .fluelMetadataStyle()
-                    }
-                    .frame(maxWidth: .infinity, alignment: .leading)
+                    )
+                    .mhTextStyle(.metadata, colorRole: .secondaryText)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
             .buttonStyle(.plain)
         }
-        .fluelCard(tone: .muted)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .mhRow()
+        .mhSurface(role: .muted)
         .popoverTip(
             showsPresetManagementTip ? presetManagementTip : nil,
             arrowEdge: .top
@@ -174,21 +170,18 @@ struct SettingsView: View {
     }
 
     private var supportCard: some View {
-        VStack(
-            alignment: .leading,
-            spacing: FluelPresentationStyle.inlineSpacing
-        ) {
+        VStack(alignment: .leading, spacing: theme.spacing.inline) {
             Text(FluelCopy.support())
-                .fluelSectionTitleStyle()
+                .mhTextStyle(.sectionTitle)
 
-            VStack(alignment: .leading, spacing: FluelPresentationStyle.inlineSpacing) {
+            MHActionGroup(layout: .vertical) {
                 Button(action: onShowArchive) {
                     Label(
                         FluelCopy.openArchivedEntries(),
                         systemImage: "archivebox"
                     )
                 }
-                .buttonStyle(.bordered)
+                .buttonStyle(.mhSecondary)
 
                 Button(action: onShowLicenses) {
                     Label(
@@ -196,7 +189,7 @@ struct SettingsView: View {
                         systemImage: "doc.text"
                     )
                 }
-                .buttonStyle(.bordered)
+                .buttonStyle(.mhSecondary)
 
                 Button(action: FluelTipBootstrap.resetTips) {
                     Label(
@@ -204,10 +197,12 @@ struct SettingsView: View {
                         systemImage: "lightbulb"
                     )
                 }
-                .buttonStyle(.bordered)
+                .buttonStyle(.mhSecondary)
             }
         }
-        .fluelCard(tone: .muted)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .mhRow()
+        .mhSurface(role: .muted)
     }
 
     private var showsPresetManagementTip: Bool {

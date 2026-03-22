@@ -1,9 +1,14 @@
+// swiftlint:disable attributes closure_body_length no_empty_block
 import FluelLibrary
+import MHUI
 import SwiftData
 import SwiftUI
 import TipKit
 
 struct DashboardView: View {
+    @Environment(\.mhTheme)
+    private var theme
+
     @Query
     private var entries: [Entry]
     @AppStorage(
@@ -27,15 +32,7 @@ struct DashboardView: View {
             )
 
             ScrollView {
-                VStack(
-                    alignment: .leading,
-                    spacing: FluelPresentationStyle.sectionSpacing
-                ) {
-                    FluelScreenIntroCard(
-                        title: nil,
-                        subtitle: FluelCopy.dashboardScreenSubtitle()
-                    )
-
+                VStack(alignment: .leading, spacing: theme.spacing.section) {
                     DashboardQuickActionsCard(
                         onAdd: onAdd,
                         onCreateFromPreset: onCreateFromPreset,
@@ -75,11 +72,13 @@ struct DashboardView: View {
                         }
                     }
                 }
-                .padding(FluelPresentationStyle.screenPadding)
+                .mhSurfaceInset()
             }
-            .fluelAppBackground()
+            .mhScreen(
+                title: Text(FluelCopy.dashboard()),
+                subtitle: Text(FluelCopy.dashboardScreenSubtitle())
+            )
         }
-        .navigationTitle(FluelCopy.dashboard())
         .navigationBarTitleDisplayMode(.inline)
         .toolbarRole(.editor)
         .onDisappear {

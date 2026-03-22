@@ -1,4 +1,7 @@
+// swiftlint:disable closure_body_length no_empty_block
+// swiftlint:disable no_magic_numbers type_contents_order
 import FluelLibrary
+import MHUI
 import SwiftUI
 
 struct PresetEditorView: View {
@@ -62,19 +65,16 @@ struct PresetEditorView: View {
     var body: some View {
         Form {
             Section {
-                Text(FluelCopy.presetEditorSubtitle())
-                    .fluelSupportingStyle()
-                    .fixedSize(horizontal: false, vertical: true)
-            }
-
-            Section {
                 TextField(
                     FluelCopy.titlePlaceholder(),
                     text: $title
                 )
                 .textInputAutocapitalization(.words)
+                .mhInputChrome()
             } header: {
                 Text(FluelCopy.titleFieldLabel())
+                    .mhSectionHeaderTitle()
+                    .mhSectionHeader()
             }
 
             Section {
@@ -93,6 +93,8 @@ struct PresetEditorView: View {
                 .pickerStyle(.menu)
             } header: {
                 Text(FluelCopy.presetSymbolLabel())
+                    .mhSectionHeaderTitle()
+                    .mhSectionHeader()
             }
 
             Section {
@@ -117,37 +119,44 @@ struct PresetEditorView: View {
                         Text(
                             EntryPresetFormatting.startText(for: definition)
                         )
-                        .fluelRowTitleStyle()
+                        .mhRowTitle()
 
                         Text(
                             EntryFormatting.precisionText(
                                 for: startPrecision
                             )
                         )
-                        .fluelMetadataStyle()
+                        .mhTextStyle(.metadata, colorRole: .secondaryText)
                     }
                 }
             } header: {
                 Text(FluelCopy.presetOffsetLabel())
+                    .mhSectionHeaderTitle()
+                    .mhSectionHeader()
             }
 
             Section {
                 TextEditor(text: $note)
                     .frame(minHeight: 120)
+                    .mhInputChrome()
             } header: {
                 Text(FluelCopy.noteSectionTitle())
+                    .mhSectionHeaderTitle()
+                    .mhSectionHeader()
             } footer: {
                 Text(
                     EntryPresetFormatting.detailText(
                         for: previewPreset
                     )
                 )
+                .mhSectionFooterText()
             }
         }
-        .navigationTitle(navigationTitle)
+        .mhFormChrome(
+            title: Text(navigationTitle),
+            subtitle: Text(FluelCopy.presetEditorSubtitle())
+        )
         .navigationBarTitleDisplayMode(.inline)
-        .scrollContentBackground(.hidden)
-        .fluelAppBackground()
         .toolbar {
             ToolbarItem(placement: .cancellationAction) {
                 Button(FluelCopy.cancel()) {

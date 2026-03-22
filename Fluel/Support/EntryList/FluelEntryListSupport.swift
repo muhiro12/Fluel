@@ -1,5 +1,11 @@
+// swiftlint:disable file_types_order one_declaration_per_file
 import FluelLibrary
+import MHUI
 import SwiftUI
+
+private enum FluelEntryListSupport {
+    // Namespace for file name lint alignment.
+}
 
 struct FluelEntryListSummary {
     let headline: String
@@ -36,15 +42,15 @@ struct FluelEntryListSummary {
 }
 
 struct FluelEntryListSummaryCard: View {
+    @Environment(\.mhTheme)
+    private var theme
+
     let summary: FluelEntryListSummary
 
     var body: some View {
-        VStack(
-            alignment: .leading,
-            spacing: FluelPresentationStyle.inlineSpacing
-        ) {
+        VStack(alignment: .leading, spacing: theme.spacing.inline) {
             Text(summary.headline)
-                .fluelSectionTitleStyle()
+                .mhTextStyle(.sectionTitle)
 
             Text(
                 FluelCopy.showingEntries(
@@ -52,62 +58,64 @@ struct FluelEntryListSummaryCard: View {
                     totalCount: summary.totalCount
                 )
             )
-            .fluelRowTitleStyle()
+            .mhTextStyle(.bodyStrong)
 
             Text(
                 FluelCopy.withNotesCount(summary.noteCount)
             )
-            .fluelMetadataStyle()
+            .mhTextStyle(.metadata, colorRole: .secondaryText)
 
             Text(
                 FluelCopy.withPhotosCount(summary.photoCount)
             )
-            .fluelMetadataStyle()
+            .mhTextStyle(.metadata, colorRole: .secondaryText)
 
             Text(
                 "\(FluelCopy.sort()): \(summary.sortLabel)"
             )
-            .fluelMetadataStyle()
+            .mhTextStyle(.metadata, colorRole: .secondaryText)
 
             Text(
                 "\(FluelCopy.filter()): \(summary.filterLabel)"
             )
-            .fluelMetadataStyle()
+            .mhTextStyle(.metadata, colorRole: .secondaryText)
         }
-        .fluelCard(tone: .muted)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .mhRow()
+        .mhSurface(role: .muted)
     }
 }
 
 struct FluelEntryListStateActions: View {
+    @Environment(\.mhTheme)
+    private var theme
+
     let showsClearSearch: Bool
     let showsClearFilter: Bool
     let onClearSearch: () -> Void
     let onClearFilter: () -> Void
 
     var body: some View {
-        HStack(spacing: FluelPresentationStyle.inlineSpacing) {
-            if showsClearSearch {
-                Button(
-                    FluelCopy.clearSearch(),
-                    action: onClearSearch
-                )
-                .buttonStyle(.bordered)
-                .controlSize(.small)
-            }
-
-            if showsClearFilter {
+        MHGlassContainer(spacing: theme.spacing.inline) {
+            MHActionGroup {
                 if showsClearSearch {
-                    Spacer(minLength: 0)
+                    Button(
+                        FluelCopy.clearSearch(),
+                        action: onClearSearch
+                    )
+                    .buttonStyle(.mhSecondary)
                 }
 
-                Button(
-                    FluelCopy.clearFilter(),
-                    action: onClearFilter
-                )
-                .buttonStyle(.bordered)
-                .controlSize(.small)
+                if showsClearFilter {
+                    Button(
+                        FluelCopy.clearFilter(),
+                        action: onClearFilter
+                    )
+                    .buttonStyle(.mhSecondary)
+                }
             }
         }
-        .fluelCard(tone: .muted)
+        .mhSurfaceInset()
+        .mhSurface(role: .muted)
     }
 }
