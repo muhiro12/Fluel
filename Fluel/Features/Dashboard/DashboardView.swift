@@ -32,7 +32,7 @@ struct DashboardView: View {
                     spacing: FluelPresentationStyle.sectionSpacing
                 ) {
                     FluelScreenIntroCard(
-                        title: FluelCopy.dashboard(),
+                        title: nil,
                         subtitle: FluelCopy.dashboardScreenSubtitle()
                     )
 

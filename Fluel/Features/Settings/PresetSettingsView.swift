@@ -17,7 +17,7 @@ struct PresetSettingsView: View {
                 spacing: FluelPresentationStyle.sectionSpacing
             ) {
                 FluelScreenIntroCard(
-                    title: FluelCopy.presets(),
+                    title: nil,
                     subtitle: FluelCopy.presetScreenSubtitle()
                 )
 

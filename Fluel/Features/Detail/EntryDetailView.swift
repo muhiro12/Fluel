@@ -32,7 +32,7 @@ struct EntryDetailView: View {
                     spacing: FluelPresentationStyle.sectionSpacing
                 ) {
                     FluelScreenIntroCard(
-                        title: entry.title,
+                        title: nil,
                         subtitle: EntryFormatting.startLabelText(
                             for: entry.startComponents
                         )

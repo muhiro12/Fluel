@@ -169,10 +169,6 @@ struct ActivityTimelineView: View {
         .navigationTitle(FluelCopy.timeline())
         .navigationBarTitleDisplayMode(.inline)
         .toolbarRole(.editor)
-        .searchable(
-            text: $searchText,
-            prompt: FluelCopy.searchTimeline()
-        )
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 if searchedActivity.isEmpty == false {
@@ -203,7 +199,7 @@ struct ActivityTimelineView: View {
                 spacing: FluelPresentationStyle.sectionSpacing
             ) {
                 FluelScreenIntroCard(
-                    title: FluelCopy.timeline(),
+                    title: nil,
                     subtitle: FluelCopy.timelineScreenSubtitle()
                 )
 
@@ -235,7 +231,7 @@ struct ActivityTimelineView: View {
                 spacing: FluelPresentationStyle.sectionSpacing
             ) {
                 FluelScreenIntroCard(
-                    title: FluelCopy.timeline(),
+                    title: nil,
                     subtitle: FluelCopy.timelineScreenSubtitle()
                 )
 
@@ -254,6 +250,10 @@ struct ActivityTimelineView: View {
             .padding(FluelPresentationStyle.screenPadding)
         }
         .fluelAppBackground()
+        .fluelPrimarySearchable(
+            text: $searchText,
+            prompt: FluelCopy.searchTimeline()
+        )
     }
 
     private var filteredEmptyState: some View {
@@ -263,7 +263,7 @@ struct ActivityTimelineView: View {
                 spacing: FluelPresentationStyle.sectionSpacing
             ) {
                 FluelScreenIntroCard(
-                    title: FluelCopy.timeline(),
+                    title: nil,
                     subtitle: FluelCopy.timelineScreenSubtitle()
                 )
 
@@ -282,12 +282,16 @@ struct ActivityTimelineView: View {
             .padding(FluelPresentationStyle.screenPadding)
         }
         .fluelAppBackground()
+        .fluelPrimarySearchable(
+            text: $searchText,
+            prompt: FluelCopy.searchTimeline()
+        )
     }
 
     private var timelineList: some View {
         List {
             FluelScreenIntroCard(
-                title: FluelCopy.timeline(),
+                title: nil,
                 subtitle: FluelCopy.timelineScreenSubtitle()
             )
             .listRowInsets(.init())
@@ -387,6 +391,10 @@ struct ActivityTimelineView: View {
         .listStyle(.insetGrouped)
         .scrollContentBackground(.hidden)
         .fluelAppBackground()
+        .fluelPrimarySearchable(
+            text: $searchText,
+            prompt: FluelCopy.searchTimeline()
+        )
     }
 
     private var listHeaderControls: some View {

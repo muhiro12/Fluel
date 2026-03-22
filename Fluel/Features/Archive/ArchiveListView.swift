@@ -171,10 +171,6 @@ struct ArchiveListView: View {
                 }
             }
         }
-        .searchable(
-            text: $searchText,
-            prompt: FluelCopy.searchEntries()
-        )
         .confirmationDialog(
             FluelCopy.deleteConfirmationTitle(),
             isPresented: Binding(
@@ -237,7 +233,7 @@ struct ArchiveListView: View {
                 spacing: FluelPresentationStyle.sectionSpacing
             ) {
                 FluelScreenIntroCard(
-                    title: FluelCopy.archived(),
+                    title: nil,
                     subtitle: FluelCopy.archiveScreenSubtitle()
                 )
 
@@ -263,7 +259,7 @@ struct ArchiveListView: View {
                 spacing: FluelPresentationStyle.sectionSpacing
             ) {
                 FluelScreenIntroCard(
-                    title: FluelCopy.archived(),
+                    title: nil,
                     subtitle: FluelCopy.archiveScreenSubtitle()
                 )
 
@@ -280,6 +276,10 @@ struct ArchiveListView: View {
             .padding(FluelPresentationStyle.screenPadding)
         }
         .fluelAppBackground()
+        .fluelPrimarySearchable(
+            text: $searchText,
+            prompt: FluelCopy.searchEntries()
+        )
     }
 
     private func listContent(
@@ -287,7 +287,7 @@ struct ArchiveListView: View {
     ) -> some View {
         List {
             FluelScreenIntroCard(
-                title: FluelCopy.archived(),
+                title: nil,
                 subtitle: FluelCopy.archiveScreenSubtitle()
             )
             .listRowInsets(.init())
@@ -407,6 +407,10 @@ struct ArchiveListView: View {
         .listStyle(.plain)
         .scrollContentBackground(.hidden)
         .fluelAppBackground()
+        .fluelPrimarySearchable(
+            text: $searchText,
+            prompt: FluelCopy.searchEntries()
+        )
     }
 
     private func restore(

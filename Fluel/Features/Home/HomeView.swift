@@ -232,10 +232,6 @@ struct HomeView: View {
                 )
             }
         }
-        .searchable(
-            text: $searchText,
-            prompt: FluelCopy.searchEntries()
-        )
         .alert(
             FluelCopy.error(),
             isPresented: Binding(
@@ -264,7 +260,7 @@ struct HomeView: View {
                 spacing: FluelPresentationStyle.sectionSpacing
             ) {
                 FluelScreenIntroCard(
-                    title: FluelAppConfiguration.appName,
+                    title: nil,
                     subtitle: FluelCopy.homeScreenSubtitle()
                 )
 
@@ -301,7 +297,7 @@ struct HomeView: View {
                 spacing: FluelPresentationStyle.sectionSpacing
             ) {
                 FluelScreenIntroCard(
-                    title: FluelAppConfiguration.appName,
+                    title: nil,
                     subtitle: FluelCopy.homeScreenSubtitle()
                 )
 
@@ -318,6 +314,10 @@ struct HomeView: View {
             .padding(FluelPresentationStyle.screenPadding)
         }
         .fluelAppBackground()
+        .fluelPrimarySearchable(
+            text: $searchText,
+            prompt: FluelCopy.searchEntries()
+        )
     }
 
     private func listContent(
@@ -325,7 +325,7 @@ struct HomeView: View {
     ) -> some View {
         List {
             FluelScreenIntroCard(
-                title: FluelAppConfiguration.appName,
+                title: nil,
                 subtitle: FluelCopy.homeScreenSubtitle()
             )
             .listRowInsets(.init())
@@ -442,6 +442,10 @@ struct HomeView: View {
         .listStyle(.plain)
         .scrollContentBackground(.hidden)
         .fluelAppBackground()
+        .fluelPrimarySearchable(
+            text: $searchText,
+            prompt: FluelCopy.searchEntries()
+        )
     }
 
     private func archive(

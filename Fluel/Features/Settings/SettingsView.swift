@@ -46,7 +46,7 @@ struct SettingsView: View {
                 spacing: FluelPresentationStyle.sectionSpacing
             ) {
                 FluelScreenIntroCard(
-                    title: FluelCopy.settings(),
+                    title: nil,
                     subtitle: FluelCopy.settingsScreenSubtitle()
                 )
 

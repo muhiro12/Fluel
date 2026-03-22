@@ -85,13 +85,16 @@ private struct FluelCardModifier: ViewModifier {
 }
 
 struct FluelScreenIntroCard: View {
-    let title: String
+    let title: String?
     let subtitle: String
 
     var body: some View {
         VStack(alignment: .leading, spacing: FluelPresentationStyle.inlineSpacing) {
-            Text(title)
-                .fluelHeadlineStyle()
+            if let title,
+               title.isEmpty == false {
+                Text(title)
+                    .fluelHeadlineStyle()
+            }
 
             Text(subtitle)
                 .fluelSupportingStyle()
@@ -136,6 +139,17 @@ extension View {
             FluelCardModifier(
                 tone: tone
             )
+        )
+    }
+
+    func fluelPrimarySearchable(
+        text: Binding<String>,
+        prompt: String
+    ) -> some View {
+        searchable(
+            text: text,
+            placement: .navigationBarDrawer(displayMode: .always),
+            prompt: Text(prompt)
         )
     }
 
