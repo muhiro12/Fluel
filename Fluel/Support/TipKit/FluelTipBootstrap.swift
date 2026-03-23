@@ -39,19 +39,21 @@ enum FluelTipBootstrap {
         }
     }
 
-    static func resetTips() {
+    static func resetTips() -> Bool {
         guard isEnabled else {
-            return
+            return false
         }
 
         do {
             try Tips.resetDatastore()
             FluelTipState.reset()
             logger.notice("TipKit datastore reset")
+            return true
         } catch {
             logger.error(
                 "TipKit datastore reset failed: \(error.localizedDescription)"
             )
+            return false
         }
     }
 }

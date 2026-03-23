@@ -264,7 +264,17 @@ struct SettingsView: View {
                 }
                 .buttonStyle(.mhSecondary)
 
-                Button(action: FluelTipBootstrap.resetTips) {
+                Button {
+                    if FluelTipBootstrap.resetTips() {
+                        noticeCenter.presentInfo(
+                            message: FluelCopy.tipsResetNotice()
+                        )
+                    } else {
+                        noticeCenter.presentWarning(
+                            message: FluelCopy.tipsResetFailedNotice()
+                        )
+                    }
+                } label: {
                     Label(
                         FluelCopy.showTipsAgain(),
                         systemImage: "lightbulb"

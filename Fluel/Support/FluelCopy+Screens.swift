@@ -135,6 +135,26 @@ extension FluelCopy {
         )
     }
 
+    static func tipsResetNotice(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Tips were reset and can appear again.",
+            japanese: "ヒントを初期化しました。再び表示されます。",
+            locale: locale
+        )
+    }
+
+    static func tipsResetFailedNotice(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Tips could not be reset right now.",
+            japanese: "いまはヒントを初期化できませんでした。",
+            locale: locale
+        )
+    }
+
     static func createScreenSubtitle(
         locale: Locale = .autoupdatingCurrent
     ) -> String {
