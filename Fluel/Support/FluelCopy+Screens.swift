@@ -23,6 +23,46 @@ extension FluelCopy {
         )
     }
 
+    static func homeFilterEmptyTitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "No active entries match this filter",
+            japanese: "この絞り込みに一致する記録はありません",
+            locale: locale
+        )
+    }
+
+    static func homeFilterEmptyBody(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Try another filter to bring back the entries you are still living with.",
+            japanese: "絞り込みを変えると、いま一緒にある記録が見つかるかもしれません。",
+            locale: locale
+        )
+    }
+
+    static func archiveFilterEmptyTitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "No archived entries match this filter",
+            japanese: "この絞り込みに一致する保管済み記録はありません",
+            locale: locale
+        )
+    }
+
+    static func archiveFilterEmptyBody(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Try another filter to see more of what has already been archived.",
+            japanese: "絞り込みを変えると、保管済みの記録が見つかるかもしれません。",
+            locale: locale
+        )
+    }
+
     static func dashboardScreenSubtitle(
         locale: Locale = .autoupdatingCurrent
     ) -> String {

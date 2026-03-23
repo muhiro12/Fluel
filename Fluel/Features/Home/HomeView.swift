@@ -120,6 +120,8 @@ struct HomeView: View {
             Group {
                 if sortedEntries.isEmpty {
                     emptyState
+                } else if contentFilteredEntries.isEmpty {
+                    filteredEmptyState
                 } else if displayedEntries.isEmpty {
                     searchEmptyState
                 } else {
@@ -244,17 +246,43 @@ struct HomeView: View {
     }
 
     private var searchEmptyState: some View {
-        ContentUnavailableView {
-            Label(
-                FluelCopy.homeSearchEmptyTitle(),
-                systemImage: "magnifyingglass"
-            )
-        } description: {
-            Text(FluelCopy.homeSearchEmptyBody())
+        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
+            listHeaderControls
+
+            ContentUnavailableView {
+                Label(
+                    FluelCopy.homeSearchEmptyTitle(),
+                    systemImage: "magnifyingglass"
+                )
+            } description: {
+                Text(FluelCopy.homeSearchEmptyBody())
+            }
+            .mhEmptyStateLayout()
+            .mhSurfaceInset()
+            .mhSurface()
         }
-        .mhEmptyStateLayout()
-        .mhSurfaceInset()
-        .mhSurface()
+        .mhScreen(
+            title: Text(FluelAppConfiguration.appName),
+            subtitle: Text(FluelCopy.homeScreenSubtitle())
+        )
+    }
+
+    private var filteredEmptyState: some View {
+        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
+            listHeaderControls
+
+            ContentUnavailableView {
+                Label(
+                    FluelCopy.homeFilterEmptyTitle(),
+                    systemImage: "line.3.horizontal.decrease.circle"
+                )
+            } description: {
+                Text(FluelCopy.homeFilterEmptyBody())
+            }
+            .mhEmptyStateLayout()
+            .mhSurfaceInset()
+            .mhSurface()
+        }
         .mhScreen(
             title: Text(FluelAppConfiguration.appName),
             subtitle: Text(FluelCopy.homeScreenSubtitle())
@@ -342,23 +370,27 @@ struct HomeView: View {
             title: Text(FluelAppConfiguration.appName),
             subtitle: Text(FluelCopy.homeScreenSubtitle())
         ) {
-            VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
-                EntryContentFilterBar(
-                    selection: contentFilterBinding
-                )
-                .popoverTip(
-                    currentTip == .filters ? contentFiltersTip : nil,
-                    arrowEdge: .top
-                )
+            listHeaderControls
+        }
+    }
 
-                if model.hasActiveSearch || model.hasActiveFilter {
-                    FluelEntryListStateActions(
-                        showsClearSearch: model.hasActiveSearch,
-                        showsClearFilter: model.hasActiveFilter,
-                        onClearSearch: clearSearch,
-                        onClearFilter: clearFilter
-                    )
-                }
+    private var listHeaderControls: some View {
+        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
+            EntryContentFilterBar(
+                selection: contentFilterBinding
+            )
+            .popoverTip(
+                currentTip == .filters ? contentFiltersTip : nil,
+                arrowEdge: .top
+            )
+
+            if model.hasActiveSearch || model.hasActiveFilter {
+                FluelEntryListStateActions(
+                    showsClearSearch: model.hasActiveSearch,
+                    showsClearFilter: model.hasActiveFilter,
+                    onClearSearch: clearSearch,
+                    onClearFilter: clearFilter
+                )
             }
         }
     }

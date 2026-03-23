@@ -117,6 +117,8 @@ struct ArchiveListView: View {
             Group {
                 if sortedEntries.isEmpty {
                     emptyState
+                } else if contentFilteredEntries.isEmpty {
+                    filteredEmptyState
                 } else if displayedEntries.isEmpty {
                     searchEmptyState
                 } else {
@@ -224,21 +226,68 @@ struct ArchiveListView: View {
     }
 
     private var searchEmptyState: some View {
-        ContentUnavailableView {
-            Label(
-                FluelCopy.archiveSearchEmptyTitle(),
-                systemImage: "magnifyingglass"
-            )
-        } description: {
-            Text(FluelCopy.archiveSearchEmptyBody())
+        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
+            listHeaderControls
+
+            ContentUnavailableView {
+                Label(
+                    FluelCopy.archiveSearchEmptyTitle(),
+                    systemImage: "magnifyingglass"
+                )
+            } description: {
+                Text(FluelCopy.archiveSearchEmptyBody())
+            }
+            .mhEmptyStateLayout()
+            .mhSurfaceInset()
+            .mhSurface(role: .muted)
         }
-        .mhEmptyStateLayout()
-        .mhSurfaceInset()
-        .mhSurface(role: .muted)
         .mhScreen(
             title: Text(FluelCopy.archived()),
             subtitle: Text(FluelCopy.archiveScreenSubtitle())
         )
+    }
+
+    private var filteredEmptyState: some View {
+        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
+            listHeaderControls
+
+            ContentUnavailableView {
+                Label(
+                    FluelCopy.archiveFilterEmptyTitle(),
+                    systemImage: "line.3.horizontal.decrease.circle"
+                )
+            } description: {
+                Text(FluelCopy.archiveFilterEmptyBody())
+            }
+            .mhEmptyStateLayout()
+            .mhSurfaceInset()
+            .mhSurface(role: .muted)
+        }
+        .mhScreen(
+            title: Text(FluelCopy.archived()),
+            subtitle: Text(FluelCopy.archiveScreenSubtitle())
+        )
+    }
+
+    private var listHeaderControls: some View {
+        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
+            EntryContentFilterBar(
+                selection: contentFilterBinding
+            )
+            .popoverTip(
+                showsContentFiltersTip ? contentFiltersTip : nil,
+                arrowEdge: .top
+            )
+
+            if model.hasActiveSearch || model.hasActiveFilter {
+                FluelEntryListStateActions(
+                    showsClearSearch: model.hasActiveSearch,
+                    showsClearFilter: model.hasActiveFilter,
+                    onClearSearch: clearSearch,
+                    onClearFilter: clearFilter
+                )
+            }
+        }
     }
 
     private func listContent(
@@ -326,24 +375,7 @@ struct ArchiveListView: View {
             title: Text(FluelCopy.archived()),
             subtitle: Text(FluelCopy.archiveScreenSubtitle())
         ) {
-            VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
-                EntryContentFilterBar(
-                    selection: contentFilterBinding
-                )
-                .popoverTip(
-                    showsContentFiltersTip ? contentFiltersTip : nil,
-                    arrowEdge: .top
-                )
-
-                if model.hasActiveSearch || model.hasActiveFilter {
-                    FluelEntryListStateActions(
-                        showsClearSearch: model.hasActiveSearch,
-                        showsClearFilter: model.hasActiveFilter,
-                        onClearSearch: clearSearch,
-                        onClearFilter: clearFilter
-                    )
-                }
-            }
+            listHeaderControls
         }
     }
 
