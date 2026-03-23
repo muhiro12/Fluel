@@ -31,8 +31,6 @@ if rg -q 'XCLocalSwiftPackageReference "MHPlatform"|relativePath = \.\./MHPlatfo
   fail_check "MHPlatform must not be referenced as a local path dependency."
 fi
 
-# Fluel intentionally keeps MHPlatform on a rolling remote 1.x semver contract
-# even though upstream release guidance recommends exact tags for released apps.
 mhplatform_reference_block=$(grep -A6 'repositoryURL = "https://github.com/muhiro12/MHPlatform.git";' "$pbxproj_path" || true)
 
 if [[ -z "$mhplatform_reference_block" ]]; then
@@ -41,7 +39,7 @@ fi
 
 if ! grep -q 'kind = upToNextMajorVersion;' <<<"$mhplatform_reference_block" || \
   ! grep -q 'minimumVersion = 1.0.0;' <<<"$mhplatform_reference_block"; then
-  fail_check "Fluel keeps MHPlatform on an up-to-next-major 1.x requirement with minimumVersion = 1.0.0."
+  fail_check "MHPlatform must use an up-to-next-major 1.x requirement with minimumVersion = 1.0.0."
 fi
 
 if grep -q 'kind = branch;' <<<"$mhplatform_reference_block" || grep -q 'branch = ' <<<"$mhplatform_reference_block"; then
@@ -63,30 +61,47 @@ if grep -q '"branch"' <<<"$mhplatform_pin_block"; then
 fi
 
 if ! grep -Eq '"version" : "1\.[0-9]+\.[0-9]+"' <<<"$mhplatform_pin_block"; then
-  fail_check "MHPlatform must resolve within Fluel's approved 1.x semver range."
+  fail_check "MHPlatform must resolve within the approved 1.x semver range."
 fi
 
 if ! grep -Eq '"revision" : "[0-9a-f]{40}"' <<<"$mhplatform_pin_block"; then
   fail_check "MHPlatform must be pinned to a concrete revision in Package.resolved."
 fi
 
-forbidden_import_matches=$(
+if ! rg -q 'productName = MHPlatform;' "$pbxproj_path"; then
+  fail_check "Fluel app target must adopt MHPlatform as its base product."
+fi
+
+if rg -q 'productName = MHAppRuntime;' "$pbxproj_path"; then
+  fail_check "Fluel app target must not keep MHAppRuntime as a separate base product dependency."
+fi
+
+forbidden_non_app_umbrella_imports=$(
   rg --line-number '^(@testable )?import MHPlatform$' \
-    Fluel \
     FluelWidget \
     FluelLibrary \
+    FluelTests \
     --glob '*.swift' || true
 )
 
-if [[ -n "$forbidden_import_matches" ]]; then
-  echo "MHPlatform umbrella import check failed." >&2
-  echo "Keep this repository on narrow MHPlatform modules instead of the full umbrella product." >&2
-  echo "$forbidden_import_matches" >&2
+if [[ -n "$forbidden_non_app_umbrella_imports" ]]; then
+  echo "MHPlatform umbrella import boundary check failed." >&2
+  echo "Keep MHPlatform umbrella imports in the app target and out of shared-library, widget, and test support code." >&2
+  echo "$forbidden_non_app_umbrella_imports" >&2
   exit 1
 fi
 
-if rg -q 'productName = MHPlatform;' "$pbxproj_path"; then
-  fail_check "This repository must not adopt the full MHPlatform umbrella product."
+forbidden_app_narrow_imports=$(
+  rg --line-number '^import (MHAppRuntime|MHLogging|MHMutationFlow)$' \
+    Fluel \
+    --glob '*.swift' || true
+)
+
+if [[ -n "$forbidden_app_narrow_imports" ]]; then
+  echo "Fluel app-side MHPlatform import check failed." >&2
+  echo "Use MHPlatform as the app target base import instead of direct MHAppRuntime, MHLogging, or MHMutationFlow imports." >&2
+  echo "$forbidden_app_narrow_imports" >&2
+  exit 1
 fi
 
 echo "MHPlatform adoption check passed."

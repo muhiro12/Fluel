@@ -55,24 +55,26 @@ logic in `FluelLibrary`.
   and widget snapshot logic belongs in `FluelLibrary`.
 - **Observation-first app shell** - app-owned preset state is injected once
   from the app assembly through typed SwiftUI environment values.
-- **Thin adapters** - `Fluel` is a default-runtime consumer that centers app
-  startup on `MHAppRuntimeBootstrap`, keeps presentation, preferences, TipKit,
-  and mutation follow-up side effects app-owned, and leaves WidgetKit delivery to
-  `FluelWidget`.
+- **Thin adapters** - `Fluel` is a full-platform app target that centers app
+  startup on `MHAppRuntimeBootstrap` through `MHPlatform`, keeps presentation,
+  preferences, TipKit, and mutation follow-up side effects app-owned, and
+  leaves WidgetKit delivery to `FluelWidget`.
 - **Per-tab navigation roots** - the main shell keeps a separate
   `NavigationStack` per primary tab so each tab preserves its own navigation
   history while keeping create and licenses presentation local to that tab.
-- **Optional shell additions** - `MHMutationFlow` is adopted only where the app
-  target owns mutation follow-up side effects, while route and review shells
-  stay out until the product actually needs them.
-- **Default-runtime base product** - the app keeps `MHAppRuntime` as its base
-  product because Fluel uses the package-owned license surface and the
-  debug-only native ad path in live runtime configuration while disabling ads
-  for Codex capture mode.
-- **Repo-specific package governance** - Fluel follows MHPlatform 1.1 consumer
-  surface guidance, but intentionally keeps remote semver-tracked `1.x`
-  adoption from `1.0.0` instead of switching this repository to exact-tag
-  release pinning.
+- **Optional shell additions** - mutation follow-up stays an app-owned concern
+  and uses the umbrella-exported `MHMutationFlow` surface only where the app
+  target actually owns that work.
+- **Full-platform app base product** - the app adopts `MHPlatform` because
+  Fluel wants the one-step package-owned runtime path for license presentation
+  and the debug-only native ad path while disabling ads for Codex capture mode.
+- **Shared-library platform path** - `FluelLibrary` currently has no MHPlatform
+  dependency; if it needs platform access later, it must stop at
+  `MHPlatformCore` or a granular core-safe module instead of app-facing
+  umbrellas.
+- **Repo-specific package governance** - Fluel keeps MHPlatform as a remote
+  semver-tracked `1.x` dependency starting at `1.0.0`, while resolving the
+  current published 1.2 line in `Package.resolved`.
 - **Preview and capture support** - the app can boot sample data for previews
   and Codex capture flows without changing live storage.
 

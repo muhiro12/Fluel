@@ -1,4 +1,4 @@
-import MHLogging
+import MHPlatform
 
 enum FluelAppLogging {
     nonisolated static let loggerFactory: MHLoggerFactory = {

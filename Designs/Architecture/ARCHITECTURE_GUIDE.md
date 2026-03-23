@@ -1,6 +1,6 @@
 # Fluel Architecture Guide
 
-Current as of March 22, 2026.
+Current as of March 23, 2026.
 
 ## Scope
 
@@ -20,19 +20,20 @@ Related documents:
 
 ## MHPlatform Consumer Classification
 
-| Target | Consumer type | Base product | Optional additions | Not adopted |
+| Target | Consumer type | Primary product | Add only when needed | Avoid by default |
 | --- | --- | --- | --- | --- |
-| `Fluel` | UI and composition root | `MHAppRuntime` | `MHMutationFlow`, `MHLogging` | `MHPlatform` umbrella, route shell, review shell |
-| `FluelWidget` | Passive UI extension | No MHPlatform product adoption | None | `MHPlatform` umbrella, runtime shell, mutation shell, review shell |
-| `FluelLibrary` | Shared logic library | No MHPlatform product adoption | None | `MHPlatform` umbrella, `MHAppRuntimeCore`, `MHAppRuntime`, `MHMutationFlow`, `MHReviewPolicy` |
-| `FluelTests` | App integration bundle | App-owned `Fluel` / `FluelLibrary` test surface | None | `MHPlatform` umbrella imports in test support |
+| `Fluel` | Full-platform app target | `MHPlatform` | `MHMutationFlow` concerns inside app-owned mutation adapters | Direct split runtime bundles, route shell, review shell |
+| `FluelWidget` | Passive UI extension | No MHPlatform product adoption | None | `MHPlatform`, `MHAppRuntime`, split runtime bundles, mutation shell, review shell |
+| `FluelLibrary` | Shared logic library | `MHPlatformCore` or granular core-safe modules if platform access is ever needed | Concrete core-safe modules only when a shared concern genuinely needs them | `MHPlatform`, `MHAppRuntime`, split runtime bundles, `MHMutationFlow`, `MHReviewPolicy` |
+| `FluelTests` | App integration bundle | App-owned `Fluel` / `FluelLibrary` test surface | `MHPlatformTesting` only if test support becomes necessary | `MHPlatform` umbrella imports in test support |
 
-The current app is a default-runtime consumer: it selects `MHAppRuntime` as the
-base product because Fluel uses package-owned license presentation and the
-debug-only native ad path. It uses `MHAppRuntimeBootstrap` as the root entry
-and adds `MHMutationFlow` only where the app target owns mutation follow-up
-side effects. Route and review shells remain out of scope until the product
-actually needs them.
+The current app is a full-platform consumer: it selects `MHPlatform` as the
+base product because Fluel wants the one-step package-owned path for license
+presentation and the debug-only native ad configuration. It still uses
+`MHAppRuntimeBootstrap` as the root entry and keeps mutation follow-up as an
+app-owned optional concern. `FluelLibrary` currently has no MHPlatform
+dependency; if platform access ever moves into the shared library, it must stop
+at `MHPlatformCore` or a granular core-safe module.
 
 ## Canonical Mutation Flow
 
@@ -91,7 +92,7 @@ Not allowed in views:
 - `Fluel/Support/Mutation/FluelEntryMutationWorkflow.swift` is the right place
   for widget reload follow-up orchestration.
 - `Fluel/Features/License/FluelLicenseView.swift` keeps app-owned presentation
-  while delegating the license list surface to `MHAppRuntime`.
+  while delegating the license list surface to `MHPlatform`.
 - `FluelWidget/Sources/LeadEntryWidgetProvider.swift` stays thin by delegating
   snapshot building to `FluelLibrary`.
 - `FluelLibrary/Sources/Entry/EntryRepository.swift` remains the canonical
@@ -100,20 +101,20 @@ Not allowed in views:
 ## Repository Guards
 
 - `Fluel.xcodeproj` consumes `MHPlatform` from the remote GitHub package and
-  intentionally keeps a Fluel-specific semver policy: `upToNextMajorVersion`
-  from `1.0.0`, no local-path override, and no floating branch, even though
-  MHPlatform release docs recommend exact tags for released consumers.
+  keeps the repository-wide remote semver policy: `upToNextMajorVersion` from
+  `1.0.0`, no local-path override, and no floating branch.
 - `Fluel.xcodeproj` consumes `MHUI` from the remote GitHub package and keeps
   the same repository-wide `1.x` semver tracking policy starting at `1.0.0`.
-- `ci_scripts/tasks/check_mhplatform_adoption.sh` enforces the Fluel-specific
-  MHPlatform contract: remote-only, no local-path adoption, no floating branch,
-  no `import MHPlatform` umbrella usage, and resolved pins within the approved
-  `1.x` semver range.
+- `ci_scripts/tasks/check_mhplatform_adoption.sh` enforces the 1.2 Fluel
+  contract: remote-only MHPlatform, app target base product on `MHPlatform`, no
+  floating branch, and resolved pins within the approved `1.x` semver range.
 - `ci_scripts/tasks/check_mhui_adoption.sh` blocks local-path `MHUI`,
   floating-branch tracking, and remote-package drift away from the approved
   `1.x` semver range.
 - `ci_scripts/tasks/check_shared_library_boundaries.sh` keeps app-only
-  frameworks and app-facing MHPlatform shells out of `FluelLibrary/Sources`.
+  frameworks and app-facing MHPlatform surfaces out of `FluelLibrary/Sources`
+  while leaving `MHPlatformCore` and granular core-safe modules available if a
+  shared concern ever needs them.
 - `ci_scripts/tasks/test_app_integration.sh` verifies the app-owned mutation
   workflow against an in-memory SwiftData container.
 - `ci_scripts/tasks/run_required_builds.sh` runs the MHPlatform adoption check,

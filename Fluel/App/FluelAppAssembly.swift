@@ -1,5 +1,5 @@
 import FluelLibrary
-import MHAppRuntime
+import MHPlatform
 import SwiftData
 import SwiftUI
 

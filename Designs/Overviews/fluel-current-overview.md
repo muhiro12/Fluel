@@ -131,9 +131,10 @@ living in the app and widget targets.
 - WidgetKit with shared App Group storage
 - PhotosUI for optional entry photos
 - `ShareLink`-based sharing from detail and timeline views
-- `MHAppRuntime` default-runtime adoption with `MHAppRuntimeBootstrap` at the
+- `MHPlatform` full-platform app adoption with `MHAppRuntimeBootstrap` at the
   app root and the package-owned license surface enabled
-- A debug-only native AdMob path carried by the same default-runtime
+- A debug-only native AdMob path carried by the same one-step runtime
   configuration, disabled for Codex capture mode
-- App-owned mutation follow-up side effects layered over `MHMutationFlow`
+- App-owned mutation follow-up side effects layered over the umbrella-exported
+  `MHMutationFlow` surface
 - No App Intents or App Shortcuts targets in the current repository
