@@ -1,19 +1,22 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../lib/task_runtime.sh"
+script_directory=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+source "$script_directory/../lib/task_utils.sh"
+source "$script_directory/../lib/xcodebuild.sh"
 
-ci_task_require_no_arguments "$#"
-ci_task_enter_repository_root "${BASH_SOURCE[0]}"
+ci_task_require_no_arguments "$@"
+ci_task_enter_repository "${BASH_SOURCE[0]}"
+repository_root=$CI_TASK_REPOSITORY_ROOT
 
-source "$repository_root/ci_scripts/lib/xcodebuild_runner.sh"
+if ! ci_task_should_skip_environment_check; then
+  bash "$repository_root/ci_scripts/tasks/check_environment.sh" --profile build
+fi
 
-ci_task_require_git_repository
-
-shared_directory="${CI_SHARED_DIR:-$repository_root/.build/ci/shared}"
-work_directory="${CI_RUN_WORK_DIR:-${AI_RUN_WORK_DIR:-$shared_directory/work}}"
-results_directory="${CI_RUN_RESULTS_DIR:-${AI_RUN_RESULTS_DIR:-$work_directory/results}}"
-derived_data_directory="${CI_DERIVED_DATA_DIR:-$shared_directory/DerivedData}"
+shared_directory=$(ci_xcodebuild_shared_directory "$repository_root")
+work_directory=$(ci_xcodebuild_work_directory "$repository_root")
+results_directory=$(ci_xcodebuild_results_directory "$repository_root")
+derived_data_directory=$(ci_xcodebuild_derived_data_directory "$repository_root")
 captures_directory="$results_directory/captures"
 app_path="$derived_data_directory/Build/Products/Debug-iphonesimulator/Fluel.app"
 
@@ -25,7 +28,7 @@ if [[ ! -d "$app_path" ]]; then
   exit 1
 fi
 
-simulator_identifier=$(ci_resolve_simulator_identifier)
+simulator_identifier=$(ci_xcodebuild_resolve_simulator_identifier)
 if [[ -z "$simulator_identifier" ]]; then
   echo "Unable to resolve an iOS simulator for capture verification." >&2
   exit 1

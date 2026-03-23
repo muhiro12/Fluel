@@ -8,14 +8,11 @@ import TipKit
 struct DashboardView: View {
     @Environment(\.mhTheme)
     private var theme
+    @Environment(FluelDisplayPreferencesStore.self)
+    private var displayPreferences
 
     @Query
     private var entries: [Entry]
-    @AppStorage(
-        DisplayPreferences.showsDashboardHighlights,
-        store: DisplayPreferences.store
-    )
-    private var showsDashboardHighlights = true
 
     let onAdd: () -> Void
     let onCreateFromPreset: (String) -> Void
@@ -57,14 +54,14 @@ struct DashboardView: View {
                             DashboardLeadEntryCard(leadEntry: leadEntry)
                         }
 
-                        if showsDashboardHighlights,
+                        if displayPreferences.showsDashboardHighlights,
                            content.milestones.isEmpty == false {
                             DashboardMilestoneSection(
                                 milestones: content.milestones
                             )
                         }
 
-                        if showsDashboardHighlights,
+                        if displayPreferences.showsDashboardHighlights,
                            content.recentActivity.isEmpty == false {
                             DashboardActivitySection(
                                 activity: content.recentActivity
@@ -120,6 +117,6 @@ private extension DashboardView {
             onShowLicenses: {}
         )
     }
-    .environment(presetStore)
+    .fluelPreviewEnvironment(presetStore: presetStore)
     .fluelAppStyle()
 }

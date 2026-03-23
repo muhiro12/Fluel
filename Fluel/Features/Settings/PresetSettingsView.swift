@@ -10,9 +10,7 @@ struct PresetSettingsView: View {
     private var theme
     @Environment(EntryPresetStore.self)
     private var presetStore
-    @State private var isPresentingCreateSheet = false
-    @State private var editingPreset: EntryPreset?
-    @State private var deletingPreset: EntryPreset?
+    @State private var model = PresetSettingsScreenModel()
 
     private let defaultPresetTip = FluelTips.DefaultPresetTip()
 
@@ -31,12 +29,8 @@ struct PresetSettingsView: View {
                     defaultPresetID: presetStore.defaultPresetID,
                     onSelectDefault: selectDefault,
                     onTogglePin: togglePin,
-                    onEdit: { preset in
-                        editingPreset = preset
-                    },
-                    onDelete: { preset in
-                        deletingPreset = preset
-                    }
+                    onEdit: model.presentEdit(_:),
+                    onDelete: model.presentDelete(_:)
                 )
 
                 PresetSettingsSectionCard(
@@ -49,12 +43,8 @@ struct PresetSettingsView: View {
                     defaultPresetID: presetStore.defaultPresetID,
                     onSelectDefault: selectDefault,
                     onTogglePin: togglePin,
-                    onEdit: { preset in
-                        editingPreset = preset
-                    },
-                    onDelete: { preset in
-                        deletingPreset = preset
-                    }
+                    onEdit: model.presentEdit(_:),
+                    onDelete: model.presentDelete(_:)
                 )
 
                 PresetSettingsSectionCard(
@@ -76,12 +66,8 @@ struct PresetSettingsView: View {
                     defaultPresetID: presetStore.defaultPresetID,
                     onSelectDefault: selectDefault,
                     onTogglePin: togglePin,
-                    onEdit: { preset in
-                        editingPreset = preset
-                    },
-                    onDelete: { preset in
-                        deletingPreset = preset
-                    }
+                    onEdit: model.presentEdit(_:),
+                    onDelete: model.presentDelete(_:)
                 )
             }
             .mhSurfaceInset()
@@ -95,7 +81,7 @@ struct PresetSettingsView: View {
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
-                    isPresentingCreateSheet = true
+                    model.presentCreate()
                 } label: {
                     Label(
                         FluelCopy.newPreset(),
@@ -104,22 +90,22 @@ struct PresetSettingsView: View {
                 }
             }
         }
-        .sheet(isPresented: $isPresentingCreateSheet) {
+        .sheet(item: sheetRouteBinding) { route in
             NavigationStack {
-                PresetEditorView(mode: .create) { definition in
-                    presetStore.saveCustomPreset(
-                        definition: definition
-                    )
-                }
-            }
-        }
-        .sheet(item: $editingPreset) { preset in
-            NavigationStack {
-                PresetEditorView(mode: .edit(preset)) { definition in
-                    presetStore.saveCustomPreset(
-                        id: preset.id,
-                        definition: definition
-                    )
+                switch route {
+                case .create:
+                    PresetEditorView(mode: .create) { definition in
+                        presetStore.saveCustomPreset(
+                            definition: definition
+                        )
+                    }
+                case let .edit(preset):
+                    PresetEditorView(mode: .edit(preset)) { definition in
+                        presetStore.saveCustomPreset(
+                            id: preset.id,
+                            definition: definition
+                        )
+                    }
                 }
             }
         }
@@ -127,11 +113,11 @@ struct PresetSettingsView: View {
             FluelCopy.deletePresetConfirmationTitle(),
             isPresented: Binding(
                 get: {
-                    deletingPreset != nil
+                    model.deletingPreset != nil
                 },
                 set: { isPresented in
                     if isPresented == false {
-                        deletingPreset = nil
+                        model.dismissDeleteConfirmation()
                     }
                 }
             ),
@@ -141,27 +127,38 @@ struct PresetSettingsView: View {
                 FluelCopy.delete(),
                 role: .destructive
             ) {
-                if let deletingPreset {
+                if let deletingPreset = model.deletingPreset {
                     presetStore.deleteCustomPreset(
                         id: deletingPreset.id
                     )
                 }
-                deletingPreset = nil
+                model.dismissDeleteConfirmation()
             }
 
             Button(
                 FluelCopy.cancel(),
                 role: .cancel
             ) {
-                deletingPreset = nil
+                model.dismissDeleteConfirmation()
             }
         } message: {
             Text(
                 FluelCopy.deletePresetConfirmationMessage(
-                    for: deletingPreset?.title ?? String()
+                    for: model.deletingPreset?.title ?? String()
                 )
             )
         }
+    }
+
+    private var sheetRouteBinding: Binding<PresetSettingsScreenModel.SheetRoute?> {
+        .init(
+            get: {
+                model.sheetRoute
+            },
+            set: { newValue in
+                model.sheetRoute = newValue
+            }
+        )
     }
 
     private var defaultPresetCard: some View {
@@ -219,7 +216,7 @@ struct PresetSettingsView: View {
         .mhRow()
         .mhSurface(role: .muted)
         .popoverTip(
-            showsDefaultPresetTip ? defaultPresetTip : nil,
+            model.showsDefaultPresetTip() ? defaultPresetTip : nil,
             arrowEdge: .top
         )
     }
@@ -244,11 +241,6 @@ struct PresetSettingsView: View {
             preset.isPinned == false,
             for: preset.id
         )
-    }
-
-    private var showsDefaultPresetTip: Bool {
-        FluelTipBootstrap.isEnabled
-            && FluelTipState.hasLearnedDefaultPreset == false
     }
 }
 
@@ -447,6 +439,6 @@ private struct PresetStatusBadge: Identifiable {
     NavigationStack {
         PresetSettingsView()
     }
-    .environment(presetStore)
+    .fluelPreviewEnvironment(presetStore: presetStore)
     .fluelAppStyle()
 }

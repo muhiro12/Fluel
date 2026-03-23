@@ -1,18 +1,22 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../lib/task_runtime.sh"
+script_directory=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+source "$script_directory/../lib/task_utils.sh"
+source "$script_directory/../lib/xcodebuild.sh"
 
-ci_task_require_no_arguments "$#"
-ci_task_enter_repository_root "${BASH_SOURCE[0]}"
+ci_task_require_no_arguments "$@"
+ci_task_enter_repository "${BASH_SOURCE[0]}"
+repository_root=$CI_TASK_REPOSITORY_ROOT
 
-source "$repository_root/ci_scripts/lib/xcodebuild_runner.sh"
+if ! ci_task_should_skip_environment_check; then
+  bash "$repository_root/ci_scripts/tasks/check_environment.sh" --profile build
+fi
 
-ci_task_require_git_repository
-
-ci_run_xcodebuild_task \
+ci_xcodebuild_run \
   "$repository_root" \
   "FluelLibrary" \
   "test" \
-  "TestResults_FluelLibrary" \
-  "Finished FluelLibrary tests."
+  "TestResults_FluelLibrary"
+
+echo "Finished FluelLibrary tests. Result bundle: $CI_XCODEBUILD_LAST_RESULT_BUNDLE_PATH"

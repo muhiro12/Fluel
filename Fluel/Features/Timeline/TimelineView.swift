@@ -19,17 +19,7 @@ struct ActivityTimelineView: View {
     @Query
     private var entries: [Entry]
 
-    @State private var searchText = String()
-    @AppStorage(
-        EntryListPreferences.timelineActivityFilter,
-        store: EntryListPreferences.store
-    )
-    private var storedActivityFilter = EntryActivityFilterMode.all.rawValue
-    @AppStorage(
-        EntryListPreferences.timelineScopeFilter,
-        store: EntryListPreferences.store
-    )
-    private var storedScopeFilter = EntryActivityScopeMode.recentSixMonths.rawValue
+    @State private var model = TimelineScreenModel()
     @Namespace private var detailTransition
 
     let onAdd: () -> Void
@@ -61,24 +51,13 @@ struct ActivityTimelineView: View {
         )
     }
 
-    private var activityFilter: EntryActivityFilterMode {
-        EntryActivityFilterMode(rawValue: storedActivityFilter) ?? .all
-    }
-
-    private var scopeFilter: EntryActivityScopeMode {
-        EntryActivityScopeMode(rawValue: storedScopeFilter) ?? .recentSixMonths
-    }
-
     private var activityFilterBinding: Binding<EntryActivityFilterMode> {
         .init(
             get: {
-                activityFilter
+                model.activityFilter
             },
             set: { newValue in
-                storedActivityFilter = newValue.rawValue
-                if newValue != .all {
-                    FluelTipState.markTimelineFiltersLearned()
-                }
+                model.activityFilter = newValue
             }
         )
     }
@@ -86,13 +65,10 @@ struct ActivityTimelineView: View {
     private var scopeFilterBinding: Binding<EntryActivityScopeMode> {
         .init(
             get: {
-                scopeFilter
+                model.scopeFilter
             },
             set: { newValue in
-                storedScopeFilter = newValue.rawValue
-                if newValue != .recentSixMonths {
-                    FluelTipState.markTimelineFiltersLearned()
-                }
+                model.scopeFilter = newValue
             }
         )
     }
@@ -100,30 +76,22 @@ struct ActivityTimelineView: View {
     private var kindFilteredActivity: [EntryActivitySnapshot] {
         EntryActivityFilter.filter(
             allActivity,
-            mode: activityFilter
+            mode: model.activityFilter
         )
     }
 
     private var displayedActivity: [EntryActivitySnapshot] {
         EntryActivityScopeFilter.filter(
             kindFilteredActivity,
-            mode: scopeFilter
+            mode: model.scopeFilter
         )
     }
 
     private var searchedActivity: [EntryActivitySnapshot] {
         EntryActivitySearchMatcher.filter(
             displayedActivity,
-            matching: searchText
+            matching: model.searchText
         )
-    }
-
-    private var hasActiveSearch: Bool {
-        searchText.isEmpty == false
-    }
-
-    private var hasActiveFilter: Bool {
-        activityFilter != .all || scopeFilter != .recentSixMonths
     }
 
     private var summary: EntryActivityTimelineSummary {
@@ -152,18 +120,27 @@ struct ActivityTimelineView: View {
             trends: trendSnapshots,
             milestoneDigest: milestoneDigest,
             activityFilterLabel: FluelCopy.entryActivityFilterMode(
-                activityFilter
+                model.activityFilter
             ),
             scopeLabel: FluelCopy.entryActivityScopeMode(
-                scopeFilter
+                model.scopeFilter
             )
         )
     }
 
     private var showsTimelineFiltersTip: Bool {
-        FluelTipBootstrap.isEnabled
-            && FluelTipState.hasLearnedTimelineFilters == false
-            && entries.isEmpty == false
+        model.showsTimelineFiltersTip(hasEntries: entries.isEmpty == false)
+    }
+
+    private var searchTextBinding: Binding<String> {
+        .init(
+            get: {
+                model.searchText
+            },
+            set: { newValue in
+                model.searchText = newValue
+            }
+        )
     }
 
     var body: some View {
@@ -172,7 +149,7 @@ struct ActivityTimelineView: View {
                 emptyState
             } else if displayedActivity.isEmpty {
                 filteredEmptyState
-            } else if searchedActivity.isEmpty, hasActiveSearch {
+            } else if searchedActivity.isEmpty, model.hasActiveSearch {
                 searchEmptyState
             } else {
                 timelineList
@@ -181,7 +158,7 @@ struct ActivityTimelineView: View {
         .navigationBarTitleDisplayMode(.inline)
         .toolbarRole(.editor)
         .searchable(
-            text: $searchText,
+            text: searchTextBinding,
             prompt: FluelCopy.searchTimeline()
         )
         .toolbar {
@@ -280,10 +257,10 @@ struct ActivityTimelineView: View {
             TimelineSummaryCard(
                 summary: summary,
                 activityFilterLabel: FluelCopy.entryActivityFilterMode(
-                    activityFilter
+                    model.activityFilter
                 ),
                 scopeLabel: FluelCopy.entryActivityScopeMode(
-                    scopeFilter
+                    model.scopeFilter
                 )
             )
             .listRowInsets(
@@ -368,10 +345,10 @@ struct ActivityTimelineView: View {
         VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
             filterControls
 
-            if hasActiveSearch || hasActiveFilter {
+            if model.hasActiveSearch || model.hasActiveFilter {
                 FluelEntryListStateActions(
-                    showsClearSearch: hasActiveSearch,
-                    showsClearFilter: hasActiveFilter,
+                    showsClearSearch: model.hasActiveSearch,
+                    showsClearFilter: model.hasActiveFilter,
                     onClearSearch: clearSearch,
                     onClearFilter: clearFilters
                 )
@@ -396,12 +373,11 @@ struct ActivityTimelineView: View {
     }
 
     private func clearSearch() {
-        searchText = String()
+        model.clearSearch()
     }
 
     private func clearFilters() {
-        storedActivityFilter = EntryActivityFilterMode.all.rawValue
-        storedScopeFilter = EntryActivityScopeMode.recentSixMonths.rawValue
+        model.clearFilters()
     }
 
     private func transitionSourceID(
@@ -713,5 +689,6 @@ private struct TimelineActivityRow: View {
     NavigationStack {
         ActivityTimelineView {}
     }
+    .fluelPreviewEnvironment()
     .fluelAppStyle()
 }

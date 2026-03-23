@@ -13,18 +13,16 @@ struct HomeView: View {
         static let rowSpacing: CGFloat = 12
     }
 
-    private enum TipKind {
-        case addEntry
-        case presets
-        case filters
-    }
-
     @Environment(\.mhTheme)
     private var theme
     @Environment(\.modelContext)
     private var context
     @Environment(EntryPresetStore.self)
     private var presetStore
+    @Environment(FluelNoticeCenter.self)
+    private var noticeCenter
+    @Environment(FluelDisplayPreferencesStore.self)
+    private var displayPreferences
 
     @Query(
         filter: #Predicate<Entry> { entry in
@@ -33,33 +31,7 @@ struct HomeView: View {
     )
     private var activeEntries: [Entry]
 
-    @State private var errorMessage: String?
-    @State private var searchText = String()
-    @AppStorage(
-        EntryListPreferences.homeSortMode,
-        store: EntryListPreferences.store
-    )
-    private var storedSortMode = ActiveEntrySortMode.oldestFirst.rawValue
-    @AppStorage(
-        EntryListPreferences.homeContentFilter,
-        store: EntryListPreferences.store
-    )
-    private var storedContentFilter = EntryContentFilterMode.all.rawValue
-    @AppStorage(
-        DisplayPreferences.showsListSummaryCards,
-        store: DisplayPreferences.store
-    )
-    private var showsListSummaryCards = true
-    @AppStorage(
-        DisplayPreferences.showsNotePreviews,
-        store: DisplayPreferences.store
-    )
-    private var showsNotePreviews = true
-    @AppStorage(
-        DisplayPreferences.showsMetadataBadges,
-        store: DisplayPreferences.store
-    )
-    private var showsMetadataBadges = true
+    @State private var model = HomeScreenModel()
     @Namespace private var detailTransition
 
     let onAdd: () -> Void
@@ -74,52 +46,22 @@ struct HomeView: View {
     private var sortedEntries: [Entry] {
         EntryListOrdering.active(
             activeEntries,
-            sortMode: sortMode
+            sortMode: model.sortMode
         )
     }
 
     private var displayedEntries: [Entry] {
         EntrySearchMatcher.filter(
             contentFilteredEntries,
-            matching: searchText
+            matching: model.searchText
         )
     }
 
     private var contentFilteredEntries: [Entry] {
         EntryContentFilter.filter(
             sortedEntries,
-            mode: contentFilter
+            mode: model.contentFilter
         )
-    }
-
-    private var sortMode: ActiveEntrySortMode {
-        ActiveEntrySortMode(rawValue: storedSortMode) ?? .oldestFirst
-    }
-
-    private var contentFilter: EntryContentFilterMode {
-        EntryContentFilterMode(rawValue: storedContentFilter) ?? .all
-    }
-
-    private var contentFilterBinding: Binding<EntryContentFilterMode> {
-        .init(
-            get: {
-                contentFilter
-            },
-            set: { newValue in
-                storedContentFilter = newValue.rawValue
-                if newValue != .all {
-                    FluelTipState.markContentFiltersLearned()
-                }
-            }
-        )
-    }
-
-    private var hasActiveSearch: Bool {
-        searchText.isEmpty == false
-    }
-
-    private var hasActiveFilter: Bool {
-        contentFilter != .all
     }
 
     private var summary: FluelEntryListSummary {
@@ -127,47 +69,50 @@ struct HomeView: View {
             headline: FluelCopy.activeEntryCount(sortedEntries.count),
             displayedEntries: displayedEntries,
             totalEntries: sortedEntries,
-            sortLabel: FluelCopy.activeSortMode(sortMode),
-            filterLabel: FluelCopy.entryContentFilterMode(contentFilter)
+            sortLabel: FluelCopy.activeSortMode(model.sortMode),
+            filterLabel: FluelCopy.entryContentFilterMode(model.contentFilter)
         )
     }
 
     private var mutationWorkflow: FluelEntryMutationWorkflow {
-        // swiftlint:disable trailing_closure
         .init(
             context: context,
-            onError: { message in
-                errorMessage = message
-            }
+            surface: "HomeView"
         )
-        // swiftlint:enable trailing_closure
     }
 
     private var quickPresets: [EntryPreset] {
         presetStore.suggestedPresets(limit: 4)
     }
 
-    private var currentTip: TipKind? {
-        guard FluelTipBootstrap.isEnabled else {
-            return nil
-        }
+    private var currentTip: HomeScreenModel.TipKind? {
+        model.currentTip(
+            hasQuickPresets: quickPresets.isEmpty == false,
+            sortedEntriesCount: sortedEntries.count,
+            displayedEntriesCount: displayedEntries.count
+        )
+    }
 
-        if FluelTipState.hasLearnedEntryCreation == false {
-            return .addEntry
-        }
+    private var searchTextBinding: Binding<String> {
+        .init(
+            get: {
+                model.searchText
+            },
+            set: { newValue in
+                model.searchText = newValue
+            }
+        )
+    }
 
-        if quickPresets.isEmpty == false,
-           FluelTipState.hasLearnedPresetSelection == false {
-            return .presets
-        }
-
-        if sortedEntries.isEmpty == false,
-           displayedEntries.isEmpty == false,
-           FluelTipState.hasLearnedContentFilters == false {
-            return .filters
-        }
-
-        return nil
+    private var contentFilterBinding: Binding<EntryContentFilterMode> {
+        .init(
+            get: {
+                model.contentFilter
+            },
+            set: { newValue in
+                model.contentFilter = newValue
+            }
+        )
     }
 
     var body: some View {
@@ -190,9 +135,9 @@ struct HomeView: View {
                     Section(FluelCopy.sort()) {
                         ForEach(ActiveEntrySortMode.allCases, id: \.self) { mode in
                             Button {
-                                storedSortMode = mode.rawValue
+                                model.sortMode = mode
                             } label: {
-                                if sortMode == mode {
+                                if model.sortMode == mode {
                                     Label(
                                         FluelCopy.activeSortMode(mode),
                                         systemImage: "checkmark"
@@ -241,27 +186,27 @@ struct HomeView: View {
             }
         }
         .searchable(
-            text: $searchText,
+            text: searchTextBinding,
             prompt: FluelCopy.searchEntries()
         )
         .alert(
             FluelCopy.error(),
             isPresented: Binding(
                 get: {
-                    errorMessage != nil
+                    model.errorMessage != nil
                 },
                 set: { isPresented in
                     if isPresented == false {
-                        errorMessage = nil
+                        model.clearError()
                     }
                 }
             )
         ) {
             Button(FluelCopy.ok(), role: .cancel) {
-                errorMessage = nil
+                model.clearError()
             }
         } message: {
-            Text(errorMessage ?? String())
+            Text(model.errorMessage ?? String())
         }
     }
 
@@ -334,7 +279,7 @@ struct HomeView: View {
                     .listRowBackground(Color.clear)
             }
 
-            if showsListSummaryCards {
+            if displayPreferences.showsListSummaryCards {
                 FluelEntryListSummaryCard(summary: summary)
                     .listRowInsets(
                         .init(
@@ -358,12 +303,12 @@ struct HomeView: View {
                     EntryRowView(
                         entry: entry,
                         referenceDate: referenceDate,
-                        footerText: showsNotePreviews
+                        footerText: displayPreferences.showsNotePreviews
                             ? EntryFormatting.notePreviewText(
                                 entry.note
                             )
                             : nil,
-                        showsMetadataBadges: showsMetadataBadges
+                        showsMetadataBadges: displayPreferences.showsMetadataBadges
                     )
                     .matchedTransitionSource(id: entry.id, in: detailTransition)
                 }
@@ -406,10 +351,10 @@ struct HomeView: View {
                     arrowEdge: .top
                 )
 
-                if hasActiveSearch || hasActiveFilter {
+                if model.hasActiveSearch || model.hasActiveFilter {
                     FluelEntryListStateActions(
-                        showsClearSearch: hasActiveSearch,
-                        showsClearFilter: hasActiveFilter,
+                        showsClearSearch: model.hasActiveSearch,
+                        showsClearFilter: model.hasActiveFilter,
                         onClearSearch: clearSearch,
                         onClearFilter: clearFilter
                     )
@@ -422,7 +367,11 @@ struct HomeView: View {
         _ entry: Entry
     ) {
         Task {
-            await mutationWorkflow.archive(entry: entry)
+            let result = await mutationWorkflow.archive(entry: entry)
+            model.handleMutationResult(
+                result,
+                noticeCenter: noticeCenter
+            )
         }
     }
 
@@ -447,11 +396,11 @@ struct HomeView: View {
     }
 
     private func clearSearch() {
-        searchText = String()
+        model.clearSearch()
     }
 
     private func clearFilter() {
-        storedContentFilter = EntryContentFilterMode.all.rawValue
+        model.clearFilter()
     }
 }
 
@@ -466,6 +415,6 @@ struct HomeView: View {
             onShowLicenses: {}
         )
     }
-    .environment(presetStore)
+    .fluelPreviewEnvironment(presetStore: presetStore)
     .fluelAppStyle()
 }

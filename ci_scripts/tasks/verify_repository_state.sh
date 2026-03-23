@@ -1,48 +1,25 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../lib/task_runtime.sh"
+script_directory=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+source "$script_directory/../lib/task_utils.sh"
+source "$script_directory/../lib/ci_runs.sh"
+source "$script_directory/../lib/local_changes.sh"
 
-ci_task_require_no_arguments "$#"
-ci_task_enter_repository_root "${BASH_SOURCE[0]}"
-
-source "$repository_root/ci_scripts/lib/ci_runs.sh"
-source "$repository_root/ci_scripts/lib/local_changes.sh"
-
-ci_task_require_git_repository
+ci_task_require_no_arguments "$@"
+ci_task_enter_repository "${BASH_SOURCE[0]}"
+repository_root=$CI_TASK_REPOSITORY_ROOT
 
 ci_root="$repository_root/.build/ci"
 runs_root="$ci_root/runs"
-compat_runs_root="$repository_root/.build/ci_runs"
 shared_directory="$ci_root/shared"
 cache_directory="$shared_directory/cache"
 derived_data_directory="$shared_directory/DerivedData"
 shared_tmp_directory="$shared_directory/tmp"
 shared_home_directory="$shared_directory/home"
 
-ensure_compat_runs_root() {
-  if [[ -L "$compat_runs_root" || ! -e "$compat_runs_root" ]]; then
-    mkdir -p "$(dirname "$compat_runs_root")"
-    ln -sfn "ci/runs" "$compat_runs_root"
-    return 0
-  fi
-
-  if [[ -d "$compat_runs_root" ]]; then
-    return 0
-  fi
-
-  echo "Compatibility path $compat_runs_root exists and is not a directory or symlink." >&2
-  exit 1
-}
-
-ensure_compat_runs_root
-
 run_directory=$(ci_run_create_dir "$runs_root")
 run_identifier=$(basename "$run_directory")
-
-if [[ -d "$compat_runs_root" && ! -L "$compat_runs_root" ]]; then
-  ln -sfn "../ci/runs/$run_identifier" "$compat_runs_root/$run_identifier"
-fi
 
 commands_file="$run_directory/commands.txt"
 summary_path="$run_directory/summary.md"
@@ -85,7 +62,7 @@ finalize_run_artifacts() {
 
   if [[ $exit_code -ne 0 ]]; then
     overall_result="failure"
-    if [[ -z "$run_note" || "$run_note" == "Executed required CI steps based on local changes." ]]; then
+    if [[ "$run_note" != "A required step failed. Review failure details and logs." ]]; then
       run_note="A required step failed. Review failure details and logs."
     fi
   fi
@@ -184,107 +161,122 @@ run_logged_step() {
   return 0
 }
 
-run_logged_step \
-  "check_public_repo_safety" \
-  "Check public repository safety" \
-  bash "$repository_root/ci_scripts/tasks/check_public_repo_safety.sh"
-
-run_logged_step \
-  "check_mhplatform_adoption" \
-  "Check MHPlatform adoption boundaries" \
-  bash "$repository_root/ci_scripts/tasks/check_mhplatform_adoption.sh"
-
-run_logged_step \
-  "check_mhui_adoption" \
-  "Check MHUI adoption boundaries" \
-  bash "$repository_root/ci_scripts/tasks/check_mhui_adoption.sh"
-
-changed_files=$(ci_collect_changed_files)
-
-build_relevant_changed_files=$(printf '%s\n' "$changed_files" | grep -Ev '(^|/)xcuserdata/' || true)
-pre_commit_relevant_changed_files=$(ci_collect_pre_commit_targets "$changed_files")
-
-should_run_pre_commit=false
-if [[ "${CI_RUN_ENABLE_PRE_COMMIT:-0}" == "1" || "${CI_RUN_ENABLE_PRE_COMMIT:-}" == "true" ]]; then
-  should_run_pre_commit=true
-elif [[ "${CI_RUN_ENABLE_PRE_COMMIT:-}" == "auto" && -n "$pre_commit_relevant_changed_files" ]]; then
-  should_run_pre_commit=true
+should_force_full=false
+if [[ "${CI_RUN_FORCE_FULL:-0}" == "1" || "${CI_RUN_FORCE_FULL:-}" == "true" ]]; then
+  should_force_full=true
 fi
 
-if $should_run_pre_commit; then
-  run_logged_step \
-    "pre_commit" \
-    "Run pre-commit hooks" \
-    bash "$repository_root/ci_scripts/tasks/pre_commit.sh"
-fi
-
-if [[ -z "$changed_files" ]]; then
-  echo "No local changes detected."
-  if $should_run_pre_commit; then
-    run_note="pre-commit completed. No local changes detected. Build/test steps were skipped."
-  else
-    run_note="No local changes detected. Build/test steps were skipped."
-  fi
-  exit 0
+should_skip_environment_check=false
+if [[ "${CI_SKIP_ENV_CHECK:-0}" == "1" || "${CI_SKIP_ENV_CHECK:-}" == "true" ]]; then
+  should_skip_environment_check=true
 fi
 
 needs_fluel_build=false
 needs_fluel_app_tests=false
 needs_fluel_library_tests=false
+needs_boundary_checks=false
 
-if grep -Eq '^Fluel/|^FluelWidget/|^Fluel\.xcodeproj/' <<<"$build_relevant_changed_files"; then
+if $should_force_full; then
+  echo "Forcing full verification regardless of local changes."
   needs_fluel_build=true
-fi
-
-if grep -Eq '^Fluel/|^FluelWidget/|^FluelLibrary/|^Fluel\.xcodeproj/' <<<"$build_relevant_changed_files"; then
   needs_fluel_app_tests=true
-fi
-
-if grep -Eq '^FluelLibrary/' <<<"$build_relevant_changed_files"; then
   needs_fluel_library_tests=true
-fi
+  needs_boundary_checks=true
+  run_note="Executed a forced full verification run regardless of local changes."
+else
+  changed_files=$(ci_collect_changed_files)
 
-if ! $needs_fluel_build && ! $needs_fluel_app_tests && ! $needs_fluel_library_tests; then
-  echo "No changes under Fluel/, FluelWidget/, FluelLibrary/, or Fluel.xcodeproj/."
-  if $should_run_pre_commit; then
-    run_note="pre-commit completed. No changes under Fluel/, FluelWidget/, FluelLibrary/, or Fluel.xcodeproj/. Build/test steps were skipped."
-  else
-    run_note="No changes under Fluel/, FluelWidget/, FluelLibrary/, or Fluel.xcodeproj/. Build/test steps were skipped."
+  if [[ -z "$changed_files" ]]; then
+    echo "No local changes detected."
+    run_note="No local changes detected. Build/test steps were skipped."
+    exit 0
   fi
-  exit 0
+
+  build_relevant_changed_files=$(printf '%s\n' "$changed_files" | grep -Ev '(^|/)xcuserdata/' || true)
+
+  if grep -Eq '^Fluel/|^FluelWidget/|^Fluel\.xcodeproj/' <<<"$build_relevant_changed_files"; then
+    needs_fluel_build=true
+  fi
+
+  if grep -Eq '^Fluel/|^FluelWidget/|^FluelLibrary/|^FluelTests/|^Fluel\.xcodeproj/' <<<"$build_relevant_changed_files"; then
+    needs_fluel_app_tests=true
+  fi
+
+  if grep -Eq '^FluelLibrary/' <<<"$build_relevant_changed_files"; then
+    needs_fluel_library_tests=true
+  fi
+
+  if grep -Eq '^Fluel/|^FluelWidget/|^FluelLibrary/|^FluelTests/|^Fluel\.xcodeproj/|^ci_scripts/|^AGENTS\.md$|^README\.md$|^Designs/' <<<"$changed_files"; then
+    needs_boundary_checks=true
+  fi
+
+  if ! $needs_fluel_build && ! $needs_fluel_app_tests && ! $needs_fluel_library_tests && ! $needs_boundary_checks; then
+    echo "No changes under Fluel/, FluelWidget/, FluelLibrary/, FluelTests/, Fluel.xcodeproj/, ci_scripts/, AGENTS.md, README.md, or Designs/."
+    run_note="No relevant repository changes detected. Build/test steps were skipped."
+    exit 0
+  fi
+
+  run_note="Executed required CI steps based on local changes."
 fi
 
-run_note="Executed required CI steps based on local changes."
+if ! $should_skip_environment_check && { $needs_fluel_build || $needs_fluel_app_tests || $needs_fluel_library_tests; }; then
+  run_logged_step \
+    "check_environment" \
+    "Check build environment" \
+    bash "$repository_root/ci_scripts/tasks/check_environment.sh" --profile build
+fi
 
 run_logged_step \
-  "check_shared_library_boundaries" \
-  "Check shared library platform boundaries" \
-  bash "$repository_root/ci_scripts/tasks/check_shared_library_boundaries.sh"
+  "check_public_repo_safety" \
+  "Check public repository safety" \
+  bash "$repository_root/ci_scripts/tasks/check_public_repo_safety.sh"
+
+if $needs_boundary_checks; then
+  run_logged_step \
+    "check_repository_contracts" \
+    "Check repository contracts" \
+    bash "$repository_root/ci_scripts/tasks/check_repository_contracts.sh"
+
+  run_logged_step \
+    "check_mhplatform_adoption" \
+    "Check MHPlatform adoption boundaries" \
+    bash "$repository_root/ci_scripts/tasks/check_mhplatform_adoption.sh"
+
+  run_logged_step \
+    "check_mhui_adoption" \
+    "Check MHUI adoption boundaries" \
+    bash "$repository_root/ci_scripts/tasks/check_mhui_adoption.sh"
+
+  run_logged_step \
+    "check_shared_library_boundaries" \
+    "Check shared library boundaries" \
+    bash "$repository_root/ci_scripts/tasks/check_shared_library_boundaries.sh"
+fi
 
 if $needs_fluel_build; then
   run_logged_step \
     "build_app" \
-    "Build Fluel scheme" \
+    "Build Fluel app" \
     bash "$repository_root/ci_scripts/tasks/build_app.sh"
 fi
 
 if $needs_fluel_app_tests; then
   run_logged_step \
     "test_app_integration" \
-    "Test Fluel app integration" \
+    "Run Fluel app integration tests" \
     bash "$repository_root/ci_scripts/tasks/test_app_integration.sh"
-fi
-
-if $needs_fluel_build; then
-  run_logged_step \
-    "capture_screens" \
-    "Capture Fluel screens" \
-    bash "$repository_root/ci_scripts/tasks/test_capture_screens.sh"
 fi
 
 if $needs_fluel_library_tests; then
   run_logged_step \
     "test_shared_library" \
-    "Test FluelLibrary scheme" \
+    "Run FluelLibrary tests" \
     bash "$repository_root/ci_scripts/tasks/test_shared_library.sh"
+fi
+
+if $needs_fluel_build; then
+  run_logged_step \
+    "test_capture_screens" \
+    "Run capture screen verification" \
+    bash "$repository_root/ci_scripts/tasks/test_capture_screens.sh"
 fi

@@ -14,13 +14,12 @@ struct EntryDetailView: View {
     private var dismiss
     @Environment(\.modelContext)
     private var context
+    @Environment(FluelNoticeCenter.self)
+    private var noticeCenter
 
     let entry: Entry
 
-    @State private var errorMessage: String?
-    @State private var isConfirmingDelete = false
-    @State private var isPresentingEditor = false
-    @State private var isPresentingDuplicateForm = false
+    @State private var presentationModel = EntryDetailPresentationModel()
 
     private let detailQuickActionsTip = FluelTips.DetailQuickActionsTip()
 
@@ -81,21 +80,21 @@ struct EntryDetailView: View {
                 }
             }
         }
-        .sheet(isPresented: $isPresentingEditor) {
+        .sheet(item: sheetRouteBinding) { route in
             NavigationStack {
-                EntryFormView(
-                    mode: .edit(entry)
-                )
-            }
-        }
-        .sheet(isPresented: $isPresentingDuplicateForm) {
-            NavigationStack {
-                EntryFormView(
-                    mode: .create,
-                    prefilledInput: EntryFormInput(
-                        duplicating: entry
+                switch route {
+                case .edit:
+                    EntryFormView(
+                        mode: .edit(entry)
                     )
-                )
+                case .duplicate:
+                    EntryFormView(
+                        mode: .create,
+                        prefilledInput: EntryFormInput(
+                            duplicating: entry
+                        )
+                    )
+                }
             }
         }
         .onDisappear {
@@ -103,7 +102,16 @@ struct EntryDetailView: View {
         }
         .confirmationDialog(
             FluelCopy.deleteConfirmationTitle(),
-            isPresented: $isConfirmingDelete,
+            isPresented: Binding(
+                get: {
+                    presentationModel.isConfirmingDelete
+                },
+                set: { isPresented in
+                    if isPresented == false {
+                        presentationModel.dismissDeleteConfirmation()
+                    }
+                }
+            ),
             titleVisibility: .visible
         ) {
             Button(
@@ -117,7 +125,7 @@ struct EntryDetailView: View {
                 FluelCopy.cancel(),
                 role: .cancel
             ) {
-                isConfirmingDelete = false
+                presentationModel.dismissDeleteConfirmation()
             }
         } message: {
             Text(
@@ -130,21 +138,32 @@ struct EntryDetailView: View {
             FluelCopy.error(),
             isPresented: Binding(
                 get: {
-                    errorMessage != nil
+                    presentationModel.errorMessage != nil
                 },
                 set: { isPresented in
                     if isPresented == false {
-                        errorMessage = nil
+                        presentationModel.clearError()
                     }
                 }
             )
         ) {
             Button(FluelCopy.ok(), role: .cancel) {
-                errorMessage = nil
+                presentationModel.clearError()
             }
         } message: {
-            Text(errorMessage ?? String())
+            Text(presentationModel.errorMessage ?? String())
         }
+    }
+
+    private var sheetRouteBinding: Binding<EntryDetailPresentationModel.SheetRoute?> {
+        .init(
+            get: {
+                presentationModel.sheetRoute
+            },
+            set: { newValue in
+                presentationModel.sheetRoute = newValue
+            }
+        )
     }
 
     private func shareText(
@@ -159,36 +178,52 @@ struct EntryDetailView: View {
     private func archive() {
         FluelTipState.markDetailQuickActionsLearned()
         Task {
-            await mutationWorkflow.archive(entry: entry)
+            let result = await mutationWorkflow.archive(entry: entry)
+            handleMutationResult(result)
         }
     }
 
     private func restore() {
         FluelTipState.markDetailQuickActionsLearned()
         Task {
-            await mutationWorkflow.restore(entry: entry)
+            let result = await mutationWorkflow.restore(entry: entry)
+            handleMutationResult(result)
         }
     }
 
     private func delete() {
         FluelTipState.markDetailQuickActionsLearned()
         Task {
-            await mutationWorkflow.delete(entry: entry)
+            let result = await mutationWorkflow.delete(entry: entry)
+            handleMutationResult(result)
         }
     }
 
     private func presentEditor() {
         FluelTipState.markDetailQuickActionsLearned()
-        isPresentingEditor = true
+        presentationModel.presentEdit()
     }
 
     private func presentDuplicateForm() {
         FluelTipState.markDetailQuickActionsLearned()
-        isPresentingDuplicateForm = true
+        presentationModel.presentDuplicate()
     }
 
     private func presentDeleteConfirmation() {
-        isConfirmingDelete = true
+        presentationModel.presentDeleteConfirmation()
+    }
+
+    private func handleMutationResult(
+        _ result: FluelMutationResult
+    ) {
+        let effect = presentationModel.handle(
+            result,
+            noticeCenter: noticeCenter
+        )
+
+        if effect == .dismiss {
+            dismiss()
+        }
     }
 }
 
@@ -201,12 +236,7 @@ private extension EntryDetailView {
     var mutationWorkflow: FluelEntryMutationWorkflow {
         .init(
             context: context,
-            onSuccess: {
-                dismiss()
-            },
-            onError: { message in
-                errorMessage = message
-            }
+            surface: "EntryDetailView"
         )
     }
 }
@@ -219,6 +249,7 @@ private extension EntryDetailView {
             EntryDetailView(entry: entry)
         }
         .modelContainer(context.modelContainer)
+        .fluelPreviewEnvironment()
         .fluelAppStyle()
     } else {
         Text(FluelCopy.failedToLoadPreview())

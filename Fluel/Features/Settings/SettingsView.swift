@@ -11,34 +11,61 @@ struct SettingsView: View {
     private var theme
     @Environment(EntryPresetStore.self)
     private var presetStore
+    @Environment(FluelDisplayPreferencesStore.self)
+    private var displayPreferences
 
     @Query
     private var entries: [Entry]
-    @AppStorage(
-        DisplayPreferences.showsListSummaryCards,
-        store: DisplayPreferences.store
-    )
-    private var showsListSummaryCards = true
-    @AppStorage(
-        DisplayPreferences.showsNotePreviews,
-        store: DisplayPreferences.store
-    )
-    private var showsNotePreviews = true
-    @AppStorage(
-        DisplayPreferences.showsMetadataBadges,
-        store: DisplayPreferences.store
-    )
-    private var showsMetadataBadges = true
-    @AppStorage(
-        DisplayPreferences.showsDashboardHighlights,
-        store: DisplayPreferences.store
-    )
-    private var showsDashboardHighlights = true
+    @State private var model = SettingsScreenModel()
 
     private let presetManagementTip = FluelTips.PresetManagementTip()
 
     let onShowArchive: () -> Void
     let onShowLicenses: () -> Void
+
+    private var showsListSummaryCardsBinding: Binding<Bool> {
+        .init(
+            get: {
+                displayPreferences.showsListSummaryCards
+            },
+            set: { newValue in
+                displayPreferences.showsListSummaryCards = newValue
+            }
+        )
+    }
+
+    private var showsNotePreviewsBinding: Binding<Bool> {
+        .init(
+            get: {
+                displayPreferences.showsNotePreviews
+            },
+            set: { newValue in
+                displayPreferences.showsNotePreviews = newValue
+            }
+        )
+    }
+
+    private var showsMetadataBadgesBinding: Binding<Bool> {
+        .init(
+            get: {
+                displayPreferences.showsMetadataBadges
+            },
+            set: { newValue in
+                displayPreferences.showsMetadataBadges = newValue
+            }
+        )
+    }
+
+    private var showsDashboardHighlightsBinding: Binding<Bool> {
+        .init(
+            get: {
+                displayPreferences.showsDashboardHighlights
+            },
+            set: { newValue in
+                displayPreferences.showsDashboardHighlights = newValue
+            }
+        )
+    }
 
     var body: some View {
         let snapshot = EntryCollectionSnapshotQuery.snapshot(
@@ -69,22 +96,22 @@ struct SettingsView: View {
 
             Toggle(
                 FluelCopy.showListSummaryCards(),
-                isOn: $showsListSummaryCards
+                isOn: showsListSummaryCardsBinding
             )
 
             Toggle(
                 FluelCopy.showNotePreviews(),
-                isOn: $showsNotePreviews
+                isOn: showsNotePreviewsBinding
             )
 
             Toggle(
                 FluelCopy.showMetadataBadges(),
-                isOn: $showsMetadataBadges
+                isOn: showsMetadataBadgesBinding
             )
 
             Toggle(
                 FluelCopy.showDashboardHighlights(),
-                isOn: $showsDashboardHighlights
+                isOn: showsDashboardHighlightsBinding
             )
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -164,7 +191,7 @@ struct SettingsView: View {
         .mhRow()
         .mhSurface(role: .muted)
         .popoverTip(
-            showsPresetManagementTip ? presetManagementTip : nil,
+            model.showsPresetManagementTip() ? presetManagementTip : nil,
             arrowEdge: .top
         )
     }
@@ -204,11 +231,6 @@ struct SettingsView: View {
         .mhRow()
         .mhSurface(role: .muted)
     }
-
-    private var showsPresetManagementTip: Bool {
-        FluelTipBootstrap.isEnabled
-            && FluelTipState.hasLearnedPresetManagement == false
-    }
 }
 
 #Preview(traits: .modifier(FluelSampleData())) {
@@ -220,6 +242,6 @@ struct SettingsView: View {
             onShowLicenses: {}
         )
     }
-    .environment(presetStore)
+    .fluelPreviewEnvironment(presetStore: presetStore)
     .fluelAppStyle()
 }

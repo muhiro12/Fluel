@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../lib/task_runtime.sh"
+script_directory=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+source "$script_directory/../lib/task_utils.sh"
 
-ci_task_require_no_arguments "$#"
-ci_task_enter_repository_root "${BASH_SOURCE[0]}"
+ci_task_require_no_arguments "$@"
+ci_task_enter_repository "${BASH_SOURCE[0]}"
+repository_root=$CI_TASK_REPOSITORY_ROOT
 
 pbxproj_path="$repository_root/Fluel.xcodeproj/project.pbxproj"
 resolved_path="$repository_root/Fluel.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved"

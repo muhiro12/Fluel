@@ -103,16 +103,71 @@ logic in `FluelLibrary`.
 
 ## Build And Test
 
-Use the helper scripts in `ci_scripts/` as needed. For full local verification:
+Use the helper scripts in `ci_scripts/` as needed. The repository contract is:
+Direct entrypoints live in `ci_scripts/tasks/`, shared shell helpers live in
+`ci_scripts/lib/`, and `.build/ci/` is the only supported CI artifact root.
+
+- `bash ci_scripts/tasks/check_environment.sh --profile <format|build|verify>`
+  diagnoses missing local prerequisites before you start a tool-dependent flow.
+- `bash ci_scripts/tasks/format_swift.sh` is the explicit SwiftLint autofix
+  step to run after Swift edits and before the final verification gate.
+- `bash ci_scripts/tasks/lint_swift.sh` reruns SwiftLint in strict mode without
+  modifying source files.
+- `bash ci_scripts/tasks/verify_task_completion.sh` is the non-destructive
+  verification gate for Codex task completion.
+- `bash ci_scripts/tasks/verify_pre_commit.sh` reruns the same non-destructive
+  verification gate for Git `pre-commit` and manual final rechecks.
+- `bash ci_scripts/tasks/verify_repository_state.sh` checks the current
+  repository state and still writes CI run artifacts.
+
+SwiftLint is resolved from the `SimplyDanny/SwiftLintPlugins` package declared
+in `Fluel.xcodeproj`. The repository scripts do not require a separately
+installed `swiftlint` binary on your `PATH`.
+By default, `format_swift.sh` and `lint_swift.sh` operate on local Swift
+changes. Set `CI_SWIFTLINT_ALL=1` when you need a full tracked-file sweep.
+
+Before running the full verify gate, diagnose the local prerequisites:
 
 ```sh
-bash ci_scripts/tasks/verify.sh
+bash ci_scripts/tasks/check_environment.sh --profile verify
 ```
 
-If you only need required builds and tests based on local changes:
+After Swift edits, run the explicit autofix step:
 
 ```sh
-bash ci_scripts/tasks/run_required_builds.sh
+bash ci_scripts/tasks/format_swift.sh
+```
+
+Then run the non-destructive full recheck:
+
+```sh
+bash ci_scripts/tasks/verify_task_completion.sh
+```
+
+For release-time verification or a clean-worktree full run, force the standard
+verify entrypoint to execute all required checks:
+
+```sh
+CI_RUN_FORCE_FULL=1 bash ci_scripts/tasks/verify_task_completion.sh
+```
+
+If you only need the final pre-commit recheck shell:
+
+```sh
+bash ci_scripts/tasks/verify_pre_commit.sh
+```
+
+If you prefer to run the SwiftLint steps directly:
+
+```sh
+bash ci_scripts/tasks/format_swift.sh
+bash ci_scripts/tasks/lint_swift.sh
+```
+
+If you only need required builds/tests based on local changes:
+
+```sh
+bash ci_scripts/tasks/verify_repository_state.sh
 ```
 
 If you only need the app build:
@@ -148,21 +203,17 @@ bash ci_scripts/tasks/check_public_repo_safety.sh
 ```
 
 The same safety check also runs inside
-`bash ci_scripts/tasks/run_required_builds.sh` and
-`bash ci_scripts/tasks/verify.sh`.
+`bash ci_scripts/tasks/verify_repository_state.sh` and
+`bash ci_scripts/tasks/verify_task_completion.sh`.
 
-### CI Script Layout
+If you want Git's `pre-commit` hook to enforce the same repository flow, install
+`pre-commit` in your local environment and run `pre-commit install`. The hook
+delegates to `bash ci_scripts/tasks/verify_pre_commit.sh` through the local
+`.pre-commit-config.yaml`, which reruns the same non-destructive verification
+gate used for Codex task completion.
 
-- `ci_scripts/tasks/` contains supported user-facing entrypoints such as
-  `verify.sh`, `run_required_builds.sh`, `build_app.sh`,
-  `test_app_integration.sh`, and `test_shared_library.sh`.
-- `ci_scripts/lib/` contains shared shell helpers used by those task scripts.
-  Reuse the existing helpers before copying setup or path-selection logic into
-  another task.
-- When you change only CI scripts or docs, `bash ci_scripts/tasks/verify.sh`
-  may intentionally skip Xcode build and test work if no files changed under
-  `Fluel/`, `FluelWidget/`, `FluelLibrary/`, or `Fluel.xcodeproj/`. In that
-  case, also run the directly affected task scripts you changed.
+The scripts below are optional targeted helpers, not standardized repository
+entrypoints.
 
 ### CI Artifact Layout
 

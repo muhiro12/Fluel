@@ -43,6 +43,17 @@ at `MHPlatformCore` or a granular core-safe module.
 successful mutation, but the mutation rules themselves belong in
 `FluelLibrary`.
 
+## Failure-Surfacing Contract
+
+Adapter-owned mutation paths must classify failures by phase.
+
+- Preflight failure before mutation: block success and keep the current screen.
+- Primary domain mutation failure: block success and surface the error to the
+  current caller.
+- Post-commit follow-up failure: treat as degraded success, preserve the
+  committed write, log the phase explicitly, and prefer repairable notices over
+  rollback claims.
+
 ## Widget Flow
 
 `Widget provider -> ModelContainerFactory.shared() -> EntryWidgetSnapshotQuery -> Widget view`
@@ -76,6 +87,8 @@ Allowed in views:
 - Confirmation dialogs and alerts
 - Focus and picker state
 - Display-only formatting and composition
+- Owning one small screen-scoped `@Observable` presentation model in the root
+  view through `@State`
 
 Not allowed in views:
 
@@ -83,6 +96,26 @@ Not allowed in views:
 - Archive/delete policy decisions
 - Shared elapsed-time or milestone calculations
 - Widget snapshot construction rules
+- Large collections of search, filter, sheet, dialog, or error state when a
+  screen-scoped model can own them
+
+## Screen-Scoped Presentation Models
+
+When a screen grows beyond trivial local state, keep a small `@Observable`
+presentation model or router in the root view's `@State` and pass it downward
+with typed environment values or `@Bindable`.
+
+Prefer this over:
+
+- `ObservableObject`
+- `EnvironmentObject`
+- piling multiple preference, dialog, sheet, and error flags directly into the
+  view
+
+Current examples should include `MainTabRouter`, `HomeScreenModel`,
+`ArchiveScreenModel`, `TimelineScreenModel`, `SettingsScreenModel`,
+`PresetSettingsScreenModel`, `EntryFormPresentationModel`, and
+`EntryDetailPresentationModel`.
 
 ## Current Alignment Notes
 
@@ -115,8 +148,10 @@ Not allowed in views:
   frameworks and app-facing MHPlatform surfaces out of `FluelLibrary/Sources`
   while leaving `MHPlatformCore` and granular core-safe modules available if a
   shared concern ever needs them.
+- `ci_scripts/tasks/check_repository_contracts.sh` blocks references to removed
+  verify script names, removed docs aliases, and removed legacy artifact paths.
 - `ci_scripts/tasks/test_app_integration.sh` verifies the app-owned mutation
   workflow against an in-memory SwiftData container.
-- `ci_scripts/tasks/run_required_builds.sh` runs the MHPlatform adoption check,
-  shared-library boundary check, app build, app integration test, and screen
-  capture flow when the changed paths require them.
+- `ci_scripts/tasks/verify_repository_state.sh` runs the boundary checks, app
+  build, app integration test, shared-library tests, and screen capture flow
+  when the changed paths require them.

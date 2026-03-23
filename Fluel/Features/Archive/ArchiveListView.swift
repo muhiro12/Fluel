@@ -15,6 +15,10 @@ struct ArchiveListView: View {
     private var theme
     @Environment(\.modelContext)
     private var context
+    @Environment(FluelNoticeCenter.self)
+    private var noticeCenter
+    @Environment(FluelDisplayPreferencesStore.self)
+    private var displayPreferences
 
     @Query(
         filter: #Predicate<Entry> { entry in
@@ -23,34 +27,7 @@ struct ArchiveListView: View {
     )
     private var archivedEntries: [Entry]
 
-    @State private var errorMessage: String?
-    @State private var pendingDeleteEntry: Entry?
-    @State private var searchText = String()
-    @AppStorage(
-        EntryListPreferences.archiveSortMode,
-        store: EntryListPreferences.store
-    )
-    private var storedSortMode = ArchivedEntrySortMode.recentlyArchived.rawValue
-    @AppStorage(
-        EntryListPreferences.archiveContentFilter,
-        store: EntryListPreferences.store
-    )
-    private var storedContentFilter = EntryContentFilterMode.all.rawValue
-    @AppStorage(
-        DisplayPreferences.showsListSummaryCards,
-        store: DisplayPreferences.store
-    )
-    private var showsListSummaryCards = true
-    @AppStorage(
-        DisplayPreferences.showsNotePreviews,
-        store: DisplayPreferences.store
-    )
-    private var showsNotePreviews = true
-    @AppStorage(
-        DisplayPreferences.showsMetadataBadges,
-        store: DisplayPreferences.store
-    )
-    private var showsMetadataBadges = true
+    @State private var model = ArchiveScreenModel()
     @Namespace private var detailTransition
 
     private let contentFiltersTip = FluelTips.ContentFiltersTip()
@@ -58,52 +35,22 @@ struct ArchiveListView: View {
     private var sortedEntries: [Entry] {
         EntryListOrdering.archived(
             archivedEntries,
-            sortMode: sortMode
+            sortMode: model.sortMode
         )
     }
 
     private var displayedEntries: [Entry] {
         EntrySearchMatcher.filter(
             contentFilteredEntries,
-            matching: searchText
+            matching: model.searchText
         )
     }
 
     private var contentFilteredEntries: [Entry] {
         EntryContentFilter.filter(
             sortedEntries,
-            mode: contentFilter
+            mode: model.contentFilter
         )
-    }
-
-    private var sortMode: ArchivedEntrySortMode {
-        ArchivedEntrySortMode(rawValue: storedSortMode) ?? .recentlyArchived
-    }
-
-    private var contentFilter: EntryContentFilterMode {
-        EntryContentFilterMode(rawValue: storedContentFilter) ?? .all
-    }
-
-    private var contentFilterBinding: Binding<EntryContentFilterMode> {
-        .init(
-            get: {
-                contentFilter
-            },
-            set: { newValue in
-                storedContentFilter = newValue.rawValue
-                if newValue != .all {
-                    FluelTipState.markContentFiltersLearned()
-                }
-            }
-        )
-    }
-
-    private var hasActiveSearch: Bool {
-        searchText.isEmpty == false
-    }
-
-    private var hasActiveFilter: Bool {
-        contentFilter != .all
     }
 
     private var summary: FluelEntryListSummary {
@@ -111,27 +58,58 @@ struct ArchiveListView: View {
             headline: FluelCopy.archivedEntryCount(sortedEntries.count),
             displayedEntries: displayedEntries,
             totalEntries: sortedEntries,
-            sortLabel: FluelCopy.archivedSortMode(sortMode),
-            filterLabel: FluelCopy.entryContentFilterMode(contentFilter)
+            sortLabel: FluelCopy.archivedSortMode(model.sortMode),
+            filterLabel: FluelCopy.entryContentFilterMode(model.contentFilter)
         )
     }
 
     private var mutationWorkflow: FluelEntryMutationWorkflow {
-        // swiftlint:disable trailing_closure
         .init(
             context: context,
-            onError: { message in
-                errorMessage = message
-            }
+            surface: "ArchiveListView"
         )
-        // swiftlint:enable trailing_closure
     }
 
     private var showsContentFiltersTip: Bool {
-        FluelTipBootstrap.isEnabled
-            && FluelTipState.hasLearnedContentFilters == false
-            && sortedEntries.isEmpty == false
-            && displayedEntries.isEmpty == false
+        model.showsContentFiltersTip(
+            sortedEntriesCount: sortedEntries.count,
+            displayedEntriesCount: displayedEntries.count
+        )
+    }
+
+    private var searchTextBinding: Binding<String> {
+        .init(
+            get: {
+                model.searchText
+            },
+            set: { newValue in
+                model.searchText = newValue
+            }
+        )
+    }
+
+    private var contentFilterBinding: Binding<EntryContentFilterMode> {
+        .init(
+            get: {
+                model.contentFilter
+            },
+            set: { newValue in
+                model.contentFilter = newValue
+            }
+        )
+    }
+
+    private var pendingDeleteBinding: Binding<Bool> {
+        .init(
+            get: {
+                model.pendingDeleteEntry != nil
+            },
+            set: { isPresented in
+                if isPresented == false {
+                    model.dismissDeleteConfirmation()
+                }
+            }
+        )
     }
 
     var body: some View {
@@ -154,9 +132,9 @@ struct ArchiveListView: View {
                     Section(FluelCopy.sort()) {
                         ForEach(ArchivedEntrySortMode.allCases, id: \.self) { mode in
                             Button {
-                                storedSortMode = mode.rawValue
+                                model.sortMode = mode
                             } label: {
-                                if sortMode == mode {
+                                if model.sortMode == mode {
                                     Label(
                                         FluelCopy.archivedSortMode(mode),
                                         systemImage: "checkmark"
@@ -178,21 +156,12 @@ struct ArchiveListView: View {
             }
         }
         .searchable(
-            text: $searchText,
+            text: searchTextBinding,
             prompt: FluelCopy.searchEntries()
         )
         .confirmationDialog(
             FluelCopy.deleteConfirmationTitle(),
-            isPresented: Binding(
-                get: {
-                    pendingDeleteEntry != nil
-                },
-                set: { isPresented in
-                    if isPresented == false {
-                        pendingDeleteEntry = nil
-                    }
-                }
-            ),
+            isPresented: pendingDeleteBinding,
             titleVisibility: .visible
         ) {
             Button(
@@ -206,12 +175,12 @@ struct ArchiveListView: View {
                 FluelCopy.cancel(),
                 role: .cancel
             ) {
-                pendingDeleteEntry = nil
+                model.dismissDeleteConfirmation()
             }
         } message: {
             Text(
                 FluelCopy.deleteConfirmationMessage(
-                    for: pendingDeleteEntry?.title ?? String()
+                    for: model.pendingDeleteEntry?.title ?? String()
                 )
             )
         }
@@ -219,20 +188,20 @@ struct ArchiveListView: View {
             FluelCopy.error(),
             isPresented: Binding(
                 get: {
-                    errorMessage != nil
+                    model.errorMessage != nil
                 },
                 set: { isPresented in
                     if isPresented == false {
-                        errorMessage = nil
+                        model.clearError()
                     }
                 }
             )
         ) {
             Button(FluelCopy.ok(), role: .cancel) {
-                errorMessage = nil
+                model.clearError()
             }
         } message: {
-            Text(errorMessage ?? String())
+            Text(model.errorMessage ?? String())
         }
     }
 
@@ -276,7 +245,7 @@ struct ArchiveListView: View {
         referenceDate: Date
     ) -> some View {
         List {
-            if showsListSummaryCards {
+            if displayPreferences.showsListSummaryCards {
                 FluelEntryListSummaryCard(summary: summary)
                     .listRowInsets(
                         .init(
@@ -303,12 +272,12 @@ struct ArchiveListView: View {
                         footerText: entry.archivedAt.map { archivedAt in
                             EntryFormatting.archivedFooterText(
                                 archivedAt: archivedAt,
-                                note: showsNotePreviews
+                                note: displayPreferences.showsNotePreviews
                                     ? entry.note
                                     : nil
                             )
                         },
-                        showsMetadataBadges: showsMetadataBadges
+                        showsMetadataBadges: displayPreferences.showsMetadataBadges
                     )
                     .matchedTransitionSource(id: entry.id, in: detailTransition)
                 }
@@ -333,7 +302,7 @@ struct ArchiveListView: View {
                     Button(
                         role: .destructive
                     ) {
-                        pendingDeleteEntry = entry
+                        model.confirmDelete(entry)
                     } label: {
                         Label(
                             FluelCopy.delete(),
@@ -366,10 +335,10 @@ struct ArchiveListView: View {
                     arrowEdge: .top
                 )
 
-                if hasActiveSearch || hasActiveFilter {
+                if model.hasActiveSearch || model.hasActiveFilter {
                     FluelEntryListStateActions(
-                        showsClearSearch: hasActiveSearch,
-                        showsClearFilter: hasActiveFilter,
+                        showsClearSearch: model.hasActiveSearch,
+                        showsClearFilter: model.hasActiveFilter,
                         onClearSearch: clearSearch,
                         onClearFilter: clearFilter
                     )
@@ -382,27 +351,35 @@ struct ArchiveListView: View {
         _ entry: Entry
     ) {
         Task {
-            await mutationWorkflow.restore(entry: entry)
+            let result = await mutationWorkflow.restore(entry: entry)
+            model.handleMutationResult(
+                result,
+                noticeCenter: noticeCenter
+            )
         }
     }
 
     private func clearSearch() {
-        searchText = String()
+        model.clearSearch()
     }
 
     private func clearFilter() {
-        storedContentFilter = EntryContentFilterMode.all.rawValue
+        model.clearFilter()
     }
 
     private func deletePendingEntry() {
-        guard let pendingDeleteEntry else {
+        guard let pendingDeleteEntry = model.pendingDeleteEntry else {
             return
         }
 
-        self.pendingDeleteEntry = nil
+        model.dismissDeleteConfirmation()
 
         Task {
-            await mutationWorkflow.delete(entry: pendingDeleteEntry)
+            let result = await mutationWorkflow.delete(entry: pendingDeleteEntry)
+            model.handleMutationResult(
+                result,
+                noticeCenter: noticeCenter
+            )
         }
     }
 }
@@ -411,5 +388,6 @@ struct ArchiveListView: View {
     NavigationStack {
         ArchiveListView()
     }
+    .fluelPreviewEnvironment()
     .fluelAppStyle()
 }

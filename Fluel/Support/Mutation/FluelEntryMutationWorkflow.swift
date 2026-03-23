@@ -5,17 +5,28 @@ import SwiftData
 
 @MainActor
 struct FluelEntryMutationWorkflow {
+    private enum FollowUpError: LocalizedError {
+        case reloadWidgetTimelines
+
+        var errorDescription: String? {
+            "Widget timelines could not be refreshed."
+        }
+    }
+
     let context: ModelContext
+    let surface: String
     var calendar: Calendar = .autoupdatingCurrent
-    var onSuccess: @MainActor () -> Void = { () }
-    var onError: @MainActor (String) -> Void = { _ in () }
-    var reloadTimelines: @MainActor () -> Void = {
+    var reloadTimelines: @MainActor () async throws -> Void = {
         FluelWidgetReloader.reloadAllTimelines()
     }
 
+    private let logger = FluelAppLogging.logger(
+        category: "EntryMutation"
+    )
+
     func create(
         input: EntryFormInput
-    ) async {
+    ) async -> FluelMutationResult {
         await runCreate(name: "createEntry") {
             try EntryRepository.create(
                 context: context,
@@ -29,7 +40,7 @@ struct FluelEntryMutationWorkflow {
     func update(
         entry: Entry,
         input: EntryFormInput
-    ) async {
+    ) async -> FluelMutationResult {
         await runVoid(name: "updateEntry") {
             try EntryRepository.update(
                 context: context,
@@ -43,7 +54,7 @@ struct FluelEntryMutationWorkflow {
 
     func archive(
         entry: Entry
-    ) async {
+    ) async -> FluelMutationResult {
         await runVoid(name: "archiveEntry") {
             try EntryRepository.archive(
                 context: context,
@@ -55,7 +66,7 @@ struct FluelEntryMutationWorkflow {
 
     func restore(
         entry: Entry
-    ) async {
+    ) async -> FluelMutationResult {
         await runVoid(name: "restoreEntry") {
             try EntryRepository.restore(
                 context: context,
@@ -67,7 +78,7 @@ struct FluelEntryMutationWorkflow {
 
     func delete(
         entry: Entry
-    ) async {
+    ) async -> FluelMutationResult {
         await runVoid(name: "deleteEntry") {
             try EntryRepository.delete(
                 context: context,
@@ -78,57 +89,102 @@ struct FluelEntryMutationWorkflow {
 }
 
 private extension FluelEntryMutationWorkflow {
-    var successAdapter: MHMutationAdapter<Void> {
-        .fixed {
-            MHMutationStep.mainActor(name: "reloadWidgetTimelines") {
-                reloadTimelines()
-            }
-            MHMutationStep.mainActor(name: "handleMutationSuccess") {
-                onSuccess()
-            }
+    func followUpSuccess() async -> FluelMutationResult {
+        do {
+            try await reloadTimelines()
+            return .success
+        } catch is CancellationError {
+            logFailure(
+                name: "reloadWidgetTimelines",
+                phase: .postCommitFollowUp,
+                error: FollowUpError.reloadWidgetTimelines
+            )
+            return .degradedSuccess(
+                message: FollowUpError.reloadWidgetTimelines.localizedDescription
+            )
+        } catch {
+            logFailure(
+                name: "reloadWidgetTimelines",
+                phase: .postCommitFollowUp,
+                error: error
+            )
+            return .degradedSuccess(
+                message: error.localizedDescription
+            )
         }
     }
 
     func runCreate(
         name: String,
-        operation: @escaping @MainActor @Sendable () throws -> Entry
-    ) async {
+        operation: @MainActor @Sendable () throws -> Entry
+    ) async -> FluelMutationResult {
         do {
-            _ = try await MHMutationWorkflow.runThrowing(
-                name: name,
-                operation: operation,
-                adapter: successAdapter,
-                projection: .closures(
-                    afterSuccess: { _ in () },
-                    returning: { _ in () }
+            try Task.checkCancellation()
+            _ = try operation()
+            return await followUpSuccess()
+        } catch is CancellationError {
+            return .failure(
+                .init(
+                    phase: .preflight,
+                    message: "The mutation was cancelled."
                 )
             )
-        } catch is CancellationError {
-            return
-        } catch let error as MHMutationWorkflowError {
-            onError(error.localizedDescription)
         } catch {
-            onError(error.localizedDescription)
+            logFailure(
+                name: name,
+                phase: .primaryMutation,
+                error: error
+            )
+            return .failure(
+                .init(
+                    phase: .primaryMutation,
+                    message: error.localizedDescription
+                )
+            )
         }
     }
 
     func runVoid(
         name: String,
-        operation: @escaping @MainActor @Sendable () throws -> Void
-    ) async {
+        operation: @MainActor @Sendable () throws -> Void
+    ) async -> FluelMutationResult {
         do {
-            _ = try await MHMutationWorkflow.runThrowing(
-                name: name,
-                operation: operation,
-                adapter: successAdapter,
-                adapterValue: ()
-            )
+            try Task.checkCancellation()
+            try operation()
+            return await followUpSuccess()
         } catch is CancellationError {
-            return
-        } catch let error as MHMutationWorkflowError {
-            onError(error.localizedDescription)
+            return .failure(
+                .init(
+                    phase: .preflight,
+                    message: "The mutation was cancelled."
+                )
+            )
         } catch {
-            onError(error.localizedDescription)
+            logFailure(
+                name: name,
+                phase: .primaryMutation,
+                error: error
+            )
+            return .failure(
+                .init(
+                    phase: .primaryMutation,
+                    message: error.localizedDescription
+                )
+            )
         }
+    }
+
+    func logFailure(
+        name: String,
+        phase: FluelMutationFailurePhase,
+        error: Error
+    ) {
+        let message =
+            "Entry mutation failed. operation=\(name) surface=\(surface) " +
+            "phase=\(phase.rawValue) error=\(error.localizedDescription)"
+
+        logger.error(
+            message
+        )
     }
 }

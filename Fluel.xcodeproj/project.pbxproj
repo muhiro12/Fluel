@@ -256,6 +256,7 @@
 			packageReferences = (
 				A1B2C3D52F60000100BC027C /* XCRemoteSwiftPackageReference "MHPlatform" */,
 				AD9F01022F5F000100BC027C /* XCLocalSwiftPackageReference "FluelLibrary" */,
+				B00000012F7A000100000017 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
 				C1D2E3F52F66000100BC027C /* XCRemoteSwiftPackageReference "MHUI" */,
 			);
 			preferredProjectObjectVersion = 77;
@@ -723,6 +724,14 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 1.0.0;
+			};
+		};
+		B00000012F7A000100000017 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SimplyDanny/SwiftLintPlugins";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.60.0;
 			};
 		};
 		C1D2E3F52F66000100BC027C /* XCRemoteSwiftPackageReference "MHUI" */ = {

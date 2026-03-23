@@ -18,12 +18,13 @@ struct EntryFormView: View {
     private var context
     @Environment(EntryPresetStore.self)
     private var presetStore
+    @Environment(FluelNoticeCenter.self)
+    private var noticeCenter
 
     @State private var draft: EntryFormDraft
+    @State private var presentationModel = EntryFormPresentationModel()
     @State private var selectedPhotoItem: PhotosPickerItem?
     @State private var selectedPresetID: String?
-    @State private var errorMessage: String?
-    @State private var isConfirmingDiscard = false
 
     private let mode: Mode
     private let initialPresetID: String?
@@ -112,24 +113,33 @@ struct EntryFormView: View {
             FluelCopy.error(),
             isPresented: Binding(
                 get: {
-                    errorMessage != nil
+                    presentationModel.errorMessage != nil
                 },
                 set: { isPresented in
                     if isPresented == false {
-                        errorMessage = nil
+                        presentationModel.clearError()
                     }
                 }
             )
         ) {
             Button(FluelCopy.ok(), role: .cancel) {
-                errorMessage = nil
+                presentationModel.clearError()
             }
         } message: {
-            Text(errorMessage ?? String())
+            Text(presentationModel.errorMessage ?? String())
         }
         .confirmationDialog(
             FluelCopy.discardChangesConfirmationTitle(),
-            isPresented: $isConfirmingDiscard,
+            isPresented: Binding(
+                get: {
+                    presentationModel.isConfirmingDiscard
+                },
+                set: { isPresented in
+                    if isPresented == false {
+                        presentationModel.dismissDiscardConfirmation()
+                    }
+                }
+            ),
             titleVisibility: .visible
         ) {
             Button(
@@ -143,7 +153,7 @@ struct EntryFormView: View {
                 FluelCopy.cancel(),
                 role: .cancel
             ) {
-                isConfirmingDiscard = false
+                presentationModel.dismissDiscardConfirmation()
             }
         } message: {
             Text(
@@ -172,21 +182,32 @@ struct EntryFormView: View {
 
     private func save() {
         Task {
+            let result: FluelMutationResult
+
             switch mode {
             case .create:
-                await mutationWorkflow.create(input: draft.input)
+                result = await mutationWorkflow.create(input: draft.input)
             case let .edit(entry):
-                await mutationWorkflow.update(
+                result = await mutationWorkflow.update(
                     entry: entry,
                     input: draft.input
                 )
+            }
+
+            let effect = presentationModel.handle(
+                result,
+                noticeCenter: noticeCenter
+            )
+
+            if effect == .dismiss {
+                dismiss()
             }
         }
     }
 
     private func attemptDismiss() {
         if draft.hasUnsavedChanges {
-            isConfirmingDiscard = true
+            presentationModel.requestDiscardConfirmation()
             return
         }
 
@@ -199,7 +220,7 @@ struct EntryFormView: View {
             try await updatedDraft.loadPhoto(from: selectedPhotoItem)
             draft = updatedDraft
         } catch {
-            errorMessage = error.localizedDescription
+            presentationModel.errorMessage = error.localizedDescription
         }
     }
 }
@@ -224,13 +245,8 @@ private extension EntryFormView {
     var mutationWorkflow: FluelEntryMutationWorkflow {
         .init(
             context: context,
-            calendar: draft.calendar,
-            onSuccess: {
-                dismiss()
-            },
-            onError: { message in
-                errorMessage = message
-            }
+            surface: "EntryFormView",
+            calendar: draft.calendar
         )
     }
 
@@ -266,7 +282,7 @@ private extension EntryFormView {
             mode: .create
         )
     }
-    .environment(presetStore)
+    .fluelPreviewEnvironment(presetStore: presetStore)
     .fluelAppStyle()
 }
 
@@ -282,7 +298,7 @@ private extension EntryFormView {
             )
         }
         .modelContainer(context.modelContainer)
-        .environment(presetStore)
+        .fluelPreviewEnvironment(presetStore: presetStore)
         .fluelAppStyle()
     } else {
         Text(FluelCopy.failedToLoadPreview())

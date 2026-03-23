@@ -12,7 +12,10 @@ struct FluelApp: App {
             assembly.rootView()
                 .modelContainer(assembly.modelContainer)
                 .environment(assembly.presetStore)
+                .environment(assembly.noticeCenter)
+                .environment(assembly.displayPreferences)
                 .mhAppRuntimeBootstrap(assembly.appBootstrap)
+                .fluelNoticePresenter(assembly.noticeCenter)
                 .fluelAppStyle()
         }
     }

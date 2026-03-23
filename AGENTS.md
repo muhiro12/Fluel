@@ -69,9 +69,23 @@ Do not use single-line bodies for control-flow statements or trailing closures.
 Agents must use one of these standardized entrypoints:
 
 ```sh
-bash ci_scripts/tasks/run_required_builds.sh
-bash ci_scripts/tasks/verify.sh
+bash ci_scripts/tasks/verify_task_completion.sh
+bash ci_scripts/tasks/verify_repository_state.sh
 ```
+
+Agents may run `bash ci_scripts/tasks/check_environment.sh --profile verify`
+first to diagnose missing local prerequisites.
+When Swift files are edited, agents should run
+`bash ci_scripts/tasks/format_swift.sh` before the final verification gate.
+`bash ci_scripts/tasks/verify_task_completion.sh` is the non-destructive
+verification gate.
+`bash ci_scripts/tasks/verify_pre_commit.sh` reruns the same non-destructive
+verification shell for manual final checks and `.pre-commit-config.yaml`.
+SwiftLint is resolved from the `SimplyDanny/SwiftLintPlugins` package declared
+in `Fluel.xcodeproj`, not from a separately installed `swiftlint` binary.
+By default, `format_swift.sh` and `lint_swift.sh` operate on local Swift
+changes. Set `CI_SWIFTLINT_ALL=1` when you need a full tracked-file sweep.
+
 
 Optional single-purpose entrypoints:
 
@@ -89,3 +103,21 @@ Shared CI directories are under `.build/ci/shared/` (`cache/`,
 `DerivedData/`, `tmp/`, `home/`).
 Only the newest 5 run directories are retained.
 The entire `.build/ci` directory is disposable.
+
+## Screen State Rules
+
+- Keep screen-scoped `@Observable` presentation models, routers, and
+  coordinators in the app target.
+- Root views should own those models in `@State` and pass them downward with
+  typed environment values or `@Bindable`.
+- Do not keep large collections of search, filter, dialog, sheet, and error
+  state directly on large feature views when a screen model can own them.
+
+## Adapter Failure Rules
+
+- Primary mutation failures must block success and stay visible to the current
+  caller.
+- Post-commit follow-up failures are degraded-success cases. Preserve the
+  committed domain write, log the failure phase explicitly, and surface a
+  repairable notice when practical.
+- Do not collapse adapter failure phases into one generic success path.

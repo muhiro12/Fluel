@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-source "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../lib/task_runtime.sh"
+script_directory=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+source "$script_directory/../lib/task_utils.sh"
 
-ci_task_require_no_arguments "$#"
-ci_task_enter_repository_root "${BASH_SOURCE[0]}"
-ci_task_require_git_repository
+ci_task_require_no_arguments "$@"
+ci_task_enter_repository "${BASH_SOURCE[0]}"
+repository_root=$CI_TASK_REPOSITORY_ROOT
 
 secret_content_pattern='(BEGIN [A-Z0-9 ]*PRIVATE KEY|ghp_[A-Za-z0-9]+|github_pat_[A-Za-z0-9_]+|AIza[0-9A-Za-z_-]{20,}|AKIA[0-9A-Z]{16}|sk_live_[A-Za-z0-9]+|xox[baprs]-[A-Za-z0-9-]+)'
 

@@ -12,6 +12,8 @@ struct FluelAppAssembly {
 
     let modelContainer: ModelContainer
     let presetStore: EntryPresetStore
+    let noticeCenter: FluelNoticeCenter
+    let displayPreferences: FluelDisplayPreferencesStore
     let appBootstrap: MHAppRuntimeBootstrap
     private let launchMode: LaunchMode
 
@@ -20,6 +22,8 @@ struct FluelAppAssembly {
         if let captureContext = try? CodexCaptureContext.current() {
             modelContainer = captureContext.modelContainer
             presetStore = captureContext.presetStore
+            noticeCenter = .init()
+            displayPreferences = .preview()
             appBootstrap = .init(
                 configuration: FluelAppConfiguration.captureRuntimeConfiguration,
                 lifecyclePlan: FluelAppConfiguration.runtimeLifecyclePlan
@@ -31,6 +35,8 @@ struct FluelAppAssembly {
 
         modelContainer = Self.makeLiveModelContainer()
         presetStore = .init()
+        noticeCenter = .init()
+        displayPreferences = .init()
         appBootstrap = .init(
             configuration: FluelAppConfiguration.runtimeConfiguration,
             lifecyclePlan: FluelAppConfiguration.runtimeLifecyclePlan
