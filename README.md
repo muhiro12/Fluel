@@ -55,16 +55,24 @@ logic in `FluelLibrary`.
   and widget snapshot logic belongs in `FluelLibrary`.
 - **Observation-first app shell** - app-owned preset state is injected once
   from the app assembly through typed SwiftUI environment values.
-- **Thin adapters** - `Fluel` owns an app assembly around
-  `MHAppRuntimeBootstrap`, SwiftUI presentation, preferences, TipKit, and
-  mutation follow-up side effects, while `FluelWidget` owns WidgetKit timeline
-  delivery.
+- **Thin adapters** - `Fluel` is a default-runtime consumer that centers app
+  startup on `MHAppRuntimeBootstrap`, keeps presentation, preferences, TipKit,
+  and mutation follow-up side effects app-owned, and leaves WidgetKit delivery to
+  `FluelWidget`.
 - **Per-tab navigation roots** - the main shell keeps a separate
   `NavigationStack` per primary tab so each tab preserves its own navigation
   history while keeping create and licenses presentation local to that tab.
-- **Default runtime adapters** - the app uses `MHAppRuntime` for the runtime-
-  owned license surface and keeps the debug-only native ad unit in live runtime
-  configuration while disabling it for Codex capture mode.
+- **Optional shell additions** - `MHMutationFlow` is adopted only where the app
+  target owns mutation follow-up side effects, while route and review shells
+  stay out until the product actually needs them.
+- **Default-runtime base product** - the app keeps `MHAppRuntime` as its base
+  product because Fluel uses the package-owned license surface and the
+  debug-only native ad path in live runtime configuration while disabling ads
+  for Codex capture mode.
+- **Repo-specific package governance** - Fluel follows MHPlatform 1.1 consumer
+  surface guidance, but intentionally keeps remote semver-tracked `1.x`
+  adoption from `1.0.0` instead of switching this repository to exact-tag
+  release pinning.
 - **Preview and capture support** - the app can boot sample data for previews
   and Codex capture flows without changing live storage.
 

@@ -31,6 +31,8 @@ if rg -q 'XCLocalSwiftPackageReference "MHPlatform"|relativePath = \.\./MHPlatfo
   fail_check "MHPlatform must not be referenced as a local path dependency."
 fi
 
+# Fluel intentionally keeps MHPlatform on a rolling remote 1.x semver contract
+# even though upstream release guidance recommends exact tags for released apps.
 mhplatform_reference_block=$(grep -A6 'repositoryURL = "https://github.com/muhiro12/MHPlatform.git";' "$pbxproj_path" || true)
 
 if [[ -z "$mhplatform_reference_block" ]]; then
@@ -39,7 +41,7 @@ fi
 
 if ! grep -q 'kind = upToNextMajorVersion;' <<<"$mhplatform_reference_block" || \
   ! grep -q 'minimumVersion = 1.0.0;' <<<"$mhplatform_reference_block"; then
-  fail_check "MHPlatform must use an up-to-next-major requirement with minimumVersion = 1.0.0."
+  fail_check "Fluel keeps MHPlatform on an up-to-next-major 1.x requirement with minimumVersion = 1.0.0."
 fi
 
 if grep -q 'kind = branch;' <<<"$mhplatform_reference_block" || grep -q 'branch = ' <<<"$mhplatform_reference_block"; then
@@ -61,7 +63,7 @@ if grep -q '"branch"' <<<"$mhplatform_pin_block"; then
 fi
 
 if ! grep -Eq '"version" : "1\.[0-9]+\.[0-9]+"' <<<"$mhplatform_pin_block"; then
-  fail_check "MHPlatform must resolve within the approved 1.x semver range."
+  fail_check "MHPlatform must resolve within Fluel's approved 1.x semver range."
 fi
 
 if ! grep -Eq '"revision" : "[0-9a-f]{40}"' <<<"$mhplatform_pin_block"; then
