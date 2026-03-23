@@ -13,6 +13,8 @@ struct SettingsView: View {
     private var presetStore
     @Environment(FluelDisplayPreferencesStore.self)
     private var displayPreferences
+    @Environment(FluelNoticeCenter.self)
+    private var noticeCenter
 
     @Query
     private var entries: [Entry]
@@ -107,6 +109,9 @@ struct SettingsView: View {
             ) {
                 displayPreferences.reset()
                 model.dismissDisplayResetConfirmation()
+                noticeCenter.presentInfo(
+                    message: FluelCopy.displayPreferencesResetNotice()
+                )
             }
 
             Button(

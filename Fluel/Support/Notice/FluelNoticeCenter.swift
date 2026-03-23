@@ -5,6 +5,15 @@ import Observation
 final class FluelNoticeCenter {
     var activeNotice: FluelNotice?
 
+    func presentInfo(
+        message: String
+    ) {
+        activeNotice = .init(
+            message: message,
+            style: .info
+        )
+    }
+
     func presentWarning(
         message: String
     ) {

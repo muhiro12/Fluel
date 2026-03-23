@@ -125,6 +125,16 @@ extension FluelCopy {
         )
     }
 
+    static func displayPreferencesResetNotice(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Display preferences were reset.",
+            japanese: "表示設定を初期状態に戻しました。",
+            locale: locale
+        )
+    }
+
     static func createScreenSubtitle(
         locale: Locale = .autoupdatingCurrent
     ) -> String {

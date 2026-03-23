@@ -69,6 +69,16 @@ struct FluelScreenModelsTests {
     }
 
     @Test
+    func notice_center_presents_info_notice() {
+        let noticeCenter = FluelNoticeCenter()
+
+        noticeCenter.presentInfo(message: "Display preferences were reset.")
+
+        #expect(noticeCenter.activeNotice?.message == "Display preferences were reset.")
+        #expect(noticeCenter.activeNotice?.style == .info)
+    }
+
+    @Test
     func entry_form_presentation_model_dismisses_on_degraded_success_and_posts_notice() {
         let noticeCenter = FluelNoticeCenter()
         let model = EntryFormPresentationModel()
