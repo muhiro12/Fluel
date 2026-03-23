@@ -83,6 +83,17 @@ struct FluelScreenModelsTests {
     }
 
     @Test
+    func settings_screen_model_skips_reset_confirmation_for_defaults() {
+        let model = SettingsScreenModel()
+
+        model.presentDisplayResetConfirmation(
+            usesDefaultSettings: true
+        )
+
+        #expect(model.isConfirmingDisplayReset == false)
+    }
+
+    @Test
     func notice_center_presents_info_notice() {
         let noticeCenter = FluelNoticeCenter()
 

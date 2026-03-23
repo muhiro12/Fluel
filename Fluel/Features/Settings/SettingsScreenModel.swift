@@ -14,6 +14,16 @@ final class SettingsScreenModel {
         isConfirmingDisplayReset = true
     }
 
+    func presentDisplayResetConfirmation(
+        usesDefaultSettings: Bool
+    ) {
+        guard usesDefaultSettings == false else {
+            return
+        }
+
+        isConfirmingDisplayReset = true
+    }
+
     func dismissDisplayResetConfirmation() {
         isConfirmingDisplayReset = false
     }

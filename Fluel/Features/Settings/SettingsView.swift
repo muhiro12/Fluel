@@ -156,6 +156,7 @@ struct SettingsView: View {
                 )
             }
             .buttonStyle(.mhSecondary)
+            .disabled(displayPreferences.usesDefaultSettings)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .mhRow()
@@ -301,7 +302,9 @@ private extension SettingsView {
     }
 
     func presentDisplayResetConfirmation() {
-        model.presentDisplayResetConfirmation()
+        model.presentDisplayResetConfirmation(
+            usesDefaultSettings: displayPreferences.usesDefaultSettings
+        )
     }
 
     func resetDisplayPreferences() {
