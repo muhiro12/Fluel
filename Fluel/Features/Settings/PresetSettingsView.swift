@@ -181,6 +181,13 @@ struct PresetSettingsView: View {
             .disabled(presetStore.defaultPreset == nil)
 
             if let defaultPreset = presetStore.defaultPreset {
+                Text(
+                    presetStore.usesDefaultPreset
+                        ? FluelCopy.activeDefaultPresetSummary()
+                        : FluelCopy.inactiveDefaultPresetSummary()
+                )
+                .mhRowSupporting()
+
                 Label(
                     defaultPreset.title,
                     systemImage: defaultPreset.symbolName

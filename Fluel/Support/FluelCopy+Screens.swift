@@ -191,6 +191,26 @@ extension FluelCopy {
         )
     }
 
+    static func activeDefaultPresetSummary(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "New entries start from this preset.",
+            japanese: "新しい記録はこのプリセットから始まります。",
+            locale: locale
+        )
+    }
+
+    static func inactiveDefaultPresetSummary(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "This preset is selected, but new entries still start blank.",
+            japanese: "このプリセットは選択されていますが、新しい記録はまだ空の状態から始まります。",
+            locale: locale
+        )
+    }
+
     static func defaultDisplayPreferencesSummary(
         locale: Locale = .autoupdatingCurrent
     ) -> String {
