@@ -67,4 +67,11 @@ final class FluelDisplayPreferencesStore {
 
         return .init(defaults: defaults)
     }
+
+    func reset() {
+        showsListSummaryCards = true
+        showsNotePreviews = true
+        showsMetadataBadges = true
+        showsDashboardHighlights = true
+    }
 }

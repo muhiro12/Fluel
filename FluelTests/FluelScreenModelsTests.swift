@@ -34,6 +34,41 @@ struct FluelScreenModelsTests {
     }
 
     @Test
+    func display_preferences_store_resets_all_toggles() {
+        let defaults = makeDefaults()
+        let store = FluelDisplayPreferencesStore(defaults: defaults)
+
+        store.showsListSummaryCards = false
+        store.showsNotePreviews = false
+        store.showsMetadataBadges = false
+        store.showsDashboardHighlights = false
+
+        store.reset()
+
+        #expect(store.showsListSummaryCards)
+        #expect(store.showsNotePreviews)
+        #expect(store.showsMetadataBadges)
+        #expect(store.showsDashboardHighlights)
+
+        let reloaded = FluelDisplayPreferencesStore(defaults: defaults)
+        #expect(reloaded.showsListSummaryCards)
+        #expect(reloaded.showsNotePreviews)
+        #expect(reloaded.showsMetadataBadges)
+        #expect(reloaded.showsDashboardHighlights)
+    }
+
+    @Test
+    func settings_screen_model_tracks_display_reset_confirmation() {
+        let model = SettingsScreenModel()
+
+        model.presentDisplayResetConfirmation()
+        #expect(model.isConfirmingDisplayReset)
+
+        model.dismissDisplayResetConfirmation()
+        #expect(model.isConfirmingDisplayReset == false)
+    }
+
+    @Test
     func entry_form_presentation_model_dismisses_on_degraded_success_and_posts_notice() {
         let noticeCenter = FluelNoticeCenter()
         let model = EntryFormPresentationModel()

@@ -87,6 +87,37 @@ struct SettingsView: View {
         )
         .navigationBarTitleDisplayMode(.inline)
         .toolbarRole(.editor)
+        .confirmationDialog(
+            FluelCopy.resetDisplayPreferencesConfirmationTitle(),
+            isPresented: Binding(
+                get: {
+                    model.isConfirmingDisplayReset
+                },
+                set: { isPresented in
+                    if isPresented == false {
+                        model.dismissDisplayResetConfirmation()
+                    }
+                }
+            ),
+            titleVisibility: .visible
+        ) {
+            Button(
+                FluelCopy.resetDisplayPreferences(),
+                role: .destructive
+            ) {
+                displayPreferences.reset()
+                model.dismissDisplayResetConfirmation()
+            }
+
+            Button(
+                FluelCopy.cancel(),
+                role: .cancel
+            ) {
+                model.dismissDisplayResetConfirmation()
+            }
+        } message: {
+            Text(FluelCopy.resetDisplayPreferencesConfirmationMessage())
+        }
     }
 
     private var displayCard: some View {
@@ -113,6 +144,16 @@ struct SettingsView: View {
                 FluelCopy.showDashboardHighlights(),
                 isOn: showsDashboardHighlightsBinding
             )
+
+            Button {
+                model.presentDisplayResetConfirmation()
+            } label: {
+                Label(
+                    FluelCopy.resetDisplayPreferences(),
+                    systemImage: "arrow.counterclockwise"
+                )
+            }
+            .buttonStyle(.mhSecondary)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .mhRow()

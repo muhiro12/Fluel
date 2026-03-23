@@ -94,6 +94,37 @@ extension FluelCopy {
         )
     }
 
+    static func resetDisplayPreferences(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Reset display preferences",
+            japanese: "表示設定を初期化",
+            locale: locale
+        )
+    }
+
+    static func resetDisplayPreferencesConfirmationTitle(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Reset display preferences?",
+            japanese: "表示設定を初期化しますか？",
+            locale: locale
+        )
+    }
+
+    static func resetDisplayPreferencesConfirmationMessage(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "List summaries, note previews, metadata badges, and "
+                + "dashboard highlights will return to their default visibility.",
+            japanese: "一覧サマリー、メモのプレビュー、メタデータバッジ、ダッシュボードのハイライト表示が初期状態に戻ります。",
+            locale: locale
+        )
+    }
+
     static func createScreenSubtitle(
         locale: Locale = .autoupdatingCurrent
     ) -> String {
