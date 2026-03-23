@@ -42,6 +42,24 @@ final class FluelDisplayPreferencesStore {
         }
     }
 
+    var customizedSettingCount: Int {
+        [
+            showsListSummaryCards,
+            showsNotePreviews,
+            showsMetadataBadges,
+            showsDashboardHighlights
+        ]
+        .reduce(into: 0) { count, isEnabled in
+            if isEnabled == false {
+                count += 1
+            }
+        }
+    }
+
+    var usesDefaultSettings: Bool {
+        customizedSettingCount == 0
+    }
+
     init(
         defaults: UserDefaults = DisplayPreferences.store
     ) {

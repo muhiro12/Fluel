@@ -58,6 +58,20 @@ struct FluelScreenModelsTests {
     }
 
     @Test
+    func display_preferences_store_tracks_customized_setting_count() {
+        let store = FluelDisplayPreferencesStore(defaults: makeDefaults())
+
+        #expect(store.usesDefaultSettings)
+        #expect(store.customizedSettingCount == 0)
+
+        store.showsNotePreviews = false
+        store.showsDashboardHighlights = false
+
+        #expect(store.usesDefaultSettings == false)
+        #expect(store.customizedSettingCount == 2)
+    }
+
+    @Test
     func settings_screen_model_tracks_display_reset_confirmation() {
         let model = SettingsScreenModel()
 

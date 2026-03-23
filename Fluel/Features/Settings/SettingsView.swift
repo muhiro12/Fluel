@@ -107,11 +107,7 @@ struct SettingsView: View {
                 FluelCopy.resetDisplayPreferences(),
                 role: .destructive
             ) {
-                displayPreferences.reset()
-                model.dismissDisplayResetConfirmation()
-                noticeCenter.presentInfo(
-                    message: FluelCopy.displayPreferencesResetNotice()
-                )
+                resetDisplayPreferences()
             }
 
             Button(
@@ -129,6 +125,9 @@ struct SettingsView: View {
         VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
             Text(FluelCopy.display())
                 .mhTextStyle(.sectionTitle)
+
+            Text(displaySummary)
+                .mhRowSupporting()
 
             Toggle(
                 FluelCopy.showListSummaryCards(),
@@ -150,9 +149,7 @@ struct SettingsView: View {
                 isOn: showsDashboardHighlightsBinding
             )
 
-            Button {
-                model.presentDisplayResetConfirmation()
-            } label: {
+            Button(action: presentDisplayResetConfirmation) {
                 Label(
                     FluelCopy.resetDisplayPreferences(),
                     systemImage: "arrow.counterclockwise"
@@ -264,17 +261,7 @@ struct SettingsView: View {
                 }
                 .buttonStyle(.mhSecondary)
 
-                Button {
-                    if FluelTipBootstrap.resetTips() {
-                        noticeCenter.presentInfo(
-                            message: FluelCopy.tipsResetNotice()
-                        )
-                    } else {
-                        noticeCenter.presentWarning(
-                            message: FluelCopy.tipsResetFailedNotice()
-                        )
-                    }
-                } label: {
+                Button(action: resetTipsFeedback) {
                     Label(
                         FluelCopy.showTipsAgain(),
                         systemImage: "lightbulb"
@@ -300,4 +287,40 @@ struct SettingsView: View {
     }
     .fluelPreviewEnvironment(presetStore: presetStore)
     .fluelAppStyle()
+}
+
+private extension SettingsView {
+    var displaySummary: String {
+        if displayPreferences.usesDefaultSettings {
+            return FluelCopy.defaultDisplayPreferencesSummary()
+        }
+
+        return FluelCopy.customizedDisplayPreferenceCount(
+            displayPreferences.customizedSettingCount
+        )
+    }
+
+    func presentDisplayResetConfirmation() {
+        model.presentDisplayResetConfirmation()
+    }
+
+    func resetDisplayPreferences() {
+        displayPreferences.reset()
+        model.dismissDisplayResetConfirmation()
+        noticeCenter.presentInfo(
+            message: FluelCopy.displayPreferencesResetNotice()
+        )
+    }
+
+    func resetTipsFeedback() {
+        if FluelTipBootstrap.resetTips() {
+            noticeCenter.presentInfo(
+                message: FluelCopy.tipsResetNotice()
+            )
+        } else {
+            noticeCenter.presentWarning(
+                message: FluelCopy.tipsResetFailedNotice()
+            )
+        }
+    }
 }

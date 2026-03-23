@@ -1,5 +1,31 @@
 import Foundation
 
+private enum FluelScreenCopyLocale {
+    case english
+    case japanese
+    case spanish
+    case french
+    case simplifiedChinese
+
+    init(locale: Locale) {
+        let languageIdentifier =
+            locale.language.languageCode?.identifier
+            ?? locale.identifier
+
+        if languageIdentifier.hasPrefix("ja") {
+            self = .japanese
+        } else if languageIdentifier.hasPrefix("es") {
+            self = .spanish
+        } else if languageIdentifier.hasPrefix("fr") {
+            self = .french
+        } else if languageIdentifier.hasPrefix("zh") {
+            self = .simplifiedChinese
+        } else {
+            self = .english
+        }
+    }
+}
+
 extension FluelCopy {
     static func homeScreenSubtitle(
         locale: Locale = .autoupdatingCurrent
@@ -153,6 +179,46 @@ extension FluelCopy {
             japanese: "いまはヒントを初期化できませんでした。",
             locale: locale
         )
+    }
+
+    static func defaultDisplayPreferencesSummary(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "All display preferences are using their defaults.",
+            japanese: "表示設定はすべて初期状態です。",
+            locale: locale
+        )
+    }
+
+    static func customizedDisplayPreferenceCount(
+        _ count: Int,
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        let language = FluelScreenCopyLocale(locale: locale)
+        let number = count.formatted(
+            .number
+                .locale(locale)
+        )
+
+        switch language {
+        case .english:
+            return count == 1
+                ? "\(number) display preference is customized"
+                : "\(number) display preferences are customized"
+        case .japanese:
+            return "表示設定を \(number) 件カスタマイズ中"
+        case .spanish:
+            return count == 1
+                ? "\(number) preferencia de visualización personalizada"
+                : "\(number) preferencias de visualización personalizadas"
+        case .french:
+            return count == 1
+                ? "\(number) préférence d’affichage personnalisée"
+                : "\(number) préférences d’affichage personnalisées"
+        case .simplifiedChinese:
+            return "已自定义 \(number) 项显示设置"
+        }
     }
 
     static func createScreenSubtitle(
