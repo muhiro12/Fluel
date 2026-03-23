@@ -181,6 +181,16 @@ extension FluelCopy {
         )
     }
 
+    static func dismissNotice(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Dismiss notice",
+            japanese: "通知を閉じる",
+            locale: locale
+        )
+    }
+
     static func defaultDisplayPreferencesSummary(
         locale: Locale = .autoupdatingCurrent
     ) -> String {

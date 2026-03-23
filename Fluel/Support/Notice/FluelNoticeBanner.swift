@@ -36,7 +36,7 @@ struct FluelNoticeBanner: View {
                     .foregroundStyle(.secondary)
                     .accessibilityHidden(true)
             }
-            .accessibilityLabel("Dismiss notice")
+            .accessibilityLabel(FluelCopy.dismissNotice())
             .buttonStyle(.plain)
         }
         .padding(Layout.padding)
