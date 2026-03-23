@@ -211,6 +211,26 @@ extension FluelCopy {
         )
     }
 
+    static func defaultPresetSelectedNotice(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "The default preset was updated.",
+            japanese: "既定のプリセットを更新しました。",
+            locale: locale
+        )
+    }
+
+    static func defaultPresetClearedNotice(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "The default preset was cleared.",
+            japanese: "既定のプリセットを解除しました。",
+            locale: locale
+        )
+    }
+
     static func defaultDisplayPreferencesSummary(
         locale: Locale = .autoupdatingCurrent
     ) -> String {

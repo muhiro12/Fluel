@@ -10,6 +10,8 @@ struct PresetSettingsView: View {
     private var theme
     @Environment(EntryPresetStore.self)
     private var presetStore
+    @Environment(FluelNoticeCenter.self)
+    private var noticeCenter
     @State private var model = PresetSettingsScreenModel()
 
     private let defaultPresetTip = FluelTips.DefaultPresetTip()
@@ -207,8 +209,7 @@ struct PresetSettingsView: View {
                 Button(
                     FluelCopy.clearDefaultPreset()
                 ) {
-                    FluelTipState.markDefaultPresetLearned()
-                    presetStore.setDefaultPreset(id: nil)
+                    clearDefaultPreset()
                 }
                 .buttonStyle(.mhSecondary)
             } else {
@@ -233,12 +234,15 @@ struct PresetSettingsView: View {
     ) {
         FluelTipState.markDefaultPresetLearned()
         if presetStore.defaultPresetID == preset.id {
-            presetStore.setDefaultPreset(id: nil)
+            clearDefaultPreset()
             return
         }
 
         presetStore.setDefaultPreset(id: preset.id)
         presetStore.setUsesDefaultPreset(true)
+        noticeCenter.presentInfo(
+            message: FluelCopy.defaultPresetSelectedNotice()
+        )
     }
 
     private func togglePin(
@@ -247,6 +251,14 @@ struct PresetSettingsView: View {
         presetStore.setPinned(
             preset.isPinned == false,
             for: preset.id
+        )
+    }
+
+    private func clearDefaultPreset() {
+        FluelTipState.markDefaultPresetLearned()
+        presetStore.setDefaultPreset(id: nil)
+        noticeCenter.presentInfo(
+            message: FluelCopy.defaultPresetClearedNotice()
         )
     }
 }
