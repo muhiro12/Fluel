@@ -248,9 +248,16 @@ struct PresetSettingsView: View {
     private func togglePin(
         _ preset: EntryPreset
     ) {
+        let isPinned = preset.isPinned == false
+
         presetStore.setPinned(
-            preset.isPinned == false,
+            isPinned,
             for: preset.id
+        )
+        noticeCenter.presentInfo(
+            message: isPinned
+                ? FluelCopy.presetPinnedNotice()
+                : FluelCopy.presetUnpinnedNotice()
         )
     }
 
