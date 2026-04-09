@@ -2,7 +2,8 @@
 import MHUI
 import SwiftUI
 
-struct EntryPresetStrip: View {    @Environment(\.mhDesignMetrics)
+struct EntryPresetStrip: View {
+    @Environment(\.mhDesignMetrics)
     private var metrics
     @Namespace private var presetNamespace
 
@@ -36,7 +37,6 @@ struct EntryPresetStrip: View {    @Environment(\.mhDesignMetrics)
                             .buttonStyle(.plain)
                         }
                     }
-                    .padding(.vertical, 2)
                 }
             }
         }

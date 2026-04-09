@@ -525,6 +525,9 @@ private struct TimelineTrendCard: View {
 }
 
 private struct TimelineTrendBar: View {
+    @Environment(\.mhDesignMetrics)
+    private var metrics
+
     let trend: EntryActivityTrendSnapshot
 
     var body: some View {
@@ -535,28 +538,28 @@ private struct TimelineTrendBar: View {
             let updatedWidth = width * Double(trend.updatedCount) / total
             let archivedWidth = width * Double(trend.archivedCount) / total
 
-            HStack(spacing: 4) {
+            HStack(spacing: metrics.layout.compactActionGroupSpacing) {
                 if trend.addedCount > 0 {
-                    RoundedRectangle(cornerRadius: 6)
+                    RoundedRectangle(cornerRadius: metrics.radius.control)
                         .fill(Color.green)
-                        .frame(width: max(addedWidth, 10))
+                        .frame(width: max(addedWidth, metrics.spacing.inline))
                 }
 
                 if trend.updatedCount > 0 {
-                    RoundedRectangle(cornerRadius: 6)
+                    RoundedRectangle(cornerRadius: metrics.radius.control)
                         .fill(Color.blue)
-                        .frame(width: max(updatedWidth, 10))
+                        .frame(width: max(updatedWidth, metrics.spacing.inline))
                 }
 
                 if trend.archivedCount > 0 {
-                    RoundedRectangle(cornerRadius: 6)
+                    RoundedRectangle(cornerRadius: metrics.radius.control)
                         .fill(Color.orange)
-                        .frame(width: max(archivedWidth, 10))
+                        .frame(width: max(archivedWidth, metrics.spacing.inline))
                 }
             }
             .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .frame(height: 10)
+        .frame(height: metrics.spacing.inline)
     }
 }
 
@@ -673,7 +676,7 @@ private struct TimelineActivityRow: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.vertical, 4)
+        .padding(.vertical, metrics.layout.compactRowVerticalPadding)
     }
 
     private var activityTimestampText: String {

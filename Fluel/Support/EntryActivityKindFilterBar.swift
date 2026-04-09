@@ -1,9 +1,9 @@
-// swiftlint:disable no_magic_numbers
 import FluelLibrary
 import MHUI
 import SwiftUI
 
-struct EntryActivityKindFilterBar: View {    @Environment(\.mhDesignMetrics)
+struct EntryActivityKindFilterBar: View {
+    @Environment(\.mhDesignMetrics)
     private var metrics
     @Namespace private var chipNamespace
 
@@ -28,7 +28,6 @@ struct EntryActivityKindFilterBar: View {    @Environment(\.mhDesignMetrics)
                         .buttonStyle(.plain)
                     }
                 }
-                .padding(.vertical, 2)
             }
         }
         .mhSurfaceInset()

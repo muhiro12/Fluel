@@ -41,7 +41,8 @@ struct FluelEntryListSummary {
     }
 }
 
-struct FluelEntryListSummaryCard: View {    @Environment(\.mhDesignMetrics)
+struct FluelEntryListSummaryCard: View {
+    @Environment(\.mhDesignMetrics)
     private var metrics
 
     let summary: FluelEntryListSummary
@@ -85,7 +86,8 @@ struct FluelEntryListSummaryCard: View {    @Environment(\.mhDesignMetrics)
     }
 }
 
-struct FluelEntryListStateActions: View {    @Environment(\.mhDesignMetrics)
+struct FluelEntryListStateActions: View {
+    @Environment(\.mhDesignMetrics)
     private var metrics
 
     let showsClearSearch: Bool

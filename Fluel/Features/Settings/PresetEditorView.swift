@@ -29,6 +29,8 @@ struct PresetEditorView: View {
 
     @Environment(\.dismiss)
     private var dismiss
+    @Environment(\.mhDesignMetrics)
+    private var metrics
 
     @State private var title: String
     @State private var symbolName: String
@@ -115,7 +117,7 @@ struct PresetEditorView: View {
                     value: $relativeValue,
                     in: relativeRange
                 ) {
-                    VStack(alignment: .leading, spacing: 4) {
+                    VStack(alignment: .leading, spacing: metrics.spacing.inline) {
                         Text(
                             EntryPresetFormatting.startText(for: definition)
                         )
