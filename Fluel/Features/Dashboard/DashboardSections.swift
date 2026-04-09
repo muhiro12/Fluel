@@ -49,8 +49,8 @@ struct FluelDashboardLeadEntry {
 }
 
 struct DashboardQuickActionsCard: View {
-    @Environment(\.mhTheme)
-    private var theme
+    @Environment(\.mhDesignMetrics)
+    private var metrics
     @Environment(EntryPresetStore.self)
     private var presetStore
 
@@ -64,7 +64,7 @@ struct DashboardQuickActionsCard: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
+        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
             Text(FluelCopy.quickActions())
                 .mhTextStyle(.sectionTitle)
 
@@ -133,27 +133,27 @@ struct DashboardEmptyState: View {
 }
 
 struct DashboardOverviewCard: View {
-    private enum Metrics {
-        static let metricColumns = [
-            GridItem(.flexible(), spacing: 12),
-            GridItem(.flexible(), spacing: 12)
-        ]
-    }
-
-    @Environment(\.mhTheme)
-    private var theme
+    @Environment(\.mhDesignMetrics)
+    private var metrics
 
     let snapshot: EntryCollectionSnapshot
 
+    private var metricColumns: [GridItem] {
+        [
+            GridItem(.flexible(), spacing: metrics.spacing.control),
+            GridItem(.flexible(), spacing: metrics.spacing.control)
+        ]
+    }
+
     var body: some View {
-        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
+        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
             Text(FluelCopy.overview())
                 .mhTextStyle(.sectionTitle)
 
             LazyVGrid(
-                columns: Metrics.metricColumns,
+                columns: metricColumns,
                 alignment: .leading,
-                spacing: theme.fluelInlineSpacing
+                spacing: metrics.spacing.inline
             ) {
                 DashboardMetricTile(
                     title: FluelCopy.totalEntriesCount(snapshot.totalCount),
@@ -199,13 +199,13 @@ struct DashboardOverviewCard: View {
 }
 
 struct DashboardLeadEntryCard: View {
-    @Environment(\.mhTheme)
-    private var theme
+    @Environment(\.mhDesignMetrics)
+    private var metrics
 
     let leadEntry: FluelDashboardLeadEntry
 
     var body: some View {
-        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
+        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
             Text(FluelCopy.leadEntry())
                 .mhTextStyle(.sectionTitle)
 
@@ -233,20 +233,20 @@ struct DashboardLeadEntryCard: View {
 }
 
 struct DashboardMilestoneSection: View {
-    @Environment(\.mhTheme)
-    private var theme
+    @Environment(\.mhDesignMetrics)
+    private var metrics
 
     let milestones: [EntryMilestoneSnapshot]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
+        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
             Text(FluelCopy.upcomingMilestones())
                 .mhTextStyle(.sectionTitle)
 
             VStack(spacing: 0) {
                 ForEach(milestones, id: \.entryID) { milestone in
-                    VStack(alignment: .leading, spacing: 6) {
-                        HStack(alignment: .firstTextBaseline, spacing: theme.fluelInlineSpacing) {
+                    VStack(alignment: .leading, spacing: metrics.spacing.inline) {
+                        HStack(alignment: .firstTextBaseline, spacing: metrics.spacing.inline) {
                             Text(milestone.title)
                                 .mhRowTitle()
 
@@ -276,7 +276,7 @@ struct DashboardMilestoneSection: View {
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.vertical, 12)
+                    .padding(.vertical, metrics.spacing.control)
 
                     if milestone.entryID != milestones.last?.entryID {
                         Divider()
@@ -291,20 +291,20 @@ struct DashboardMilestoneSection: View {
 }
 
 struct DashboardActivitySection: View {
-    @Environment(\.mhTheme)
-    private var theme
+    @Environment(\.mhDesignMetrics)
+    private var metrics
 
     let activity: [EntryActivitySnapshot]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
+        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
             Text(FluelCopy.recentActivity())
                 .mhTextStyle(.sectionTitle)
 
             VStack(spacing: 0) {
                 ForEach(activity, id: \.entryID) { item in
-                    VStack(alignment: .leading, spacing: 6) {
-                        HStack(alignment: .firstTextBaseline, spacing: theme.fluelInlineSpacing) {
+                    VStack(alignment: .leading, spacing: metrics.spacing.inline) {
+                        HStack(alignment: .firstTextBaseline, spacing: metrics.spacing.inline) {
                             Text(item.title)
                                 .mhRowTitle()
 
@@ -326,7 +326,7 @@ struct DashboardActivitySection: View {
                             .mhBadge(style: item.kind.fluelBadgeStyle)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.vertical, 12)
+                    .padding(.vertical, metrics.spacing.control)
 
                     if item.entryID != activity.last?.entryID {
                         Divider()
@@ -341,11 +341,14 @@ struct DashboardActivitySection: View {
 }
 
 private struct DashboardMetricTile: View {
+    @Environment(\.mhDesignMetrics)
+    private var metrics
+
     let title: String
     let value: String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
             Text(value)
                 .mhTextStyle(.screenTitle)
 

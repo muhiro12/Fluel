@@ -6,8 +6,8 @@ import SwiftUI
 import TipKit
 
 struct DashboardView: View {
-    @Environment(\.mhTheme)
-    private var theme
+    @Environment(\.mhDesignMetrics)
+    private var metrics
     @Environment(FluelDisplayPreferencesStore.self)
     private var displayPreferences
 
@@ -29,7 +29,7 @@ struct DashboardView: View {
             )
 
             ScrollView {
-                VStack(alignment: .leading, spacing: theme.fluelSectionSpacing) {
+                VStack(alignment: .leading, spacing: metrics.spacing.section) {
                     DashboardQuickActionsCard(
                         onAdd: onAdd,
                         onCreateFromPreset: onCreateFromPreset,

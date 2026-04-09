@@ -11,6 +11,9 @@ private enum EntryDetailSections {
 }
 
 struct EntryDetailHeaderContent: View {
+    @Environment(\.mhDesignMetrics)
+    private var metrics
+
     let entry: Entry
 
     var body: some View {
@@ -22,7 +25,7 @@ struct EntryDetailHeaderContent: View {
                 .frame(height: 240)
                 .clipShape(
                     RoundedRectangle(
-                        cornerRadius: 24,
+                        cornerRadius: metrics.radius.surface,
                         style: .continuous
                     )
                 )
@@ -149,13 +152,13 @@ struct EntryDetailMoreMenu: View {
 }
 
 struct EntryDetailElapsedSection: View {
-    @Environment(\.mhTheme)
-    private var theme
+    @Environment(\.mhDesignMetrics)
+    private var metrics
 
     let snapshot: EntryElapsedSnapshot
 
     var body: some View {
-        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
+        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
             Text(
                 EntryFormatting.primaryElapsedText(for: snapshot)
             )

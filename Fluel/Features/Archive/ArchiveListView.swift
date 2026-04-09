@@ -7,12 +7,8 @@ import SwiftUI
 import TipKit
 
 struct ArchiveListView: View {
-    private enum Metrics {
-        static let rowSpacing: CGFloat = 12
-    }
-
-    @Environment(\.mhTheme)
-    private var theme
+    @Environment(\.mhDesignMetrics)
+    private var metrics
     @Environment(\.modelContext)
     private var context
     @Environment(FluelNoticeCenter.self)
@@ -226,7 +222,7 @@ struct ArchiveListView: View {
     }
 
     private var searchEmptyState: some View {
-        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
+        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
             listHeaderControls
 
             ContentUnavailableView {
@@ -248,7 +244,7 @@ struct ArchiveListView: View {
     }
 
     private var filteredEmptyState: some View {
-        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
+        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
             listHeaderControls
 
             ContentUnavailableView {
@@ -270,7 +266,7 @@ struct ArchiveListView: View {
     }
 
     private var listHeaderControls: some View {
-        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
+        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
             EntryContentFilterBar(
                 selection: contentFilterBinding
             )
@@ -300,7 +296,7 @@ struct ArchiveListView: View {
                         .init(
                             top: 0,
                             leading: 0,
-                            bottom: Metrics.rowSpacing,
+                            bottom: metrics.spacing.control,
                             trailing: 0
                         )
                     )
@@ -363,7 +359,7 @@ struct ArchiveListView: View {
                     .init(
                         top: 0,
                         leading: 0,
-                        bottom: Metrics.rowSpacing,
+                        bottom: metrics.spacing.control,
                         trailing: 0
                     )
                 )

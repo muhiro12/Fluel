@@ -2,16 +2,6 @@
 import MHUI
 import SwiftUI
 
-// swiftlint:disable no_magic_numbers
-private enum FluelMHUICompatibilityMetrics {
-    static let inlineSpacing: CGFloat = 4
-    static let controlSpacing: CGFloat = 12
-    static let sectionSpacing: CGFloat = 32
-    static let rowAccessorySpacing: CGFloat = 12
-    static let controlCornerRadius: CGFloat = 8
-}
-// swiftlint:enable no_magic_numbers
-
 struct FluelGlassContainer<Content: View>: View {
     private let spacing: CGFloat?
     private let content: Content
@@ -39,16 +29,6 @@ struct FluelGlassContainer<Content: View>: View {
         self.spacing = spacing
         self.content = content()
     }
-}
-
-extension MHTheme {
-    // The published MHUI package keeps its layout tokens internal, so Fluel
-    // mirrors the current standard theme values where local layout glue needs them.
-    var fluelInlineSpacing: CGFloat { FluelMHUICompatibilityMetrics.inlineSpacing }
-    var fluelControlSpacing: CGFloat { FluelMHUICompatibilityMetrics.controlSpacing }
-    var fluelSectionSpacing: CGFloat { FluelMHUICompatibilityMetrics.sectionSpacing }
-    var fluelRowAccessorySpacing: CGFloat { FluelMHUICompatibilityMetrics.rowAccessorySpacing }
-    var fluelControlCornerRadius: CGFloat { FluelMHUICompatibilityMetrics.controlCornerRadius }
 }
 
 extension View {

@@ -2,9 +2,8 @@
 import MHUI
 import SwiftUI
 
-struct EntryPresetStrip: View {
-    @Environment(\.mhTheme)
-    private var theme
+struct EntryPresetStrip: View {    @Environment(\.mhDesignMetrics)
+    private var metrics
     @Namespace private var presetNamespace
 
     var title: String = FluelCopy.quickPresets()
@@ -14,7 +13,7 @@ struct EntryPresetStrip: View {
     let onSelect: (EntryPreset) -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
+        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
             Text(title)
                 .mhTextStyle(.sectionTitle)
 
@@ -22,8 +21,8 @@ struct EntryPresetStrip: View {
                 .mhSectionHeaderSupporting()
 
             ScrollView(.horizontal, showsIndicators: false) {
-                FluelGlassContainer(spacing: theme.fluelInlineSpacing) {
-                    HStack(spacing: theme.fluelInlineSpacing) {
+                FluelGlassContainer(spacing: metrics.spacing.inline) {
+                    HStack(spacing: metrics.spacing.inline) {
                         ForEach(presets) { preset in
                             Button {
                                 onSelect(preset)
@@ -49,8 +48,8 @@ struct EntryPresetStrip: View {
     ) -> some View {
         let isSelected = selectedPresetID == preset.id
 
-        return VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
-            HStack(alignment: .firstTextBaseline, spacing: theme.fluelInlineSpacing) {
+        return VStack(alignment: .leading, spacing: metrics.spacing.inline) {
+            HStack(alignment: .firstTextBaseline, spacing: metrics.spacing.inline) {
                 Label(
                     preset.title,
                     systemImage: preset.symbolName

@@ -6,12 +6,10 @@ import SwiftUI
 import TipKit
 
 struct EntryDetailView: View {
-    private enum Layout {
-        static let contentSpacing: CGFloat = 24
-    }
-
     @Environment(\.dismiss)
     private var dismiss
+    @Environment(\.mhDesignMetrics)
+    private var metrics
     @Environment(\.modelContext)
     private var context
     @Environment(FluelNoticeCenter.self)
@@ -31,7 +29,7 @@ struct EntryDetailView: View {
             )
             let shareText = shareText(referenceDate: timeline.date)
 
-            VStack(alignment: .leading, spacing: Layout.contentSpacing) {
+            VStack(alignment: .leading, spacing: metrics.spacing.group) {
                 EntryDetailQuickActions(
                     entry: entry,
                     shareText: shareText,

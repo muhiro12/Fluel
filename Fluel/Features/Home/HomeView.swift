@@ -9,12 +9,8 @@ import SwiftUI
 import TipKit
 
 struct HomeView: View {
-    private enum Metrics {
-        static let rowSpacing: CGFloat = 12
-    }
-
-    @Environment(\.mhTheme)
-    private var theme
+    @Environment(\.mhDesignMetrics)
+    private var metrics
     @Environment(\.modelContext)
     private var context
     @Environment(EntryPresetStore.self)
@@ -214,7 +210,7 @@ struct HomeView: View {
 
     private var emptyState: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: theme.fluelSectionSpacing) {
+            VStack(alignment: .leading, spacing: metrics.spacing.section) {
                 ContentUnavailableView {
                     Label(
                         FluelCopy.homeEmptyTitle(),
@@ -246,7 +242,7 @@ struct HomeView: View {
     }
 
     private var searchEmptyState: some View {
-        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
+        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
             listHeaderControls
 
             ContentUnavailableView {
@@ -268,7 +264,7 @@ struct HomeView: View {
     }
 
     private var filteredEmptyState: some View {
-        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
+        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
             listHeaderControls
 
             ContentUnavailableView {
@@ -299,7 +295,7 @@ struct HomeView: View {
                         .init(
                             top: 0,
                             leading: 0,
-                            bottom: Metrics.rowSpacing,
+                            bottom: metrics.spacing.control,
                             trailing: 0
                         )
                     )
@@ -313,7 +309,7 @@ struct HomeView: View {
                         .init(
                             top: 0,
                             leading: 0,
-                            bottom: Metrics.rowSpacing,
+                            bottom: metrics.spacing.control,
                             trailing: 0
                         )
                     )
@@ -358,7 +354,7 @@ struct HomeView: View {
                     .init(
                         top: 0,
                         leading: 0,
-                        bottom: Metrics.rowSpacing,
+                        bottom: metrics.spacing.control,
                         trailing: 0
                     )
                 )
@@ -375,7 +371,7 @@ struct HomeView: View {
     }
 
     private var listHeaderControls: some View {
-        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
+        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
             EntryContentFilterBar(
                 selection: contentFilterBinding
             )

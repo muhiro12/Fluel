@@ -41,14 +41,13 @@ struct FluelEntryListSummary {
     }
 }
 
-struct FluelEntryListSummaryCard: View {
-    @Environment(\.mhTheme)
-    private var theme
+struct FluelEntryListSummaryCard: View {    @Environment(\.mhDesignMetrics)
+    private var metrics
 
     let summary: FluelEntryListSummary
 
     var body: some View {
-        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
+        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
             Text(summary.headline)
                 .mhTextStyle(.sectionTitle)
 
@@ -86,9 +85,8 @@ struct FluelEntryListSummaryCard: View {
     }
 }
 
-struct FluelEntryListStateActions: View {
-    @Environment(\.mhTheme)
-    private var theme
+struct FluelEntryListStateActions: View {    @Environment(\.mhDesignMetrics)
+    private var metrics
 
     let showsClearSearch: Bool
     let showsClearFilter: Bool
@@ -96,7 +94,7 @@ struct FluelEntryListStateActions: View {
     let onClearFilter: () -> Void
 
     var body: some View {
-        FluelGlassContainer(spacing: theme.fluelInlineSpacing) {
+        FluelGlassContainer(spacing: metrics.spacing.inline) {
             MHActionGroup {
                 if showsClearSearch {
                     Button(

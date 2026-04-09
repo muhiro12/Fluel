@@ -127,6 +127,9 @@ struct EntryFormStartSection: View {
 }
 
 struct EntryFormPhotoSection: View {
+    @Environment(\.mhDesignMetrics)
+    private var metrics
+
     @Binding var draft: EntryFormDraft
     @Binding var selectedPhotoItem: PhotosPickerItem?
 
@@ -143,7 +146,7 @@ struct EntryFormPhotoSection: View {
                     .frame(maxWidth: .infinity)
                     .clipShape(
                         RoundedRectangle(
-                            cornerRadius: 18,
+                            cornerRadius: metrics.radius.surface,
                             style: .continuous
                         )
                     )

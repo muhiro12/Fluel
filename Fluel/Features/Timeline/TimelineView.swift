@@ -13,8 +13,8 @@ private enum TimelineView {
 }
 
 struct ActivityTimelineView: View {
-    @Environment(\.mhTheme)
-    private var theme
+    @Environment(\.mhDesignMetrics)
+    private var metrics
 
     @Query
     private var entries: [Entry]
@@ -209,7 +209,7 @@ struct ActivityTimelineView: View {
     }
 
     private var searchEmptyState: some View {
-        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
+        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
             listHeaderControls
 
             ContentUnavailableView {
@@ -231,7 +231,7 @@ struct ActivityTimelineView: View {
     }
 
     private var filteredEmptyState: some View {
-        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
+        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
             listHeaderControls
 
             ContentUnavailableView {
@@ -342,7 +342,7 @@ struct ActivityTimelineView: View {
     }
 
     private var listHeaderControls: some View {
-        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
+        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
             filterControls
 
             if model.hasActiveSearch || model.hasActiveFilter {
@@ -357,7 +357,7 @@ struct ActivityTimelineView: View {
     }
 
     private var filterControls: some View {
-        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
+        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
             EntryActivityKindFilterBar(
                 selection: activityFilterBinding
             )
@@ -388,15 +388,15 @@ struct ActivityTimelineView: View {
 }
 
 private struct TimelineSummaryCard: View {
-    @Environment(\.mhTheme)
-    private var theme
+    @Environment(\.mhDesignMetrics)
+    private var metrics
 
     let summary: EntryActivityTimelineSummary
     let activityFilterLabel: String
     let scopeLabel: String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
+        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
             Text(FluelCopy.timelineSummary())
                 .mhTextStyle(.sectionTitle)
 
@@ -454,20 +454,20 @@ private struct TimelineSummaryCard: View {
 }
 
 private struct TimelineTrendCard: View {
-    @Environment(\.mhTheme)
-    private var theme
+    @Environment(\.mhDesignMetrics)
+    private var metrics
 
     let trends: [EntryActivityTrendSnapshot]
 
     var body: some View {
-        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
+        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
             Text(FluelCopy.timelineTrends())
                 .mhTextStyle(.sectionTitle)
 
             VStack(spacing: 0) {
                 ForEach(trends, id: \.monthStart) { trend in
-                    VStack(alignment: .leading, spacing: 8) {
-                        HStack(alignment: .firstTextBaseline, spacing: theme.fluelInlineSpacing) {
+                    VStack(alignment: .leading, spacing: metrics.spacing.inline) {
+                        HStack(alignment: .firstTextBaseline, spacing: metrics.spacing.inline) {
                             Text(trend.title)
                                 .mhRowTitle()
 
@@ -483,8 +483,8 @@ private struct TimelineTrendCard: View {
 
                         TimelineTrendBar(trend: trend)
 
-                        FluelGlassContainer(spacing: theme.fluelInlineSpacing) {
-                            HStack(spacing: theme.fluelInlineSpacing) {
+                        FluelGlassContainer(spacing: metrics.spacing.inline) {
+                            HStack(spacing: metrics.spacing.inline) {
                                 TimelineTrendPill(
                                     label: FluelCopy.timelineActivityCount(
                                         kind: .added,
@@ -510,7 +510,7 @@ private struct TimelineTrendCard: View {
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.vertical, 12)
+                    .padding(.vertical, metrics.spacing.control)
 
                     if trend.monthStart != trends.last?.monthStart {
                         Divider()
@@ -571,18 +571,18 @@ private struct TimelineTrendPill: View {
 }
 
 private struct TimelineMilestoneDigestCard: View {
-    @Environment(\.mhTheme)
-    private var theme
+    @Environment(\.mhDesignMetrics)
+    private var metrics
 
     let digest: EntryTimelineMilestoneDigest
 
     var body: some View {
-        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
+        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
             Text(FluelCopy.timelineMilestones())
                 .mhTextStyle(.sectionTitle)
 
-            FluelGlassContainer(spacing: theme.fluelInlineSpacing) {
-                HStack(spacing: theme.fluelInlineSpacing) {
+            FluelGlassContainer(spacing: metrics.spacing.inline) {
+                HStack(spacing: metrics.spacing.inline) {
                     TimelineTrendPill(
                         label: FluelCopy.timelineVisibleEntryCount(
                             digest.visibleEntryCount
@@ -603,8 +603,8 @@ private struct TimelineMilestoneDigestCard: View {
 
             VStack(spacing: 0) {
                 ForEach(digest.milestones, id: \.entryID) { milestone in
-                    VStack(alignment: .leading, spacing: 6) {
-                        HStack(alignment: .firstTextBaseline, spacing: theme.fluelInlineSpacing) {
+                    VStack(alignment: .leading, spacing: metrics.spacing.inline) {
+                        HStack(alignment: .firstTextBaseline, spacing: metrics.spacing.inline) {
                             Text(milestone.title)
                                 .mhRowTitle()
 
@@ -636,7 +636,7 @@ private struct TimelineMilestoneDigestCard: View {
                         }
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)
-                    .padding(.vertical, 12)
+                    .padding(.vertical, metrics.spacing.control)
 
                     if milestone.entryID != digest.milestones.last?.entryID {
                         Divider()
@@ -651,14 +651,17 @@ private struct TimelineMilestoneDigestCard: View {
 }
 
 private struct TimelineActivityRow: View {
+    @Environment(\.mhDesignMetrics)
+    private var metrics
+
     let activity: EntryActivitySnapshot
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
             Text(activity.title)
                 .mhRowTitle()
 
-            HStack(spacing: 8) {
+            HStack(spacing: metrics.spacing.inline) {
                 Text(FluelCopy.entryActivityKind(activity.kind))
                     .mhBadge(style: activity.kind.fluelBadgeStyle)
 

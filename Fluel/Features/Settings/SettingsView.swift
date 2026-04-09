@@ -7,8 +7,8 @@ import SwiftUI
 import TipKit
 
 struct SettingsView: View {
-    @Environment(\.mhTheme)
-    private var theme
+    @Environment(\.mhDesignMetrics)
+    private var metrics
     @Environment(EntryPresetStore.self)
     private var presetStore
     @Environment(FluelDisplayPreferencesStore.self)
@@ -75,7 +75,7 @@ struct SettingsView: View {
         )
 
         ScrollView {
-            VStack(alignment: .leading, spacing: theme.fluelSectionSpacing) {
+            VStack(alignment: .leading, spacing: metrics.spacing.section) {
                 displayCard
                 presetCard
                 dataCard(snapshot)
@@ -122,7 +122,7 @@ struct SettingsView: View {
     }
 
     private var displayCard: some View {
-        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
+        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
             Text(FluelCopy.display())
                 .mhTextStyle(.sectionTitle)
 
@@ -166,7 +166,7 @@ struct SettingsView: View {
     private func dataCard(
         _ snapshot: EntryCollectionSnapshot
     ) -> some View {
-        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
+        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
             Text(FluelCopy.dataStatus())
                 .mhTextStyle(.sectionTitle)
 
@@ -192,7 +192,7 @@ struct SettingsView: View {
     }
 
     private var presetCard: some View {
-        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
+        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
             Text(FluelCopy.presets())
                 .mhTextStyle(.sectionTitle)
 
@@ -202,7 +202,7 @@ struct SettingsView: View {
                         FluelTipState.markPresetManagementLearned()
                     }
             } label: {
-                VStack(alignment: .leading, spacing: 6) {
+                VStack(alignment: .leading, spacing: metrics.spacing.inline) {
                     Text(FluelCopy.openPresets())
                         .mhRowTitle()
 
@@ -241,7 +241,7 @@ struct SettingsView: View {
     }
 
     private var supportCard: some View {
-        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
+        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
             Text(FluelCopy.support())
                 .mhTextStyle(.sectionTitle)
 

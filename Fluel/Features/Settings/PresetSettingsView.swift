@@ -6,8 +6,8 @@ import SwiftUI
 import TipKit
 
 struct PresetSettingsView: View {
-    @Environment(\.mhTheme)
-    private var theme
+    @Environment(\.mhDesignMetrics)
+    private var metrics
     @Environment(EntryPresetStore.self)
     private var presetStore
     @Environment(FluelNoticeCenter.self)
@@ -18,7 +18,7 @@ struct PresetSettingsView: View {
 
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: theme.fluelSectionSpacing) {
+            VStack(alignment: .leading, spacing: metrics.spacing.section) {
                 defaultPresetCard
 
                 PresetSettingsSectionCard(
@@ -164,7 +164,7 @@ struct PresetSettingsView: View {
     }
 
     private var defaultPresetCard: some View {
-        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
+        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
             Text(FluelCopy.defaultPreset())
                 .mhTextStyle(.sectionTitle)
 
@@ -276,8 +276,8 @@ private struct PresetSettingsSectionCard: View {
         let body: String
     }
 
-    @Environment(\.mhTheme)
-    private var theme
+    @Environment(\.mhDesignMetrics)
+    private var metrics
 
     let title: String
     let presets: [EntryPreset]
@@ -289,12 +289,12 @@ private struct PresetSettingsSectionCard: View {
     var onDelete: ((EntryPreset) -> Void)?
 
     var body: some View {
-        VStack(alignment: .leading, spacing: theme.fluelInlineSpacing) {
+        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
             Text(title)
                 .mhTextStyle(.sectionTitle)
 
             if presets.isEmpty, let emptyState {
-                VStack(alignment: .leading, spacing: 6) {
+                VStack(alignment: .leading, spacing: metrics.spacing.inline) {
                     Text(emptyState.title)
                         .mhRowTitle()
 
@@ -312,7 +312,7 @@ private struct PresetSettingsSectionCard: View {
                             onEdit: onEdit,
                             onDelete: onDelete
                         )
-                        .padding(.vertical, 12)
+                        .padding(.vertical, metrics.spacing.control)
 
                         if preset.id != presets.last?.id {
                             Divider()
@@ -328,6 +328,8 @@ private struct PresetSettingsSectionCard: View {
 }
 
 private struct PresetSettingsRow: View {
+    @Environment(\.mhDesignMetrics)
+    private var metrics
     @Namespace private var statusBadgeNamespace
 
     let preset: EntryPreset
@@ -338,8 +340,8 @@ private struct PresetSettingsRow: View {
     var onDelete: ((EntryPreset) -> Void)?
 
     var body: some View {
-        HStack(alignment: .top, spacing: 12) {
-            VStack(alignment: .leading, spacing: 6) {
+        HStack(alignment: .top, spacing: metrics.spacing.control) {
+            VStack(alignment: .leading, spacing: metrics.spacing.inline) {
                 Label(
                     preset.title,
                     systemImage: preset.symbolName
@@ -357,8 +359,8 @@ private struct PresetSettingsRow: View {
                 }
 
                 if statusBadges.isEmpty == false {
-                    FluelGlassContainer(spacing: 8) {
-                        HStack(spacing: 8) {
+                    FluelGlassContainer(spacing: metrics.spacing.inline) {
+                        HStack(spacing: metrics.spacing.inline) {
                             ForEach(statusBadges) { badge in
                                 Text(badge.title)
                                     .mhBadge(style: badge.style)

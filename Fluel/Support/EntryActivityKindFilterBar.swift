@@ -3,17 +3,16 @@ import FluelLibrary
 import MHUI
 import SwiftUI
 
-struct EntryActivityKindFilterBar: View {
-    @Environment(\.mhTheme)
-    private var theme
+struct EntryActivityKindFilterBar: View {    @Environment(\.mhDesignMetrics)
+    private var metrics
     @Namespace private var chipNamespace
 
     @Binding var selection: EntryActivityFilterMode
 
     var body: some View {
         ScrollView(.horizontal, showsIndicators: false) {
-            FluelGlassContainer(spacing: theme.fluelInlineSpacing) {
-                HStack(spacing: theme.fluelInlineSpacing) {
+            FluelGlassContainer(spacing: metrics.spacing.inline) {
+                HStack(spacing: metrics.spacing.inline) {
                     ForEach(EntryActivityFilterMode.allCases, id: \.self) { mode in
                         Button {
                             selection = mode
