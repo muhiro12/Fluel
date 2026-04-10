@@ -123,6 +123,7 @@ struct EntryRowView: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .mhRow()
+        .mhSurfaceInset()
         .mhSurface(role: entry.isArchived ? .muted : .standard)
     }
 

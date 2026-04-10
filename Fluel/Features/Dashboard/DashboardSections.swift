@@ -103,7 +103,7 @@ struct DashboardQuickActionsCard: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .mhRow()
+        .mhSurfaceInset()
         .mhSurface(role: .muted)
     }
 }
@@ -193,7 +193,7 @@ struct DashboardOverviewCard: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .mhRow()
+        .mhSurfaceInset()
         .mhSurface(role: .muted)
     }
 }
@@ -227,7 +227,7 @@ struct DashboardLeadEntryCard: View {
             .mhTextStyle(.screenTitle)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .mhRow()
+        .mhSurfaceInset()
         .mhSurface()
     }
 }
@@ -285,7 +285,7 @@ struct DashboardMilestoneSection: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .mhRow()
+        .mhSurfaceInset()
         .mhSurface(role: .muted)
     }
 }
@@ -335,7 +335,7 @@ struct DashboardActivitySection: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .mhRow()
+        .mhSurfaceInset()
         .mhSurface(role: .muted)
     }
 }

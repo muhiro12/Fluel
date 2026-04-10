@@ -159,7 +159,7 @@ struct SettingsView: View {
             .disabled(displayPreferences.usesDefaultSettings)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .mhRow()
+        .mhSurfaceInset()
         .mhSurface(role: .muted)
     }
 
@@ -187,7 +187,7 @@ struct SettingsView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .mhRow()
+        .mhSurfaceInset()
         .mhSurface(role: .muted)
     }
 
@@ -232,7 +232,7 @@ struct SettingsView: View {
             .buttonStyle(.plain)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .mhRow()
+        .mhSurfaceInset()
         .mhSurface(role: .muted)
         .popoverTip(
             model.showsPresetManagementTip() ? presetManagementTip : nil,
@@ -272,7 +272,7 @@ struct SettingsView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .mhRow()
+        .mhSurfaceInset()
         .mhSurface(role: .muted)
     }
 }

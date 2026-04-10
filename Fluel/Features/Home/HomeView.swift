@@ -229,7 +229,7 @@ struct HomeView: View {
 
                 if quickPresets.isEmpty == false {
                     quickPresetsCard
-                        .mhRow()
+                        .mhSurfaceInset()
                         .mhSurface(role: .muted)
                 }
             }
@@ -242,7 +242,7 @@ struct HomeView: View {
     }
 
     private var searchEmptyState: some View {
-        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
+        VStack(alignment: .leading, spacing: metrics.spacing.section) {
             listHeaderControls
 
             ContentUnavailableView {
@@ -264,7 +264,7 @@ struct HomeView: View {
     }
 
     private var filteredEmptyState: some View {
-        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
+        VStack(alignment: .leading, spacing: metrics.spacing.section) {
             listHeaderControls
 
             ContentUnavailableView {
@@ -371,7 +371,7 @@ struct HomeView: View {
     }
 
     private var listHeaderControls: some View {
-        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
+        VStack(alignment: .leading, spacing: metrics.spacing.control) {
             EntryContentFilterBar(
                 selection: contentFilterBinding
             )

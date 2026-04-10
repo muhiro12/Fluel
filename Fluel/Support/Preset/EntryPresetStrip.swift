@@ -37,6 +37,7 @@ struct EntryPresetStrip: View {
                             .buttonStyle(.plain)
                         }
                     }
+                    .padding(.vertical, metrics.layout.compactActionVerticalPadding)
                 }
             }
         }

@@ -221,7 +221,7 @@ struct PresetSettingsView: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .mhRow()
+        .mhSurfaceInset()
         .mhSurface(role: .muted)
         .popoverTip(
             model.showsDefaultPresetTip() ? defaultPresetTip : nil,
@@ -322,7 +322,7 @@ private struct PresetSettingsSectionCard: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .mhRow()
+        .mhSurfaceInset()
         .mhSurface(role: .muted)
     }
 }

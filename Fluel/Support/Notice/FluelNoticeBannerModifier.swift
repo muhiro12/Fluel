@@ -27,6 +27,7 @@ struct FluelNoticeBannerModifier: ViewModifier {
                     )
                     .padding(.horizontal, metrics.layout.compactScreenHorizontalMargin)
                     .padding(.top, metrics.layout.compactRowVerticalPadding)
+                    .padding(.bottom, metrics.layout.compactRowVerticalPadding)
                     .task(id: notice.id) {
                         try? await Task.sleep(
                             for: .seconds(Layout.dismissDelaySeconds)

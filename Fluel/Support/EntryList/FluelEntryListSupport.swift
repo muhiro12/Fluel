@@ -82,6 +82,7 @@ struct FluelEntryListSummaryCard: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .mhRow()
+        .mhSurfaceInset()
         .mhSurface(role: .muted)
     }
 }

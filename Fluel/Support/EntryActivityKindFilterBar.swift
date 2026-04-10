@@ -28,6 +28,7 @@ struct EntryActivityKindFilterBar: View {
                         .buttonStyle(.plain)
                     }
                 }
+                .padding(.vertical, metrics.layout.compactActionVerticalPadding)
             }
         }
         .mhSurfaceInset()

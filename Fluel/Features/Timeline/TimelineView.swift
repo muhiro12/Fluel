@@ -209,7 +209,7 @@ struct ActivityTimelineView: View {
     }
 
     private var searchEmptyState: some View {
-        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
+        VStack(alignment: .leading, spacing: metrics.spacing.section) {
             listHeaderControls
 
             ContentUnavailableView {
@@ -231,7 +231,7 @@ struct ActivityTimelineView: View {
     }
 
     private var filteredEmptyState: some View {
-        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
+        VStack(alignment: .leading, spacing: metrics.spacing.section) {
             listHeaderControls
 
             ContentUnavailableView {
@@ -342,7 +342,7 @@ struct ActivityTimelineView: View {
     }
 
     private var listHeaderControls: some View {
-        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
+        VStack(alignment: .leading, spacing: metrics.spacing.control) {
             filterControls
 
             if model.hasActiveSearch || model.hasActiveFilter {
@@ -357,7 +357,7 @@ struct ActivityTimelineView: View {
     }
 
     private var filterControls: some View {
-        VStack(alignment: .leading, spacing: metrics.spacing.inline) {
+        VStack(alignment: .leading, spacing: metrics.spacing.control) {
             EntryActivityKindFilterBar(
                 selection: activityFilterBinding
             )
@@ -449,6 +449,7 @@ private struct TimelineSummaryCard: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .mhRow()
+        .mhSurfaceInset()
         .mhSurface(role: .muted)
     }
 }
@@ -520,6 +521,7 @@ private struct TimelineTrendCard: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .mhRow()
+        .mhSurfaceInset()
         .mhSurface(role: .muted)
     }
 }
@@ -649,6 +651,7 @@ private struct TimelineMilestoneDigestCard: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .mhRow()
+        .mhSurfaceInset()
         .mhSurface(role: .muted)
     }
 }

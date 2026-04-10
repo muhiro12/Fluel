@@ -9,7 +9,7 @@ struct FluelNoticeBanner: View {
     let dismiss: () -> Void
 
     var body: some View {
-        HStack(alignment: .top, spacing: metrics.layout.compactRowAccessorySpacing) {
+        HStack(alignment: .top, spacing: metrics.spacing.control) {
             Image(systemName: iconName)
                 .font(.headline)
                 .foregroundStyle(iconColor)
@@ -31,8 +31,9 @@ struct FluelNoticeBanner: View {
             .accessibilityLabel(FluelCopy.dismissNotice())
             .buttonStyle(.plain)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .mhSurfaceInset()
-        .mhSurface(role: .muted)
+        .mhSurface(role: .standard)
     }
 
     private var iconName: String {
