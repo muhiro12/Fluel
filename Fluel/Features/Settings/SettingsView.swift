@@ -1,6 +1,7 @@
 // swiftlint:disable attributes closure_body_length no_empty_block
 // swiftlint:disable no_magic_numbers type_contents_order
 import FluelLibrary
+import MHPlatform
 import MHUI
 import SwiftData
 import SwiftUI
@@ -15,6 +16,8 @@ struct SettingsView: View {
     private var displayPreferences
     @Environment(FluelNoticeCenter.self)
     private var noticeCenter
+    @Environment(MHLoggingBootstrap.self)
+    private var logging
 
     @Query
     private var entries: [Entry]
@@ -79,6 +82,7 @@ struct SettingsView: View {
                 displayCard
                 presetCard
                 dataCard(snapshot)
+                SettingsDiagnosticsCard()
                 supportCard
             }
             .mhSurfaceInset()
@@ -277,19 +281,6 @@ struct SettingsView: View {
     }
 }
 
-#Preview(traits: .modifier(FluelSampleData())) {
-    @Previewable var presetStore = EntryPresetStore.preview()
-
-    NavigationStack {
-        SettingsView(
-            onShowArchive: {},
-            onShowLicenses: {}
-        )
-    }
-    .fluelPreviewEnvironment(presetStore: presetStore)
-    .fluelAppStyle()
-}
-
 private extension SettingsView {
     var displaySummary: String {
         if displayPreferences.usesDefaultSettings {
@@ -316,7 +307,9 @@ private extension SettingsView {
     }
 
     func resetTipsFeedback() {
-        if FluelTipBootstrap.resetTips() {
+        if FluelTipBootstrap.resetTips(
+            logger: logging.logger(category: "TipKit")
+        ) {
             noticeCenter.presentInfo(
                 message: FluelCopy.tipsResetNotice()
             )

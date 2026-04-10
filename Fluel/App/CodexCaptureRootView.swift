@@ -76,6 +76,10 @@ struct CodexCaptureRootView: View {
             NavigationStack {
                 FluelLicenseView()
             }
+        case .diagnostics:
+            NavigationStack {
+                FluelDiagnosticsView()
+            }
         }
     }
 }

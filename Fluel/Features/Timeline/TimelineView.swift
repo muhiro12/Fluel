@@ -3,6 +3,7 @@
 // swiftlint:disable no_magic_numbers one_declaration_per_file
 // swiftlint:disable type_body_length
 import FluelLibrary
+import MHPlatform
 import MHUI
 import SwiftData
 import SwiftUI
@@ -15,6 +16,8 @@ private enum TimelineView {
 struct ActivityTimelineView: View {
     @Environment(\.mhDesignMetrics)
     private var metrics
+    @Environment(MHLoggingBootstrap.self)
+    private var logging
 
     @Query
     private var entries: [Entry]
@@ -161,6 +164,11 @@ struct ActivityTimelineView: View {
             text: searchTextBinding,
             prompt: FluelCopy.searchTimeline()
         )
+        .task {
+            model.attachLogger(
+                logging.logger(category: "TimelineScreen")
+            )
+        }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 if searchedActivity.isEmpty == false {

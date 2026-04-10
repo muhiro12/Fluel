@@ -3,10 +3,6 @@ import MHPlatform
 import TipKit
 
 enum FluelTipBootstrap {
-    private static let logger = FluelAppLogging.logger(
-        category: "TipKit"
-    )
-
     static var isEnabled: Bool {
         let processInfo = ProcessInfo.processInfo
 
@@ -17,9 +13,16 @@ enum FluelTipBootstrap {
         return processInfo.arguments.contains("--codex-capture-screen") == false
     }
 
-    static func configureIfNeeded() {
+    static func configureIfNeeded(
+        logger: MHLogger
+    ) {
         guard isEnabled else {
-            logger.notice("TipKit disabled for previews or capture")
+            logger.notice(
+                "TipKit configuration skipped",
+                metadata: [
+                    "reason": "previewOrCapture"
+                ]
+            )
             return
         }
 
@@ -34,13 +37,24 @@ enum FluelTipBootstrap {
             logger.notice("TipKit already configured")
         } catch {
             logger.error(
-                "TipKit configuration failed: \(error.localizedDescription)"
+                "TipKit configuration failed",
+                metadata: [
+                    "error": error.localizedDescription
+                ]
             )
         }
     }
 
-    static func resetTips() -> Bool {
+    static func resetTips(
+        logger: MHLogger
+    ) -> Bool {
         guard isEnabled else {
+            logger.warning(
+                "TipKit reset skipped",
+                metadata: [
+                    "reason": "previewOrCapture"
+                ]
+            )
             return false
         }
 
@@ -51,7 +65,10 @@ enum FluelTipBootstrap {
             return true
         } catch {
             logger.error(
-                "TipKit datastore reset failed: \(error.localizedDescription)"
+                "TipKit datastore reset failed",
+                metadata: [
+                    "error": error.localizedDescription
+                ]
             )
             return false
         }

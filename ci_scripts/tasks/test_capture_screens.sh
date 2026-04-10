@@ -60,6 +60,7 @@ screens=(
   presetSettings
   presetEditor
   licenses
+  diagnostics
 )
 
 for screen in "${screens[@]}"; do

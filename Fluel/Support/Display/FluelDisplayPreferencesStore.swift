@@ -1,16 +1,24 @@
 import Foundation
+import MHPlatform
 import Observation
 
 @MainActor
 @Observable
 final class FluelDisplayPreferencesStore {
     @ObservationIgnored private let defaults: UserDefaults
+    @ObservationIgnored private let logger: MHLogger?
+    @ObservationIgnored private var suppressesChangeLogging = false
 
     var showsListSummaryCards: Bool {
         didSet {
             DisplayPreferences.setShowsListSummaryCards(
                 showsListSummaryCards,
                 defaults: defaults
+            )
+            logSettingChange(
+                name: "showsListSummaryCards",
+                oldValue: oldValue,
+                newValue: showsListSummaryCards
             )
         }
     }
@@ -21,6 +29,11 @@ final class FluelDisplayPreferencesStore {
                 showsNotePreviews,
                 defaults: defaults
             )
+            logSettingChange(
+                name: "showsNotePreviews",
+                oldValue: oldValue,
+                newValue: showsNotePreviews
+            )
         }
     }
 
@@ -30,6 +43,11 @@ final class FluelDisplayPreferencesStore {
                 showsMetadataBadges,
                 defaults: defaults
             )
+            logSettingChange(
+                name: "showsMetadataBadges",
+                oldValue: oldValue,
+                newValue: showsMetadataBadges
+            )
         }
     }
 
@@ -38,6 +56,11 @@ final class FluelDisplayPreferencesStore {
             DisplayPreferences.setShowsDashboardHighlights(
                 showsDashboardHighlights,
                 defaults: defaults
+            )
+            logSettingChange(
+                name: "showsDashboardHighlights",
+                oldValue: oldValue,
+                newValue: showsDashboardHighlights
             )
         }
     }
@@ -61,9 +84,11 @@ final class FluelDisplayPreferencesStore {
     }
 
     init(
-        defaults: UserDefaults = DisplayPreferences.store
+        defaults: UserDefaults = DisplayPreferences.store,
+        logger: MHLogger? = nil
     ) {
         self.defaults = defaults
+        self.logger = logger
         showsListSummaryCards = DisplayPreferences.loadShowsListSummaryCards(
             defaults: defaults
         )
@@ -87,9 +112,31 @@ final class FluelDisplayPreferencesStore {
     }
 
     func reset() {
+        suppressesChangeLogging = true
         showsListSummaryCards = true
         showsNotePreviews = true
         showsMetadataBadges = true
         showsDashboardHighlights = true
+        suppressesChangeLogging = false
+        logger?.notice("Display preferences reset")
+    }
+
+    private func logSettingChange(
+        name: String,
+        oldValue: Bool,
+        newValue: Bool
+    ) {
+        guard suppressesChangeLogging == false,
+              oldValue != newValue else {
+            return
+        }
+
+        logger?.notice(
+            "Display preference updated",
+            metadata: [
+                "setting": name,
+                "isEnabled": String(newValue)
+            ]
+        )
     }
 }

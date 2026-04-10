@@ -1,6 +1,7 @@
 // swiftlint:disable closure_body_length closure_end_indentation
 // swiftlint:disable file_length function_body_length opening_brace type_body_length
 import FluelLibrary
+import MHPlatform
 import MHUI
 import SwiftData
 import SwiftUI
@@ -15,6 +16,8 @@ struct ArchiveListView: View {
     private var noticeCenter
     @Environment(FluelDisplayPreferencesStore.self)
     private var displayPreferences
+    @Environment(MHLoggingBootstrap.self)
+    private var logging
 
     @Query(
         filter: #Predicate<Entry> { entry in
@@ -62,7 +65,8 @@ struct ArchiveListView: View {
     private var mutationWorkflow: FluelEntryMutationWorkflow {
         .init(
             context: context,
-            surface: "ArchiveListView"
+            surface: "ArchiveListView",
+            logger: logging.logger(category: "EntryMutation")
         )
     }
 
@@ -157,6 +161,11 @@ struct ArchiveListView: View {
             text: searchTextBinding,
             prompt: FluelCopy.searchEntries()
         )
+        .task {
+            model.attachLogger(
+                logging.logger(category: "ArchiveScreen")
+            )
+        }
         .confirmationDialog(
             FluelCopy.deleteConfirmationTitle(),
             isPresented: pendingDeleteBinding,

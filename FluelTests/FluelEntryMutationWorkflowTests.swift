@@ -9,6 +9,7 @@ struct FluelEntryMutationWorkflowTests {
     @Test
     func create_persists_entry_and_returns_success() async throws {
         let context = try makeTestContext()
+        let logProbe = FluelLogProbe()
         var reloadCallCount = 0
         let reloadTimelines: @MainActor () async -> Void = {
             reloadCallCount += 1
@@ -17,6 +18,7 @@ struct FluelEntryMutationWorkflowTests {
         let workflow = FluelEntryMutationWorkflow(
             context: context,
             surface: "test",
+            logger: logProbe.logger(category: "EntryMutation"),
             reloadTimelines: reloadTimelines
         )
 
@@ -34,11 +36,28 @@ struct FluelEntryMutationWorkflowTests {
         #expect(entries.first?.title == "Wallet")
         #expect(result == .success)
         #expect(reloadCallCount == 1)
+
+        let events = await recordedEvents(
+            from: logProbe
+        )
+        let startedEvent = try #require(events.first { event in
+            event.message == "Entry mutation started"
+        })
+        let completedEvent = try #require(events.first { event in
+            event.message == "Entry mutation completed"
+        })
+
+        #expect(startedEvent.metadata["operation"] == "createEntry")
+        #expect(startedEvent.metadata["surface"] == "test")
+        #expect(startedEvent.metadata["result"] == "pending")
+        #expect(completedEvent.metadata["phase"] == "completed")
+        #expect(completedEvent.metadata["result"] == "success")
     }
 
     @Test
     func create_surfaces_validation_error_without_follow_up() async throws {
         let context = try makeTestContext()
+        let logProbe = FluelLogProbe()
         var reloadCallCount = 0
         let reloadTimelines: @MainActor () async -> Void = {
             reloadCallCount += 1
@@ -47,6 +66,7 @@ struct FluelEntryMutationWorkflowTests {
         let workflow = FluelEntryMutationWorkflow(
             context: context,
             surface: "test",
+            logger: logProbe.logger(category: "EntryMutation"),
             reloadTimelines: reloadTimelines
         )
 
@@ -69,14 +89,27 @@ struct FluelEntryMutationWorkflowTests {
             Issue.record("Expected primary mutation failure.")
         }
         #expect(reloadCallCount == 0)
+
+        let events = await recordedEvents(
+            from: logProbe
+        )
+        let failureEvent = try #require(events.first { event in
+            event.message == "Entry mutation failed"
+        })
+
+        #expect(failureEvent.metadata["phase"] == "primaryMutation")
+        #expect(failureEvent.metadata["result"] == "failure")
+        #expect(failureEvent.metadata["operation"] == "createEntry")
     }
 
     @Test
     func create_returns_preflight_failure_when_task_is_cancelled() async throws {
         let context = try makeTestContext()
+        let logProbe = FluelLogProbe()
         let workflow = FluelEntryMutationWorkflow(
             context: context,
-            surface: "test"
+            surface: "test",
+            logger: logProbe.logger(category: "EntryMutation")
         )
 
         let task = Task {
@@ -114,6 +147,7 @@ struct FluelEntryMutationWorkflowTests {
         }
 
         let context = try makeTestContext()
+        let logProbe = FluelLogProbe()
         let reloadTimelines: @MainActor () async throws -> Void = {
             throw FollowUpError.failed
         }
@@ -121,6 +155,7 @@ struct FluelEntryMutationWorkflowTests {
         let workflow = FluelEntryMutationWorkflow(
             context: context,
             surface: "test",
+            logger: logProbe.logger(category: "EntryMutation"),
             reloadTimelines: reloadTimelines
         )
 
@@ -141,11 +176,23 @@ struct FluelEntryMutationWorkflowTests {
                 message: "Widget timelines could not be refreshed."
             )
         )
+
+        let events = await recordedEvents(
+            from: logProbe
+        )
+        let failureEvent = try #require(events.first { event in
+            event.message == "Entry mutation failed"
+                && event.metadata["phase"] == "postCommitFollowUp"
+        })
+
+        #expect(failureEvent.metadata["result"] == "degradedSuccess")
+        #expect(failureEvent.metadata["followUp"] == "reloadWidgetTimelines")
     }
 
     @Test
     func create_returns_degraded_success_when_follow_up_is_cancelled() async throws {
         let context = try makeTestContext()
+        let logProbe = FluelLogProbe()
         let reloadTimelines: @MainActor () async throws -> Void = {
             throw CancellationError()
         }
@@ -153,6 +200,7 @@ struct FluelEntryMutationWorkflowTests {
         let workflow = FluelEntryMutationWorkflow(
             context: context,
             surface: "test",
+            logger: logProbe.logger(category: "EntryMutation"),
             reloadTimelines: reloadTimelines
         )
 
@@ -178,4 +226,14 @@ struct FluelEntryMutationWorkflowTests {
 
 private func makeTestContext() throws -> ModelContext {
     .init(try ModelContainerFactory.inMemory())
+}
+
+private extension FluelEntryMutationWorkflowTests {
+    func recordedEvents(
+        from probe: FluelLogProbe
+    ) async -> [FluelRecordedLogEvent] {
+        await Task.yield()
+        await Task.yield()
+        return await probe.events()
+    }
 }

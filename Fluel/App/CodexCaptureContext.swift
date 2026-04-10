@@ -17,12 +17,17 @@ struct CodexCaptureContext {
         case presetSettings
         case presetEditor
         case licenses
+        case diagnostics
     }
 
     let screen: Screen
     let modelContainer: ModelContainer
     let presetStore: EntryPresetStore
     let sampleEntry: Entry?
+
+    var preferencesSuiteName: String {
+        "\(FluelAppConfiguration.capturePreferencesSuiteName).\(screen.rawValue)"
+    }
 
     static func current() throws -> Self? {
         let arguments = ProcessInfo.processInfo.arguments

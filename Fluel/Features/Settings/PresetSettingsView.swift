@@ -104,8 +104,8 @@ struct PresetSettingsView: View {
                 case let .edit(preset):
                     PresetEditorView(mode: .edit(preset)) { definition in
                         presetStore.saveCustomPreset(
-                            id: preset.id,
-                            definition: definition
+                            definition: definition,
+                            id: preset.id
                         )
                     }
                 }

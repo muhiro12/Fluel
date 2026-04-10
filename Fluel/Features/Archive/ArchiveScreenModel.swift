@@ -1,11 +1,13 @@
 import FluelLibrary
 import Foundation
+import MHPlatform
 import Observation
 
 @MainActor
 @Observable
 final class ArchiveScreenModel {
     @ObservationIgnored private let defaults: UserDefaults
+    @ObservationIgnored private var logger: MHLogger?
 
     var searchText = String()
     var errorMessage: String?
@@ -15,6 +17,11 @@ final class ArchiveScreenModel {
             EntryListPreferences.setArchiveSortMode(
                 sortMode,
                 defaults: defaults
+            )
+            logPreferenceChange(
+                name: "sortMode",
+                oldValue: oldValue.rawValue,
+                newValue: sortMode.rawValue
             )
         }
     }
@@ -28,6 +35,11 @@ final class ArchiveScreenModel {
             if contentFilter != .all {
                 FluelTipState.markContentFiltersLearned()
             }
+            logPreferenceChange(
+                name: "contentFilter",
+                oldValue: oldValue.rawValue,
+                newValue: contentFilter.rawValue
+            )
         }
     }
 
@@ -83,6 +95,12 @@ final class ArchiveScreenModel {
         errorMessage = nil
     }
 
+    func attachLogger(
+        _ logger: MHLogger
+    ) {
+        self.logger = logger
+    }
+
     func handleMutationResult(
         _ result: FluelMutationResult,
         noticeCenter: FluelNoticeCenter
@@ -96,5 +114,23 @@ final class ArchiveScreenModel {
         case let .failure(failure):
             errorMessage = failure.message
         }
+    }
+
+    private func logPreferenceChange(
+        name: String,
+        oldValue: String,
+        newValue: String
+    ) {
+        guard oldValue != newValue else {
+            return
+        }
+
+        logger?.notice(
+            "Archive preference updated",
+            metadata: [
+                "setting": name,
+                "value": newValue
+            ]
+        )
     }
 }

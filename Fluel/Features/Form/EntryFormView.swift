@@ -1,5 +1,6 @@
 // swiftlint:disable no_magic_numbers type_contents_order
 import FluelLibrary
+import MHPlatform
 import MHUI
 import PhotosUI
 import SwiftData
@@ -20,6 +21,8 @@ struct EntryFormView: View {
     private var presetStore
     @Environment(FluelNoticeCenter.self)
     private var noticeCenter
+    @Environment(MHLoggingBootstrap.self)
+    private var logging
 
     @State private var draft: EntryFormDraft
     @State private var presentationModel = EntryFormPresentationModel()
@@ -220,6 +223,20 @@ struct EntryFormView: View {
             try await updatedDraft.loadPhoto(from: selectedPhotoItem)
             draft = updatedDraft
         } catch {
+            logging.logger(category: "EntryFormPhoto").warning(
+                "Entry form photo import failed",
+                metadata: [
+                    "mode": {
+                        switch mode {
+                        case .create:
+                            return "create"
+                        case .edit:
+                            return "edit"
+                        }
+                    }(),
+                    "error": error.localizedDescription
+                ]
+            )
             presentationModel.errorMessage = error.localizedDescription
         }
     }
@@ -246,6 +263,7 @@ private extension EntryFormView {
         .init(
             context: context,
             surface: "EntryFormView",
+            logger: logging.logger(category: "EntryMutation"),
             calendar: draft.calendar
         )
     }

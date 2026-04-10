@@ -5,7 +5,6 @@ import SwiftUI
 @main
 struct FluelApp: App {
     private let assembly: FluelAppAssembly
-    private let startupLogger = FluelAppLogging.logger(category: "AppStartup")
 
     var body: some Scene {
         WindowGroup {
@@ -14,6 +13,8 @@ struct FluelApp: App {
                 .environment(assembly.presetStore)
                 .environment(assembly.noticeCenter)
                 .environment(assembly.displayPreferences)
+                .environment(assembly.logging)
+                .environment(assembly.debugSettings)
                 .mhAppRuntimeBootstrap(assembly.appBootstrap)
                 .fluelNoticePresenter(assembly.noticeCenter)
                 .fluelAppStyle()
@@ -22,11 +23,27 @@ struct FluelApp: App {
 
     @MainActor
     init() {
-        startupLogger.notice("app startup began")
-        FluelTipBootstrap.configureIfNeeded()
-        assembly = .init()
+        let assembly = FluelAppAssembly()
+        let startupLogger = assembly.logging.logger(
+            category: "AppStartup"
+        )
 
-        startupLogger.notice("startup dependencies ready")
-        startupLogger.notice("startup wiring finished")
+        self.assembly = assembly
+
+        startupLogger.notice(
+            "App startup began",
+            metadata: assembly.startupMetadata
+        )
+        FluelTipBootstrap.configureIfNeeded(
+            logger: assembly.logging.logger(category: "TipKit")
+        )
+        startupLogger.notice(
+            "Startup dependencies ready",
+            metadata: assembly.startupMetadata
+        )
+        startupLogger.notice(
+            "Startup wiring finished",
+            metadata: assembly.startupMetadata
+        )
     }
 }

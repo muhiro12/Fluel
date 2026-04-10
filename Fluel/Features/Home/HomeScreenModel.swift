@@ -1,5 +1,6 @@
 import FluelLibrary
 import Foundation
+import MHPlatform
 import Observation
 
 @MainActor
@@ -12,6 +13,7 @@ final class HomeScreenModel {
     }
 
     @ObservationIgnored private let defaults: UserDefaults
+    @ObservationIgnored private var logger: MHLogger?
 
     var searchText = String()
     var errorMessage: String?
@@ -20,6 +22,11 @@ final class HomeScreenModel {
             EntryListPreferences.setHomeSortMode(
                 sortMode,
                 defaults: defaults
+            )
+            logPreferenceChange(
+                name: "sortMode",
+                oldValue: oldValue.rawValue,
+                newValue: sortMode.rawValue
             )
         }
     }
@@ -33,6 +40,11 @@ final class HomeScreenModel {
             if contentFilter != .all {
                 FluelTipState.markContentFiltersLearned()
             }
+            logPreferenceChange(
+                name: "contentFilter",
+                oldValue: oldValue.rawValue,
+                newValue: contentFilter.rawValue
+            )
         }
     }
 
@@ -95,6 +107,12 @@ final class HomeScreenModel {
         errorMessage = nil
     }
 
+    func attachLogger(
+        _ logger: MHLogger
+    ) {
+        self.logger = logger
+    }
+
     func handleMutationResult(
         _ result: FluelMutationResult,
         noticeCenter: FluelNoticeCenter
@@ -108,5 +126,23 @@ final class HomeScreenModel {
         case let .failure(failure):
             errorMessage = failure.message
         }
+    }
+
+    private func logPreferenceChange(
+        name: String,
+        oldValue: String,
+        newValue: String
+    ) {
+        guard oldValue != newValue else {
+            return
+        }
+
+        logger?.notice(
+            "Home preference updated",
+            metadata: [
+                "setting": name,
+                "value": newValue
+            ]
+        )
     }
 }

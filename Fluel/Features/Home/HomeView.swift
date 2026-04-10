@@ -3,6 +3,7 @@
 // swiftlint:disable no_magic_numbers opening_brace type_body_length
 // swiftlint:disable type_contents_order
 import FluelLibrary
+import MHPlatform
 import MHUI
 import SwiftData
 import SwiftUI
@@ -19,6 +20,8 @@ struct HomeView: View {
     private var noticeCenter
     @Environment(FluelDisplayPreferencesStore.self)
     private var displayPreferences
+    @Environment(MHLoggingBootstrap.self)
+    private var logging
 
     @Query(
         filter: #Predicate<Entry> { entry in
@@ -73,7 +76,8 @@ struct HomeView: View {
     private var mutationWorkflow: FluelEntryMutationWorkflow {
         .init(
             context: context,
-            surface: "HomeView"
+            surface: "HomeView",
+            logger: logging.logger(category: "EntryMutation")
         )
     }
 
@@ -187,6 +191,11 @@ struct HomeView: View {
             text: searchTextBinding,
             prompt: FluelCopy.searchEntries()
         )
+        .task {
+            model.attachLogger(
+                logging.logger(category: "HomeScreen")
+            )
+        }
         .alert(
             FluelCopy.error(),
             isPresented: Binding(

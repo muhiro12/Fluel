@@ -1,5 +1,6 @@
 // swiftlint:disable closure_body_length
 import FluelLibrary
+import MHPlatform
 import MHUI
 import SwiftData
 import SwiftUI
@@ -14,6 +15,8 @@ struct EntryDetailView: View {
     private var context
     @Environment(FluelNoticeCenter.self)
     private var noticeCenter
+    @Environment(MHLoggingBootstrap.self)
+    private var logging
 
     let entry: Entry
 
@@ -234,7 +237,8 @@ private extension EntryDetailView {
     var mutationWorkflow: FluelEntryMutationWorkflow {
         .init(
             context: context,
-            surface: "EntryDetailView"
+            surface: "EntryDetailView",
+            logger: logging.logger(category: "EntryMutation")
         )
     }
 }

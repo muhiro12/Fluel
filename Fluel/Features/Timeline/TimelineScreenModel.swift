@@ -1,11 +1,13 @@
 import FluelLibrary
 import Foundation
+import MHPlatform
 import Observation
 
 @MainActor
 @Observable
 final class TimelineScreenModel {
     @ObservationIgnored private let defaults: UserDefaults
+    @ObservationIgnored private var logger: MHLogger?
 
     var searchText = String()
     var activityFilter: EntryActivityFilterMode {
@@ -17,6 +19,11 @@ final class TimelineScreenModel {
             if activityFilter != .all {
                 FluelTipState.markTimelineFiltersLearned()
             }
+            logPreferenceChange(
+                name: "activityFilter",
+                oldValue: oldValue.rawValue,
+                newValue: activityFilter.rawValue
+            )
         }
     }
 
@@ -29,6 +36,11 @@ final class TimelineScreenModel {
             if scopeFilter != .recentSixMonths {
                 FluelTipState.markTimelineFiltersLearned()
             }
+            logPreferenceChange(
+                name: "scopeFilter",
+                oldValue: oldValue.rawValue,
+                newValue: scopeFilter.rawValue
+            )
         }
     }
 
@@ -67,5 +79,29 @@ final class TimelineScreenModel {
     func clearFilters() {
         activityFilter = .all
         scopeFilter = .recentSixMonths
+    }
+
+    func attachLogger(
+        _ logger: MHLogger
+    ) {
+        self.logger = logger
+    }
+
+    private func logPreferenceChange(
+        name: String,
+        oldValue: String,
+        newValue: String
+    ) {
+        guard oldValue != newValue else {
+            return
+        }
+
+        logger?.notice(
+            "Timeline preference updated",
+            metadata: [
+                "setting": name,
+                "value": newValue
+            ]
+        )
     }
 }

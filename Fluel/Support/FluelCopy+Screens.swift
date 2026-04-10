@@ -181,6 +181,36 @@ extension FluelCopy {
         )
     }
 
+    static func diagnosticsDisabledSummary(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Capture warnings and errors during normal use.",
+            japanese: "通常利用では warning と error を記録します。",
+            locale: locale
+        )
+    }
+
+    static func diagnosticsEnabledSummary(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Capture debug details and keep the previous session snapshot.",
+            japanese: "debug 詳細を記録し、前回セッションの snapshot も保持します。",
+            locale: locale
+        )
+    }
+
+    static func openDiagnosticsConsoleSummary(
+        locale: Locale = .autoupdatingCurrent
+    ) -> String {
+        localized(
+            english: "Inspect current and previous session logs inside the app.",
+            japanese: "アプリ内で current と previous session のログを確認できます。",
+            locale: locale
+        )
+    }
+
     static func dismissNotice(
         locale: Locale = .autoupdatingCurrent
     ) -> String {

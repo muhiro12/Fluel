@@ -6,23 +6,49 @@ import Testing
 @MainActor
 struct FluelScreenModelsTests {
     @Test
-    func home_screen_model_persists_sort_and_filter_preferences() {
+    func home_screen_model_persists_sort_and_filter_preferences() async {
         let defaults = makeDefaults()
+        let logProbe = FluelLogProbe()
         let model = HomeScreenModel(defaults: defaults)
+        model.attachLogger(
+            logProbe.logger(category: "HomeScreen")
+        )
 
         model.sortMode = .recentlyUpdated
         model.contentFilter = .withPhoto
+        model.searchText = "wallet"
 
         let reloaded = HomeScreenModel(defaults: defaults)
 
         #expect(reloaded.sortMode == .recentlyUpdated)
         #expect(reloaded.contentFilter == .withPhoto)
+
+        let events = await recordedEvents(
+            from: logProbe
+        )
+
+        #expect(events.count == 2)
+        #expect(events.contains { event in
+            event.metadata["setting"] == "sortMode"
+                && event.metadata["value"] == ActiveEntrySortMode.recentlyUpdated.rawValue
+        })
+        #expect(events.contains { event in
+            event.metadata["setting"] == "contentFilter"
+                && event.metadata["value"] == EntryContentFilterMode.withPhoto.rawValue
+        })
+        #expect(events.allSatisfy { event in
+            event.metadata.values.contains("wallet") == false
+        })
     }
 
     @Test
-    func timeline_screen_model_persists_filter_preferences() {
+    func timeline_screen_model_persists_filter_preferences() async {
         let defaults = makeDefaults()
+        let logProbe = FluelLogProbe()
         let model = TimelineScreenModel(defaults: defaults)
+        model.attachLogger(
+            logProbe.logger(category: "TimelineScreen")
+        )
 
         model.activityFilter = .archived
         model.scopeFilter = .allTime
@@ -31,6 +57,19 @@ struct FluelScreenModelsTests {
 
         #expect(reloaded.activityFilter == .archived)
         #expect(reloaded.scopeFilter == .allTime)
+
+        let events = await recordedEvents(
+            from: logProbe
+        )
+
+        #expect(events.contains { event in
+            event.metadata["setting"] == "activityFilter"
+                && event.metadata["value"] == EntryActivityFilterMode.archived.rawValue
+        })
+        #expect(events.contains { event in
+            event.metadata["setting"] == "scopeFilter"
+                && event.metadata["value"] == EntryActivityScopeMode.allTime.rawValue
+        })
     }
 
     @Test
@@ -185,4 +224,14 @@ private func makeDefaults() -> UserDefaults {
     UserDefaults(
         suiteName: "FluelScreenModelsTests.\(UUID().uuidString)"
     ) ?? .standard
+}
+
+private extension FluelScreenModelsTests {
+    func recordedEvents(
+        from probe: FluelLogProbe
+    ) async -> [FluelRecordedLogEvent] {
+        await Task.yield()
+        await Task.yield()
+        return await probe.events()
+    }
 }

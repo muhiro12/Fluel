@@ -1,42 +1,23 @@
 import FluelLibrary
 import Foundation
+import MHPlatform
 import Observation
 
+// swiftlint:disable file_length
 @Observable
 @MainActor
 final class EntryPresetStore {
+    private static let previewNotebookRelativeValue = 4
+
     private(set) var customRecords: [EntryCustomPresetRecord]
     private(set) var presetStates: [String: EntryPresetState]
     private(set) var defaultPresetID: String?
     private(set) var usesDefaultPreset: Bool
 
-    @ObservationIgnored
-    private let defaults: UserDefaults
-    @ObservationIgnored
-    private let encoder = JSONEncoder()
-    @ObservationIgnored
-    private let decoder = JSONDecoder()
-
-    init(
-        defaults: UserDefaults = EntryPresetPreferences.store
-    ) {
-        self.defaults = defaults
-        customRecords = Self.loadRecords(
-            from: defaults,
-            decoder: decoder
-        )
-        presetStates = Self.loadStates(
-            from: defaults,
-            decoder: decoder
-        )
-        defaultPresetID = defaults.string(
-            forKey: EntryPresetPreferences.defaultPresetID
-        )
-        usesDefaultPreset = defaults.object(
-            forKey: EntryPresetPreferences.usesDefaultPreset
-        ) as? Bool ?? false
-        sanitizeDefaultPreset()
-    }
+    @ObservationIgnored private let defaults: UserDefaults
+    @ObservationIgnored private let encoder = JSONEncoder()
+    @ObservationIgnored private let decoder = JSONDecoder()
+    @ObservationIgnored private let logger: MHLogger?
 
     var builtInPresets: [EntryPreset] {
         EntryPresetCatalog.builtInItems.map { item in
@@ -88,6 +69,216 @@ final class EntryPresetStore {
             .sorted(by: isHigherPriorityPreset(_:_:))
     }
 
+    var defaultPreset: EntryPreset? {
+        guard let defaultPresetID else {
+            return nil
+        }
+
+        return preset(id: defaultPresetID)
+    }
+
+    var defaultCreatePresetID: String? {
+        guard usesDefaultPreset else {
+            return nil
+        }
+
+        return defaultPreset?.id
+    }
+
+    init(
+        defaults: UserDefaults = EntryPresetPreferences.store,
+        logger: MHLogger? = nil
+    ) {
+        self.defaults = defaults
+        self.logger = logger
+        customRecords = Self.loadRecords(
+            from: defaults,
+            decoder: decoder,
+            logger: logger
+        )
+        presetStates = Self.loadStates(
+            from: defaults,
+            decoder: decoder,
+            logger: logger
+        )
+        defaultPresetID = defaults.string(
+            forKey: EntryPresetPreferences.defaultPresetID
+        )
+        usesDefaultPreset = defaults.object(
+            forKey: EntryPresetPreferences.usesDefaultPreset
+        ) as? Bool ?? false
+        sanitizeDefaultPreset()
+    }
+
+    func preset(
+        id: String
+    ) -> EntryPreset? {
+        allPresets.first { preset in
+            preset.id == id
+        }
+    }
+
+    func saveCustomPreset(
+        definition: EntryPresetDefinition,
+        id: String? = nil,
+        at now: Date = .now
+    ) {
+        guard definition.trimmedTitle.isEmpty == false else {
+            return
+        }
+
+        let recordID = id ?? UUID().uuidString
+
+        if let existingIndex = customRecords.firstIndex(where: { record in
+            record.id == recordID
+        }) {
+            customRecords[existingIndex].definition = definition
+            customRecords[existingIndex].updatedAt = now
+        } else {
+            customRecords.append(
+                .init(
+                    id: recordID,
+                    definition: definition,
+                    createdAt: now,
+                    updatedAt: now
+                )
+            )
+        }
+
+        persistRecords()
+        logger?.notice(
+            "Preset stored",
+            metadata: [
+                "action": id == nil ? "create" : "update",
+                "presetID": recordID,
+                "hasNote": String(hasContent(in: definition.note)),
+                "startPrecision": definition.startPrecision.rawValue
+            ]
+        )
+    }
+
+    func deleteCustomPreset(
+        id: String
+    ) {
+        customRecords.removeAll { record in
+            record.id == id
+        }
+        presetStates[id] = nil
+
+        if defaultPresetID == id {
+            defaultPresetID = nil
+            usesDefaultPreset = false
+            persistDefaultPresetID()
+            persistUsesDefaultPreset()
+        }
+
+        persistRecords()
+        persistStates()
+        logger?.notice(
+            "Preset deleted",
+            metadata: [
+                "presetID": id
+            ]
+        )
+    }
+
+    func setDefaultPreset(
+        id: String?
+    ) {
+        defaultPresetID = id
+
+        if id == nil {
+            usesDefaultPreset = false
+            persistUsesDefaultPreset()
+        }
+
+        persistDefaultPresetID()
+        logger?.notice(
+            "Default preset updated",
+            metadata: [
+                "presetID": id ?? "none",
+                "usesDefaultPreset": String(usesDefaultPreset)
+            ]
+        )
+    }
+
+    func setUsesDefaultPreset(
+        _ usesDefaultPreset: Bool
+    ) {
+        self.usesDefaultPreset = usesDefaultPreset && defaultPreset != nil
+        persistUsesDefaultPreset()
+        logger?.notice(
+            "Default preset usage updated",
+            metadata: [
+                "isEnabled": String(self.usesDefaultPreset)
+            ]
+        )
+    }
+
+    func setPinned(
+        _ isPinned: Bool,
+        for id: String
+    ) {
+        var state = presetStates[id] ?? .init()
+        state.isPinned = isPinned
+        presetStates[id] = state
+        persistStates()
+        logger?.notice(
+            "Preset pin state updated",
+            metadata: [
+                "presetID": id,
+                "isPinned": String(isPinned)
+            ]
+        )
+    }
+
+    func markUsed(
+        _ id: String,
+        at now: Date = .now
+    ) {
+        var state = presetStates[id] ?? .init()
+        state.lastUsedAt = now
+        presetStates[id] = state
+        persistStates()
+        logger?.notice(
+            "Preset marked used",
+            metadata: [
+                "presetID": id
+            ]
+        )
+    }
+}
+
+extension EntryPresetStore {
+    static func preview() -> EntryPresetStore {
+        let defaults = UserDefaults(
+            suiteName: "EntryPresetStore.preview.\(UUID().uuidString)"
+        ) ?? .standard
+        let store = EntryPresetStore(
+            defaults: defaults
+        )
+
+        store.saveCustomPreset(
+            definition: .init(
+                title: FluelCopy.starterNotebookTitle(),
+                symbolName: "notebook",
+                startPrecision: .month,
+                relativeValue: previewNotebookRelativeValue,
+                note: FluelCopy.starterNotebookNote()
+            ),
+            at: .distantPast
+        )
+        store.setPinned(true, for: "starter-home")
+        store.markUsed("starter-home")
+        store.markUsed("starter-wallet")
+        store.markUsed("starter-plant")
+        store.setDefaultPreset(id: "starter-home")
+        store.setUsesDefaultPreset(true)
+        return store
+    }
+}
+
+extension EntryPresetStore {
     func suggestedPresets(
         limit: Int
     ) -> [EntryPreset] {
@@ -111,30 +302,6 @@ final class EntryPresetStore {
         }
 
         return presets
-    }
-
-    var defaultPreset: EntryPreset? {
-        guard let defaultPresetID else {
-            return nil
-        }
-
-        return preset(id: defaultPresetID)
-    }
-
-    var defaultCreatePresetID: String? {
-        guard usesDefaultPreset else {
-            return nil
-        }
-
-        return defaultPreset?.id
-    }
-
-    func preset(
-        id: String
-    ) -> EntryPreset? {
-        allPresets.first { preset in
-            preset.id == id
-        }
     }
 
     func resolvedInput(
@@ -163,119 +330,10 @@ final class EntryPresetStore {
             calendar: calendar
         )
     }
+}
 
-    static func preview() -> EntryPresetStore {
-        let defaults = UserDefaults(
-            suiteName: "EntryPresetStore.preview.\(UUID().uuidString)"
-        ) ?? .standard
-        let store = EntryPresetStore(defaults: defaults)
-        store.saveCustomPreset(
-            definition: .init(
-                title: FluelCopy.starterNotebookTitle(),
-                symbolName: "notebook",
-                startPrecision: .month,
-                relativeValue: 4,
-                note: FluelCopy.starterNotebookNote()
-            ),
-            at: .distantPast
-        )
-        store.setPinned(true, for: "starter-home")
-        store.markUsed("starter-home")
-        store.markUsed("starter-wallet")
-        store.markUsed("starter-plant")
-        store.setDefaultPreset(id: "starter-home")
-        store.setUsesDefaultPreset(true)
-        return store
-    }
-
-    func saveCustomPreset(
-        id: String? = nil,
-        definition: EntryPresetDefinition,
-        at now: Date = .now
-    ) {
-        guard definition.trimmedTitle.isEmpty == false else {
-            return
-        }
-
-        let recordID = id ?? UUID().uuidString
-
-        if let existingIndex = customRecords.firstIndex(where: { record in
-            record.id == recordID
-        }) {
-            customRecords[existingIndex].definition = definition
-            customRecords[existingIndex].updatedAt = now
-        } else {
-            customRecords.append(
-                .init(
-                    id: recordID,
-                    definition: definition,
-                    createdAt: now,
-                    updatedAt: now
-                )
-            )
-        }
-
-        persistRecords()
-    }
-
-    func deleteCustomPreset(
-        id: String
-    ) {
-        customRecords.removeAll { record in
-            record.id == id
-        }
-        presetStates[id] = nil
-        if defaultPresetID == id {
-            defaultPresetID = nil
-            usesDefaultPreset = false
-            persistDefaultPresetID()
-            persistUsesDefaultPreset()
-        }
-        persistRecords()
-        persistStates()
-    }
-
-    func setDefaultPreset(
-        id: String?
-    ) {
-        defaultPresetID = id
-
-        if id == nil {
-            usesDefaultPreset = false
-            persistUsesDefaultPreset()
-        }
-
-        persistDefaultPresetID()
-    }
-
-    func setUsesDefaultPreset(
-        _ usesDefaultPreset: Bool
-    ) {
-        self.usesDefaultPreset = usesDefaultPreset && defaultPreset != nil
-        persistUsesDefaultPreset()
-    }
-
-    func setPinned(
-        _ isPinned: Bool,
-        for id: String
-    ) {
-        var state = presetStates[id] ?? .init()
-        state.isPinned = isPinned
-        presetStates[id] = state
-        persistStates()
-    }
-
-    func markUsed(
-        _ id: String,
-        at now: Date = .now
-    ) {
-        var state = presetStates[id] ?? .init()
-        state.lastUsedAt = now
-        presetStates[id] = state
-        persistStates()
-    }
-
-    private func makePreset(
+private extension EntryPresetStore {
+    func makePreset(
         id: String,
         source: EntryPresetSource,
         definition: EntryPresetDefinition,
@@ -295,20 +353,23 @@ final class EntryPresetStore {
         )
     }
 
-    private func isHigherPriorityPreset(
+    func isHigherPriorityPreset(
         _ lhs: EntryPreset,
         _ rhs: EntryPreset
     ) -> Bool {
         if lhs.lastUsedAt != rhs.lastUsedAt {
-            return (lhs.lastUsedAt ?? .distantPast) > (rhs.lastUsedAt ?? .distantPast)
+            return (lhs.lastUsedAt ?? .distantPast)
+                > (rhs.lastUsedAt ?? .distantPast)
         }
 
         if lhs.updatedAt != rhs.updatedAt {
-            return (lhs.updatedAt ?? .distantPast) > (rhs.updatedAt ?? .distantPast)
+            return (lhs.updatedAt ?? .distantPast)
+                > (rhs.updatedAt ?? .distantPast)
         }
 
         if lhs.createdAt != rhs.createdAt {
-            return (lhs.createdAt ?? .distantPast) > (rhs.createdAt ?? .distantPast)
+            return (lhs.createdAt ?? .distantPast)
+                > (rhs.createdAt ?? .distantPast)
         }
 
         return lhs.title.localizedCaseInsensitiveCompare(
@@ -316,71 +377,68 @@ final class EntryPresetStore {
         ) == .orderedAscending
     }
 
-    private func persistRecords() {
-        guard let data = try? encoder.encode(customRecords) else {
-            return
+    func persistRecords() {
+        do {
+            let data = try encoder.encode(customRecords)
+            defaults.set(
+                data,
+                forKey: EntryPresetPreferences.customPresetRecords
+            )
+        } catch {
+            logger?.error(
+                "Preset record persistence failed",
+                metadata: [
+                    "preference": EntryPresetPreferences.customPresetRecords,
+                    "error": error.localizedDescription
+                ]
+            )
         }
-
-        defaults.set(data, forKey: EntryPresetPreferences.customPresetRecords)
     }
 
-    private func persistStates() {
-        guard let data = try? encoder.encode(presetStates) else {
-            return
+    func persistStates() {
+        do {
+            let data = try encoder.encode(presetStates)
+            defaults.set(
+                data,
+                forKey: EntryPresetPreferences.presetStates
+            )
+        } catch {
+            logger?.error(
+                "Preset state persistence failed",
+                metadata: [
+                    "preference": EntryPresetPreferences.presetStates,
+                    "error": error.localizedDescription
+                ]
+            )
         }
-
-        defaults.set(data, forKey: EntryPresetPreferences.presetStates)
     }
 
-    private func persistDefaultPresetID() {
-        defaults.set(defaultPresetID, forKey: EntryPresetPreferences.defaultPresetID)
+    func persistDefaultPresetID() {
+        defaults.set(
+            defaultPresetID,
+            forKey: EntryPresetPreferences.defaultPresetID
+        )
     }
 
-    private func persistUsesDefaultPreset() {
+    func persistUsesDefaultPreset() {
         defaults.set(
             usesDefaultPreset,
             forKey: EntryPresetPreferences.usesDefaultPreset
         )
     }
 
-    private static func loadRecords(
-        from defaults: UserDefaults,
-        decoder: JSONDecoder
-    ) -> [EntryCustomPresetRecord] {
-        guard let data = defaults.data(
-            forKey: EntryPresetPreferences.customPresetRecords
-        ),
-        let records = try? decoder.decode(
-            [EntryCustomPresetRecord].self,
-            from: data
-        ) else {
-            return []
-        }
-
-        return records
-    }
-
-    private static func loadStates(
-        from defaults: UserDefaults,
-        decoder: JSONDecoder
-    ) -> [String: EntryPresetState] {
-        guard let data = defaults.data(
-            forKey: EntryPresetPreferences.presetStates
-        ),
-        let states = try? decoder.decode(
-            [String: EntryPresetState].self,
-            from: data
-        ) else {
-            return [:]
-        }
-
-        return states
-    }
-
-    private func sanitizeDefaultPreset() {
+    func sanitizeDefaultPreset() {
         guard let defaultPresetID else {
-            usesDefaultPreset = false
-            persistUsesDefaultPreset()
+            if usesDefaultPreset {
+                usesDefaultPreset = false
+                persistUsesDefaultPreset()
+                logger?.warning(
+                    "Default preset usage repaired",
+                    metadata: [
+                        "reason": "missingDefaultPresetID"
+                    ]
+                )
+            }
             return
         }
 
@@ -389,7 +447,80 @@ final class EntryPresetStore {
             usesDefaultPreset = false
             persistDefaultPresetID()
             persistUsesDefaultPreset()
+            logger?.warning(
+                "Default preset selection repaired",
+                metadata: [
+                    "reason": "missingPresetRecord"
+                ]
+            )
             return
         }
     }
+
+    func hasContent(
+        in note: String
+    ) -> Bool {
+        note.trimmingCharacters(
+            in: .whitespacesAndNewlines
+        ).isEmpty == false
+    }
 }
+
+private extension EntryPresetStore {
+    static func loadRecords(
+        from defaults: UserDefaults,
+        decoder: JSONDecoder,
+        logger: MHLogger?
+    ) -> [EntryCustomPresetRecord] {
+        guard let data = defaults.data(
+            forKey: EntryPresetPreferences.customPresetRecords
+        ) else {
+            return []
+        }
+
+        do {
+            return try decoder.decode(
+                [EntryCustomPresetRecord].self,
+                from: data
+            )
+        } catch {
+            logger?.warning(
+                "Preset record decode failed",
+                metadata: [
+                    "preference": EntryPresetPreferences.customPresetRecords,
+                    "error": error.localizedDescription
+                ]
+            )
+            return []
+        }
+    }
+
+    static func loadStates(
+        from defaults: UserDefaults,
+        decoder: JSONDecoder,
+        logger: MHLogger?
+    ) -> [String: EntryPresetState] {
+        guard let data = defaults.data(
+            forKey: EntryPresetPreferences.presetStates
+        ) else {
+            return [:]
+        }
+
+        do {
+            return try decoder.decode(
+                [String: EntryPresetState].self,
+                from: data
+            )
+        } catch {
+            logger?.warning(
+                "Preset state decode failed",
+                metadata: [
+                    "preference": EntryPresetPreferences.presetStates,
+                    "error": error.localizedDescription
+                ]
+            )
+            return [:]
+        }
+    }
+}
+// swiftlint:enable file_length
