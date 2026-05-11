@@ -130,12 +130,12 @@ Current examples should include `MainTabRouter`, `HomeScreenModel`,
 
 ## Current Alignment Notes
 
-- `Fluel/App/FluelAppAssembly.swift`, `Fluel/App/FluelApp.swift`, and
-  `Fluel/Features/Main/MainView.swift` keep app startup, typed environment
+- `Fluel/Sources/FluelAppAssembly.swift`, `Fluel/Sources/FluelApp.swift`, and
+  `Fluel/Sources/Main/MainView.swift` keep app startup, typed environment
   injection, and the per-tab navigation shell in the app target.
-- `Fluel/Support/Mutation/FluelEntryMutationWorkflow.swift` is the right place
-  for widget reload follow-up orchestration.
-- `Fluel/Features/License/FluelLicenseView.swift` keeps app-owned presentation
+- `Fluel/Sources/Common/Mutation/FluelEntryMutationWorkflow.swift` is the
+  right place for widget reload follow-up orchestration.
+- `Fluel/Sources/License/FluelLicenseView.swift` keeps app-owned presentation
   while delegating the license list surface to `MHPlatform`.
 - `FluelWidget/Sources/LeadEntryWidgetProvider.swift` stays thin by delegating
   snapshot building to `FluelLibrary`.

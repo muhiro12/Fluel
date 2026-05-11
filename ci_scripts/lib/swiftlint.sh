@@ -211,6 +211,40 @@ ci_swiftlint_resolve_binary() {
   return 1
 }
 
+ci_swiftlint_collect_local_change_paths() {
+  local status
+  local first_path
+  local second_path
+  local path
+
+  {
+    git diff --name-status --cached
+    git diff --name-status
+  } | while IFS=$'\t' read -r status first_path second_path; do
+    [[ -n "$status" ]] || continue
+
+    case "$status" in
+      R100)
+        continue
+        ;;
+      R* | C*)
+        path=$second_path
+        ;;
+      D*)
+        continue
+        ;;
+      *)
+        path=$first_path
+        ;;
+    esac
+
+    [[ -n "$path" ]] || continue
+    printf '%s\n' "$path"
+  done
+
+  git ls-files --others --exclude-standard
+}
+
 ci_swiftlint_run() {
   local repository_root=$1
   local mode=$2
@@ -247,11 +281,7 @@ ci_swiftlint_run() {
       [[ -e "$path" ]] || continue
       swift_files+=("$path")
     done < <(
-      {
-        git diff --name-only --cached
-        git diff --name-only
-        git ls-files --others --exclude-standard
-      } | sed '/^$/d' | sort -u
+      ci_swiftlint_collect_local_change_paths | sed '/^$/d' | sort -u
     )
   fi
 

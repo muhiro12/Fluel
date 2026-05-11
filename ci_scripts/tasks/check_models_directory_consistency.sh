@@ -9,15 +9,15 @@ ci_task_enter_repository "${BASH_SOURCE[0]}"
 
 matches=$(
   rg --line-number \
-    --glob 'Fluel/**/Models/*.swift' \
-    --glob 'FluelWidget/**/Models/*.swift' \
+    --glob 'Fluel/Sources/**/Models/*.swift' \
+    --glob 'FluelWidget/Sources/**/Models/*.swift' \
     '@ViewBuilder|: View\b|: LabelStyle\b' \
-    Fluel FluelWidget || true
+    Fluel/Sources FluelWidget/Sources || true
 )
 
 if [[ -n "$matches" ]]; then
   echo "Models directory consistency check failed." >&2
-  echo "Move View-related code out of */Models/." >&2
+  echo "Move View-related code out of */Sources/**/Models/." >&2
   echo "$matches" >&2
   exit 1
 fi

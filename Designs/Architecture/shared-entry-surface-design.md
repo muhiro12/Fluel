@@ -27,8 +27,8 @@ the iOS app and widget extension.
 | --- | --- | --- |
 | Shared domain logic | `FluelLibrary` | `Entry`, `EntryRepository`, `EntryFormInput`, `EntryListOrdering`, `EntrySearchMatcher`, `EntryContentFilter`, `EntryFormatting`, `EntryWidgetSnapshotQuery`, `ModelContainerFactory` |
 | Apple framework adapters | `Fluel`, `FluelWidget` | `FluelEntryMutationWorkflow`, `FluelWidgetReloader`, `FluelSharedPreferences`, `LeadEntryWidgetProvider`, TipKit bootstrap |
-| App-side platform support | `Fluel/App`, `Fluel/Support` | `FluelApp`, `FluelAppConfiguration`, preset storage, display preferences, app style, runtime logging |
-| Presentation orchestration | `Fluel/Features` | SwiftUI views, navigation state, sheet presentation, form draft state, confirmation dialogs |
+| App-side platform support | `Fluel/Sources`, `Fluel/Sources/Common` | `FluelApp`, `FluelAppConfiguration`, preset storage, display preferences, app style, runtime logging |
+| Presentation orchestration | `Fluel/Sources/*` | SwiftUI views, navigation state, sheet presentation, form draft state, confirmation dialogs |
 
 ## Canonical Shared APIs
 
@@ -66,7 +66,7 @@ operations:
 4. Keep `UserDefaults`, WidgetKit reload behavior, TipKit setup, and runtime
    bootstrap code out of `FluelLibrary`.
 5. If glue code is app-only but reused by multiple screens, factor it into
-   `Fluel/Support/` instead of duplicating it in views.
+   `Fluel/Sources/Common/` instead of duplicating it in views.
 
 ## Test Posture
 
@@ -96,4 +96,4 @@ operations:
 When a business rule is duplicated, the default fix is to move the rule into
 `FluelLibrary` rather than duplicating it in another view or target.
 When the duplicated code is still Apple-framework glue, the default fix is to
-extract it into `Fluel/Support/`.
+extract it into `Fluel/Sources/Common/`.

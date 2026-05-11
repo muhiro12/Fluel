@@ -105,7 +105,7 @@ logic in `FluelLibrary`.
    production identifiers.
 3. If you are shipping a fork with your own identifiers, update
    `FluelLibrary/Sources/Common/AppGroup.swift`,
-   `Fluel/Fluel.entitlements`, and
+   `Fluel/Configurations/Fluel.entitlements`, and
    `FluelWidget/Configurations/FluelWidget.entitlements`.
 4. Open `Fluel.xcodeproj` in Xcode, select the **Fluel** scheme, and run on an
    iOS 26 simulator or device.
