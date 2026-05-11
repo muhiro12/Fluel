@@ -66,7 +66,7 @@ struct EntryRowView: View {
                     )
                     .clipShape(
                         RoundedRectangle(
-                            cornerRadius: metrics.radius.control,
+                            cornerRadius: metrics.cornerRadius.control,
                             style: .continuous
                         )
                     )
@@ -110,7 +110,7 @@ struct EntryRowView: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            Spacer(minLength: metrics.layout.rowAccessorySpacing)
+            Spacer(minLength: metrics.spacing.control)
 
             Text(
                 EntryFormatting.primaryElapsedText(

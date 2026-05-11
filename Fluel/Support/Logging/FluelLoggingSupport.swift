@@ -7,33 +7,71 @@ enum FluelLoggingSupport {
         let debugSettings: FluelDebugSettingsStore
     }
 
-    static let snapshotKey = MHCodablePreferenceKey<[MHLogEvent]>(
-        storageKey: "\(FluelAppConfiguration.bundleIdentifier).logging.sessionSnapshot"
+    private static let defaultSelection: MHUserDefaultsSelection = .suite(
+        FluelAppConfiguration.preferencesSuiteName
     )
 
-    static let diagnosticsEnabledKey = MHBoolPreferenceKey(
-        namespace: FluelAppConfiguration.bundleIdentifier,
-        name: "logging.diagnosticsEnabled",
-        default: false
+    static let diagnosticsEnabledKey = makeDiagnosticsEnabledKey(
+        defaultSelection: defaultSelection
     )
+
+    static func userDefaultsSelection(
+        suiteName: String
+    ) -> MHUserDefaultsSelection {
+        .suite(suiteName)
+    }
+
+    private static func snapshotStorageDescriptors(
+        defaultSelection: MHUserDefaultsSelection
+    ) -> MHLogSnapshotStorageDescriptors {
+        .init(
+            current: .init(
+                storageKey: "\(FluelAppConfiguration.bundleIdentifier).logging.currentSessionSnapshot",
+                defaultSelection: defaultSelection
+            ),
+            previous: .init(
+                storageKey: "\(FluelAppConfiguration.bundleIdentifier).logging.previousSessionSnapshot",
+                defaultSelection: defaultSelection
+            )
+        )
+    }
+
+    static func makeDiagnosticsEnabledKey(
+        defaultSelection: MHUserDefaultsSelection
+    ) -> MHBoolPreferenceDescriptor {
+        .init(
+            storageKey: "\(FluelAppConfiguration.bundleIdentifier).logging.diagnosticsEnabled",
+            defaultSelection: defaultSelection,
+            default: false
+        )
+    }
 
     static func loadDiagnosticsEnabled(
-        from preferenceStore: MHPreferenceStore
+        from preferenceStore: MHPreferenceStore,
+        defaultSelection: MHUserDefaultsSelection = defaultSelection
     ) -> Bool {
-        preferenceStore.bool(for: diagnosticsEnabledKey)
+        preferenceStore.bool(
+            for: makeDiagnosticsEnabledKey(
+                defaultSelection: defaultSelection
+            )
+        )
     }
 
     static func makeLogging(
-        preferenceStore: MHPreferenceStore
+        preferenceStore: MHPreferenceStore,
+        defaultSelection: MHUserDefaultsSelection = defaultSelection
     ) -> MHLoggingBootstrap {
         .init(
             captureLevel: loadDiagnosticsEnabled(
-                from: preferenceStore
+                from: preferenceStore,
+                defaultSelection: defaultSelection
             )
             ? .debug
             : .warning,
             subsystem: FluelAppConfiguration.bundleIdentifier,
-            snapshotKey: snapshotKey,
+            snapshotStorageDescriptors: snapshotStorageDescriptors(
+                defaultSelection: defaultSelection
+            ),
             snapshotStore: preferenceStore
         )
     }

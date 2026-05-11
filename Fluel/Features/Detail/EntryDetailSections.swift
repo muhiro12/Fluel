@@ -25,7 +25,7 @@ struct EntryDetailHeaderContent: View {
                 .frame(height: 240)
                 .clipShape(
                     RoundedRectangle(
-                        cornerRadius: metrics.radius.surface,
+                        cornerRadius: metrics.cornerRadius.surface,
                         style: .continuous
                     )
                 )

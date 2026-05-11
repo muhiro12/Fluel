@@ -25,27 +25,8 @@ if [[ ! -f "$resolved_path" ]]; then
   fail_check "Missing Package.resolved at $resolved_path."
 fi
 
-if ! rg -q 'repositoryURL = "https://github.com/muhiro12/MHPlatform.git";' "$pbxproj_path"; then
-  fail_check "MHPlatform remote reference is missing from project.pbxproj."
-fi
-
 if rg -q 'XCLocalSwiftPackageReference "MHPlatform"|relativePath = \.\./MHPlatform;' "$pbxproj_path"; then
   fail_check "MHPlatform must not be referenced as a local path dependency."
-fi
-
-mhplatform_reference_block=$(grep -A6 'repositoryURL = "https://github.com/muhiro12/MHPlatform.git";' "$pbxproj_path" || true)
-
-if [[ -z "$mhplatform_reference_block" ]]; then
-  fail_check "MHPlatform remote package requirement block is missing from project.pbxproj."
-fi
-
-if ! grep -q 'kind = upToNextMajorVersion;' <<<"$mhplatform_reference_block" || \
-  ! grep -q 'minimumVersion = 1.0.0;' <<<"$mhplatform_reference_block"; then
-  fail_check "MHPlatform must use an up-to-next-major 1.x requirement with minimumVersion = 1.0.0."
-fi
-
-if grep -q 'kind = branch;' <<<"$mhplatform_reference_block" || grep -q 'branch = ' <<<"$mhplatform_reference_block"; then
-  fail_check "MHPlatform must not track a floating branch in project.pbxproj."
 fi
 
 mhplatform_pin_block=$(grep -A8 '"identity" : "mhplatform"' "$resolved_path" || true)

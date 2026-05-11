@@ -7,6 +7,7 @@ final class FluelDebugSettingsStore {
     @ObservationIgnored private let preferenceStore: MHPreferenceStore
     @ObservationIgnored private let logging: MHLoggingBootstrap
     @ObservationIgnored private let logger: MHLogger
+    @ObservationIgnored private let diagnosticsEnabledKey: MHBoolPreferenceDescriptor
 
     var isDiagnosticsEnabled: Bool {
         didSet {
@@ -18,7 +19,7 @@ final class FluelDebugSettingsStore {
 
             preferenceStore.set(
                 isDiagnosticsEnabled,
-                for: FluelLoggingSupport.diagnosticsEnabledKey
+                for: diagnosticsEnabledKey
             )
 
             if isDiagnosticsEnabled == false {
@@ -52,16 +53,16 @@ final class FluelDebugSettingsStore {
     init(
         preferenceStore: MHPreferenceStore,
         logging: MHLoggingBootstrap,
+        diagnosticsEnabledKey: MHBoolPreferenceDescriptor = FluelLoggingSupport.diagnosticsEnabledKey,
         logger: MHLogger? = nil
     ) {
         self.preferenceStore = preferenceStore
         self.logging = logging
+        self.diagnosticsEnabledKey = diagnosticsEnabledKey
         self.logger = logger ?? logging.logger(
             category: "DiagnosticsSettings"
         )
-        isDiagnosticsEnabled = FluelLoggingSupport.loadDiagnosticsEnabled(
-            from: preferenceStore
-        )
+        isDiagnosticsEnabled = preferenceStore.bool(for: diagnosticsEnabledKey)
         self.logging.captureLevel = isDiagnosticsEnabled ? .debug : .warning
     }
 }

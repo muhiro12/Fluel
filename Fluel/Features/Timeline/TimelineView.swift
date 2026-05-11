@@ -548,21 +548,21 @@ private struct TimelineTrendBar: View {
             let updatedWidth = width * Double(trend.updatedCount) / total
             let archivedWidth = width * Double(trend.archivedCount) / total
 
-            HStack(spacing: metrics.layout.compactActionGroupSpacing) {
+            HStack(spacing: metrics.spacing.inline) {
                 if trend.addedCount > 0 {
-                    RoundedRectangle(cornerRadius: metrics.radius.control)
+                    RoundedRectangle(cornerRadius: metrics.cornerRadius.control)
                         .fill(Color.green)
                         .frame(width: max(addedWidth, metrics.spacing.inline))
                 }
 
                 if trend.updatedCount > 0 {
-                    RoundedRectangle(cornerRadius: metrics.radius.control)
+                    RoundedRectangle(cornerRadius: metrics.cornerRadius.control)
                         .fill(Color.blue)
                         .frame(width: max(updatedWidth, metrics.spacing.inline))
                 }
 
                 if trend.archivedCount > 0 {
-                    RoundedRectangle(cornerRadius: metrics.radius.control)
+                    RoundedRectangle(cornerRadius: metrics.cornerRadius.control)
                         .fill(Color.orange)
                         .frame(width: max(archivedWidth, metrics.spacing.inline))
                 }
@@ -687,7 +687,7 @@ private struct TimelineActivityRow: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(.vertical, metrics.layout.compactRowVerticalPadding)
+        .padding(.vertical, metrics.spacing.inline)
     }
 
     private var activityTimestampText: String {

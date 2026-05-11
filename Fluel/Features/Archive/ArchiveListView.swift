@@ -113,7 +113,7 @@ struct ArchiveListView: View {
     }
 
     var body: some View {
-        TimelineView(.periodic(from: .now, by: 3_600)) { context in // swiftlint:disable:this no_magic_numbers
+        SwiftUI.TimelineView(.periodic(from: .now, by: 3_600)) { context in // swiftlint:disable:this no_magic_numbers
             Group {
                 if sortedEntries.isEmpty {
                     emptyState

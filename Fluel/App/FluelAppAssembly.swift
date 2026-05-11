@@ -127,16 +127,22 @@ private extension FluelAppAssembly {
         for captureContext: CodexCaptureContext
     ) -> ResolvedDependencies {
         let runtime = makeRuntime(
-            configuration: FluelAppConfiguration.captureRuntimeConfiguration(
-                preferencesSuiteName: captureContext.preferencesSuiteName
-            )
+            configuration: FluelAppConfiguration.captureRuntimeConfiguration
+        )
+        let loggingDefaultsSelection = FluelLoggingSupport.userDefaultsSelection(
+            suiteName: captureContext.preferencesSuiteName
+        )
+        let diagnosticsEnabledKey = FluelLoggingSupport.makeDiagnosticsEnabledKey(
+            defaultSelection: loggingDefaultsSelection
         )
         let logging = FluelLoggingSupport.makeLogging(
-            preferenceStore: runtime.preferenceStore
+            preferenceStore: runtime.preferenceStore,
+            defaultSelection: loggingDefaultsSelection
         )
         let debugSettings = FluelDebugSettingsStore(
             preferenceStore: runtime.preferenceStore,
-            logging: logging
+            logging: logging,
+            diagnosticsEnabledKey: diagnosticsEnabledKey
         )
 
         if captureContext.screen == .diagnostics {

@@ -7,12 +7,10 @@ enum FluelAppConfiguration {
     nonisolated static let capturePreferencesSuiteName = "\(preferencesSuiteName).capture"
 
     nonisolated static let runtimeConfiguration = makeRuntimeConfiguration(
-        nativeAdUnitID: FluelAdMobConfiguration.nativeAdUnitID,
-        preferencesSuiteName: preferencesSuiteName
+        nativeAdUnitID: FluelAdMobConfiguration.nativeAdUnitID
     )
     nonisolated static let captureRuntimeConfiguration = makeRuntimeConfiguration(
-        nativeAdUnitID: nil,
-        preferencesSuiteName: capturePreferencesSuiteName
+        nativeAdUnitID: nil
     )
 
     nonisolated static let runtimeLifecyclePlan = MHAppRuntimeLifecyclePlan(
@@ -20,24 +18,13 @@ enum FluelAppConfiguration {
     )
 
     nonisolated private static func makeRuntimeConfiguration(
-        nativeAdUnitID: String?,
-        preferencesSuiteName: String?
+        nativeAdUnitID: String?
     ) -> MHAppConfiguration {
         .init(
             subscriptionProductIDs: [],
             subscriptionGroupID: nil,
             nativeAdUnitID: nativeAdUnitID,
-            preferencesSuiteName: preferencesSuiteName,
             showsLicenses: true
-        )
-    }
-
-    nonisolated static func captureRuntimeConfiguration(
-        preferencesSuiteName: String
-    ) -> MHAppConfiguration {
-        makeRuntimeConfiguration(
-            nativeAdUnitID: nil,
-            preferencesSuiteName: preferencesSuiteName
         )
     }
 }

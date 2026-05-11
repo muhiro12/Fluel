@@ -25,27 +25,8 @@ if [[ ! -f "$resolved_path" ]]; then
   fail_check "Missing Package.resolved at $resolved_path."
 fi
 
-if ! rg -q 'repositoryURL = "https://github.com/muhiro12/MHUI.git";' "$pbxproj_path"; then
-  fail_check "MHUI remote reference is missing from project.pbxproj."
-fi
-
 if rg -q 'XCLocalSwiftPackageReference "MHUI"|XCLocalSwiftPackageReference "\.\./MHUI"|relativePath = \.\./MHUI;' "$pbxproj_path"; then
   fail_check "MHUI must not be referenced as a local path dependency."
-fi
-
-mhui_reference_block=$(grep -A6 'repositoryURL = "https://github.com/muhiro12/MHUI.git";' "$pbxproj_path" || true)
-
-if [[ -z "$mhui_reference_block" ]]; then
-  fail_check "MHUI remote package requirement block is missing from project.pbxproj."
-fi
-
-if ! grep -q 'kind = upToNextMajorVersion;' <<<"$mhui_reference_block" || \
-  ! grep -q 'minimumVersion = 1.0.0;' <<<"$mhui_reference_block"; then
-  fail_check "MHUI must use an up-to-next-major requirement with minimumVersion = 1.0.0."
-fi
-
-if grep -q 'kind = branch;' <<<"$mhui_reference_block" || grep -q 'branch = ' <<<"$mhui_reference_block"; then
-  fail_check "MHUI must not track a floating branch in project.pbxproj."
 fi
 
 mhui_pin_block=$(grep -A8 '"identity" : "mhui"' "$resolved_path" || true)

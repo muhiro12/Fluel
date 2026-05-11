@@ -28,7 +28,7 @@ struct EntryContentFilterBar: View {
                         .buttonStyle(.plain)
                     }
                 }
-                .padding(.vertical, metrics.layout.compactActionVerticalPadding)
+                .padding(.vertical, metrics.spacing.inline)
             }
         }
         .mhSurfaceInset()

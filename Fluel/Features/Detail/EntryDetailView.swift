@@ -25,14 +25,14 @@ struct EntryDetailView: View {
     private let detailQuickActionsTip = FluelTips.DetailQuickActionsTip()
 
     var body: some View {
-        TimelineView(.periodic(from: .now, by: 3_600)) { timeline in // swiftlint:disable:this no_magic_numbers
+        SwiftUI.TimelineView(.periodic(from: .now, by: 3_600)) { timeline in // swiftlint:disable:this no_magic_numbers
             let snapshot = EntryElapsedSnapshot(
                 startComponents: entry.startComponents,
                 referenceDate: timeline.date
             )
             let shareText = shareText(referenceDate: timeline.date)
 
-            VStack(alignment: .leading, spacing: metrics.spacing.group) {
+            VStack(alignment: .leading, spacing: metrics.spacing.section) {
                 EntryDetailQuickActions(
                     entry: entry,
                     shareText: shareText,

@@ -22,7 +22,7 @@ struct DashboardView: View {
     private let dashboardOverviewTip = FluelTips.DashboardOverviewTip()
 
     var body: some View {
-        TimelineView(.periodic(from: .now, by: 3_600)) { timeline in // swiftlint:disable:this no_magic_numbers
+        SwiftUI.TimelineView(.periodic(from: .now, by: 3_600)) { timeline in // swiftlint:disable:this no_magic_numbers
             let content = FluelDashboardContent(
                 entries: entries,
                 referenceDate: timeline.date

@@ -146,7 +146,7 @@ struct EntryFormPhotoSection: View {
                     .frame(maxWidth: .infinity)
                     .clipShape(
                         RoundedRectangle(
-                            cornerRadius: metrics.radius.surface,
+                            cornerRadius: metrics.cornerRadius.surface,
                             style: .continuous
                         )
                     )
