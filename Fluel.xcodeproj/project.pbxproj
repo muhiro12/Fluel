@@ -50,7 +50,7 @@
 		AD91A10D2F5C545200BC027C /* Fluel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fluel.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		AD9F01012F5F000100BC027C /* FluelLibrary */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = FluelLibrary; sourceTree = "<group>"; };
 		B1A2A3042F65000100BC027C /* FluelWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FluelWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		C2A4D0012F70000100BC027C /* FluelTests.xctest */ = {isa = PBXFileReference; explicitFileType = "wrapper.cfbundle"; includeInIndex = 0; path = FluelTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		C2A4D0012F70000100BC027C /* FluelTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = FluelTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -720,7 +720,7 @@
 /* Begin XCRemoteSwiftPackageReference section */
 		A1B2C3D52F60000100BC027C /* XCRemoteSwiftPackageReference "MHPlatform" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/muhiro12/MHPlatform.git";
+			repositoryURL = "https://github.com/muhiro12/MHPlatform";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 1.0.0;
@@ -736,7 +736,7 @@
 		};
 		C1D2E3F52F66000100BC027C /* XCRemoteSwiftPackageReference "MHUI" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/muhiro12/MHUI.git";
+			repositoryURL = "https://github.com/muhiro12/MHUI";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 1.0.0;

@@ -15,8 +15,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/cybozu/LicenseList.git",
       "state" : {
-        "revision" : "56f1b5724138e4d9f60453b555edc80e43805503",
-        "version" : "2.2.0"
+        "revision" : "ee1e897acb2c8f3061fca4434cb702e8ddb7a72c",
+        "version" : "2.5.0"
       }
     },
     {
@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/muhiro12/MHPlatform.git",
       "state" : {
-        "revision" : "6a52439f75897dc042f6ba07ec80b347f13b9b35",
-        "version" : "1.4.0"
+        "revision" : "d4a81f521de0cd6872beed3153226ace41f99973",
+        "version" : "1.8.0"
       }
     },
     {
@@ -33,8 +33,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/muhiro12/MHUI.git",
       "state" : {
-        "revision" : "4805a54bd4040392a8bd1ec9880ff65273f15212",
-        "version" : "1.1.0"
+        "revision" : "b9081e284ffe982fb7b07d8a82ec2e64b2228e6e",
+        "version" : "1.3.0"
       }
     },
     {
