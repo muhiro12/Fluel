@@ -29,6 +29,10 @@ if rg -q 'XCLocalSwiftPackageReference "MHUI"|XCLocalSwiftPackageReference "\.\.
   fail_check "MHUI must not be referenced as a local path dependency."
 fi
 
+if ! rg -q "repositoryURL = \"$mhui_remote\";" "$pbxproj_path"; then
+  fail_check "Fluel.xcodeproj must reference the canonical MHUI remote."
+fi
+
 mhui_pin_block=$(grep -A8 '"identity" : "mhui"' "$resolved_path" || true)
 
 if [[ -z "$mhui_pin_block" ]]; then
@@ -51,4 +55,4 @@ if ! grep -Eq '"revision" : "[0-9a-f]{40}"' <<<"$mhui_pin_block"; then
   fail_check "MHUI must be pinned to a concrete revision in Package.resolved."
 fi
 
-echo "MHUI adoption check passed."
+echo "MHUI boundary check passed."

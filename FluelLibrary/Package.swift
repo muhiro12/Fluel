@@ -14,9 +14,21 @@ let package = Package( // swiftlint:disable:this prefixed_toplevel_constant
             targets: ["FluelLibrary"]
         )
     ],
+    dependencies: [
+        .package(
+            url: "https://github.com/muhiro12/MHPlatform.git",
+            "1.0.0"..<"2.0.0"
+        )
+    ],
     targets: [
         .target(
             name: "FluelLibrary",
+            dependencies: [
+                .product(
+                    name: "MHPlatformCore",
+                    package: "MHPlatform"
+                )
+            ],
             path: ".",
             sources: [
                 "Sources"

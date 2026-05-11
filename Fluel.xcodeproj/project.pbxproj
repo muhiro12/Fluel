@@ -582,7 +582,7 @@
 /* Begin XCRemoteSwiftPackageReference section */
 		A1B2C3D52F60000100BC027C /* XCRemoteSwiftPackageReference "MHPlatform" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/muhiro12/MHPlatform";
+			repositoryURL = "https://github.com/muhiro12/MHPlatform.git";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 1.0.0;
@@ -598,7 +598,7 @@
 		};
 		C1D2E3F52F66000100BC027C /* XCRemoteSwiftPackageReference "MHUI" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/muhiro12/MHUI";
+			repositoryURL = "https://github.com/muhiro12/MHUI.git";
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 1.0.0;

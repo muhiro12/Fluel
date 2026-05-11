@@ -220,11 +220,6 @@ if ! $should_skip_environment_check && { $needs_fluel_build || $needs_fluel_libr
     bash "$repository_root/ci_scripts/tasks/check_environment.sh" --profile build
 fi
 
-run_logged_step \
-  "check_public_repo_safety" \
-  "Check public repository safety" \
-  bash "$repository_root/ci_scripts/tasks/check_public_repo_safety.sh"
-
 if $needs_boundary_checks; then
   run_logged_step \
     "check_repository_contracts" \
@@ -232,14 +227,14 @@ if $needs_boundary_checks; then
     bash "$repository_root/ci_scripts/tasks/check_repository_contracts.sh"
 
   run_logged_step \
-    "check_mhplatform_adoption" \
-    "Check MHPlatform adoption boundaries" \
-    bash "$repository_root/ci_scripts/tasks/check_mhplatform_adoption.sh"
+    "check_mhplatform_boundaries" \
+    "Check MHPlatform boundaries" \
+    bash "$repository_root/ci_scripts/tasks/check_mhplatform_boundaries.sh"
 
   run_logged_step \
-    "check_mhui_adoption" \
-    "Check MHUI adoption boundaries" \
-    bash "$repository_root/ci_scripts/tasks/check_mhui_adoption.sh"
+    "check_mhui_boundaries" \
+    "Check MHUI boundaries" \
+    bash "$repository_root/ci_scripts/tasks/check_mhui_boundaries.sh"
 
   run_logged_step \
     "check_shared_library_boundaries" \
@@ -248,6 +243,11 @@ if $needs_boundary_checks; then
 fi
 
 if $needs_fluel_build; then
+  run_logged_step \
+    "check_models_directory_consistency" \
+    "Check Models directory consistency" \
+    bash "$repository_root/ci_scripts/tasks/check_models_directory_consistency.sh"
+
   run_logged_step \
     "build_app" \
     "Build Fluel app" \

@@ -15,7 +15,7 @@ legacy_matches=$(
     --glob '!.build/**' \
     --glob '!ci_scripts/tasks/check_repository_contracts.sh' \
     --glob '!Fluel.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved' \
-    --regexp 'ci_scripts/tasks/(verify|run_required_builds|pre_commit|verify_pre_commit|test_app_integration)\.sh|docs/product-overview\.md|\.build/ci_runs|FluelTests' \
+    --regexp 'ci_scripts/tasks/(verify|run_required_builds|pre_commit|verify_pre_commit|test_app_integration|check_mhplatform_adoption|check_mhui_adoption|check_public_repo_safety)\.sh|docs/product-overview\.md|\.build/ci_runs|FluelTests' \
     "$repository_root" || true
 )
 

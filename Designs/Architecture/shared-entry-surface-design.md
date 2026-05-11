@@ -15,6 +15,11 @@ the iOS app and widget extension.
   and mutations belong in shared services.
 - `FluelLibrary` remains a single module unless there is a stronger reason than
   code organization alone.
+- `FluelLibrary` adopts `MHPlatformCore` and must not depend on the full
+  `MHPlatform` app umbrella.
+- Thin targets here are responsibility-thin. They may still contain UI shells,
+  lifecycle wiring, and framework adapters so long as reusable rules stay in
+  `FluelLibrary`.
 
 ## Responsibility Boundaries
 
@@ -62,6 +67,14 @@ operations:
    bootstrap code out of `FluelLibrary`.
 5. If glue code is app-only but reused by multiple screens, factor it into
    `Fluel/Support/` instead of duplicating it in views.
+
+## Test Posture
+
+- Keep repository-owned unit tests in `FluelLibrary/Tests`.
+- Do not add separate unit test targets for `Fluel` or `FluelWidget` unless the
+  repository policy itself changes.
+- If an adapter needs durable coverage, first extract the reusable rule or wire
+  contract into `FluelLibrary` and test it there.
 
 ## Current Examples
 

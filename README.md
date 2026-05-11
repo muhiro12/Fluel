@@ -17,12 +17,7 @@ logic in `FluelLibrary`.
   mutation/query helpers, formatting, preview data, and widget snapshot
   projection used by both surfaces.
 
-Repository-owned unit tests live in `FluelLibrary/Tests`. App and widget
-targets stay responsibility-thin and are verified through builds,
-shared-library tests, boundary checks, capture verification, and release UI
-smoke audits when UI-sensitive changes need live Simulator evidence.
-
-## Feature Highlights
+## Feature highlights
 
 ### Entry tracking
 
@@ -52,36 +47,48 @@ smoke audits when UI-sensitive changes need live Simulator evidence.
 - Build widget-ready data in `FluelLibrary` and keep WidgetKit rendering in
   `FluelWidget`.
 
-## Architecture And Technologies
+## Architecture and technologies
 
 - **SwiftData + App Group** - the app and widget read from the same store at
   `group.com.muhiro12.Fluel/Fluel.sqlite`.
-- **Shared library source of truth** - reusable mutation, query, formatting,
-  and widget snapshot logic belongs in `FluelLibrary`.
-- **Observation-first app shell** - app-owned preset state is injected once
-  from the app assembly through typed SwiftUI environment values.
-- **Thin adapters** - `Fluel` is a full-platform app target that centers app
-  startup on `MHAppRuntimeBootstrap` through `MHPlatform`, keeps presentation,
-  preferences, TipKit, and mutation follow-up side effects app-owned, and
-  leaves WidgetKit delivery to `FluelWidget`.
-- **Per-tab navigation roots** - the main shell keeps a separate
-  `NavigationStack` per primary tab so each tab preserves its own navigation
-  history while keeping create and licenses presentation local to that tab.
-- **Optional shell additions** - mutation follow-up stays an app-owned concern
-  and uses the umbrella-exported `MHMutationFlow` surface only where the app
-  target actually owns that work.
-- **Full-platform app base product** - the app adopts `MHPlatform` because
-  Fluel wants the one-step package-owned runtime path for license presentation
-  and the debug-only native ad path while disabling ads for Codex capture mode.
-- **Shared-library platform path** - `FluelLibrary` currently has no MHPlatform
-  dependency; if it needs platform access later, it must stop at
-  `MHPlatformCore` or a granular core-safe module instead of app-facing
-  umbrellas.
-- **Repo-specific package governance** - Fluel keeps MHPlatform as a remote
-  semver-tracked `1.x` dependency starting at `1.0.0`, while resolving the
-  current published 1.2 line in `Package.resolved`.
+- **Shared library source of truth** - reusable entry mutation, query,
+  formatting, and widget snapshot logic belongs in `FluelLibrary`.
+- **Widget bridge** - `LeadEntryWidgetProvider` reads shared snapshots from
+  `FluelLibrary`, while `FluelWidget` owns WidgetKit timeline delivery and
+  rendering.
 - **Preview and capture support** - the app can boot sample data for previews
   and Codex capture flows without changing live storage.
+
+## Architecture records
+
+- Thin targets in this repository are responsibility-thin, not
+  line-count-thin. `Fluel` and `FluelWidget` may still own SwiftUI shells,
+  lifecycle wiring, routing, WidgetKit policy, and framework adapters, but
+  reusable entry rules and shared widget contracts belong in `FluelLibrary`.
+- `FluelLibrary` owns the shared SwiftData model, mutation/query services,
+  formatting, and widget snapshot builders.
+- `Fluel` and `FluelWidget` consume those shared APIs and remain the place for
+  Apple-specific integration work such as SwiftUI presentation, TipKit,
+  PhotosUI, WidgetKit, app runtime wiring, ads, and licenses.
+- Automated unit tests stay in `FluelLibrary/Tests`. This repository does not
+  add separate unit test targets for `Fluel` or `FluelWidget`; those adapters
+  are verified through builds plus shared-library tests.
+- Start detailed architecture reading from
+  [ARCHITECTURE_GUIDE.md](Designs/Architecture/ARCHITECTURE_GUIDE.md),
+  [shared-entry-surface-design.md](Designs/Architecture/shared-entry-surface-design.md),
+  and
+  [fluel-current-overview.md](Designs/Overviews/fluel-current-overview.md).
+
+## Platform package posture
+
+- `Fluel` intentionally adopts the full `MHPlatform` umbrella because the app
+  uses package-owned runtime surfaces, the license list surface, mutation
+  follow-up shell support, and the debug-only native ad path.
+- `FluelLibrary` intentionally adopts `MHPlatformCore` as the shared-library
+  umbrella for core-safe platform helpers.
+- `FluelWidget` intentionally stays off direct MHPlatform package adoption.
+- This repository intentionally tracks MHPlatform and MHUI with the 1.x semver
+  range starting at `1.0.0`.
 
 ## Requirements
 
@@ -96,11 +103,10 @@ smoke audits when UI-sensitive changes need live Simulator evidence.
 2. Update bundle identifiers, entitlements, and
    `FluelLibrary/Sources/Common/AppGroup.swift` if you are not using the
    production identifiers.
-3. If you add provider credentials or release-only identifiers later, keep
-   them in ignored local files instead of tracked source files. Keep
-   `Secret.swift`, `GoogleService-Info.plist`, `.env`, and signing assets out
-   of git, and validate with
-   `bash ci_scripts/tasks/check_public_repo_safety.sh` before publishing.
+3. If you are shipping a fork with your own identifiers, update
+   `FluelLibrary/Sources/Common/AppGroup.swift`,
+   `Fluel/Fluel.entitlements`, and
+   `FluelWidget/Configurations/FluelWidget.entitlements`.
 4. Open `Fluel.xcodeproj` in Xcode, select the **Fluel** scheme, and run on an
    iOS 26 simulator or device.
 5. Enable the **FluelWidget** scheme as needed when testing the widget
@@ -110,7 +116,8 @@ smoke audits when UI-sensitive changes need live Simulator evidence.
 
 Use the helper scripts in `ci_scripts/` as needed. The repository contract is:
 Direct entrypoints live in `ci_scripts/tasks/`, shared shell helpers live in
-`ci_scripts/lib/`, and `.build/ci/` is the only supported CI artifact root.
+`ci_scripts/lib/`, and `ci_scripts/ci_post_clone.sh` is reserved for external
+post-clone CI setup.
 
 - `bash ci_scripts/tasks/check_environment.sh --profile <format|build|verify>`
   diagnoses missing local prerequisites before you start a tool-dependent flow.
@@ -196,18 +203,6 @@ If you only need library tests:
 ```sh
 bash ci_scripts/tasks/test_shared_library.sh
 ```
-
-### Public Repository Safety
-
-Before creating a public GitHub repository, run:
-
-```sh
-bash ci_scripts/tasks/check_public_repo_safety.sh
-```
-
-The same safety check also runs inside
-`bash ci_scripts/tasks/verify_repository_state.sh` and
-`bash ci_scripts/tasks/verify_task_completion.sh`.
 
 If you want Git's `pre-push` hook to enforce the same repository flow, configure
 the hook to delegate to `bash ci_scripts/tasks/verify_pre_push.sh`.

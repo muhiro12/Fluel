@@ -38,7 +38,7 @@ Align Fluel with the MHPlatform 1.2 consumer rules as follows:
 
 - App-target source imports should converge on `MHPlatform` instead of direct
   `MHAppRuntime`, `MHLogging`, or `MHMutationFlow` imports.
-- `ci_scripts/tasks/check_mhplatform_adoption.sh` should require the app target
+- `ci_scripts/tasks/check_mhplatform_boundaries.sh` should require the app target
   to depend on `MHPlatform` and should no longer forbid `import MHPlatform` in
   the app target.
 - `ci_scripts/tasks/check_shared_library_boundaries.sh` should continue to keep
