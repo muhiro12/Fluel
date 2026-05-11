@@ -8,6 +8,7 @@ This guide defines the `domain-in-library, UI-as-adapter` policy for Fluel.
 
 Related documents:
 [shared-entry-surface-design.md](./shared-entry-surface-design.md)
+[release-ui-smoke-audit.md](./release-ui-smoke-audit.md)
 [../Overviews/fluel-current-overview.md](../Overviews/fluel-current-overview.md)
 
 ## Responsibility Boundaries

@@ -15,14 +15,24 @@ legacy_matches=$(
     --glob '!.build/**' \
     --glob '!ci_scripts/tasks/check_repository_contracts.sh' \
     --glob '!Fluel.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved' \
-    --regexp 'ci_scripts/tasks/(verify|run_required_builds|pre_commit|test_app_integration)\.sh|docs/product-overview\.md|\.build/ci_runs|FluelTests' \
+    --regexp 'ci_scripts/tasks/(verify|run_required_builds|pre_commit|verify_pre_commit|test_app_integration)\.sh|docs/product-overview\.md|\.build/ci_runs|FluelTests' \
     "$repository_root" || true
 )
 
-if [[ -n "$legacy_matches" ]]; then
+legacy_files=()
+if [[ -f "$repository_root/.pre-commit-config.yaml" ]]; then
+  legacy_files+=("$repository_root/.pre-commit-config.yaml")
+fi
+
+if [[ -n "$legacy_matches" || ${#legacy_files[@]} -ne 0 ]]; then
   echo "Repository contract check failed." >&2
-  echo "Remove legacy script names, legacy docs aliases, legacy test targets, and legacy artifact paths." >&2
-  printf '%s\n' "$legacy_matches" >&2
+  echo "Remove legacy script names, legacy hook files, legacy docs aliases, legacy test targets, and legacy artifact paths." >&2
+  if [[ -n "$legacy_matches" ]]; then
+    printf '%s\n' "$legacy_matches" >&2
+  fi
+  if [[ ${#legacy_files[@]} -ne 0 ]]; then
+    printf '%s\n' "${legacy_files[@]}" >&2
+  fi
   exit 1
 fi
 

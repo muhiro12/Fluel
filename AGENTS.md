@@ -42,6 +42,20 @@ Use these locations as the canonical documentation structure:
 
 All Swift code must comply with this repository's SwiftLint configuration.
 
+### Avoid abbreviated variable names
+
+#### Preferred
+
+- `result`
+- `image`
+- `button`
+
+#### Not preferred
+
+- `res`
+- `img`
+- `btn`
+
 ### Use `.init(...)` when the return type is explicit
 
 #### Preferred
@@ -79,8 +93,8 @@ When Swift files are edited, agents should run
 `bash ci_scripts/tasks/format_swift.sh` before the final verification gate.
 `bash ci_scripts/tasks/verify_task_completion.sh` is the non-destructive
 verification gate.
-`bash ci_scripts/tasks/verify_pre_commit.sh` reruns the same non-destructive
-verification shell for manual final checks and `.pre-commit-config.yaml`.
+`bash ci_scripts/tasks/verify_pre_push.sh` is the optional Git `pre-push`
+wrapper for the same non-destructive verification gate.
 SwiftLint is resolved from the `SimplyDanny/SwiftLintPlugins` package declared
 in `Fluel.xcodeproj`, not from a separately installed `swiftlint` binary.
 By default, `format_swift.sh` and `lint_swift.sh` operate on local Swift
@@ -102,6 +116,14 @@ bash ci_scripts/tasks/test_shared_library.sh
 - Do not add separate app or widget unit test targets by default. If an adapter
   needs durable rule coverage, first move the reusable rule or wire contract
   into `FluelLibrary` and test it there.
+
+## Release UI Smoke Audit
+
+Release UI smoke auditing is separate from the standard verification
+entrypoint. When release or UI-sensitive work needs live Simulator evidence,
+use the global `$xcode-ui-smoke-auditor` skill and keep the audit
+non-destructive by default. Do not erase simulator data, reset containers, or
+add UI test targets solely for the audit unless explicitly requested.
 
 ## CI Artifact Layout
 
