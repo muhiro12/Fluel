@@ -63,7 +63,6 @@ forbidden_non_app_umbrella_imports=$(
   rg --line-number '^(@testable )?import MHPlatform$' \
     FluelWidget \
     FluelLibrary \
-    FluelTests \
     --glob '*.swift' || true
 )
 

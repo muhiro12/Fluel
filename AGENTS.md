@@ -94,6 +94,15 @@ bash ci_scripts/tasks/build_app.sh
 bash ci_scripts/tasks/test_shared_library.sh
 ```
 
+## Testing Boundary
+
+- Keep repository-owned unit tests in `FluelLibrary/Tests`.
+- Keep app and widget targets responsibility-thin enough to verify through
+  builds, shared-library tests, boundary checks, and targeted UI smoke audits.
+- Do not add separate app or widget unit test targets by default. If an adapter
+  needs durable rule coverage, first move the reusable rule or wire contract
+  into `FluelLibrary` and test it there.
+
 ## CI Artifact Layout
 
 CI run artifacts are written under `.build/ci/runs/<RUN_ID>/`.

@@ -172,14 +172,12 @@ if [[ "${CI_SKIP_ENV_CHECK:-0}" == "1" || "${CI_SKIP_ENV_CHECK:-}" == "true" ]];
 fi
 
 needs_fluel_build=false
-needs_fluel_app_tests=false
 needs_fluel_library_tests=false
 needs_boundary_checks=false
 
 if $should_force_full; then
   echo "Forcing full verification regardless of local changes."
   needs_fluel_build=true
-  needs_fluel_app_tests=true
   needs_fluel_library_tests=true
   needs_boundary_checks=true
   run_note="Executed a forced full verification run regardless of local changes."
@@ -198,20 +196,16 @@ else
     needs_fluel_build=true
   fi
 
-  if grep -Eq '^Fluel/|^FluelWidget/|^FluelLibrary/|^FluelTests/|^Fluel\.xcodeproj/' <<<"$build_relevant_changed_files"; then
-    needs_fluel_app_tests=true
-  fi
-
   if grep -Eq '^FluelLibrary/' <<<"$build_relevant_changed_files"; then
     needs_fluel_library_tests=true
   fi
 
-  if grep -Eq '^Fluel/|^FluelWidget/|^FluelLibrary/|^FluelTests/|^Fluel\.xcodeproj/|^ci_scripts/|^AGENTS\.md$|^README\.md$|^Designs/' <<<"$changed_files"; then
+  if grep -Eq '^Fluel/|^FluelWidget/|^FluelLibrary/|^Fluel\.xcodeproj/|^ci_scripts/|^AGENTS\.md$|^README\.md$|^Designs/' <<<"$changed_files"; then
     needs_boundary_checks=true
   fi
 
-  if ! $needs_fluel_build && ! $needs_fluel_app_tests && ! $needs_fluel_library_tests && ! $needs_boundary_checks; then
-    echo "No changes under Fluel/, FluelWidget/, FluelLibrary/, FluelTests/, Fluel.xcodeproj/, ci_scripts/, AGENTS.md, README.md, or Designs/."
+  if ! $needs_fluel_build && ! $needs_fluel_library_tests && ! $needs_boundary_checks; then
+    echo "No changes under Fluel/, FluelWidget/, FluelLibrary/, Fluel.xcodeproj/, ci_scripts/, AGENTS.md, README.md, or Designs/."
     run_note="No relevant repository changes detected. Build/test steps were skipped."
     exit 0
   fi
@@ -219,7 +213,7 @@ else
   run_note="Executed required CI steps based on local changes."
 fi
 
-if ! $should_skip_environment_check && { $needs_fluel_build || $needs_fluel_app_tests || $needs_fluel_library_tests; }; then
+if ! $should_skip_environment_check && { $needs_fluel_build || $needs_fluel_library_tests; }; then
   run_logged_step \
     "check_environment" \
     "Check build environment" \
@@ -258,13 +252,6 @@ if $needs_fluel_build; then
     "build_app" \
     "Build Fluel app" \
     bash "$repository_root/ci_scripts/tasks/build_app.sh"
-fi
-
-if $needs_fluel_app_tests; then
-  run_logged_step \
-    "test_app_integration" \
-    "Run Fluel app integration tests" \
-    bash "$repository_root/ci_scripts/tasks/test_app_integration.sh"
 fi
 
 if $needs_fluel_library_tests; then

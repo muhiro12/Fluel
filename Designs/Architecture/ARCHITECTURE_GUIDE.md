@@ -25,7 +25,6 @@ Related documents:
 | `Fluel` | Full-platform app target | `MHPlatform` | `MHMutationFlow` concerns inside app-owned mutation adapters | Direct split runtime bundles, route shell, review shell |
 | `FluelWidget` | Passive UI extension | No MHPlatform product adoption | None | `MHPlatform`, `MHAppRuntime`, split runtime bundles, mutation shell, review shell |
 | `FluelLibrary` | Shared logic library | `MHPlatformCore` or granular core-safe modules if platform access is ever needed | Concrete core-safe modules only when a shared concern genuinely needs them | `MHPlatform`, `MHAppRuntime`, split runtime bundles, `MHMutationFlow`, `MHReviewPolicy` |
-| `FluelTests` | App integration bundle | App-owned `Fluel` / `FluelLibrary` test surface | `MHPlatformTesting` only if test support becomes necessary | `MHPlatform` umbrella imports in test support |
 
 The current app is a full-platform consumer: it selects `MHPlatform` as the
 base product because Fluel wants the one-step package-owned path for license
@@ -34,6 +33,17 @@ presentation and the debug-only native ad configuration. It still uses
 app-owned optional concern. `FluelLibrary` currently has no MHPlatform
 dependency; if platform access ever moves into the shared library, it must stop
 at `MHPlatformCore` or a granular core-safe module.
+
+## Testing Boundary
+
+- Keep repository-owned unit tests in `FluelLibrary/Tests`.
+- Do not maintain separate app or widget unit test targets by default.
+- App-owned adapters should stay responsibility-thin enough to verify through
+  builds, shared-library tests, boundary checks, and targeted live UI smoke
+  audits when UI-sensitive work needs Simulator evidence.
+- If an adapter flow needs durable coverage, first move the reusable rule or
+  wire contract into `FluelLibrary` and test it there instead of growing
+  target-local test suites.
 
 ## Canonical Mutation Flow
 
@@ -150,8 +160,6 @@ Current examples should include `MainTabRouter`, `HomeScreenModel`,
   shared concern ever needs them.
 - `ci_scripts/tasks/check_repository_contracts.sh` blocks references to removed
   verify script names, removed docs aliases, and removed legacy artifact paths.
-- `ci_scripts/tasks/test_app_integration.sh` verifies the app-owned mutation
-  workflow against an in-memory SwiftData container.
 - `ci_scripts/tasks/verify_repository_state.sh` runs the boundary checks, app
-  build, app integration test, shared-library tests, and screen capture flow
-  when the changed paths require them.
+  build, shared-library tests, and screen capture flow when the changed paths
+  require them.

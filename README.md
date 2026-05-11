@@ -17,6 +17,11 @@ logic in `FluelLibrary`.
   mutation/query helpers, formatting, preview data, and widget snapshot
   projection used by both surfaces.
 
+Repository-owned unit tests live in `FluelLibrary/Tests`. App and widget
+targets stay responsibility-thin and are verified through builds,
+shared-library tests, boundary checks, capture verification, and release UI
+smoke audits when UI-sensitive changes need live Simulator evidence.
+
 ## Feature Highlights
 
 ### Entry tracking
@@ -174,12 +179,6 @@ If you only need the app build:
 
 ```sh
 bash ci_scripts/tasks/build_app.sh
-```
-
-If you only need the app integration test bundle:
-
-```sh
-bash ci_scripts/tasks/test_app_integration.sh
 ```
 
 If you want to verify the existing Codex capture screens after an app build:

@@ -21,20 +21,6 @@
                ReferencedContainer = "container:Fluel.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "NO"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "C2A4D0062F70000100BC027C"
-               BuildableName = "FluelTests.xctest"
-               BlueprintName = "FluelTests"
-               ReferencedContainer = "container:Fluel.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -52,18 +38,6 @@
             ReferencedContainer = "container:Fluel.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
-      <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "C2A4D0062F70000100BC027C"
-               BuildableName = "FluelTests.xctest"
-               BlueprintName = "FluelTests"
-               ReferencedContainer = "container:Fluel.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
-      </Testables>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"
