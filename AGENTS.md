@@ -21,12 +21,23 @@ Before the first XcodeBuildMCP build, test, or run call in a session, run
 XcodeBuildMCP `session_show_defaults`. If defaults do not point at this
 repository, set them for the current session before continuing.
 
-For app compile checks, use XcodeBuildMCP `build_sim` with the `Fluel` scheme.
-For shared-library tests, use XcodeBuildMCP `test_sim` with the `FluelLibrary`
-scheme. For widget compile checks, use XcodeBuildMCP `build_sim` with the
-`FluelWidget` scheme when widget code or configuration changes. For runtime or
-UI-sensitive checks, use XcodeBuildMCP `build_run_sim`, `launch_app_sim`,
-`snapshot_ui`, and `screenshot` as appropriate.
+Treat library tests, surface builds, and runtime/UI evidence as separate
+verification capabilities. Choose the smallest set that proves the current
+change, and prefer stronger evidence when public APIs, wire contracts,
+SwiftData schema, app lifecycle wiring, widget timeline behavior, or visible UI
+behavior are affected.
+
+- For shared-library logic, model, or test changes, use XcodeBuildMCP
+  `test_sim` with the `FluelLibrary` scheme.
+- For public `FluelLibrary` APIs, shared contracts, SwiftData schema, or
+  adapter-facing contracts, also use XcodeBuildMCP `build_sim` with the
+  `Fluel` scheme.
+- For app compile checks, use XcodeBuildMCP `build_sim` with the `Fluel`
+  scheme.
+- For widget code, configuration, or timeline changes, use XcodeBuildMCP
+  `build_sim` with the `FluelWidget` scheme.
+- For runtime or UI-sensitive changes, use XcodeBuildMCP `build_run_sim`,
+  `launch_app_sim`, `snapshot_ui`, and `screenshot` as appropriate.
 
 Agents may run `bash ci_scripts/tasks/check_environment.sh --profile verify`
 first to diagnose missing local prerequisites.
