@@ -7,7 +7,7 @@ time.
 
 Essential fields as product concepts:
 
-- Title: the name the user gives the thing or place.
+- Title: the non-empty name the user gives the thing or place.
 - Start: when the relationship began.
 - Precision: how exactly the start is known.
 - Note: an optional small memory or description.
@@ -188,6 +188,10 @@ Starter examples to preserve as product knowledge:
 
 Furniture also appears as a sample ordinary thing and should remain part of
 the product's example language.
+
+Desk lamp appears as a sample archived ordinary thing. Preserve it as example
+vocabulary for a small household object whose daily-life presence can later
+move into the archive.
 
 ## Sharing
 

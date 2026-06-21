@@ -17,7 +17,7 @@ The first-run feeling should be calm, not instructional-heavy.
 
 The creation flow should let the user:
 
-- Enter a title.
+- Enter a non-empty title.
 - Choose the start precision: day, month, or year.
 - Choose a start that is today or earlier.
 - Add an optional photo.

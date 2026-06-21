@@ -15,7 +15,7 @@ An entry is one thing or place the user has been living with over time.
 
 An entry should have:
 
-- A user-facing title.
+- A non-empty user-facing title.
 - A start point.
 - A known precision for that start point.
 - Optional note content.

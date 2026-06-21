@@ -16,6 +16,22 @@ Preferred qualities:
 Avoid language that feels mechanical, gamified, judgmental, or productivity
 oriented.
 
+## Localization Evidence
+
+The legacy repository carried localized product copy across the app, shared
+library, and widget for these languages:
+
+- English as the source language.
+- Japanese.
+- Spanish.
+- French.
+- Simplified Chinese (`zh-Hans`).
+
+Preserve this as evidence that Fluel's language was intended to travel beyond
+English. The exact old implementation of localization is not a rebuild
+requirement, but future copy should keep the same calm, familiar, low-pressure
+tone if those languages are retained.
+
 ## Core Phrases
 
 Preserve these product phrases or their close equivalents:
@@ -210,6 +226,7 @@ Preserved example titles:
 - Notebook.
 - Plant.
 - Furniture.
+- Desk lamp.
 
 Preserved example tone:
 
@@ -218,6 +235,8 @@ Preserved example tone:
 - A plant shares the same light.
 - A notebook holds ordinary thoughts.
 - Furniture can stay through different rooms.
+- A desk lamp can be a small household object that later moves into the
+  archive.
 
 These examples define the emotional range of Fluel: small, concrete, ordinary,
 and personal.

@@ -38,6 +38,8 @@ Product knowledge was extracted from:
 
 - Existing product overview and README material.
 - User-facing localization strings.
+- Completed legacy string catalogs for English, Japanese, Spanish, French, and
+  Simplified Chinese (`zh-Hans`).
 - Entry, timeline, dashboard, preset, settings, and widget copy.
 - Sample data and starter examples.
 - Unit tests that encode user-visible behavior and edge cases.
@@ -82,6 +84,7 @@ in docs:
 
 - Fluel's purpose as a quiet time-with-things-and-places product.
 - Entry as one thing or place the user lives with.
+- Entry titles as required, non-empty user-facing names.
 - Start precision: day, month, or year.
 - Honest approximate starts.
 - Time together as the central display concept.
@@ -97,6 +100,8 @@ in docs:
 - Display-density preferences.
 - Widget-style glance for the longest-running active entry.
 - The product language and tone captured in `docs/product-language.md`.
+- The legacy localization scope of English, Japanese, Spanish, French, and
+  Simplified Chinese (`zh-Hans`).
 
 ## Rebuild Boundary
 
@@ -117,8 +122,10 @@ Those are future decisions after the legacy implementation has been removed.
 ## Final Audit Result
 
 The preservation pass found no additional product-specific meaning in assets
-beyond placeholder icon and accent metadata. The important source-only product
-knowledge has been extracted into the docs listed above.
+beyond placeholder icon and accent metadata. A follow-up audit also preserved
+legacy localization scope, the non-empty entry title rule, and `Desk lamp` as
+archived sample vocabulary. The important source-only product knowledge has
+been extracted into the docs listed above.
 
 If future manual deletion uncovers unreviewed private notes, screenshots, or
 external planning artifacts that are not present in this repository, those
