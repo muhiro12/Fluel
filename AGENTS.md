@@ -43,6 +43,10 @@ The current authoritative product documents are:
 - `docs/product-language.md`
 - `docs/rebuild-handoff.md`
 
+Implementation-direction constraints clarified after product preservation live
+in `docs/rebuild-implementation-principles.md`. Read that document before
+starting rebuild implementation or setup work.
+
 When changing documentation, preserve the existing boundary:
 
 - Preserve product vision, purpose, user value, concepts, workflows, language,
@@ -57,13 +61,24 @@ When changing documentation, preserve the existing boundary:
 
 When a future task explicitly starts a new implementation phase:
 
+- Read `docs/rebuild-implementation-principles.md` before making setup,
+  package, OS-baseline, design-system, or app-surface decisions.
+- Treat Fluel as a focused Apple app for an AI-assisted platform future: the
+  app owns a clean domain and exposes reliable structured surfaces without
+  becoming a broad platform or generic AI chat app.
 - Use Apple, Swift, SwiftUI, HIG, and official Apple framework guidance as
   primary platform constraints.
 - Use `apple-ios-dev-flow` for ordinary Apple-platform implementation work
   when the skill is available.
-- Use Incomes as the frontier app reference for applied Apple app architecture
-  and Cookle as the next app-repository baseline, but adapt intent rather than
-  copying domain-specific or stale structure.
+- Use Origami and Incomes as the highest-priority app references, with Incomes
+  as the frontier app reference for applied Apple app architecture. Adapt
+  intent rather than copying domain-specific or stale structure.
+- Use the Incomes package posture unless a Fluel-specific constraint requires
+  a documented exception. This includes MHPlatform, MHUI, and project-declared
+  SwiftLintPlugins usage once a project exists.
+- Use MHUI with the full current SDK capabilities available to the rebuild.
+- Treat the intended minimum support baseline as the iOS 27 family unless the
+  user explicitly revises it.
 - Prefer a shared-library-first shape for durable business logic if the new
   implementation grows across app, widget, intent, watch, or other delivery
   surfaces.

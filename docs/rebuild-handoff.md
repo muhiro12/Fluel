@@ -21,6 +21,11 @@ Read these files before any future rebuild work:
 - `docs/product-language.md`
 - `docs/rebuild-handoff.md`
 
+After the preservation pass, implementation-direction constraints were added
+to:
+
+- `docs/rebuild-implementation-principles.md`
+
 Together, they answer:
 
 - What the product is.
@@ -31,6 +36,10 @@ Together, they answer:
 - What workflows must survive.
 - What experience principles must survive.
 - What should be discarded with the old implementation.
+
+The implementation-principles document additionally records rebuild direction
+for platform posture, reference projects, package alignment, OS baseline, and
+AI-era app shape.
 
 ## Evidence Used
 
@@ -118,6 +127,10 @@ This handoff does not decide:
 - New features.
 
 Those are future decisions after the legacy implementation has been removed.
+Some implementation-direction constraints have since been recorded in
+`docs/rebuild-implementation-principles.md`; use that document for the
+confirmed rebuild posture without treating the legacy implementation as a
+blueprint.
 
 ## Final Audit Result
 

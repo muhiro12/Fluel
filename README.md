@@ -20,10 +20,12 @@ Start here:
 - `docs/user-experience-principles.md`
 - `docs/product-language.md`
 - `docs/rebuild-handoff.md`
+- `docs/rebuild-implementation-principles.md`
 
 These documents describe what Fluel is, why it exists, what concepts and
 language should survive, and what legacy implementation details should not be
-carried forward automatically.
+carried forward automatically. The implementation-principles document captures
+additional rebuild direction clarified after the preservation pass.
 
 ## Rebuild Status
 
