@@ -5,12 +5,13 @@ Repository-specific agent contract for Fluel.
 ## Repository State
 
 This repository now contains the initial rebuilt Apple app project alongside
-the preserved product documentation. Treat `docs/` as the source of truth for
-product intent, and treat the Xcode project as the current implementation
-surface.
+the preserved product documentation and a small shared library package. Treat
+`docs/` as the source of truth for product intent, and treat the Xcode project,
+`FluelLibrary`, and `ci_scripts` as the current implementation and
+verification surface.
 
-Do not restore deleted legacy Swift code, add CI scaffolding, or make future
-architecture decisions unless the current task explicitly asks for that phase.
+Do not restore deleted legacy Swift code or make future feature architecture
+decisions unless the current task explicitly asks for that phase.
 
 ## Repository Rules
 
@@ -28,6 +29,44 @@ architecture decisions unless the current task explicitly asks for that phase.
 - Swift code must comply with the repository SwiftLint configuration once
   Swift source is reintroduced.
 - Treat `docs/` as the source of truth for preserved product knowledge.
+
+## Project Structure
+
+- `Fluel.xcodeproj`: Xcode project for the app surface.
+- `Fluel/`: app target source, assets, entitlements, and plist.
+- `FluelLibrary/`: Swift package for durable entry domain logic,
+  cross-surface value contracts, `*Operations`, and package tests.
+- `ci_scripts/`: repository-owned shell entrypoints for non-runtime
+  verification and fallback app builds.
+
+## Target Responsibilities
+
+The `Fluel` app target owns Apple surface concerns:
+
+- SwiftUI screens, presentation state, navigation, sheets, and previews.
+- App lifecycle and SwiftData `ModelContainer` setup.
+- SwiftData `@Model` adapter types and translation to or from
+  `FluelLibrary` value contracts.
+- Thin persistence adapters such as simple `@Query`, insert, and save calls
+  while the app has only one surface.
+
+The app target should not own durable entry rules, elapsed-time calculations,
+start precision behavior, input validation, or cross-surface use cases.
+
+`FluelLibrary` owns reusable product behavior:
+
+- `StartPrecision`, `TimeTogetherSummary`, `EntryDraft`, `EntryInput`,
+  `EntrySnapshot`, and `EntryOperations`.
+- Domain validation, normalized start dates, approximate start semantics, and
+  elapsed-time presentation values.
+- Public `*Operations` facades that future App Intents, widgets, share
+  extensions, watch targets, and app UI adapters can call.
+- Repository-owned package tests for durable behavior.
+
+Keep `FluelLibrary` Foundation-only until a concrete need justifies another
+dependency. It must not import SwiftUI, SwiftData, MHUI, MHDesign, MHPlatform,
+or app-runtime frameworks. Platform and persistence glue stays in the app or a
+future surface adapter.
 
 ## Documentation Contract
 
@@ -81,6 +120,7 @@ During implementation work:
 - Prefer a shared-library-first shape for durable business logic if the new
   implementation grows across app, widget, intent, watch, or other delivery
   surfaces.
+
 ## Apple Verification Contract
 
 Use the Incomes/Cookle verification posture unless the new repository shape
@@ -108,30 +148,47 @@ gives a stronger reason to diverge:
 - Retain shell scripts only for SwiftLint/autofix, static repository rules,
   compatibility wrappers, optional audits, or checks not naturally covered by
   XcodeBuildMCP.
+
 ## Current Verification
 
 The active Xcode project is `Fluel.xcodeproj`.
 
 - App scheme: `Fluel`.
 - Active app target: `Fluel`.
-- Current shared-library, widget, watch, and intent schemes: none.
+- Current shared library: Swift package `FluelLibrary`.
+- Current widget, watch, and intent schemes: none.
 - Preferred compile check: XcodeBuildMCP `build_sim` with project
   `Fluel.xcodeproj`, scheme `Fluel`, configuration `Debug`, and an iOS 27
   simulator.
+- Preferred package test check: `bash ci_scripts/tasks/test_library.sh`.
+- Preferred Swift format check or autofix:
+  `bash ci_scripts/tasks/format_swift.sh`.
+- Preferred Swift lint check: `bash ci_scripts/tasks/lint_swift.sh`.
+- Preferred retained repository-rule check:
+  `bash ci_scripts/tasks/check_repository_rules.sh`.
+- Preferred non-runtime aggregate shell check:
+  `bash ci_scripts/tasks/verify_task_completion.sh`.
 - Current shell fallback:
 
   ```sh
-  xcodebuild \
-      -project Fluel.xcodeproj \
-      -scheme Fluel \
-      -configuration Debug \
-      -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
-      build
+  bash ci_scripts/tasks/build_app.sh
   ```
 
-- Swift lint check: `swiftlint lint --strict --no-cache`.
 - General patch check: `git diff --check`.
-- Retained repository-rule scripts: none.
+- Retained repository-rule scripts:
+  `ci_scripts/tasks/check_repository_rules.sh` and
+  `ci_scripts/tasks/check_library_boundaries.sh`.
+
+When public `FluelLibrary` APIs, `*Operations`, domain behavior, or tests
+change, run the package tests and repository rules. Also run the app build when
+the app target, SwiftData schema, package product links, or adapter-facing
+contracts change.
+
+When runtime, lifecycle, persistence container, navigation, visible UI, or
+package-linking behavior changes, add XcodeBuildMCP `build_run_sim`, runtime
+log review, and `screenshot` evidence. If UI automation or `snapshot_ui` is
+unavailable in the active Xcode beta environment, use runtime logs,
+screenshots, and domain tests as the fallback verification contract.
 
 For documentation-only changes:
 

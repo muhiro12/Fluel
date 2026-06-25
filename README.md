@@ -35,6 +35,8 @@ The current implementation surface is a minimal rebuilt Xcode project:
 - Project: `Fluel.xcodeproj`
 - Scheme: `Fluel`
 - App target: `Fluel`
+- Shared package: `FluelLibrary`
+- Repository verification scripts: `ci_scripts/tasks/`
 
 The project is an early SwiftUI and SwiftData scaffold, not a complete product
 implementation. Future implementation work should use the preserved product

@@ -151,6 +151,18 @@ This avoids pulling app-runtime dependencies such as ad configuration into the
 first Entry, Start, Precision, and Time together slice before the product has a
 reason to own those surfaces.
 
+The current development foundation adds `FluelLibrary` as the shared package
+for durable entry behavior. The app target still owns SwiftData `@Model`
+storage, SwiftUI presentation, navigation, and model-container setup. The
+library owns start precision, draft validation, normalized start dates,
+elapsed-time summaries, stable entry snapshots, and `EntryOperations`.
+
+Keep this split narrow. Do not add App Intents, widgets, share extensions,
+backup services, archive flows, review prompts, or insights infrastructure only
+to mirror Incomes. Add new surfaces when a feature goal needs them, and have
+those surfaces call `FluelLibrary` operations rather than recreating domain
+rules.
+
 ## Verification Posture
 
 Once implementation exists, use the repository `AGENTS.md` verification
