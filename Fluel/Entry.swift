@@ -121,4 +121,53 @@ final class Entry {
             calendar: calendar
         )
     }
+
+    func archive() {
+        archive(
+            archivedAt: .now,
+            calendar: .autoupdatingCurrent
+        )
+    }
+
+    func archive(
+        archivedAt: Date,
+        calendar: Calendar
+    ) {
+        apply(
+            EntryOperations.archive(
+                snapshot,
+                archivedAt: archivedAt,
+                calendar: calendar
+            )
+        )
+    }
+
+    func restore() {
+        restore(
+            restoredAt: .now,
+            calendar: .autoupdatingCurrent
+        )
+    }
+
+    func restore(
+        restoredAt: Date,
+        calendar: Calendar
+    ) {
+        apply(
+            EntryOperations.restore(
+                snapshot,
+                restoredAt: restoredAt,
+                calendar: calendar
+            )
+        )
+    }
+
+    private func apply(_ snapshot: EntrySnapshot) {
+        title = snapshot.title
+        startDate = snapshot.startDate
+        startPrecision = snapshot.startPrecision
+        createdAt = snapshot.createdAt
+        updatedAt = snapshot.updatedAt
+        archivedAt = snapshot.archivedAt
+    }
 }

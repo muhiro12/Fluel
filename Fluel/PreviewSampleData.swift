@@ -35,6 +35,15 @@ enum PreviewSampleData {
                 startPrecision: .day,
                 createdAt: date(year: 2026, month: 6, day: 25),
                 updatedAt: date(year: 2026, month: 6, day: 25)
+            ),
+            Entry(
+                title: "Desk lamp",
+                startDate: date(year: 2023, month: 2, day: 14),
+                startPrecision: .day,
+                createdAt: date(year: 2026, month: 6, day: 25),
+                updatedAt: date(year: 2026, month: 6, day: 26),
+                archivedAt: date(year: 2026, month: 6, day: 26),
+                id: UUID()
             )
         ]
     }

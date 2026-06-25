@@ -1,35 +1,33 @@
 //
-//  ActiveEntryListView.swift
+//  ArchiveEntryListView.swift
 //  Fluel
 //
-//  Created by Codex on 2026/06/25.
+//  Created by Codex on 2026/06/26.
 //
 
 import MHUI
 import SwiftData
 import SwiftUI
 
-struct ActiveEntryListView: View {
+struct ArchiveEntryListView: View {
     @Environment(\.modelContext)
     private var modelContext
 
     @Query(
         filter: #Predicate<Entry> { entry in
-            entry.archivedAt == nil
+            entry.archivedAt != nil
         },
-        sort: \Entry.startDate,
-        order: .forward
+        sort: \Entry.archivedAt,
+        order: .reverse
     )
     private var entries: [Entry]
 
-    @State private var isShowingArchiveError = false
-
-    let addEntry: () -> Void
+    @State private var isShowingRestoreError = false
 
     var body: some View {
         Group {
             if entries.isEmpty {
-                ActiveEntryEmptyState(addEntry: addEntry)
+                ArchivedEntryEmptyState()
             } else {
                 List(entries) { entry in
                     NavigationLink {
@@ -39,28 +37,37 @@ struct ActiveEntryListView: View {
                     }
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                         Button {
-                            archive(entry)
+                            restore(entry)
                         } label: {
-                            Label("Archive", systemImage: "archivebox")
+                            Label("Restore", systemImage: "arrow.uturn.backward")
                         }
-                        .tint(.orange)
+                        .tint(.green)
                     }
                 }
             }
         }
-        .alert("Entry could not be archived", isPresented: $isShowingArchiveError) {
+        .navigationTitle("Archive")
+        .alert("Entry could not be restored", isPresented: $isShowingRestoreError) {
             Button("OK", role: .cancel) {
-                isShowingArchiveError = false
+                isShowingRestoreError = false
             }
         }
     }
 
-    private func archive(_ entry: Entry) {
+    private func restore(_ entry: Entry) {
         do {
-            entry.archive()
+            entry.restore()
             try modelContext.save()
         } catch {
-            isShowingArchiveError = true
+            isShowingRestoreError = true
         }
     }
+}
+
+#Preview {
+    NavigationStack {
+        ArchiveEntryListView()
+    }
+    .mhTheme(.standard)
+    .modelContainer(PreviewSampleData.container())
 }

@@ -21,6 +21,13 @@ struct EntryMetadataSection: View {
                 "Updated",
                 value: entry.updatedAt.formatted(date: .abbreviated, time: .shortened)
             )
+
+            if let archivedAt = entry.archivedAt {
+                LabeledContent(
+                    "Archived",
+                    value: archivedAt.formatted(date: .abbreviated, time: .shortened)
+                )
+            }
         }
         .labeledContentStyle(.mhKeyValue)
     }
