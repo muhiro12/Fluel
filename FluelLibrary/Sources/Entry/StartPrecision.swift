@@ -1,24 +1,19 @@
-//
-//  StartPrecision.swift
-//  Fluel
-//
-//  Created by Codex on 2026/06/25.
-//
-
 import Foundation
 
-enum StartPrecision: String, CaseIterable, Codable, Identifiable {
+/// The known precision of an entry's start.
+public enum StartPrecision: String, CaseIterable, Codable, Hashable, Identifiable, Sendable {
     case day
     case month
     case year
 
     private static let monthNameReferenceYear = 2_024
 
-    var id: Self {
+    public var id: Self {
         self
     }
 
-    var label: String {
+    /// Short label for picker and compact presentation.
+    public var label: String {
         switch self {
         case .day:
             "Day"
@@ -29,7 +24,8 @@ enum StartPrecision: String, CaseIterable, Codable, Identifiable {
         }
     }
 
-    var knownAsText: String {
+    /// Describes how much of the start is known.
+    public var knownAsText: String {
         switch self {
         case .day:
             "Exact day"
@@ -40,11 +36,13 @@ enum StartPrecision: String, CaseIterable, Codable, Identifiable {
         }
     }
 
-    var isApproximate: Bool {
+    /// True when the start represents a range instead of an exact day.
+    public var isApproximate: Bool {
         self != .day
     }
 
-    static func monthName(
+    /// Returns a localized month name for picker presentation.
+    public static func monthName(
         for month: Int,
         calendar: Calendar = .autoupdatingCurrent
     ) -> String {
@@ -61,7 +59,8 @@ enum StartPrecision: String, CaseIterable, Codable, Identifiable {
         return date.formatted(.dateTime.month(.wide))
     }
 
-    func normalizedStartDate(
+    /// Normalizes a date to the earliest date represented by this precision.
+    public func normalizedStartDate(
         from date: Date,
         calendar: Calendar = .autoupdatingCurrent
     ) -> Date {
@@ -83,7 +82,8 @@ enum StartPrecision: String, CaseIterable, Codable, Identifiable {
         }
     }
 
-    func startLabel(
+    /// Formats the known start value for display.
+    public func startLabel(
         for date: Date,
         calendar: Calendar = .autoupdatingCurrent
     ) -> String {
@@ -99,7 +99,8 @@ enum StartPrecision: String, CaseIterable, Codable, Identifiable {
         }
     }
 
-    func startRangeLabel(
+    /// Formats the approximate range represented by a month or year start.
+    public func startRangeLabel(
         for date: Date,
         calendar: Calendar = .autoupdatingCurrent
     ) -> String? {
@@ -109,27 +110,9 @@ enum StartPrecision: String, CaseIterable, Codable, Identifiable {
         case .day:
             return nil
         case .month:
-            guard let interval = calendar.dateInterval(of: .month, for: normalizedDate),
-                  let finalDay = calendar.date(byAdding: .day, value: -1, to: interval.end) else {
-                return nil
-            }
-
-            return [
-                interval.start.formatted(date: .abbreviated, time: .omitted),
-                finalDay.formatted(date: .abbreviated, time: .omitted)
-            ]
-            .joined(separator: " - ")
+            return dateRangeLabel(component: .month, normalizedDate: normalizedDate, calendar: calendar)
         case .year:
-            guard let interval = calendar.dateInterval(of: .year, for: normalizedDate),
-                  let finalDay = calendar.date(byAdding: .day, value: -1, to: interval.end) else {
-                return nil
-            }
-
-            return [
-                interval.start.formatted(date: .abbreviated, time: .omitted),
-                finalDay.formatted(date: .abbreviated, time: .omitted)
-            ]
-            .joined(separator: " - ")
+            return dateRangeLabel(component: .year, normalizedDate: normalizedDate, calendar: calendar)
         }
     }
 
@@ -146,5 +129,22 @@ enum StartPrecision: String, CaseIterable, Codable, Identifiable {
             month: dateComponents.month ?? 1,
             day: 1
         )) ?? calendar.startOfDay(for: date)
+    }
+
+    private func dateRangeLabel(
+        component: Calendar.Component,
+        normalizedDate: Date,
+        calendar: Calendar
+    ) -> String? {
+        guard let interval = calendar.dateInterval(of: component, for: normalizedDate),
+              let finalDay = calendar.date(byAdding: .day, value: -1, to: interval.end) else {
+            return nil
+        }
+
+        return [
+            interval.start.formatted(date: .abbreviated, time: .omitted),
+            finalDay.formatted(date: .abbreviated, time: .omitted)
+        ]
+        .joined(separator: " - ")
     }
 }

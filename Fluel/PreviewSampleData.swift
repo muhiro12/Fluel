@@ -5,6 +5,7 @@
 //  Created by Codex on 2026/06/25.
 //
 
+import FluelLibrary
 import Foundation
 import SwiftData
 

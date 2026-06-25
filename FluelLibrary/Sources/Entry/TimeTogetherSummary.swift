@@ -1,13 +1,7 @@
-//
-//  TimeTogetherSummary.swift
-//  Fluel
-//
-//  Created by Codex on 2026/06/25.
-//
-
 import Foundation
 
-struct TimeTogetherSummary: Equatable {
+/// Display-ready elapsed-time summary for an entry.
+public struct TimeTogetherSummary: Equatable, Sendable {
     private struct Values {
         let primaryText: String
         let fullText: String
@@ -35,13 +29,19 @@ struct TimeTogetherSummary: Equatable {
     private static let primaryPartLimit = 2
     private static let approximateSupportingText = "Approximate start; based on the earliest possible start date."
 
-    let primaryText: String
-    let fullText: String
-    let supportingText: String?
-    let totalValueLabel: String?
-    let totalValueText: String?
+    /// Compact elapsed-time text for list rows and headers.
+    public let primaryText: String
+    /// Full elapsed-time text for detail screens and system surfaces.
+    public let fullText: String
+    /// Supporting explanation for approximate starts.
+    public let supportingText: String?
+    /// Label for the optional total value.
+    public let totalValueLabel: String?
+    /// Optional total value text.
+    public let totalValueText: String?
 
-    init(
+    /// Creates an elapsed-time summary from a start, precision, and reference date.
+    public init(
         startDate: Date,
         precision: StartPrecision,
         referenceDate: Date = .now,
@@ -108,7 +108,7 @@ struct TimeTogetherSummary: Equatable {
             from: normalizedStart,
             to: normalizedReference
         ).day ?? 0)
-        let parts = parts(
+        let durationParts = parts(
             years: components.year,
             months: components.month,
             days: components.day
@@ -116,11 +116,11 @@ struct TimeTogetherSummary: Equatable {
 
         return .init(
             primaryText: joined(
-                parts,
+                durationParts,
                 emptyText: "Today",
                 limit: Self.primaryPartLimit
             ),
-            fullText: joined(parts, emptyText: "Started today"),
+            fullText: joined(durationParts, emptyText: "Started today"),
             supportingText: nil,
             totalValueLabel: "Total days",
             totalValueText: totalDays.formatted()
@@ -140,15 +140,15 @@ struct TimeTogetherSummary: Equatable {
         let years = max(0, components.year ?? 0)
         let months = max(0, components.month ?? 0)
         let totalMonths = years * Self.monthsPerYear + months
-        let parts = parts(years: years, months: months, days: nil)
+        let durationParts = parts(years: years, months: months, days: nil)
 
         return .init(
             primaryText: joined(
-                parts,
+                durationParts,
                 emptyText: "This month",
                 limit: Self.primaryPartLimit
             ),
-            fullText: joined(parts, emptyText: "Started this month"),
+            fullText: joined(durationParts, emptyText: "Started this month"),
             supportingText: approximateSupportingText,
             totalValueLabel: "Total months",
             totalValueText: totalMonths.formatted()
@@ -165,14 +165,14 @@ struct TimeTogetherSummary: Equatable {
             from: normalizedStart,
             to: normalizedReference
         ).year ?? 0)
-        let primaryText = years == 0 ? "This year" : durationText(
+        let yearText = years == 0 ? "This year" : durationText(
             value: years,
             singular: "year"
         )
 
         return .init(
-            primaryText: primaryText,
-            fullText: years == 0 ? "Started this year" : primaryText,
+            primaryText: yearText,
+            fullText: years == 0 ? "Started this year" : yearText,
             supportingText: approximateSupportingText,
             totalValueLabel: nil,
             totalValueText: nil

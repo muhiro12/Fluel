@@ -5,10 +5,11 @@
 //  Created by Codex on 2026/06/25.
 //
 
+import FluelLibrary
 import SwiftUI
 
 struct EntryStartPicker: View {
-    @Binding var draft: EntryEditorDraft
+    @Binding var draft: EntryDraft
 
     private let calendar = Calendar.autoupdatingCurrent
 

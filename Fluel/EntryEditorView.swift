@@ -5,6 +5,7 @@
 //  Created by Codex on 2026/06/25.
 //
 
+import FluelLibrary
 import MHUI
 import SwiftData
 import SwiftUI
@@ -15,43 +16,43 @@ struct EntryEditorView: View {
     @Environment(\.modelContext)
     private var modelContext
 
-    @State private var draft = EntryEditorDraft()
+    @State private var draft = EntryDraft()
     @State private var isConfirmingDiscard = false
     @State private var isShowingSaveError = false
 
     var body: some View {
         NavigationStack {
             EntryEditorForm(draft: $draft)
-            .navigationTitle("New Entry")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                EntryEditorToolbar(
-                    canSave: draft.canSave,
-                    cancel: cancel,
-                    save: save
-                )
-            }
-            .confirmationDialog(
-                "Discard this entry?",
-                isPresented: $isConfirmingDiscard,
-                titleVisibility: .visible
-            ) {
-                Button("Discard Entry", role: .destructive) {
-                    dismiss()
+                .navigationTitle("New Entry")
+                .navigationBarTitleDisplayMode(.inline)
+                .toolbar {
+                    EntryEditorToolbar(
+                        canSave: draft.canSave,
+                        cancel: cancel,
+                        save: save
+                    )
                 }
+                .confirmationDialog(
+                    "Discard this entry?",
+                    isPresented: $isConfirmingDiscard,
+                    titleVisibility: .visible
+                ) {
+                    Button("Discard Entry", role: .destructive) {
+                        dismiss()
+                    }
 
-                Button("Keep Editing", role: .cancel) {
-                    isConfirmingDiscard = false
+                    Button("Keep Editing", role: .cancel) {
+                        isConfirmingDiscard = false
+                    }
+                } message: {
+                    Text("Unsaved changes will be lost.")
                 }
-            } message: {
-                Text("Unsaved changes will be lost.")
-            }
-            .alert("Entry could not be saved", isPresented: $isShowingSaveError) {
-                Button("OK", role: .cancel) {
-                    isShowingSaveError = false
+                .alert("Entry could not be saved", isPresented: $isShowingSaveError) {
+                    Button("OK", role: .cancel) {
+                        isShowingSaveError = false
+                    }
                 }
-            }
-            .interactiveDismissDisabled(draft.hasUnsavedContent)
+                .interactiveDismissDisabled(draft.hasUnsavedContent)
         }
         .mhTheme(.standard)
     }
@@ -65,11 +66,10 @@ struct EntryEditorView: View {
     }
 
     private func save() {
-        let entry = draft.makeEntry()
-
-        modelContext.insert(entry)
-
         do {
+            let input = try EntryOperations.makeInput(from: draft)
+
+            modelContext.insert(Entry(input: input))
             try modelContext.save()
             dismiss()
         } catch {

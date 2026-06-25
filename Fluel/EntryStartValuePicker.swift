@@ -5,10 +5,11 @@
 //  Created by Codex on 2026/06/25.
 //
 
+import FluelLibrary
 import SwiftUI
 
 struct EntryStartValuePicker: View {
-    @Binding var draft: EntryEditorDraft
+    @Binding var draft: EntryDraft
 
     let calendar: Calendar
 

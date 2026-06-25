@@ -1,37 +1,58 @@
-//
-//  EntryEditorDraft.swift
-//  Fluel
-//
-//  Created by Codex on 2026/06/25.
-//
-
 import Foundation
 
-struct EntryEditorDraft: Equatable {
+/// Editable entry draft values shared by UI and future system surfaces.
+public struct EntryDraft: Equatable, Sendable {
     private static let earliestYear = 1_900
     private static let firstDay = 1
     private static let firstMonth = 1
     private static let lastMonth = 12
 
-    var title = ""
-    var precision: StartPrecision = .day
-    var dayDate = Date()
-    var month = Calendar.autoupdatingCurrent.component(.month, from: .now)
-    var year = Calendar.autoupdatingCurrent.component(.year, from: .now)
+    /// Raw title text.
+    public var title: String
+    /// Selected start precision.
+    public var precision: StartPrecision
+    /// Exact-day date value.
+    public var dayDate: Date
+    /// Approximate month value.
+    public var month: Int
+    /// Approximate year value.
+    public var year: Int
 
-    var trimmedTitle: String {
+    /// Trimmed title text.
+    public var trimmedTitle: String {
         title.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
-    var canSave: Bool {
+    /// True when the draft can be saved.
+    public var canSave: Bool {
         !trimmedTitle.isEmpty
     }
 
-    var hasUnsavedContent: Bool {
+    /// True when dismissing the draft would lose user-entered content.
+    public var hasUnsavedContent: Bool {
         !trimmedTitle.isEmpty || precision != .day
     }
 
-    func availableYears(
+    /// Creates an editable entry draft.
+    public init(
+        title: String = "",
+        precision: StartPrecision = .day,
+        dayDate: Date = Date(),
+        month: Int? = nil,
+        year: Int? = nil,
+        calendar: Calendar = .autoupdatingCurrent
+    ) {
+        let currentDate = Date()
+
+        self.title = title
+        self.precision = precision
+        self.dayDate = dayDate
+        self.month = month ?? calendar.component(.month, from: currentDate)
+        self.year = year ?? calendar.component(.year, from: currentDate)
+    }
+
+    /// Returns selectable years up to the current year.
+    public func availableYears(
         currentDate: Date = .now,
         calendar: Calendar = .autoupdatingCurrent
     ) -> [Int] {
@@ -40,7 +61,8 @@ struct EntryEditorDraft: Equatable {
         return Array(Self.earliestYear...currentYear).reversed()
     }
 
-    func availableMonths(
+    /// Returns selectable months, clamped when the selected year is current.
+    public func availableMonths(
         currentDate: Date = .now,
         calendar: Calendar = .autoupdatingCurrent
     ) -> [Int] {
@@ -53,7 +75,8 @@ struct EntryEditorDraft: Equatable {
         return Array(Self.firstMonth...calendar.component(.month, from: currentDate))
     }
 
-    func startDate(calendar: Calendar = .autoupdatingCurrent) -> Date {
+    /// Resolves the draft into the earliest start date represented by the precision.
+    public func startDate(calendar: Calendar = .autoupdatingCurrent) -> Date {
         switch precision {
         case .day:
             precision.normalizedStartDate(from: dayDate, calendar: calendar)
@@ -62,7 +85,7 @@ struct EntryEditorDraft: Equatable {
                 calendar: calendar,
                 year: year,
                 month: month,
-                day: 1
+                day: Self.firstDay
             )) ?? precision.normalizedStartDate(from: dayDate, calendar: calendar)
         case .year:
             calendar.date(from: DateComponents(
@@ -74,22 +97,26 @@ struct EntryEditorDraft: Equatable {
         }
     }
 
-    func startLabel(calendar: Calendar = .autoupdatingCurrent) -> String {
+    /// Formats the draft start for display.
+    public func startLabel(calendar: Calendar = .autoupdatingCurrent) -> String {
         precision.startLabel(
             for: startDate(calendar: calendar),
             calendar: calendar
         )
     }
 
-    func makeEntry(calendar: Calendar = .autoupdatingCurrent) -> Entry {
-        Entry(
+    /// Creates validated entry input.
+    public func makeInput(calendar: Calendar = .autoupdatingCurrent) throws -> EntryInput {
+        try EntryInput(
             title: trimmedTitle,
             startDate: startDate(calendar: calendar),
-            startPrecision: precision
+            startPrecision: precision,
+            calendar: calendar
         )
     }
 
-    mutating func alignComponentsWithPrecision(
+    /// Aligns month and year components with the exact-day date.
+    public mutating func alignComponentsWithPrecision(
         calendar: Calendar = .autoupdatingCurrent
     ) {
         let components = calendar.dateComponents([.year, .month], from: dayDate)
@@ -98,7 +125,8 @@ struct EntryEditorDraft: Equatable {
         clampToPresent(calendar: calendar)
     }
 
-    mutating func clampToPresent(
+    /// Clamps approximate start values so they cannot point into the future.
+    public mutating func clampToPresent(
         currentDate: Date = .now,
         calendar: Calendar = .autoupdatingCurrent
     ) {
