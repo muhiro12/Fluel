@@ -22,17 +22,36 @@ record_failure() {
   failures+=("$1")
 }
 
-library_runtime_imports=$(
+library_non_foundation_imports=$(
   rg \
     --line-number \
-    "^import (SwiftData|SwiftUI|MHUI|MHDesign|MHPlatform)\\b" \
+    "^[[:space:]]*(@preconcurrency[[:space:]]+)?import[[:space:]]+[A-Za-z0-9_]+\\b" \
     "${library_sources[@]}" \
     -g '*.swift' || true
 )
 
-if [[ -n "$library_runtime_imports" ]]; then
-  record_failure "FluelLibrary must stay domain-safe and avoid app/runtime UI imports:
-$library_runtime_imports"
+if [[ -n "$library_non_foundation_imports" ]]; then
+  library_non_foundation_imports=$(
+    awk -F: '$3 !~ /^[[:space:]]*(@preconcurrency[[:space:]]+)?import[[:space:]]+Foundation$/ { print }' \
+      <<<"$library_non_foundation_imports"
+  )
+fi
+
+if [[ -n "$library_non_foundation_imports" ]]; then
+  record_failure "FluelLibrary/Sources must stay Foundation-only:
+$library_non_foundation_imports"
+fi
+
+library_package_dependencies=$(
+  rg \
+    --line-number \
+    "\\.package\\(" \
+    "$repository_root/FluelLibrary/Package.swift" || true
+)
+
+if [[ -n "$library_package_dependencies" ]]; then
+  record_failure "FluelLibrary/Package.swift must not declare package dependencies while the library is Foundation-only:
+$library_package_dependencies"
 fi
 
 app_domain_declarations=$(

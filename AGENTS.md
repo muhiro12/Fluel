@@ -17,17 +17,15 @@ decisions unless the current task explicitly asks for that phase.
 
 - Use English for branch names, code comments, documentation, and identifiers
   unless UI localization or legal content requires otherwise.
-- Follow the current repository structure and source style once implementation
-  files exist; keep documentation-only changes consistent with the surrounding
-  docs while the repository remains docs-only.
+- Follow the current repository structure and source style; keep
+  documentation-only changes consistent with the surrounding docs.
 - Keep public repository text product-centered, portable, and free from
   unnecessary solo-developer framing.
 - Keep changes small, repository-local, and focused on durable product
   knowledge or the active rebuild task.
 - Markdown must follow
   <https://github.com/DavidAnson/markdownlint/blob/main/doc/Rules.md>.
-- Swift code must comply with the repository SwiftLint configuration once
-  Swift source is reintroduced.
+- Swift code must comply with the repository SwiftLint configuration.
 - Treat `docs/` as the source of truth for preserved product knowledge.
 
 ## Project Structure
