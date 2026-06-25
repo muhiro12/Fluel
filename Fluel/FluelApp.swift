@@ -5,6 +5,7 @@
 //  Created by Hiromu Nakano on 2026/06/25.
 //
 
+import MHUI
 import SwiftData
 import SwiftUI
 
@@ -12,7 +13,7 @@ import SwiftUI
 struct FluelApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Item.self
+            Entry.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 
@@ -26,6 +27,7 @@ struct FluelApp: App {
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .mhTheme(.standard)
         }
         .modelContainer(sharedModelContainer)
     }

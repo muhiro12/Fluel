@@ -5,61 +5,33 @@
 //  Created by Hiromu Nakano on 2026/06/25.
 //
 
+import MHUI
 import SwiftData
 import SwiftUI
 
 struct ContentView: View {
-    private static let minimumSidebarWidth: CGFloat = 180
-    private static let idealSidebarWidth: CGFloat = 200
-
-    @Environment(\.modelContext)
-    private var modelContext
-    @Query private var items: [Item]
+    @State private var activeSheet: ActiveEntrySheet?
 
     var body: some View {
-        NavigationViewWrapper {
-            List {
-                ForEach(items) { item in
-                    NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
-                    } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
-                    }
-                }
-                .onDelete(perform: deleteItems)
+        NavigationStack {
+            ActiveEntryListView {
+                activeSheet = .newEntry
             }
-#if os(macOS)
-            .navigationSplitViewColumnWidth(
-                min: Self.minimumSidebarWidth,
-                ideal: Self.idealSidebarWidth
-            )
-#endif
+            .navigationTitle("Entries")
             .toolbar {
-#if os(iOS)
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    EditButton()
-                }
-#endif
-                ToolbarItem {
-                    Button(action: addItem) {
-                        Label("Add Item", systemImage: "plus")
+                ToolbarItem(placement: .primaryAction) {
+                    Button {
+                        activeSheet = .newEntry
+                    } label: {
+                        Label("Add Entry", systemImage: "plus")
                     }
                 }
             }
-        }
-    }
-
-    private func addItem() {
-        withAnimation {
-            let newItem = Item(timestamp: Date())
-            modelContext.insert(newItem)
-        }
-    }
-
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
+            .sheet(item: $activeSheet) { sheet in
+                switch sheet {
+                case .newEntry:
+                    EntryEditorView()
+                }
             }
         }
     }
@@ -67,5 +39,6 @@ struct ContentView: View {
 
 #Preview {
     ContentView()
-        .modelContainer(for: Item.self, inMemory: true)
+        .mhTheme(.standard)
+        .modelContainer(PreviewSampleData.container())
 }

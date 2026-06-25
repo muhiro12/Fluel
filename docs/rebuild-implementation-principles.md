@@ -140,6 +140,17 @@ direction:
 
 Do not add layers only for symmetry with another repository.
 
+## Current Foundation Note
+
+The first rebuilt app foundation keeps the Incomes-aligned package references
+but links only `MHDesign` and `MHUI` in the app target. `MHPlatform` remains a
+declared package reference and should be linked when a concrete Fluel feature
+needs its app-runtime facilities.
+
+This avoids pulling app-runtime dependencies such as ad configuration into the
+first Entry, Start, Precision, and Time together slice before the product has a
+reason to own those surfaces.
+
 ## Verification Posture
 
 Once implementation exists, use the repository `AGENTS.md` verification
