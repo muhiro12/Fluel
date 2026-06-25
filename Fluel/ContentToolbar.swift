@@ -19,6 +19,12 @@ struct ContentToolbar: ToolbarContent {
             }
 
             NavigationLink {
+                TimelineView()
+            } label: {
+                Label("Timeline", systemImage: "clock.arrow.circlepath")
+            }
+
+            NavigationLink {
                 ArchiveEntryListView()
             } label: {
                 Label("Archive", systemImage: "archivebox")
