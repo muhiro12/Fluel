@@ -1,12 +1,13 @@
 # Fluel
 
-Fluel is an unfinished iOS product concept for quietly keeping time with the
-things and places a person lives with.
+Fluel is an unfinished Apple-platform product concept for quietly keeping time
+with the things and places a person lives with.
 
-This repository is between the documentation-preservation phase and a future
-full rebuild. The legacy Xcode project and Swift implementation have been
-removed from the active repository surface. Product knowledge that must
-survive the rebuild is preserved under `docs/`.
+This repository preserves the product intent from an earlier implementation
+and now contains the initial rebuilt app project. The legacy Xcode project,
+Swift implementation, widget, shared library, and CI scripts have been removed
+from the active repository surface. Product knowledge that must guide the
+rebuild is preserved under `docs/`.
 
 ## Documentation
 
@@ -29,6 +30,13 @@ additional rebuild direction clarified after the preservation pass.
 
 ## Rebuild Status
 
-No current Xcode project or Swift source should be treated as the product
-implementation. A future rebuild will create a brand-new Xcode project using
-the current Xcode and iOS SDK at that time.
+The current implementation surface is a minimal rebuilt Xcode project:
+
+- Project: `Fluel.xcodeproj`
+- Scheme: `Fluel`
+- App target: `Fluel`
+
+The project is an early SwiftUI and SwiftData scaffold, not a complete product
+implementation. Future implementation work should use the preserved product
+documents as the source of truth for Fluel's domain, language, workflows, and
+experience principles.
