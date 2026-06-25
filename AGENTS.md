@@ -4,14 +4,13 @@ Repository-specific agent contract for Fluel.
 
 ## Repository State
 
-This repository currently preserves product documentation for a future full
-rebuild. The legacy Xcode project and Swift implementation are not part of the
-active repository surface.
+This repository now contains the initial rebuilt Apple app project alongside
+the preserved product documentation. Treat `docs/` as the source of truth for
+product intent, and treat the Xcode project as the current implementation
+surface.
 
-Treat this repository as a product-intent archive until a new project is
-explicitly created. Do not recreate an Xcode project, implement features,
-restore deleted Swift code, add CI scaffolding, or make future architecture
-decisions unless the current task explicitly asks for that phase.
+Do not restore deleted legacy Swift code, add CI scaffolding, or make future
+architecture decisions unless the current task explicitly asks for that phase.
 
 ## Repository Rules
 
@@ -57,9 +56,9 @@ When changing documentation, preserve the existing boundary:
 - Do not turn the documentation into an implementation plan unless the user
   explicitly starts the rebuild planning phase.
 
-## Future Rebuild Boundary
+## Rebuild Boundary
 
-When a future task explicitly starts a new implementation phase:
+During implementation work:
 
 - Read `docs/rebuild-implementation-principles.md` before making setup,
   package, OS-baseline, design-system, or app-surface decisions.
@@ -82,15 +81,10 @@ When a future task explicitly starts a new implementation phase:
 - Prefer a shared-library-first shape for durable business logic if the new
   implementation grows across app, widget, intent, watch, or other delivery
   surfaces.
-- After a new Xcode project exists, update this `AGENTS.md` with the concrete
-  schemes, package names, XcodeBuildMCP verification expectations, retained
-  repository rule checks, and any real architecture boundaries.
+## Apple Verification Contract
 
-## Future Apple Verification Contract
-
-Once a new Xcode project, Swift package, or Apple-platform implementation is
-created, use the Incomes/Cookle verification posture unless the new repository
-shape gives a stronger reason to diverge:
+Use the Incomes/Cookle verification posture unless the new repository shape
+gives a stronger reason to diverge:
 
 - Agents MUST prefer XcodeBuildMCP for Apple build, test, run, Simulator,
   runtime log, screenshot, and UI snapshot verification.
@@ -114,20 +108,33 @@ shape gives a stronger reason to diverge:
 - Retain shell scripts only for SwiftLint/autofix, static repository rules,
   compatibility wrappers, optional audits, or checks not naturally covered by
   XcodeBuildMCP.
-- After schemes exist, name the concrete app, shared-library, widget, watch,
-  and intent verification commands here. Do not leave placeholder scheme names
-  in this file after the project is created.
-
 ## Current Verification
 
-There is no active Xcode build, Swift package test suite, or retained CI script
-entrypoint after the legacy implementation removal.
+The active Xcode project is `Fluel.xcodeproj`.
+
+- App scheme: `Fluel`.
+- Active app target: `Fluel`.
+- Current shared-library, widget, watch, and intent schemes: none.
+- Preferred compile check: XcodeBuildMCP `build_sim` with project
+  `Fluel.xcodeproj`, scheme `Fluel`, configuration `Debug`, and an iOS 27
+  simulator.
+- Current shell fallback:
+
+  ```sh
+  xcodebuild \
+      -project Fluel.xcodeproj \
+      -scheme Fluel \
+      -configuration Debug \
+      -destination 'platform=iOS Simulator,name=iPhone 17 Pro' \
+      build
+  ```
+
+- Swift lint check: `swiftlint lint --strict --no-cache`.
+- General patch check: `git diff --check`.
+- Retained repository-rule scripts: none.
 
 For documentation-only changes:
 
 - Run `git diff --check`.
 - Run Markdown linting when the tool is available.
 - Review the affected docs for consistency with `docs/rebuild-handoff.md`.
-
-Do not run stale XcodeBuildMCP schemes or old shell verification commands until
-a new project and repository contract are created.
