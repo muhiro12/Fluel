@@ -25,6 +25,12 @@ struct ContentToolbar: ToolbarContent {
             }
 
             NavigationLink {
+                MilestonesView()
+            } label: {
+                Label("Milestones", systemImage: "flag")
+            }
+
+            NavigationLink {
                 ArchiveEntryListView()
             } label: {
                 Label("Archive", systemImage: "archivebox")

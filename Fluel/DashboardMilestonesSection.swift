@@ -23,7 +23,7 @@ struct DashboardMilestonesSection: View {
                     Text(milestone.title)
                         .mhRowTitle()
 
-                    Text("\(milestone.durationText) - \(daysRemainingText(for: milestone))")
+                    Text("\(milestone.durationText) - \(milestone.daysRemainingText)")
                         .mhRowSupporting()
 
                     Text(milestone.date.formatted(date: .abbreviated, time: .omitted))
@@ -38,17 +38,6 @@ struct DashboardMilestonesSection: View {
                     }
                 }
             }
-        }
-    }
-
-    private func daysRemainingText(for milestone: EntryMilestone) -> String {
-        switch milestone.daysRemaining {
-        case 0:
-            "Today"
-        case 1:
-            "1 day"
-        default:
-            "\(milestone.daysRemaining.formatted()) days"
         }
     }
 }

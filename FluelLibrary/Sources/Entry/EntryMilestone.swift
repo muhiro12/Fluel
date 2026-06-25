@@ -22,6 +22,18 @@ public struct EntryMilestone: Equatable, Identifiable, Sendable {
         durationYears == 1 ? "1 year" : "\(durationYears.formatted()) years"
     }
 
+    /// User-facing days-remaining text.
+    public var daysRemainingText: String {
+        switch daysRemaining {
+        case 0:
+            "Today"
+        case 1:
+            "1 day"
+        default:
+            "\(daysRemaining.formatted()) days"
+        }
+    }
+
     /// Creates an entry milestone.
     public init(
         entryID: UUID,
