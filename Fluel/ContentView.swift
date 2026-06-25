@@ -19,21 +19,7 @@ struct ContentView: View {
             }
             .navigationTitle("Entries")
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    NavigationLink {
-                        ArchiveEntryListView()
-                    } label: {
-                        Label("Archive", systemImage: "archivebox")
-                    }
-                }
-
-                ToolbarItem(placement: .primaryAction) {
-                    Button {
-                        activeSheet = .newEntry
-                    } label: {
-                        Label("Add Entry", systemImage: "plus")
-                    }
-                }
+                ContentToolbar(activeSheet: $activeSheet)
             }
             .sheet(item: $activeSheet) { sheet in
                 switch sheet {
