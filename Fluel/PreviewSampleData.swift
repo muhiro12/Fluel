@@ -68,7 +68,7 @@ enum PreviewSampleData {
     }
 
     static func emptyContainer() -> ModelContainer {
-        let schema = Schema([Entry.self])
+        let schema = Schema([Entry.self, Preset.self])
         let configuration = ModelConfiguration(
             schema: schema,
             isStoredInMemoryOnly: true

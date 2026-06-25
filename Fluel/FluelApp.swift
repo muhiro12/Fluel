@@ -13,7 +13,8 @@ import SwiftUI
 struct FluelApp: App {
     var sharedModelContainer: ModelContainer = {
         let schema = Schema([
-            Entry.self
+            Entry.self,
+            Preset.self
         ])
         let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
 

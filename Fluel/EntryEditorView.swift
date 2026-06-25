@@ -57,6 +57,14 @@ struct EntryEditorView: View {
         .mhTheme(.standard)
     }
 
+    init() {
+        _draft = State(initialValue: EntryDraft())
+    }
+
+    init(draft: EntryDraft) {
+        _draft = State(initialValue: draft)
+    }
+
     private func cancel() {
         if draft.hasUnsavedContent {
             isConfirmingDiscard = true

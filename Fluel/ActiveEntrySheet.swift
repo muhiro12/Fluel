@@ -5,10 +5,10 @@
 //  Created by Codex on 2026/06/25.
 //
 
-enum ActiveEntrySheet: Identifiable {
-    case newEntry
+import FluelLibrary
+import Foundation
 
-    var id: Self {
-        self
-    }
+struct ActiveEntrySheet: Identifiable {
+    let id = UUID()
+    let draft: EntryDraft
 }

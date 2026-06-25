@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentToolbar: ToolbarContent {
-    @Binding var activeSheet: ActiveEntrySheet?
+    let addEntry: () -> Void
 
     var body: some ToolbarContent {
         ToolbarItemGroup(placement: .topBarLeading) {
@@ -31,6 +31,12 @@ struct ContentToolbar: ToolbarContent {
             }
 
             NavigationLink {
+                PresetsView()
+            } label: {
+                Label("Presets", systemImage: "bookmark")
+            }
+
+            NavigationLink {
                 ArchiveEntryListView()
             } label: {
                 Label("Archive", systemImage: "archivebox")
@@ -38,9 +44,7 @@ struct ContentToolbar: ToolbarContent {
         }
 
         ToolbarItem(placement: .primaryAction) {
-            Button {
-                activeSheet = .newEntry
-            } label: {
+            Button(action: addEntry) {
                 Label("Add Entry", systemImage: "plus")
             }
         }
