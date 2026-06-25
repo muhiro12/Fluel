@@ -42,6 +42,16 @@ struct EntryDetailView: View {
         }
         .navigationTitle(entry.title)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .primaryAction) {
+                ShareLink(
+                    item: shareSummary.text,
+                    subject: Text(shareSummary.subject)
+                ) {
+                    Label("Share", systemImage: "square.and.arrow.up")
+                }
+            }
+        }
         .confirmationDialog(
             "Delete this archived entry?",
             isPresented: $isConfirmingPermanentDelete,
@@ -62,6 +72,10 @@ struct EntryDetailView: View {
                 isShowingActionError = false
             }
         }
+    }
+
+    private var shareSummary: EntryShareSummary {
+        EntryOperations.entryShareSummary(for: entry.snapshot)
     }
 
     private func archive() {

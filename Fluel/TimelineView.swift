@@ -60,6 +60,13 @@ struct TimelineView: View {
                 } label: {
                     Label("Scope", systemImage: "calendar")
                 }
+
+                ShareLink(
+                    item: shareSummary.text,
+                    subject: Text(shareSummary.subject)
+                ) {
+                    Label("Share Timeline", systemImage: "square.and.arrow.up")
+                }
             }
         }
     }
@@ -67,7 +74,18 @@ struct TimelineView: View {
     private var result: EntryTimelineResult {
         EntryOperations.timeline(
             from: entries.map(\.snapshot),
-            query: .init(searchText: searchText, filter: filter, scope: scope)
+            query: query
+        )
+    }
+
+    private var query: EntryTimelineQuery {
+        .init(searchText: searchText, filter: filter, scope: scope)
+    }
+
+    private var shareSummary: EntryShareSummary {
+        EntryOperations.timelineShareSummary(
+            for: result,
+            query: query
         )
     }
 
