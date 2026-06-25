@@ -6,6 +6,11 @@
 	objectVersion = 110;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		B10000012FED500100000002 /* MHDesign in Frameworks */ = {isa = PBXBuildFile; productRef = B10000012FED500100000004 /* MHDesign */; };
+		B10000012FED500100000008 /* MHUI in Frameworks */ = {isa = PBXBuildFile; productRef = B10000012FED500100000009 /* MHUI */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		AD75E9B72FED373000094EFB /* Fluel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fluel.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -35,6 +40,8 @@
 		AD75E9B42FED373000094EFB /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
+				B10000012FED500100000002 /* MHDesign in Frameworks */,
+				B10000012FED500100000008 /* MHUI in Frameworks */,
 			);
 		};
 /* End PBXFrameworksBuildPhase section */
@@ -73,6 +80,10 @@
 				AD75E9B92FED373000094EFB /* Fluel */,
 			);
 			name = Fluel;
+			packageProductDependencies = (
+				B10000012FED500100000004 /* MHDesign */,
+				B10000012FED500100000009 /* MHUI */,
+			);
 			productName = Fluel;
 			productReference = AD75E9B72FED373000094EFB /* Fluel.app */;
 			productType = "com.apple.product-type.application";
@@ -101,6 +112,11 @@
 			);
 			mainGroup = AD75E9AE2FED373000094EFB;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				B10000012FED500100000005 /* XCRemoteSwiftPackageReference "MHPlatform" */,
+				B10000012FED500100000006 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
+				B10000012FED500100000007 /* XCRemoteSwiftPackageReference "MHUI" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = AD75E9B82FED373000094EFB /* Products */;
 			projectDirPath = "";
@@ -354,6 +370,46 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B10000012FED500100000005 /* XCRemoteSwiftPackageReference "MHPlatform" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/muhiro12/MHPlatform";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+		B10000012FED500100000006 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SimplyDanny/SwiftLintPlugins";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.0.0;
+			};
+		};
+		B10000012FED500100000007 /* XCRemoteSwiftPackageReference "MHUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/muhiro12/MHUI";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B10000012FED500100000004 /* MHDesign */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B10000012FED500100000007 /* XCRemoteSwiftPackageReference "MHUI" */;
+			productName = MHDesign;
+		};
+		B10000012FED500100000009 /* MHUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B10000012FED500100000007 /* XCRemoteSwiftPackageReference "MHUI" */;
+			productName = MHUI;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = AD75E9AF2FED373000094EFB /* Project object */;
 	validationLevel = 1;
