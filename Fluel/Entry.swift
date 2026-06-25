@@ -14,6 +14,9 @@ final class Entry {
     @Attribute(.unique)
     var id: UUID
     var title: String
+    var note: String?
+    @Attribute(.externalStorage)
+    var photoData: Data?
     var startDate: Date
     var startPrecision: StartPrecision
     var createdAt: Date
@@ -24,6 +27,14 @@ final class Entry {
         archivedAt != nil
     }
 
+    var hasNote: Bool {
+        normalizedNote != nil
+    }
+
+    var hasPhoto: Bool {
+        photoData != nil
+    }
+
     var snapshot: EntrySnapshot {
         .init(
             id: id,
@@ -32,12 +43,20 @@ final class Entry {
             startPrecision: startPrecision,
             createdAt: createdAt,
             updatedAt: updatedAt,
-            archivedAt: archivedAt
+            archivedAt: archivedAt,
+            note: normalizedNote,
+            hasPhoto: hasPhoto
         )
+    }
+
+    private var normalizedNote: String? {
+        Self.normalizedNote(note)
     }
 
     init(
         title: String,
+        note: String?,
+        photoData: Data?,
         startDate: Date,
         startPrecision: StartPrecision,
         createdAt: Date,
@@ -51,6 +70,8 @@ final class Entry {
 
         self.id = id
         self.title = trimmedTitle
+        self.note = Self.normalizedNote(note)
+        self.photoData = photoData
         self.startDate = startPrecision.normalizedStartDate(from: startDate)
         self.startPrecision = startPrecision
         self.createdAt = createdAt
@@ -60,6 +81,8 @@ final class Entry {
 
     convenience init(
         title: String,
+        note: String?,
+        photoData: Data?,
         startDate: Date,
         startPrecision: StartPrecision,
         createdAt: Date,
@@ -67,6 +90,8 @@ final class Entry {
     ) {
         self.init(
             title: title,
+            note: note,
+            photoData: photoData,
             startDate: startDate,
             startPrecision: startPrecision,
             createdAt: createdAt,
@@ -79,6 +104,7 @@ final class Entry {
     convenience init(input: EntryInput) {
         self.init(
             input: input,
+            photoData: nil,
             createdAt: .now,
             updatedAt: .now,
             archivedAt: nil,
@@ -88,6 +114,7 @@ final class Entry {
 
     convenience init(
         input: EntryInput,
+        photoData: Data?,
         createdAt: Date,
         updatedAt: Date,
         archivedAt: Date?,
@@ -95,6 +122,8 @@ final class Entry {
     ) {
         self.init(
             title: input.title,
+            note: input.note,
+            photoData: photoData,
             startDate: input.startDate,
             startPrecision: input.startPrecision,
             createdAt: createdAt,
@@ -102,6 +131,17 @@ final class Entry {
             archivedAt: archivedAt,
             id: id
         )
+    }
+
+    private static func normalizedNote(_ note: String?) -> String? {
+        let trimmedNote = note?.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        guard let trimmedNote,
+              !trimmedNote.isEmpty else {
+            return nil
+        }
+
+        return trimmedNote
     }
 
     func timeTogether() -> TimeTogetherSummary {
@@ -164,6 +204,7 @@ final class Entry {
 
     private func apply(_ snapshot: EntrySnapshot) {
         title = snapshot.title
+        note = snapshot.note
         startDate = snapshot.startDate
         startPrecision = snapshot.startPrecision
         createdAt = snapshot.createdAt

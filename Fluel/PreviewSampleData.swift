@@ -17,6 +17,8 @@ enum PreviewSampleData {
         [
             Entry(
                 title: "This home",
+                note: "A home is where daily life gathers.",
+                photoData: nil,
                 startDate: date(year: 2021, month: 4, day: 1),
                 startPrecision: .year,
                 createdAt: date(year: 2026, month: 6, day: 25),
@@ -24,6 +26,8 @@ enum PreviewSampleData {
             ),
             Entry(
                 title: "Notebook",
+                note: "Ordinary thoughts from this year.",
+                photoData: nil,
                 startDate: date(year: 2024, month: 9, day: 1),
                 startPrecision: .month,
                 createdAt: date(year: 2026, month: 6, day: 25),
@@ -31,6 +35,8 @@ enum PreviewSampleData {
             ),
             Entry(
                 title: "Watch",
+                note: nil,
+                photoData: Data([1]),
                 startDate: date(year: 2025, month: 12, day: 14),
                 startPrecision: .day,
                 createdAt: date(year: 2026, month: 6, day: 25),
@@ -38,6 +44,8 @@ enum PreviewSampleData {
             ),
             Entry(
                 title: "Desk lamp",
+                note: "Moved to storage.",
+                photoData: nil,
                 startDate: date(year: 2023, month: 2, day: 14),
                 startPrecision: .day,
                 createdAt: date(year: 2026, month: 6, day: 25),

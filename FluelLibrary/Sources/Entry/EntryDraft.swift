@@ -9,6 +9,8 @@ public struct EntryDraft: Equatable, Sendable {
 
     /// Raw title text.
     public var title: String
+    /// Raw note text.
+    public var note: String
     /// Selected start precision.
     public var precision: StartPrecision
     /// Exact-day date value.
@@ -23,6 +25,11 @@ public struct EntryDraft: Equatable, Sendable {
         title.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
+    /// Trimmed note text.
+    public var trimmedNote: String {
+        note.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
     /// True when the draft can be saved.
     public var canSave: Bool {
         !trimmedTitle.isEmpty
@@ -30,12 +37,13 @@ public struct EntryDraft: Equatable, Sendable {
 
     /// True when dismissing the draft would lose user-entered content.
     public var hasUnsavedContent: Bool {
-        !trimmedTitle.isEmpty || precision != .day
+        !trimmedTitle.isEmpty || !trimmedNote.isEmpty || precision != .day
     }
 
     /// Creates an editable entry draft.
     public init(
         title: String = "",
+        note: String = "",
         precision: StartPrecision = .day,
         dayDate: Date = Date(),
         month: Int? = nil,
@@ -45,6 +53,7 @@ public struct EntryDraft: Equatable, Sendable {
         let currentDate = Date()
 
         self.title = title
+        self.note = note
         self.precision = precision
         self.dayDate = dayDate
         self.month = month ?? calendar.component(.month, from: currentDate)
@@ -111,6 +120,7 @@ public struct EntryDraft: Equatable, Sendable {
             title: trimmedTitle,
             startDate: startDate(calendar: calendar),
             startPrecision: precision,
+            note: trimmedNote,
             calendar: calendar
         )
     }

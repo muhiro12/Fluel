@@ -31,6 +31,22 @@ struct EntryRowText: View {
                         accessibilityLabel: Text("Approximate start")
                     )
             }
+
+            if entry.hasNote {
+                Text("Note")
+                    .mhBadge(
+                        style: .neutral,
+                        accessibilityLabel: Text("Has note")
+                    )
+            }
+
+            if entry.hasPhoto {
+                Text("Photo")
+                    .mhBadge(
+                        style: .neutral,
+                        accessibilityLabel: Text("Has photo")
+                    )
+            }
         }
     }
 }

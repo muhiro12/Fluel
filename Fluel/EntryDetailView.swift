@@ -29,6 +29,8 @@ struct EntryDetailView: View {
 
             EntryTimeTogetherSection(entry: entry)
 
+            EntryNoteDetailSection(note: entry.note)
+
             EntryMetadataSection(entry: entry)
 
             EntryArchiveSection(

@@ -9,6 +9,7 @@ struct EntryDraftTests {
         let calendar = TestDateSupport.calendar
         let draft = EntryDraft(
             title: "  Notebook  ",
+            note: "  Ordinary thoughts  ",
             precision: .month,
             month: 5,
             year: 2_025,
@@ -18,6 +19,7 @@ struct EntryDraftTests {
         let input = try draft.makeInput(calendar: calendar)
 
         #expect(input.title == "Notebook")
+        #expect(input.note == "Ordinary thoughts")
         #expect(input.startDate == TestDateSupport.date(year: 2_025, month: 5, day: 1))
         #expect(input.startPrecision == .month)
     }

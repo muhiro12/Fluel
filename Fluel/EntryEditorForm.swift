@@ -16,6 +16,8 @@ struct EntryEditorForm: View {
             EntryTitleSection(title: $draft.title)
 
             EntryStartPicker(draft: $draft)
+
+            EntryNoteSection(note: $draft.note)
         }
     }
 }

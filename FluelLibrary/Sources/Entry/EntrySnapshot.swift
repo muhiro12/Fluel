@@ -6,6 +6,10 @@ public struct EntrySnapshot: Equatable, Identifiable, Sendable {
     public let id: UUID
     /// Entry title.
     public let title: String
+    /// Optional note text.
+    public let note: String?
+    /// True when the entry has photo content.
+    public let hasPhoto: Bool
     /// Normalized start date.
     public let startDate: Date
     /// Known start precision.
@@ -22,6 +26,11 @@ public struct EntrySnapshot: Equatable, Identifiable, Sendable {
         archivedAt != nil
     }
 
+    /// True when the entry has note content.
+    public var hasNote: Bool {
+        note != nil
+    }
+
     /// Creates a stable entry snapshot.
     public init(
         id: UUID,
@@ -31,10 +40,14 @@ public struct EntrySnapshot: Equatable, Identifiable, Sendable {
         createdAt: Date,
         updatedAt: Date,
         archivedAt: Date?,
+        note: String? = nil,
+        hasPhoto: Bool = false,
         calendar: Calendar = .autoupdatingCurrent
     ) {
         self.id = id
         self.title = title
+        self.note = Self.normalizedNote(note)
+        self.hasPhoto = hasPhoto
         self.startDate = startPrecision.normalizedStartDate(
             from: startDate,
             calendar: calendar
@@ -43,6 +56,17 @@ public struct EntrySnapshot: Equatable, Identifiable, Sendable {
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.archivedAt = archivedAt
+    }
+
+    private static func normalizedNote(_ note: String?) -> String? {
+        let trimmedNote = note?.trimmingCharacters(in: .whitespacesAndNewlines)
+
+        guard let trimmedNote,
+              !trimmedNote.isEmpty else {
+            return nil
+        }
+
+        return trimmedNote
     }
 
     /// Returns elapsed-time presentation for this snapshot.
