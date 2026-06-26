@@ -6,6 +6,7 @@
 //
 
 import FluelLibrary
+import MHUI
 import SwiftUI
 
 struct EntryStartPicker: View {
@@ -22,10 +23,12 @@ struct EntryStartPicker: View {
             LabeledContent("Known as", value: draft.precision.knownAsText)
             LabeledContent("Start", value: draft.startLabel(calendar: calendar))
         } header: {
-            Text("Start")
+            FluelSectionHeader("Start")
         } footer: {
             Text("The start stays exactly as you know it. Month and year starts remain approximate.")
+                .mhSectionFooterText()
         }
+        .labeledContentStyle(.mhKeyValue)
         .onChange(of: draft.year) {
             draft.clampToPresent(calendar: calendar)
         }

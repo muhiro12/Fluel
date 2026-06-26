@@ -10,16 +10,15 @@ import MHUI
 import SwiftUI
 
 struct DashboardRecentActivitySection: View {
-    private enum Layout {
-        static let verticalSpacing: CGFloat = 4
-    }
+    @Environment(\.mhDesignMetrics)
+    private var designMetrics
 
     let activity: [EntryActivitySummary]
 
     var body: some View {
-        Section("Recent activity") {
+        Section {
             ForEach(activity) { item in
-                VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
+                VStack(alignment: .leading, spacing: designMetrics.spacing.inline) {
                     Text(item.kind.label)
                         .mhRowOverline()
 
@@ -30,6 +29,8 @@ struct DashboardRecentActivitySection: View {
                         .mhRowSupporting()
                 }
             }
+        } header: {
+            FluelSectionHeader("Recent activity")
         }
     }
 }

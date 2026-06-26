@@ -5,6 +5,7 @@
 //  Created by Codex on 2026/06/26.
 //
 
+import MHUI
 import SwiftUI
 
 struct PresetEditorPresetSection: View {
@@ -15,7 +16,7 @@ struct PresetEditorPresetSection: View {
     let noteLineLimit: ClosedRange<Int>
 
     var body: some View {
-        Section("Preset") {
+        Section {
             TextField("Thing or place", text: $title)
                 .textInputAutocapitalization(.words)
 
@@ -28,6 +29,8 @@ struct PresetEditorPresetSection: View {
 
             TextField("Small memory or detail", text: $note, axis: .vertical)
                 .lineLimit(noteLineLimit)
+        } header: {
+            FluelSectionHeader("Preset")
         }
     }
 }

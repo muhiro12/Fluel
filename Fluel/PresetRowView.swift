@@ -10,10 +10,8 @@ import MHUI
 import SwiftUI
 
 struct PresetRowView: View {
-    private enum Layout {
-        static let horizontalSpacing: CGFloat = 12
-        static let verticalSpacing: CGFloat = 6
-    }
+    @Environment(\.mhDesignMetrics)
+    private var designMetrics
 
     let preset: EntryPreset
     let canEdit: Bool
@@ -24,12 +22,12 @@ struct PresetRowView: View {
     let toggleDefault: () -> Void
 
     var body: some View {
-        HStack(spacing: Layout.horizontalSpacing) {
+        HStack(spacing: designMetrics.spacing.control) {
             Image(systemName: preset.symbolName)
                 .foregroundStyle(.secondary)
                 .accessibilityHidden(true)
 
-            VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
+            VStack(alignment: .leading, spacing: designMetrics.spacing.inline) {
                 Text(preset.title)
                     .mhRowTitle()
 
@@ -58,7 +56,7 @@ struct PresetRowView: View {
     }
 
     private var badges: some View {
-        HStack {
+        FluelBadgeStack {
             if preset.isPinned {
                 Text("Pinned")
                     .mhBadge(style: .neutral, accessibilityLabel: Text("Pinned preset"))

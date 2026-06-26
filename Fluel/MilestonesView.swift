@@ -19,10 +19,15 @@ struct MilestonesView: View {
             if milestones.isEmpty {
                 MilestonesEmptyState()
             } else {
-                Section("Upcoming milestones") {
+                Section {
                     ForEach(milestones) { milestone in
-                        MilestoneRowView(milestone: milestone)
+                        MilestoneRowView(
+                            milestone: milestone,
+                            approximateLabel: "Approximate start"
+                        )
                     }
+                } header: {
+                    FluelSectionHeader("Upcoming milestones")
                 }
             }
         }

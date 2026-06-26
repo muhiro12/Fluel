@@ -15,13 +15,15 @@ struct EntryTimeTogetherSection: View {
     var body: some View {
         let summary = entry.timeTogether()
 
-        Section("Time together") {
+        Section {
             LabeledContent("Elapsed in full", value: summary.fullText)
 
             if let label = summary.totalValueLabel,
                let value = summary.totalValueText {
                 LabeledContent(label, value: value)
             }
+        } header: {
+            FluelSectionHeader("Time together")
         }
         .labeledContentStyle(.mhKeyValue)
     }

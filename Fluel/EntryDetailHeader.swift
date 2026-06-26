@@ -10,16 +10,14 @@ import MHUI
 import SwiftUI
 
 struct EntryDetailHeader: View {
-    private enum Layout {
-        static let verticalSpacing: CGFloat = 12
-        static let verticalPadding: CGFloat = 8
-    }
+    @Environment(\.mhDesignMetrics)
+    private var designMetrics
 
     let entry: Entry
 
     var body: some View {
         Section {
-            VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
+            VStack(alignment: .leading, spacing: designMetrics.spacing.control) {
                 Text("Time together")
                     .mhRowOverline()
 
@@ -31,7 +29,7 @@ struct EntryDetailHeader: View {
                         .mhRowSupporting()
                 }
             }
-            .padding(.vertical, Layout.verticalPadding)
+            .padding(.vertical, designMetrics.spacing.inline)
         }
     }
 }

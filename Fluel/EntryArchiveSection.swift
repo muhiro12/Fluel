@@ -15,7 +15,7 @@ struct EntryArchiveSection: View {
     let deletePermanently: () -> Void
 
     var body: some View {
-        Section("Archive") {
+        Section {
             if entry.isArchived {
                 LabeledContent("State", value: "Moved out of daily life")
 
@@ -39,6 +39,9 @@ struct EntryArchiveSection: View {
                     Label("Archive Entry", systemImage: "archivebox")
                 }
             }
+        } header: {
+            FluelSectionHeader("Archive")
         }
+        .labeledContentStyle(.mhKeyValue)
     }
 }

@@ -12,7 +12,7 @@ struct EntryMetadataSection: View {
     let entry: Entry
 
     var body: some View {
-        Section("Entry") {
+        Section {
             LabeledContent(
                 "Created",
                 value: entry.createdAt.formatted(date: .abbreviated, time: .shortened)
@@ -28,6 +28,8 @@ struct EntryMetadataSection: View {
                     value: archivedAt.formatted(date: .abbreviated, time: .shortened)
                 )
             }
+        } header: {
+            FluelSectionHeader("Entry")
         }
         .labeledContentStyle(.mhKeyValue)
     }

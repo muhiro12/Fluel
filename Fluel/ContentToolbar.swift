@@ -11,35 +11,39 @@ struct ContentToolbar: ToolbarContent {
     let addEntry: () -> Void
 
     var body: some ToolbarContent {
-        ToolbarItemGroup(placement: .topBarLeading) {
-            NavigationLink {
-                DashboardView()
-            } label: {
-                Label("Dashboard", systemImage: "rectangle.grid.2x2")
-            }
+        ToolbarItem(placement: .topBarLeading) {
+            Menu {
+                NavigationLink {
+                    DashboardView()
+                } label: {
+                    Label("Dashboard", systemImage: "rectangle.grid.2x2")
+                }
 
-            NavigationLink {
-                TimelineView()
-            } label: {
-                Label("Timeline", systemImage: "clock.arrow.circlepath")
-            }
+                NavigationLink {
+                    TimelineView()
+                } label: {
+                    Label("Timeline", systemImage: "clock.arrow.circlepath")
+                }
 
-            NavigationLink {
-                MilestonesView()
-            } label: {
-                Label("Milestones", systemImage: "flag")
-            }
+                NavigationLink {
+                    MilestonesView()
+                } label: {
+                    Label("Milestones", systemImage: "flag")
+                }
 
-            NavigationLink {
-                PresetsView()
-            } label: {
-                Label("Presets", systemImage: "bookmark")
-            }
+                NavigationLink {
+                    PresetsView()
+                } label: {
+                    Label("Presets", systemImage: "bookmark")
+                }
 
-            NavigationLink {
-                ArchiveEntryListView()
+                NavigationLink {
+                    ArchiveEntryListView()
+                } label: {
+                    Label("Archive", systemImage: "archivebox")
+                }
             } label: {
-                Label("Archive", systemImage: "archivebox")
+                Label("Browse", systemImage: "rectangle.grid.2x2")
             }
         }
 

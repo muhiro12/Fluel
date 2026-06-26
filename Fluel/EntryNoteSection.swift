@@ -5,6 +5,7 @@
 //  Created by Codex on 2026/06/26.
 //
 
+import MHUI
 import SwiftUI
 
 struct EntryNoteSection: View {
@@ -16,10 +17,12 @@ struct EntryNoteSection: View {
     @Binding var note: String
 
     var body: some View {
-        Section("Note") {
+        Section {
             TextField("Small memory or detail", text: $note, axis: .vertical)
                 .lineLimit(Layout.minimumLineLimit...Layout.maximumLineLimit)
                 .submitLabel(.done)
+        } header: {
+            FluelSectionHeader("Note")
         }
     }
 }

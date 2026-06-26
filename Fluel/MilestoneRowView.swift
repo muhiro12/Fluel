@@ -10,14 +10,14 @@ import MHUI
 import SwiftUI
 
 struct MilestoneRowView: View {
-    private enum Layout {
-        static let verticalSpacing: CGFloat = 4
-    }
+    @Environment(\.mhDesignMetrics)
+    private var designMetrics
 
     let milestone: EntryMilestone
+    let approximateLabel: LocalizedStringKey
 
     var body: some View {
-        VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
+        VStack(alignment: .leading, spacing: designMetrics.spacing.inline) {
             Text(milestone.title)
                 .mhRowTitle()
 
@@ -28,10 +28,10 @@ struct MilestoneRowView: View {
                 .mhRowSupporting()
 
             if milestone.isApproximate {
-                Text("Approximate start")
+                Text(approximateLabel)
                     .mhBadge(
                         style: .neutral,
-                        accessibilityLabel: Text("Approximate start")
+                        accessibilityLabel: Text(approximateLabel)
                     )
             }
         }

@@ -10,14 +10,13 @@ import MHUI
 import SwiftUI
 
 struct DashboardEntryHighlightsSection: View {
-    private enum Layout {
-        static let verticalSpacing: CGFloat = 4
-    }
+    @Environment(\.mhDesignMetrics)
+    private var designMetrics
 
     let summary: EntryDashboardSummary
 
     var body: some View {
-        Section("Highlights") {
+        Section {
             if let entry = summary.longestRunningActiveEntry {
                 highlight(
                     label: "Longest together right now",
@@ -34,6 +33,8 @@ struct DashboardEntryHighlightsSection: View {
                     detail: archivedAt.formatted(date: .abbreviated, time: .omitted)
                 )
             }
+        } header: {
+            FluelSectionHeader("Highlights")
         }
     }
 
@@ -42,7 +43,7 @@ struct DashboardEntryHighlightsSection: View {
         title: String,
         detail: String
     ) -> some View {
-        VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
+        VStack(alignment: .leading, spacing: designMetrics.spacing.inline) {
             Text(label)
                 .mhRowOverline()
 

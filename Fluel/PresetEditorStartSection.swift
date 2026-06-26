@@ -6,6 +6,7 @@
 //
 
 import FluelLibrary
+import MHUI
 import SwiftUI
 
 struct PresetEditorStartSection: View {
@@ -13,7 +14,7 @@ struct PresetEditorStartSection: View {
     @Binding var precision: StartPrecision
 
     var body: some View {
-        Section("Start") {
+        Section {
             Picker("Start", selection: $startOption) {
                 ForEach(PresetStartOption.allCases) { option in
                     Text(option.label)
@@ -27,6 +28,8 @@ struct PresetEditorStartSection: View {
                         .tag(precision)
                 }
             }
+        } header: {
+            FluelSectionHeader("Start")
         }
     }
 }

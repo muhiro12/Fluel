@@ -10,19 +10,18 @@ import MHUI
 import SwiftUI
 
 struct TimelineMonthSection: View {
-    private enum Layout {
-        static let verticalSpacing: CGFloat = 4
-    }
+    @Environment(\.mhDesignMetrics)
+    private var designMetrics
 
     let month: EntryTimelineMonth
 
     var body: some View {
-        Section(month.monthDate.formatted(.dateTime.month(.wide).year())) {
+        Section {
             LabeledContent("Monthly trends", value: trendsText)
                 .labeledContentStyle(.mhKeyValue)
 
             ForEach(month.activity) { item in
-                VStack(alignment: .leading, spacing: Layout.verticalSpacing) {
+                VStack(alignment: .leading, spacing: designMetrics.spacing.inline) {
                     Text(item.kind.label)
                         .mhRowOverline()
 
@@ -33,6 +32,10 @@ struct TimelineMonthSection: View {
                         .mhRowSupporting()
                 }
             }
+        } header: {
+            FluelSectionHeader(
+                title: Text(month.monthDate.formatted(.dateTime.month(.wide).year()))
+            )
         }
     }
 
