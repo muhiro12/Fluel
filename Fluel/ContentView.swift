@@ -42,8 +42,28 @@ struct ContentView: View {
     }
 }
 
-#Preview {
+#Preview("Active entries - empty") {
+    ContentView()
+        .mhTheme(.standard)
+        .modelContainer(PreviewSampleData.emptyContainer())
+}
+
+#Preview("Active entries - typical") {
     ContentView()
         .mhTheme(.standard)
         .modelContainer(PreviewSampleData.container())
+}
+
+#Preview("Active entries - dense, large type") {
+    ContentView()
+        .mhTheme(.standard)
+        .modelContainer(PreviewSampleData.denseContainer())
+        .dynamicTypeSize(.accessibility2)
+}
+
+#Preview("Active entries - dark") {
+    ContentView()
+        .mhTheme(.standard)
+        .modelContainer(PreviewSampleData.container())
+        .preferredColorScheme(.dark)
 }

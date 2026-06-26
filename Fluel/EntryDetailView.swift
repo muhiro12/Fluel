@@ -115,9 +115,35 @@ struct EntryDetailView: View {
     }
 }
 
-#Preview {
+#Preview("Entry detail - typical") {
+    let preview = PreviewSampleData.detailContainer(title: "Notebook")
+
     NavigationStack {
-        EntryDetailView(entry: PreviewSampleData.sampleEntries[1])
+        EntryDetailView(entry: preview.entry)
     }
     .mhTheme(.standard)
+    .modelContainer(preview.container)
+}
+
+#Preview("Entry detail - archived") {
+    let preview = PreviewSampleData.detailContainer(title: "Desk lamp")
+
+    NavigationStack {
+        EntryDetailView(entry: preview.entry)
+    }
+    .mhTheme(.standard)
+    .modelContainer(preview.container)
+}
+
+#Preview("Entry detail - long text, large type") {
+    let preview = PreviewSampleData.detailContainer(
+        title: "Small wooden chair that moved through different rooms"
+    )
+
+    NavigationStack {
+        EntryDetailView(entry: preview.entry)
+    }
+    .mhTheme(.standard)
+    .modelContainer(preview.container)
+    .dynamicTypeSize(.accessibility2)
 }

@@ -117,10 +117,18 @@ struct ArchiveEntryListView: View {
     }
 }
 
-#Preview {
+#Preview("Archive - empty") {
     NavigationStack {
         ArchiveEntryListView()
     }
     .mhTheme(.standard)
-    .modelContainer(PreviewSampleData.container())
+    .modelContainer(PreviewSampleData.emptyContainer())
+}
+
+#Preview("Archive - archived entries") {
+    NavigationStack {
+        ArchiveEntryListView()
+    }
+    .mhTheme(.standard)
+    .modelContainer(PreviewSampleData.archiveContainer())
 }

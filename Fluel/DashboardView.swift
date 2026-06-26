@@ -6,6 +6,7 @@
 //
 
 import FluelLibrary
+import MHUI
 import SwiftData
 import SwiftUI
 
@@ -35,9 +36,26 @@ struct DashboardView: View {
     }
 }
 
-#Preview {
+#Preview("Dashboard - empty") {
     NavigationStack {
         DashboardView()
     }
+    .mhTheme(.standard)
+    .modelContainer(PreviewSampleData.emptyContainer())
+}
+
+#Preview("Dashboard - typical") {
+    NavigationStack {
+        DashboardView()
+    }
+    .mhTheme(.standard)
     .modelContainer(PreviewSampleData.container())
+}
+
+#Preview("Dashboard - dense") {
+    NavigationStack {
+        DashboardView()
+    }
+    .mhTheme(.standard)
+    .modelContainer(PreviewSampleData.denseContainer())
 }

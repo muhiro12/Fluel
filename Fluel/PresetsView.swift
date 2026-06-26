@@ -6,6 +6,7 @@
 //
 
 import FluelLibrary
+import MHUI
 import SwiftData
 import SwiftUI
 
@@ -170,9 +171,18 @@ struct PresetsView: View {
     }
 }
 
-#Preview {
+#Preview("Presets - starter presets") {
     NavigationStack {
         PresetsView()
     }
+    .mhTheme(.standard)
     .modelContainer(PreviewSampleData.emptyContainer())
+}
+
+#Preview("Presets - custom and default") {
+    NavigationStack {
+        PresetsView()
+    }
+    .mhTheme(.standard)
+    .modelContainer(PreviewSampleData.presetsContainer())
 }

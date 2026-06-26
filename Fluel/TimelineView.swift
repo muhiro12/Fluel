@@ -6,6 +6,7 @@
 //
 
 import FluelLibrary
+import MHUI
 import SwiftData
 import SwiftUI
 
@@ -95,9 +96,26 @@ struct TimelineView: View {
     }
 }
 
-#Preview {
+#Preview("Timeline - empty") {
     NavigationStack {
         TimelineView()
     }
+    .mhTheme(.standard)
+    .modelContainer(PreviewSampleData.emptyContainer())
+}
+
+#Preview("Timeline - typical") {
+    NavigationStack {
+        TimelineView()
+    }
+    .mhTheme(.standard)
     .modelContainer(PreviewSampleData.container())
+}
+
+#Preview("Timeline - dense") {
+    NavigationStack {
+        TimelineView()
+    }
+    .mhTheme(.standard)
+    .modelContainer(PreviewSampleData.denseContainer())
 }

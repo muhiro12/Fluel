@@ -86,8 +86,21 @@ struct EntryEditorView: View {
     }
 }
 
-#Preview {
+#Preview("Add entry - empty") {
     EntryEditorView()
         .modelContainer(PreviewSampleData.emptyContainer())
         .mhTheme(.standard)
+}
+
+#Preview("Edit entry - filled") {
+    EntryEditorView(draft: PreviewSampleData.filledDraft)
+        .modelContainer(PreviewSampleData.emptyContainer())
+        .mhTheme(.standard)
+}
+
+#Preview("Edit entry - long text, dark") {
+    EntryEditorView(draft: PreviewSampleData.longTextDraft)
+        .modelContainer(PreviewSampleData.emptyContainer())
+        .mhTheme(.standard)
+        .preferredColorScheme(.dark)
 }

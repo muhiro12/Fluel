@@ -6,6 +6,7 @@
 //
 
 import FluelLibrary
+import MHUI
 import SwiftData
 import SwiftUI
 
@@ -33,9 +34,18 @@ struct MilestonesView: View {
     }
 }
 
-#Preview {
+#Preview("Milestones - empty") {
     NavigationStack {
         MilestonesView()
     }
+    .mhTheme(.standard)
+    .modelContainer(PreviewSampleData.emptyContainer())
+}
+
+#Preview("Milestones - upcoming") {
+    NavigationStack {
+        MilestonesView()
+    }
+    .mhTheme(.standard)
     .modelContainer(PreviewSampleData.container())
 }
