@@ -5,96 +5,147 @@
 //  Created by Codex on 2026/06/25.
 //
 
-import FluelLibrary
-import Foundation
 import SwiftData
-
-// swiftlint:disable no_magic_numbers number_separator
 
 @MainActor
 enum PreviewSampleData {
-    static var sampleEntries: [Entry] {
-        [
-            Entry(
-                title: "This home",
-                note: "A home is where daily life gathers.",
-                photoData: nil,
-                startDate: date(year: 2021, month: 4, day: 1),
-                startPrecision: .year,
-                createdAt: date(year: 2026, month: 6, day: 25),
-                updatedAt: date(year: 2026, month: 6, day: 25)
-            ),
-            Entry(
-                title: "Notebook",
-                note: "Ordinary thoughts from this year.",
-                photoData: nil,
-                startDate: date(year: 2024, month: 9, day: 1),
-                startPrecision: .month,
-                createdAt: date(year: 2026, month: 6, day: 25),
-                updatedAt: date(year: 2026, month: 6, day: 25)
-            ),
-            Entry(
-                title: "Watch",
-                note: nil,
-                photoData: Data([1]),
-                startDate: date(year: 2025, month: 12, day: 14),
-                startPrecision: .day,
-                createdAt: date(year: 2026, month: 6, day: 25),
-                updatedAt: date(year: 2026, month: 6, day: 25)
-            ),
-            Entry(
-                title: "Desk lamp",
-                note: "Moved to storage.",
-                photoData: nil,
-                startDate: date(year: 2023, month: 2, day: 14),
-                startPrecision: .day,
-                createdAt: date(year: 2026, month: 6, day: 25),
-                updatedAt: date(year: 2026, month: 6, day: 26),
-                archivedAt: date(year: 2026, month: 6, day: 26),
-                id: UUID()
-            )
-        ]
+    enum Scenario: String {
+        case empty
+        case typical
+        case dense
+        case archive
+        case presets
+    }
+
+    enum Screen: String {
+        case activeEntries
+        case dashboard
+        case timeline
+        case milestones
+        case presets
+        case archive
+        case entryDetail
+        case archivedEntryDetail
+        case entryEditor
+
+        var defaultScenario: Scenario {
+            switch self {
+            case .activeEntries,
+                 .dashboard,
+                 .timeline,
+                 .milestones,
+                 .entryDetail:
+                .dense
+            case .presets:
+                .presets
+            case .archive,
+                 .archivedEntryDetail:
+                .archive
+            case .entryEditor:
+                .empty
+            }
+        }
+    }
+
+    private enum Argument {
+        static let scenario = "--fluel-ui-preview-scenario"
+        static let screen = "--fluel-ui-preview-screen"
     }
 
     static func container() -> ModelContainer {
-        let container = emptyContainer()
-        let context = container.mainContext
+        container(for: .typical)
+    }
 
-        for entry in sampleEntries {
-            context.insert(entry)
-        }
-
-        return container
+    static func denseContainer() -> ModelContainer {
+        container(for: .dense)
     }
 
     static func emptyContainer() -> ModelContainer {
-        let schema = Schema([Entry.self, Preset.self])
-        let configuration = ModelConfiguration(
-            schema: schema,
-            isStoredInMemoryOnly: true
-        )
-
-        do {
-            return try ModelContainer(
-                for: schema,
-                configurations: [configuration]
-            )
-        } catch {
-            fatalError("Could not create preview ModelContainer: \(error)")
-        }
+        container(for: .empty)
     }
 
-    private static func date(year: Int, month: Int, day: Int) -> Date {
-        let calendar = Calendar(identifier: .gregorian)
-        let components = DateComponents(
-            calendar: calendar,
-            year: year,
-            month: month,
-            day: day
-        )
+    static func archiveContainer() -> ModelContainer {
+        container(for: .archive)
+    }
 
-        return components.date ?? .now
+    static func presetsContainer() -> ModelContainer {
+        container(for: .presets)
+    }
+
+    static func container(from arguments: [String]) -> ModelContainer? {
+        guard let scenario = scenario(from: arguments) else {
+            return nil
+        }
+
+        return container(for: scenario)
+    }
+
+    static func screen(from arguments: [String]) -> Screen? {
+        guard let value = value(after: Argument.screen, in: arguments) else {
+            return nil
+        }
+
+        return Screen(rawValue: value)
+    }
+
+    static func container(for scenario: Scenario) -> ModelContainer {
+        let entries: [Entry]
+        let presets: [Preset]
+
+        switch scenario {
+        case .empty:
+            entries = []
+            presets = []
+        case .typical:
+            entries = typicalEntries
+            presets = samplePresets
+        case .dense:
+            entries = denseEntries
+            presets = samplePresets
+        case .archive:
+            entries = archivedEntries
+            presets = samplePresets
+        case .presets:
+            entries = []
+            presets = samplePresets
+        }
+
+        return container(entries: entries, presets: presets)
+    }
+
+    static func detailContainer(title: String) -> (container: ModelContainer, entry: Entry) {
+        let entry = denseEntries.first { entry in
+            entry.title == title
+        } ?? typicalEntries[0]
+
+        return (
+            container: container(entries: [entry], presets: samplePresets),
+            entry: entry
+        )
+    }
+
+    private static func scenario(from arguments: [String]) -> Scenario? {
+        guard let value = value(after: Argument.scenario, in: arguments) else {
+            return nil
+        }
+
+        return Scenario(rawValue: value)
+    }
+
+    private static func value(
+        after argument: String,
+        in arguments: [String]
+    ) -> String? {
+        guard let argumentIndex = arguments.firstIndex(of: argument) else {
+            return nil
+        }
+
+        let valueIndex = arguments.index(after: argumentIndex)
+
+        guard arguments.indices.contains(valueIndex) else {
+            return nil
+        }
+
+        return arguments[valueIndex]
     }
 }
-
-// swiftlint:enable no_magic_numbers number_separator

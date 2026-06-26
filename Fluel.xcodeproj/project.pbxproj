@@ -7,14 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B30000012FF1000100000001 /* FluelLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = B30000012FF1000100000004 /* FluelLibrary */; };
 		B10000012FED500100000002 /* MHDesign in Frameworks */ = {isa = PBXBuildFile; productRef = B10000012FED500100000004 /* MHDesign */; };
 		B10000012FED500100000008 /* MHUI in Frameworks */ = {isa = PBXBuildFile; productRef = B10000012FED500100000009 /* MHUI */; };
+		B30000012FF1000100000001 /* FluelLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = B30000012FF1000100000004 /* FluelLibrary */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		B30000012FF1000100000002 /* FluelLibrary */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = FluelLibrary; sourceTree = "<group>"; };
 		AD75E9B72FED373000094EFB /* Fluel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fluel.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B30000012FF1000100000002 /* FluelLibrary */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = FluelLibrary; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -412,10 +412,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		B30000012FF1000100000004 /* FluelLibrary */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = FluelLibrary;
-		};
 		B10000012FED500100000004 /* MHDesign */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B10000012FED500100000007 /* XCRemoteSwiftPackageReference "MHUI" */;
@@ -425,6 +421,10 @@
 			isa = XCSwiftPackageProductDependency;
 			package = B10000012FED500100000007 /* XCRemoteSwiftPackageReference "MHUI" */;
 			productName = MHUI;
+		};
+		B30000012FF1000100000004 /* FluelLibrary */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FluelLibrary;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
