@@ -5,9 +5,9 @@
 This report summarizes the current Fluel UI preview, screenshot, and MHUI
 adoption coverage.
 
-The latest pass improved the existing UI without adding product features,
+The latest passes improved the existing UI without adding product features,
 changing data models, adding Operations, or copying Incomes-specific UI. The
-decision standard was:
+decision standard is:
 
 - Preserve Fluel's quiet, familiar, low-pressure product tone.
 - Keep Apple-native navigation, lists, forms, search, menus, share, swipe, and
@@ -15,6 +15,21 @@ decision standard was:
 - Use MHUI and MHDesign where they improve shared rhythm, semantic typography,
   metadata treatment, and reusable presentation without flattening native
   surfaces.
+
+## HIG And MHUI Priority
+
+Apple Human Interface Guidelines and platform-native behavior are the base
+layer. Native `NavigationStack`, `List`, `Form`, `Menu`, `ShareLink`, sheets,
+alerts, controls, swipe actions, and confirmation dialogs stay in place when
+they are the most familiar iOS pattern.
+
+MHUI and MHDesign are the shared style layer above that base. In Fluel they
+should align spacing, typography rhythm, section cues, row rhythm, metadata,
+badges, empty states, key-value display, and action emphasis without becoming a
+replacement for standard Apple controls.
+
+This gives Fluel more of the non-Incomes MHUI family feel while preserving its
+own quiet, familiar, gentle, concrete, and low-pressure product tone.
 
 ## Target Screens
 
@@ -41,6 +56,7 @@ Component previews retained or added:
 
 - `EntryRowView`.
 - `FluelBadgeStack`.
+- `FluelEmptyState`.
 - `FluelSectionHeader`.
 
 ## MHUI And MHDesign Audit
@@ -75,15 +91,18 @@ Available API areas inspected:
 MHUI's architecture guidance was important: host screens own product wording,
 business-state branching, and navigation meaning. MHUI owns reusable
 presentation primitives and neutral container behavior. The implementation
-therefore kept Fluel-specific screen composition in the app target.
+therefore kept Fluel-specific screen composition and copy in the app target,
+while centralizing the repeated empty-state presentation through
+`FluelEmptyState`.
 
 ## Screen Decisions
 
 Active entries:
 
 - Adopted: one native Browse toolbar menu for secondary destinations,
-  `EntryRowView` row rhythm through `mhRow()`, `MHDesignMetrics` spacing, and
-  adaptive metadata badges through `FluelBadgeStack`.
+  `EntryRowView` row rhythm through `mhRow()`, `MHDesignMetrics` spacing,
+  adaptive metadata badges through `FluelBadgeStack`, and shared empty-state
+  presentation through `FluelEmptyState`.
 - Kept SwiftUI-native: `NavigationStack`, `List`, `searchable`, sort/filter
   `Menu` plus `Picker`, `NavigationLink`, and `swipeActions`.
 - Deferred: `mhListChrome(...)`, because it removed the calmer native
@@ -91,7 +110,8 @@ Active entries:
 
 Archive:
 
-- Adopted: the same entry row treatment as the active list.
+- Adopted: the same entry row treatment as the active list and the same
+  shared empty-state presentation.
 - Kept SwiftUI-native: archive search, sort/filter menus, restore swipe
   action, and restore error alert.
 - Deferred: custom archive action chrome, because the native swipe action is
@@ -126,7 +146,8 @@ Dashboard:
 Timeline:
 
 - Adopted: `FluelSectionHeader`, MHUI row text roles, and existing
-  `mhKeyValue` summary rows.
+  `mhKeyValue` summary rows. Timeline empty state now uses the same
+  `FluelEmptyState` wrapper as the other empty surfaces.
 - Kept SwiftUI-native: `List`, search, activity/scope menus, monthly
   grouping, and `ShareLink`.
 - Deferred: custom timeline chrome, because timeline remains a reading
@@ -134,7 +155,8 @@ Timeline:
 
 Milestones:
 
-- Adopted: shared milestone row styling with MHUI typography and badge roles.
+- Adopted: shared milestone row styling with MHUI typography and badge roles,
+  plus the common empty-state wrapper.
 - Kept SwiftUI-native: grouped `List`.
 - Deferred: custom milestone cards, because the standard section preserves a
   quieter scan pattern.
@@ -142,7 +164,8 @@ Milestones:
 Presets:
 
 - Adopted: `FluelBadgeStack`, MHUI row text roles, and shared spacing from
-  `MHDesignMetrics`.
+  `MHDesignMetrics`. Presets empty state also uses `FluelEmptyState` while
+  keeping its product-specific copy and Create Preset action.
 - Kept SwiftUI-native: `List`, `Button`, `Menu`, sheets, alert, and delete
   confirmation.
 - Deferred: `MHActionGroup`, because the row's primary Use action plus native
@@ -230,6 +253,9 @@ Added or confirmed screen-level previews:
   - Presets - custom and default
 - `FluelBadgeStack`
   - Badge stack
+- `FluelEmptyState`
+  - Empty state - action
+  - Empty state - no action
 - `FluelSectionHeader`
   - Section header
 
@@ -278,6 +304,17 @@ Most improved:
   treatment.
 - Row spacing now comes from `MHDesignMetrics` instead of local ad-hoc values
   where the row is part of the shared visual rhythm.
+- Empty states now keep native `ContentUnavailableView` semantics while using
+  one Fluel wrapper for MHUI spacing and action styling.
+
+MHUI family fit:
+
+- The app now shares row, badge, section, empty-state, key-value, and primary
+  action rhythm across screens.
+- Product meaning still comes from Fluel's own copy, sample entries, screen
+  composition, and active/archive separation.
+- The family resemblance is stronger without making the UI louder or less
+  iOS-native.
 
 Intentionally preserved:
 
@@ -295,6 +332,9 @@ Rejected after testing:
   form grouping.
 - Applying `mhRow()` inside grouped detail/dashboard section cards also
   removed card backgrounds, so `mhRow()` is limited to the entry list rows.
+- `MHActionGroup` remains deferred for detail and preset actions because the
+  current native toolbar, menu, swipe, and confirmation patterns communicate
+  action safety more clearly at this stage.
 
 ## Confirmed States
 
@@ -377,6 +417,8 @@ Successful checks during this pass:
 - XcodeBuildMCP `build_sim`.
 - XcodeBuildMCP `build_run_sim` with preview launch arguments.
 - XcodeBuildMCP `screenshot` for each captured runtime screen.
+- Active entries empty-state screenshot refreshed after introducing
+  `FluelEmptyState`.
 - Final runtime log scan for fatal, error, crash, exception, termination,
   failure, and assertion text.
 - `bash ci_scripts/tasks/format_swift.sh`.
