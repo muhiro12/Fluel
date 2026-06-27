@@ -5,6 +5,7 @@
 //  Created by Hiromu Nakano on 2026/06/25.
 //
 
+import AppIntents
 import Foundation
 import MHUI
 import SwiftData
@@ -40,6 +41,10 @@ struct FluelApp: App {
                 previewScreen: requestedPreviewScreen
             )
         }
+
+        if case .success(let modelContainer) = modelContainerResult {
+            Self.registerIntentDependencies(modelContainer)
+        }
     }
 
     private static func makeModelContainer(
@@ -55,6 +60,13 @@ struct FluelApp: App {
         }
 
         return try FluelModelContainerFactory.production()
+    }
+
+    private static func registerIntentDependencies(_ modelContainer: ModelContainer) {
+        AppDependencyManager.shared.add {
+            modelContainer
+        }
+        FluelShortcuts.updateAppShortcutParameters()
     }
 
     @ViewBuilder

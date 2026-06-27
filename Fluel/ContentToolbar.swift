@@ -13,33 +13,23 @@ struct ContentToolbar: ToolbarContent {
     var body: some ToolbarContent {
         ToolbarItem(placement: .topBarLeading) {
             Menu {
-                NavigationLink {
-                    DashboardView()
-                } label: {
+                NavigationLink(value: FluelRoute.dashboard) {
                     Label("Dashboard", systemImage: "rectangle.grid.2x2")
                 }
 
-                NavigationLink {
-                    TimelineView()
-                } label: {
+                NavigationLink(value: FluelRoute.timeline) {
                     Label("Timeline", systemImage: "clock.arrow.circlepath")
                 }
 
-                NavigationLink {
-                    MilestonesView()
-                } label: {
+                NavigationLink(value: FluelRoute.milestones) {
                     Label("Milestones", systemImage: "flag")
                 }
 
-                NavigationLink {
-                    PresetsView()
-                } label: {
+                NavigationLink(value: FluelRoute.presets) {
                     Label("Presets", systemImage: "bookmark")
                 }
 
-                NavigationLink {
-                    ArchiveEntryListView()
-                } label: {
+                NavigationLink(value: FluelRoute.archive) {
                     Label("Archive", systemImage: "archivebox")
                 }
             } label: {
