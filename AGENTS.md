@@ -176,11 +176,14 @@ The active Xcode project is `Fluel.xcodeproj`.
 - Preferred Swift lint check: `bash ci_scripts/tasks/lint_swift.sh`.
 - Preferred retained repository-rule check:
   `bash ci_scripts/tasks/check_repository_rules.sh`.
-- Preferred String Catalog audit:
+- Preferred String Catalog audit from the repository root when the local
+  `string-catalog-maintainer` skill is installed:
 
   ```sh
-  python3 /Users/Hiromu/.codex/skills/string-catalog-maintainer/scripts/audit_xcstrings.py \
-    --project-root /Users/Hiromu/Repositories/Fluel \
+  codex_home="${CODEX_HOME:-$HOME/.codex}"
+  audit_script="$codex_home/skills/string-catalog-maintainer/scripts/audit_xcstrings.py"
+  python3 "$audit_script" \
+    --project-root . \
     --required-locales en,ja \
     --format markdown
   ```
