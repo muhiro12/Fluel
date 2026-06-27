@@ -12,14 +12,13 @@ struct EntryListFilteredEmptyState: View {
     let clear: () -> Void
 
     var body: some View {
-        ContentUnavailableView {
-            Label("No entries found", systemImage: "magnifyingglass")
-        } description: {
-            Text("Try a different search or filter.")
-        } actions: {
+        FluelEmptyState(
+            "No entries found",
+            systemImage: "magnifyingglass",
+            description: "Try a different search or filter."
+        ) {
             Button("Clear Search and Filters", action: clear)
                 .buttonStyle(.mhPrimary)
         }
-        .mhEmptyStateLayout()
     }
 }

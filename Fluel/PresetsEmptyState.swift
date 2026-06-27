@@ -12,14 +12,13 @@ struct PresetsEmptyState: View {
     let create: () -> Void
 
     var body: some View {
-        ContentUnavailableView {
-            Label("Presets", systemImage: "bookmark")
-        } description: {
-            Text("Reusable starting points will appear here.")
-        } actions: {
+        FluelEmptyState(
+            "Presets",
+            systemImage: "bookmark",
+            description: "Reusable starting points will appear here."
+        ) {
             Button("Create Preset", action: create)
                 .buttonStyle(.mhPrimary)
         }
-        .mhEmptyStateLayout()
     }
 }

@@ -12,14 +12,13 @@ struct ActiveEntryEmptyState: View {
     let addEntry: () -> Void
 
     var body: some View {
-        ContentUnavailableView {
-            Label("Begin with one entry", systemImage: "clock")
-        } description: {
-            Text("Add one thing or place you live with and keep the start as precisely as you know it.")
-        } actions: {
+        FluelEmptyState(
+            "Begin with one entry",
+            systemImage: "clock",
+            description: "Add one thing or place you live with and keep the start as precisely as you know it."
+        ) {
             Button("Add Entry", action: addEntry)
                 .buttonStyle(.mhPrimary)
         }
-        .mhEmptyStateLayout()
     }
 }
