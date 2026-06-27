@@ -32,19 +32,10 @@ extension PreviewSampleData {
         entries: [Entry],
         presets: [Preset]
     ) -> ModelContainer {
-        let schema = Schema([Entry.self, Preset.self])
-        let configuration = ModelConfiguration(
-            schema: schema,
-            isStoredInMemoryOnly: true
-        )
-
         let modelContainer: ModelContainer
 
         do {
-            modelContainer = try ModelContainer(
-                for: schema,
-                configurations: [configuration]
-            )
+            modelContainer = try FluelModelContainerFactory.inMemory()
         } catch {
             fatalError("Could not create preview ModelContainer: \(error)")
         }

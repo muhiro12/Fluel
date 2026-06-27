@@ -13,35 +13,39 @@ import SwiftUI
 @main
 struct FluelApp: App {
     let previewScreen: PreviewSampleData.Screen?
-    var sharedModelContainer: ModelContainer
+    let modelContainerResult: Result<ModelContainer, any Error>
 
     var body: some Scene {
         WindowGroup {
-            if let previewScreen {
-                PreviewRootView(screen: previewScreen)
+            switch modelContainerResult {
+            case .success(let modelContainer):
+                rootContent()
                     .mhTheme(.standard)
-            } else {
-                ContentView()
+                    .modelContainer(modelContainer)
+            case .failure(let error):
+                FluelStartupFailureView(error: error)
                     .mhTheme(.standard)
             }
         }
-        .modelContainer(sharedModelContainer)
     }
 
     init() {
         let arguments = ProcessInfo.processInfo.arguments
+        let requestedPreviewScreen = PreviewSampleData.screen(from: arguments)
 
-        previewScreen = PreviewSampleData.screen(from: arguments)
-        sharedModelContainer = Self.makeModelContainer(
-            arguments: arguments,
-            previewScreen: previewScreen
-        )
+        previewScreen = requestedPreviewScreen
+        modelContainerResult = Result {
+            try Self.makeModelContainer(
+                arguments: arguments,
+                previewScreen: requestedPreviewScreen
+            )
+        }
     }
 
     private static func makeModelContainer(
         arguments: [String],
         previewScreen: PreviewSampleData.Screen?
-    ) -> ModelContainer {
+    ) throws -> ModelContainer {
         if let previewContainer = PreviewSampleData.container(from: arguments) {
             return previewContainer
         }
@@ -50,16 +54,15 @@ struct FluelApp: App {
             return PreviewSampleData.container(for: previewScreen.defaultScenario)
         }
 
-        let schema = Schema([
-            Entry.self,
-            Preset.self
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+        return try FluelModelContainerFactory.production()
+    }
 
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
+    @ViewBuilder
+    private func rootContent() -> some View {
+        if let previewScreen {
+            PreviewRootView(screen: previewScreen)
+        } else {
+            ContentView()
         }
     }
 }

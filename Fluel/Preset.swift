@@ -21,20 +21,19 @@ final class Preset {
         static let empty = 0
     }
 
-    @Attribute(.unique)
-    var id: UUID
-    var title: String
-    var symbolName: String
-    var startKind: String
-    var startValue: Int
-    var startPrecision: StartPrecision
+    var id = UUID()
+    var title = ""
+    var symbolName = "clock"
+    var startKind = StartKind.today
+    var startValue = StartValue.empty
+    var startPrecision = StartPrecision.day
     var note: String?
-    var origin: EntryPresetOrigin
-    var isPinned: Bool
-    var isDefault: Bool
+    var origin = EntryPresetOrigin.custom
+    var isPinned = false
+    var isDefault = false
     var lastUsedAt: Date?
-    var createdAt: Date
-    var updatedAt: Date
+    var createdAt = Date()
+    var updatedAt = Date()
 
     var isCustom: Bool {
         origin == .custom

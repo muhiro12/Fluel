@@ -11,16 +11,15 @@ import SwiftData
 
 @Model
 final class Entry {
-    @Attribute(.unique)
-    var id: UUID
-    var title: String
+    var id = UUID()
+    var title = ""
     var note: String?
     @Attribute(.externalStorage)
     var photoData: Data?
-    var startDate: Date
-    var startPrecision: StartPrecision
-    var createdAt: Date
-    var updatedAt: Date
+    var startDate = Date()
+    var startPrecision = StartPrecision.day
+    var createdAt = Date()
+    var updatedAt = Date()
     var archivedAt: Date?
 
     var isArchived: Bool {
@@ -202,7 +201,7 @@ final class Entry {
         )
     }
 
-    private func apply(_ snapshot: EntrySnapshot) {
+    func apply(_ snapshot: EntrySnapshot) {
         title = snapshot.title
         note = snapshot.note
         startDate = snapshot.startDate
