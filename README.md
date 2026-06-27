@@ -4,9 +4,8 @@ Fluel is an unfinished Apple-platform product concept for quietly keeping time
 with the things and places a person lives with.
 
 This repository preserves the product intent from an earlier implementation
-and now contains the initial rebuilt app project. The legacy Xcode project,
-Swift implementation, widget, shared library, and CI scripts have been removed
-from the active repository surface. Product knowledge that must guide the
+and now contains the rebuilt app project, a small shared library package, and
+repository-owned verification scripts. Product knowledge that must guide the
 rebuild is preserved under `docs/`.
 
 ## Documentation
@@ -22,6 +21,7 @@ Start here:
 - `docs/product-language.md`
 - `docs/rebuild-handoff.md`
 - `docs/rebuild-implementation-principles.md`
+- `docs/rebuild-baseline.md`
 
 These documents describe what Fluel is, why it exists, what concepts and
 language should survive, and what legacy implementation details should not be
@@ -30,7 +30,7 @@ additional rebuild direction clarified after the preservation pass.
 
 ## Rebuild Status
 
-The current implementation surface is a minimal rebuilt Xcode project:
+The current implementation surface is a rebuilt Xcode project:
 
 - Project: `Fluel.xcodeproj`
 - Scheme: `Fluel`
@@ -38,7 +38,8 @@ The current implementation surface is a minimal rebuilt Xcode project:
 - Shared package: `FluelLibrary`
 - Repository verification scripts: `ci_scripts/tasks/`
 
-The project is an early SwiftUI and SwiftData scaffold, not a complete product
-implementation. Future implementation work should use the preserved product
-documents as the source of truth for Fluel's domain, language, workflows, and
-experience principles.
+The rebuild baseline includes SwiftData with CloudKit configuration, App
+Intents backed by `FluelLibrary` Operations, and English plus Japanese
+localization assets. Future implementation work should use the preserved
+product documents as the source of truth for Fluel's domain, language,
+workflows, and experience principles.

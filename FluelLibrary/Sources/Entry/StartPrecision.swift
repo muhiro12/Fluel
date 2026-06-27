@@ -16,11 +16,11 @@ public enum StartPrecision: String, CaseIterable, Codable, Hashable, Identifiabl
     public var label: String {
         switch self {
         case .day:
-            "Day"
+            EntryLocalization.string("Day")
         case .month:
-            "Month"
+            EntryLocalization.string("Month")
         case .year:
-            "Year"
+            EntryLocalization.string("Year")
         }
     }
 
@@ -28,11 +28,11 @@ public enum StartPrecision: String, CaseIterable, Codable, Hashable, Identifiabl
     public var knownAsText: String {
         switch self {
         case .day:
-            "Exact day"
+            EntryLocalization.string("Exact day")
         case .month:
-            "Known to the month"
+            EntryLocalization.string("Known to the month")
         case .year:
-            "Known to the year"
+            EntryLocalization.string("Known to the year")
         }
     }
 

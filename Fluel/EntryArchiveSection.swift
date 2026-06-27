@@ -17,7 +17,11 @@ struct EntryArchiveSection: View {
     var body: some View {
         Section {
             if entry.isArchived {
-                LabeledContent("State", value: "Moved out of daily life")
+                LabeledContent {
+                    Text("Moved out of daily life")
+                } label: {
+                    Text("State")
+                }
 
                 Button {
                     restore()
@@ -31,7 +35,11 @@ struct EntryArchiveSection: View {
                     Label("Delete Permanently", systemImage: "trash")
                 }
             } else {
-                LabeledContent("State", value: "Still with you")
+                LabeledContent {
+                    Text("Still with you")
+                } label: {
+                    Text("State")
+                }
 
                 Button {
                     archive()

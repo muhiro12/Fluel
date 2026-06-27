@@ -15,13 +15,13 @@ public enum EntryActivityFilter: String, CaseIterable, Identifiable, Sendable {
     public var label: String {
         switch self {
         case .all:
-            "All activity"
+            EntryLocalization.string("All activity")
         case .added:
-            "Added"
+            EntryLocalization.string("Added")
         case .updated:
-            "Updated"
+            EntryLocalization.string("Updated")
         case .archived:
-            "Archived"
+            EntryLocalization.string("Archived")
         }
     }
 

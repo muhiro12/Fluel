@@ -5,6 +5,8 @@
 //  Created by Codex on 2026/06/26.
 //
 
+import SwiftUI
+
 enum PresetSymbolOption: String, CaseIterable, Identifiable {
     case bookmark
     case home
@@ -21,7 +23,7 @@ enum PresetSymbolOption: String, CaseIterable, Identifiable {
         self
     }
 
-    var label: String {
+    var label: LocalizedStringKey {
         switch self {
         case .bookmark:
             "Bookmark"

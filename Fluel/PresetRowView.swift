@@ -42,8 +42,11 @@ struct PresetRowView: View {
             Button("Use", action: use)
 
             Menu {
-                Button(preset.isPinned ? "Unpin" : "Pin", action: togglePin)
-                Button(preset.isDefault ? "Clear default" : "Set as default", action: toggleDefault)
+                Button(preset.isPinned ? LocalizedStringKey("Unpin") : LocalizedStringKey("Pin"), action: togglePin)
+                Button(
+                    preset.isDefault ? LocalizedStringKey("Clear default") : LocalizedStringKey("Set as default"),
+                    action: toggleDefault
+                )
 
                 if canEdit {
                     Button("Edit", action: edit)

@@ -41,9 +41,9 @@ struct TimelineMonthSection: View {
 
     private var trendsText: String {
         let parts = [
-            trendText(count: month.addedCount, label: "added"),
-            trendText(count: month.updatedCount, label: "updated"),
-            trendText(count: month.archivedCount, label: "archived")
+            trendText(count: month.addedCount, label: String(localized: "added")),
+            trendText(count: month.updatedCount, label: String(localized: "updated")),
+            trendText(count: month.archivedCount, label: String(localized: "archived"))
         ]
         .compactMap(\.self)
 

@@ -6,6 +6,7 @@
 //
 
 import FluelLibrary
+import SwiftUI
 
 enum PresetStartOption: String, CaseIterable, Identifiable {
     case today
@@ -25,7 +26,7 @@ enum PresetStartOption: String, CaseIterable, Identifiable {
         self
     }
 
-    var label: String {
+    var label: LocalizedStringKey {
         switch self {
         case .today:
             "Started today"

@@ -15,26 +15,32 @@ public extension EntryOperations {
         var lines = [
             snapshot.title,
             "",
-            "Time together: \(timeTogether.primaryText)",
-            "Start: \(startLabel(for: snapshot, calendar: calendar))",
-            "Precision: \(snapshot.startPrecision.knownAsText)"
+            EntryLocalization.format("share.entry.timeTogether", timeTogether.primaryText),
+            EntryLocalization.format(
+                "share.entry.start",
+                startLabel(for: snapshot, calendar: calendar)
+            ),
+            EntryLocalization.format("share.entry.precision", snapshot.startPrecision.knownAsText)
         ]
 
         if let rangeLabel = startRangeLabel(for: snapshot, calendar: calendar) {
-            lines.append("Approximate range: \(rangeLabel)")
+            lines.append(EntryLocalization.format("share.entry.approximateRange", rangeLabel))
         }
 
         if let note = snapshot.note {
-            lines.append("Note: \(note)")
+            lines.append(EntryLocalization.format("share.entry.note", note))
         }
 
         if let archivedAt = snapshot.archivedAt {
-            lines.append("Status: Archived")
-            lines.append("Archived: \(dateText(archivedAt, calendar: calendar))")
+            lines.append(EntryLocalization.string("share.entry.statusArchived"))
+            lines.append(EntryLocalization.format(
+                "share.entry.archived",
+                dateText(archivedAt, calendar: calendar)
+            ))
         }
 
         return .init(
-            subject: "Fluel: \(snapshot.title)",
+            subject: EntryLocalization.format("share.entry.subject", snapshot.title),
             text: lines.joined(separator: "\n")
         )
     }
@@ -46,16 +52,16 @@ public extension EntryOperations {
         calendar: Calendar = .autoupdatingCurrent
     ) -> EntryShareSummary {
         var lines = [
-            "Fluel Timeline",
+            EntryLocalization.string("Fluel Timeline"),
             "",
-            "Scope: \(query.scope.label)",
-            "Activity: \(query.filter.label)"
+            EntryLocalization.format("share.timeline.scope", query.scope.label),
+            EntryLocalization.format("share.timeline.activity", query.filter.label)
         ]
         let trimmedSearchText = query.searchText
             .trimmingCharacters(in: .whitespacesAndNewlines)
 
         if !trimmedSearchText.isEmpty {
-            lines.append("Search: \(trimmedSearchText)")
+            lines.append(EntryLocalization.format("share.timeline.search", trimmedSearchText))
         }
 
         lines.append(contentsOf: timelineSummaryLines(result.summary))
@@ -63,7 +69,7 @@ public extension EntryOperations {
         lines.append(contentsOf: milestoneLines(result.upcomingMilestones, calendar: calendar))
 
         return .init(
-            subject: "Fluel Timeline",
+            subject: EntryLocalization.string("Fluel Timeline"),
             text: lines.joined(separator: "\n")
         )
     }
@@ -74,11 +80,18 @@ public extension EntryOperations {
 
         return [
             "",
-            "Visible activity: \(visibleActivityText) of \(totalActivityText)",
-            "Months: \(summary.representedMonthCount.formatted())",
-            "Added: \(summary.addedCount.formatted())",
-            "Updated: \(summary.updatedCount.formatted())",
-            "Archived: \(summary.archivedCount.formatted())"
+            EntryLocalization.format(
+                "share.timeline.visibleActivity",
+                visibleActivityText,
+                totalActivityText
+            ),
+            EntryLocalization.format(
+                "share.timeline.months",
+                summary.representedMonthCount.formatted()
+            ),
+            EntryLocalization.format("share.timeline.added", summary.addedCount.formatted()),
+            EntryLocalization.format("share.timeline.updated", summary.updatedCount.formatted()),
+            EntryLocalization.format("share.timeline.archived", summary.archivedCount.formatted())
         ]
     }
 
@@ -94,7 +107,7 @@ public extension EntryOperations {
             monthlyTrendLine(month, calendar: calendar)
         }
 
-        return ["", "Monthly trends"] + trendLines
+        return ["", EntryLocalization.string("Monthly trends")] + trendLines
     }
 
     private static func milestoneLines(
@@ -109,7 +122,7 @@ public extension EntryOperations {
             milestoneLine(milestone, calendar: calendar)
         }
 
-        return ["", "Upcoming milestones"] + shareLines
+        return ["", EntryLocalization.string("Upcoming milestones")] + shareLines
     }
 
     private static func monthlyTrendLine(
@@ -121,9 +134,19 @@ public extension EntryOperations {
         let addedCount = month.addedCount.formatted()
         let updatedCount = month.updatedCount.formatted()
         let archivedCount = month.archivedCount.formatted()
-        let activityBreakdown = "\(addedCount) added, \(updatedCount) updated, \(archivedCount) archived"
+        let activityBreakdown = EntryLocalization.format(
+            "share.timeline.activityBreakdown",
+            addedCount,
+            updatedCount,
+            archivedCount
+        )
 
-        return "\(monthTitle): \(activityCount) (\(activityBreakdown))"
+        return EntryLocalization.format(
+            "share.timeline.monthLine",
+            monthTitle,
+            activityCount,
+            activityBreakdown
+        )
     }
 
     private static func milestoneLine(
@@ -131,14 +154,28 @@ public extension EntryOperations {
         calendar: Calendar
     ) -> String {
         let milestoneDate = dateText(milestone.date, calendar: calendar)
-        let suffix = milestone.isApproximate ? " approximate" : ""
-        let remainingText = "\(milestone.daysRemainingText)\(suffix)"
+        let remainingText = milestone.isApproximate
+            ? EntryLocalization.format(
+                "share.timeline.remainingApproximate",
+                milestone.daysRemainingText
+            )
+            : milestone.daysRemainingText
 
-        return "\(milestone.title): \(milestone.durationText) on \(milestoneDate) (\(remainingText))"
+        return EntryLocalization.format(
+            "share.timeline.milestoneLine",
+            milestone.title,
+            milestone.durationText,
+            milestoneDate,
+            remainingText
+        )
     }
 
     private static func activityCountText(_ count: Int) -> String {
-        count == 1 ? "1 activity" : "\(count.formatted()) activities"
+        EntryLocalization.duration(
+            value: count,
+            singularKey: "activity",
+            pluralKey: "activities"
+        )
     }
 
     private static func monthText(

@@ -21,13 +21,19 @@ public struct TimeTogetherSummary: Equatable, Sendable {
         }
 
         var text: String {
-            "\(value.formatted()) \(singular)\(value == Self.singularValue ? "" : "s")"
+            EntryLocalization.duration(
+                value: value,
+                singularKey: singular,
+                pluralKey: "\(singular)s"
+            )
         }
     }
 
     private static let monthsPerYear = 12
     private static let primaryPartLimit = 2
-    private static let approximateSupportingText = "Approximate start; based on the earliest possible start date."
+    private static var approximateSupportingText: String {
+        EntryLocalization.string("Approximate start; based on the earliest possible start date.")
+    }
 
     /// Compact elapsed-time text for list rows and headers.
     public let primaryText: String
@@ -117,12 +123,15 @@ public struct TimeTogetherSummary: Equatable, Sendable {
         return .init(
             primaryText: joined(
                 durationParts,
-                emptyText: "Today",
+                emptyText: EntryLocalization.string("Today"),
                 limit: Self.primaryPartLimit
             ),
-            fullText: joined(durationParts, emptyText: "Started today"),
+            fullText: joined(
+                durationParts,
+                emptyText: EntryLocalization.string("Started today")
+            ),
             supportingText: nil,
-            totalValueLabel: "Total days",
+            totalValueLabel: EntryLocalization.string("Total days"),
             totalValueText: totalDays.formatted()
         )
     }
@@ -145,12 +154,15 @@ public struct TimeTogetherSummary: Equatable, Sendable {
         return .init(
             primaryText: joined(
                 durationParts,
-                emptyText: "This month",
+                emptyText: EntryLocalization.string("This month"),
                 limit: Self.primaryPartLimit
             ),
-            fullText: joined(durationParts, emptyText: "Started this month"),
+            fullText: joined(
+                durationParts,
+                emptyText: EntryLocalization.string("Started this month")
+            ),
             supportingText: approximateSupportingText,
-            totalValueLabel: "Total months",
+            totalValueLabel: EntryLocalization.string("Total months"),
             totalValueText: totalMonths.formatted()
         )
     }
@@ -165,14 +177,14 @@ public struct TimeTogetherSummary: Equatable, Sendable {
             from: normalizedStart,
             to: normalizedReference
         ).year ?? 0)
-        let yearText = years == 0 ? "This year" : durationText(
+        let yearText = years == 0 ? EntryLocalization.string("This year") : durationText(
             value: years,
             singular: "year"
         )
 
         return .init(
             primaryText: yearText,
-            fullText: years == 0 ? "Started this year" : yearText,
+            fullText: years == 0 ? EntryLocalization.string("Started this year") : yearText,
             supportingText: approximateSupportingText,
             totalValueLabel: nil,
             totalValueText: nil
@@ -206,7 +218,7 @@ public struct TimeTogetherSummary: Equatable, Sendable {
         return visibleParts
             .prefix(limit ?? visibleParts.count)
             .map(\.text)
-            .joined(separator: ", ")
+            .joined(separator: EntryLocalization.string("duration.part.separator"))
     }
 
     private static func durationText(value: Int, singular: String) -> String {

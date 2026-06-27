@@ -39,7 +39,7 @@ struct PresetEditorView: View {
                 precision: $precision,
                 noteLineLimit: Layout.noteLineLimit
             )
-            .navigationTitle(preset == nil ? "Create Preset" : "Edit Preset")
+            .navigationTitle(preset == nil ? Text("Create Preset") : Text("Edit Preset"))
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 PresetEditorToolbar(

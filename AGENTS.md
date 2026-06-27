@@ -42,11 +42,15 @@ decisions unless the current task explicitly asks for that phase.
 The `Fluel` app target owns Apple surface concerns:
 
 - SwiftUI screens, presentation state, navigation, sheets, and previews.
-- App lifecycle and SwiftData `ModelContainer` setup.
+- App lifecycle and SwiftData `ModelContainer` setup, including the production
+  CloudKit-backed configuration and preview/test in-memory configuration.
 - SwiftData `@Model` adapter types and translation to or from
   `FluelLibrary` value contracts.
 - Thin persistence adapters such as simple `@Query`, insert, and save calls
   while the app has only one surface.
+- App Intents, App Shortcuts, and other system-surface adapters that call
+  `FluelLibrary` Operations without reimplementing domain rules.
+- App-local String Catalogs for SwiftUI, App Intents, and App Shortcuts.
 
 The app target should not own durable entry rules, elapsed-time calculations,
 start precision behavior, input validation, or cross-surface use cases.
@@ -78,6 +82,7 @@ The current authoritative product documents are:
 - `docs/user-experience-principles.md`
 - `docs/product-language.md`
 - `docs/rebuild-handoff.md`
+- `docs/rebuild-baseline.md`
 
 Implementation-direction constraints clarified after product preservation live
 in `docs/rebuild-implementation-principles.md`. Read that document before
@@ -113,6 +118,12 @@ During implementation work:
   a documented exception. This includes MHPlatform, MHUI, and project-declared
   SwiftLintPlugins usage once a project exists.
 - Use MHUI with the full current SDK capabilities available to the rebuild.
+- Treat CloudKit, App Intents, and English plus Japanese localization as
+  standard rebuild baseline requirements, not release-end additions.
+- Keep App Intents thin and backed by `FluelLibrary` Operations; do not add
+  AppIntents or SwiftData dependencies to `FluelLibrary`.
+- Start localization with the rebuild by using String Catalogs or equivalent
+  target-owned resources for English and Japanese user-facing strings.
 - Treat the intended minimum support baseline as the iOS 27 family unless the
   user explicitly revises it.
 - Prefer a shared-library-first shape for durable business logic if the new
@@ -154,7 +165,8 @@ The active Xcode project is `Fluel.xcodeproj`.
 - App scheme: `Fluel`.
 - Active app target: `Fluel`.
 - Current shared library: Swift package `FluelLibrary`.
-- Current widget, watch, and intent schemes: none.
+- Current widget and watch schemes: none.
+- Current App Intents: included in the `Fluel` app target.
 - Preferred compile check: XcodeBuildMCP `build_sim` with project
   `Fluel.xcodeproj`, scheme `Fluel`, configuration `Debug`, and an iOS 27
   simulator.
@@ -164,6 +176,14 @@ The active Xcode project is `Fluel.xcodeproj`.
 - Preferred Swift lint check: `bash ci_scripts/tasks/lint_swift.sh`.
 - Preferred retained repository-rule check:
   `bash ci_scripts/tasks/check_repository_rules.sh`.
+- Preferred String Catalog audit:
+
+  ```sh
+  python3 /Users/Hiromu/.codex/skills/string-catalog-maintainer/scripts/audit_xcstrings.py \
+    --project-root /Users/Hiromu/Repositories/Fluel \
+    --required-locales en,ja \
+    --format markdown
+  ```
 - Preferred non-runtime aggregate shell check:
   `bash ci_scripts/tasks/verify_task_completion.sh`.
 - Current shell fallback:
@@ -182,11 +202,13 @@ change, run the package tests and repository rules. Also run the app build when
 the app target, SwiftData schema, package product links, or adapter-facing
 contracts change.
 
-When runtime, lifecycle, persistence container, navigation, visible UI, or
-package-linking behavior changes, add XcodeBuildMCP `build_run_sim`, runtime
-log review, and `screenshot` evidence. If UI automation or `snapshot_ui` is
-unavailable in the active Xcode beta environment, use runtime logs,
-screenshots, and domain tests as the fallback verification contract.
+When runtime, lifecycle, persistence container, navigation, visible UI,
+localization, App Intents, or package-linking behavior changes, add
+XcodeBuildMCP `build_run_sim`, runtime log review, and `screenshot` evidence.
+For localization changes, capture English and Japanese screenshots when the UI
+surface is affected. If UI automation or `snapshot_ui` is unavailable in the
+active Xcode beta environment, use runtime logs, screenshots, and domain tests
+as the fallback verification contract.
 
 For documentation-only changes:
 

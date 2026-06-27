@@ -15,13 +15,13 @@ public enum ArchivedEntrySort: String, CaseIterable, Identifiable, Sendable {
     public var label: String {
         switch self {
         case .recentlyArchived:
-            "Recently archived"
+            EntryLocalization.string("Recently archived")
         case .oldestArchived:
-            "Oldest archived"
+            EntryLocalization.string("Oldest archived")
         case .longestTogetherBeforeArchive:
-            "Longest together before archive"
+            EntryLocalization.string("Longest together before archive")
         case .alphabetical:
-            "Alphabetical"
+            EntryLocalization.string("Alphabetical")
         }
     }
 }

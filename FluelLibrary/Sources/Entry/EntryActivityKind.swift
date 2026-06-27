@@ -14,11 +14,11 @@ public enum EntryActivityKind: String, CaseIterable, Identifiable, Sendable {
     public var label: String {
         switch self {
         case .added:
-            "Added"
+            EntryLocalization.string("Added")
         case .updated:
-            "Updated"
+            EntryLocalization.string("Updated")
         case .archived:
-            "Archived"
+            EntryLocalization.string("Archived")
         }
     }
 }

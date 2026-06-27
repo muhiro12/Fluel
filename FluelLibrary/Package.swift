@@ -18,7 +18,10 @@ let package = Package( // swiftlint:disable:this prefixed_toplevel_constant
     targets: [
         .target(
             name: "FluelLibrary",
-            path: "Sources"
+            path: "Sources",
+            resources: [
+                .process("Resources")
+            ]
         ),
         .testTarget(
             name: "FluelLibraryTests",

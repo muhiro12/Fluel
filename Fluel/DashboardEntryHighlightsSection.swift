@@ -39,7 +39,7 @@ struct DashboardEntryHighlightsSection: View {
     }
 
     private func highlight(
-        label: String,
+        label: LocalizedStringKey,
         title: String,
         detail: String
     ) -> some View {

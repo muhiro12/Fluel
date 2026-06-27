@@ -57,6 +57,8 @@ Use Apple-native capabilities as primary constraints:
   platform reason justifies a different choice.
 - Keep the app ready for system-level access through App Intents and related
   structured surfaces from the beginning of the rebuild.
+- Treat CloudKit-backed SwiftData, Operations-backed App Intents, and English
+  plus Japanese localization as rebuild baseline capabilities.
 
 ## Minimum OS Baseline
 
@@ -157,11 +159,19 @@ storage, SwiftUI presentation, navigation, and model-container setup. The
 library owns start precision, draft validation, normalized start dates,
 elapsed-time summaries, stable entry snapshots, and `EntryOperations`.
 
-Keep this split narrow. Do not add App Intents, widgets, share extensions,
-backup services, archive flows, review prompts, or insights infrastructure only
-to mirror Incomes. Add new surfaces when a feature goal needs them, and have
-those surfaces call `FluelLibrary` operations rather than recreating domain
-rules.
+The rebuild baseline now includes:
+
+- SwiftData runtime storage configured for CloudKit, with separate in-memory
+  containers for previews, tests, and runtime screenshot scenarios.
+- App Intents and App Shortcuts in the app target that call
+  `FluelLibrary` Operations through thin app-side adapters.
+- English and Japanese localization through app String Catalogs and package
+  localization resources.
+
+Keep this split narrow. Do not add widgets, watch targets, backup services,
+review prompts, or insights infrastructure only to mirror Incomes. Add new
+surfaces when a feature goal needs them, and have those surfaces call
+`FluelLibrary` operations rather than recreating domain rules.
 
 ## Verification Posture
 

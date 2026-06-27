@@ -14,11 +14,11 @@ public enum EntryListFilter: String, CaseIterable, Identifiable, Sendable {
     public var label: String {
         switch self {
         case .all:
-            "All"
+            EntryLocalization.string("All")
         case .withNote:
-            "With note"
+            EntryLocalization.string("With note")
         case .withPhoto:
-            "With photo"
+            EntryLocalization.string("With photo")
         }
     }
 }

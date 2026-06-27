@@ -7,7 +7,7 @@ public enum EntryValidationError: Equatable, LocalizedError, Sendable {
     public var errorDescription: String? {
         switch self {
         case .emptyTitle:
-            "Entry title must not be empty."
+            EntryLocalization.string("Entry title must not be empty.")
         }
     }
 }

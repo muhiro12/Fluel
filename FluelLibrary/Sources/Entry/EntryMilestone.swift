@@ -19,18 +19,26 @@ public struct EntryMilestone: Equatable, Identifiable, Sendable {
 
     /// User-facing duration text.
     public var durationText: String {
-        durationYears == 1 ? "1 year" : "\(durationYears.formatted()) years"
+        EntryLocalization.duration(
+            value: durationYears,
+            singularKey: "year",
+            pluralKey: "years"
+        )
     }
 
     /// User-facing days-remaining text.
     public var daysRemainingText: String {
         switch daysRemaining {
         case 0:
-            "Today"
+            EntryLocalization.string("Today")
         case 1:
-            "1 day"
+            EntryLocalization.duration(value: 1, singularKey: "day", pluralKey: "days")
         default:
-            "\(daysRemaining.formatted()) days"
+            EntryLocalization.duration(
+                value: daysRemaining,
+                singularKey: "day",
+                pluralKey: "days"
+            )
         }
     }
 

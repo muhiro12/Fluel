@@ -17,11 +17,11 @@ public enum EntryTimelineScope: String, CaseIterable, Identifiable, Sendable {
     public var label: String {
         switch self {
         case .recentSixMonths:
-            "Recent 6 months"
+            EntryLocalization.string("Recent 6 months")
         case .recentYear:
-            "Recent year"
+            EntryLocalization.string("Recent year")
         case .allTime:
-            "All time"
+            EntryLocalization.string("All time")
         }
     }
 

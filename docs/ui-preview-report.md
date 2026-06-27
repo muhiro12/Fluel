@@ -287,6 +287,11 @@ After screenshots captured during this pass:
 - `docs/ui-preview-screenshots/after-entry-detail-archived.jpg`
 - `docs/ui-preview-screenshots/after-entry-editor-long-text.jpg`
 
+Localization baseline screenshots:
+
+- `docs/ui-preview-screenshots/localization-active-entries-en.jpg`
+- `docs/ui-preview-screenshots/localization-active-entries-ja.jpg`
+
 All screenshots were captured on iPhone 17 Pro Simulator at 368 x 800.
 
 ## Before And After Differences
@@ -355,6 +360,8 @@ Confirmed through previews and screenshots:
 - Presets with starter, pinned, recent, custom, and default states.
 - Dark mode for active entries and edit-entry previews.
 - Large Dynamic Type previews for active entries and entry detail.
+- English and Japanese active-entry empty states through runtime launch
+  arguments and screenshots.
 
 ## Unconfirmed States
 
@@ -403,8 +410,8 @@ Good later candidates:
 Not recommended now:
 
 - Do not add custom cards just to show more MHUI.
-- Do not add settings, widgets, App Intents, Watch, CloudKit, AI, or backup
-  surfaces during this UI pass.
+- Do not add settings, widgets, Watch, AI, or backup surfaces during UI-only
+  passes.
 - Do not replace native `List` or `Form` behavior while it remains the clearest
   Apple pattern for these screens.
 
@@ -417,6 +424,17 @@ Successful checks during this pass:
 - XcodeBuildMCP `build_sim`.
 - XcodeBuildMCP `build_run_sim` with preview launch arguments.
 - XcodeBuildMCP `screenshot` for each captured runtime screen.
+- XcodeBuildMCP `build_run_sim` with English and Japanese localization launch
+  arguments for active-entry screenshot evidence.
+- XcodeBuildMCP `build_run_sim` without preview launch arguments to confirm
+  the production SwiftData plus CloudKit container path starts without a fatal
+  runtime error.
+- App Intents metadata inspection in
+  `Fluel.app/Metadata.appintents/extract.actionsdata`.
+- Built app resource inspection for `Localizable.strings`,
+  `AppIntents.strings`, `AppShortcuts.strings`, and package localization
+  resources under both `en.lproj` and `ja.lproj`.
+- String Catalog audit for required locales `en,ja`.
 - Active entries empty-state screenshot refreshed after introducing
   `FluelEmptyState`.
 - Final runtime log scan for fatal, error, crash, exception, termination,

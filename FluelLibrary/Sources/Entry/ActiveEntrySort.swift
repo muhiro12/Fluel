@@ -15,13 +15,13 @@ public enum ActiveEntrySort: String, CaseIterable, Identifiable, Sendable {
     public var label: String {
         switch self {
         case .longestTogether:
-            "Longest together"
+            EntryLocalization.string("Longest together")
         case .mostRecentStart:
-            "Most recent start"
+            EntryLocalization.string("Most recent start")
         case .alphabetical:
-            "Alphabetical"
+            EntryLocalization.string("Alphabetical")
         case .recentlyUpdated:
-            "Recently updated"
+            EntryLocalization.string("Recently updated")
         }
     }
 }
