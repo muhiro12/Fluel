@@ -57,6 +57,8 @@ Use Apple-native capabilities as primary constraints:
   platform reason justifies a different choice.
 - Keep the app ready for system-level access through App Intents and related
   structured surfaces from the beginning of the rebuild.
+- Treat CloudKit-backed SwiftData, Operations-backed App Intents, and English
+  plus Japanese localization as rebuild baseline capabilities.
 
 ## Minimum OS Baseline
 
@@ -139,6 +141,35 @@ direction:
   a proven reusable platform-foundation concern.
 
 Do not add layers only for symmetry with another repository.
+
+## Current Foundation Note
+
+The rebuilt app foundation now uses the Incomes/Stally-aligned package posture:
+the app target links `MHPlatform`, `MHDesign`, and `MHUI`, while
+`FluelLibrary` depends only on `MHPlatformCore` from the MHPlatform package for
+core-safe link contracts.
+
+The current development foundation adds `FluelLibrary` as the shared package
+for durable entry behavior. The app target still owns SwiftData `@Model`
+storage, SwiftUI presentation, navigation, and model-container setup. The
+library owns start precision, draft validation, normalized start dates,
+elapsed-time summaries, stable entry snapshots, `EntryOperations`, and
+core-safe route URL contracts.
+
+The rebuild baseline now includes:
+
+- SwiftData runtime storage configured for CloudKit, with separate in-memory
+  containers for previews, tests, and runtime screenshot scenarios.
+- App Intents and App Shortcuts in the app target that call
+  `FluelLibrary` Operations through thin app-side adapters and hand app
+  destinations to the MHPlatform route pipeline.
+- English and Japanese localization through app String Catalogs and package
+  localization resources.
+
+Keep this split narrow. Do not add widgets, watch targets, backup services,
+review prompts, or insights infrastructure only to mirror Incomes. Add new
+surfaces when a feature goal needs them, and have those surfaces call
+`FluelLibrary` operations rather than recreating domain rules.
 
 ## Verification Posture
 

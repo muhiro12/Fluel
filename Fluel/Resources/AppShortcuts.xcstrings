@@ -1,0 +1,126 @@
+{
+  "sourceLanguage": "en",
+  "strings": {
+    "Add an entry with ${applicationName}": {
+      "localizations": {
+        "ja": {
+          "stringSet": {
+            "state": "translated",
+            "values": [
+              "${applicationName}にEntryを追加"
+            ]
+          }
+        },
+        "en": {
+          "stringSet": {
+            "state": "translated",
+            "values": [
+              "Add an entry with ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Check time together in ${applicationName}": {
+      "localizations": {
+        "ja": {
+          "stringSet": {
+            "state": "translated",
+            "values": [
+              "${applicationName}でTime togetherを確認"
+            ]
+          }
+        },
+        "en": {
+          "stringSet": {
+            "state": "translated",
+            "values": [
+              "Check time together in ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Create an entry in ${applicationName}": {
+      "localizations": {
+        "ja": {
+          "stringSet": {
+            "state": "translated",
+            "values": [
+              "${applicationName}でEntryを作成"
+            ]
+          }
+        },
+        "en": {
+          "stringSet": {
+            "state": "translated",
+            "values": [
+              "Create an entry in ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "How long has this been with me in ${applicationName}": {
+      "localizations": {
+        "ja": {
+          "stringSet": {
+            "state": "translated",
+            "values": [
+              "${applicationName}でどのくらい一緒にあるか確認"
+            ]
+          }
+        },
+        "en": {
+          "stringSet": {
+            "state": "translated",
+            "values": [
+              "How long has this been with me in ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Open ${applicationName}": {
+      "localizations": {
+        "ja": {
+          "stringSet": {
+            "state": "translated",
+            "values": [
+              "${applicationName}を開く"
+            ]
+          }
+        },
+        "en": {
+          "stringSet": {
+            "state": "translated",
+            "values": [
+              "Open ${applicationName}"
+            ]
+          }
+        }
+      }
+    },
+    "Open a Fluel screen in ${applicationName}": {
+      "localizations": {
+        "ja": {
+          "stringSet": {
+            "state": "translated",
+            "values": [
+              "${applicationName}でFluelの画面を開く"
+            ]
+          }
+        },
+        "en": {
+          "stringSet": {
+            "state": "translated",
+            "values": [
+              "Open a Fluel screen in ${applicationName}"
+            ]
+          }
+        }
+      }
+    }
+  },
+  "version": "1.0"
+}

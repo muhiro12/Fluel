@@ -6,15 +6,23 @@
 	objectVersion = 110;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		B10000012FED500100000002 /* MHDesign in Frameworks */ = {isa = PBXBuildFile; productRef = B10000012FED500100000004 /* MHDesign */; };
+		B10000012FED500100000008 /* MHUI in Frameworks */ = {isa = PBXBuildFile; productRef = B10000012FED500100000009 /* MHUI */; };
+		B10000012FED50010000000A /* MHPlatform in Frameworks */ = {isa = PBXBuildFile; productRef = B10000012FED50010000000B /* MHPlatform */; };
+		B30000012FF1000100000001 /* FluelLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = B30000012FF1000100000004 /* FluelLibrary */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		AD75E9B72FED373000094EFB /* Fluel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Fluel.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B30000012FF1000100000002 /* FluelLibrary */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = FluelLibrary; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
 		AD75E9C42FED373100094EFB /* Exceptions for "Fluel" folder in "Fluel" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Info.plist,
+				Configurations/Info.plist,
 			);
 			target = AD75E9B62FED373000094EFB /* Fluel */;
 		};
@@ -35,6 +43,10 @@
 		AD75E9B42FED373000094EFB /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
+				B10000012FED50010000000A /* MHPlatform in Frameworks */,
+				B30000012FF1000100000001 /* FluelLibrary in Frameworks */,
+				B10000012FED500100000002 /* MHDesign in Frameworks */,
+				B10000012FED500100000008 /* MHUI in Frameworks */,
 			);
 		};
 /* End PBXFrameworksBuildPhase section */
@@ -43,6 +55,7 @@
 		AD75E9AE2FED373000094EFB = {
 			isa = PBXGroup;
 			children = (
+				B30000012FF1000100000002 /* FluelLibrary */,
 				AD75E9B92FED373000094EFB /* Fluel */,
 				AD75E9B82FED373000094EFB /* Products */,
 			);
@@ -73,6 +86,12 @@
 				AD75E9B92FED373000094EFB /* Fluel */,
 			);
 			name = Fluel;
+			packageProductDependencies = (
+				B30000012FF1000100000004 /* FluelLibrary */,
+				B10000012FED50010000000B /* MHPlatform */,
+				B10000012FED500100000004 /* MHDesign */,
+				B10000012FED500100000009 /* MHUI */,
+			);
 			productName = Fluel;
 			productReference = AD75E9B72FED373000094EFB /* Fluel.app */;
 			productType = "com.apple.product-type.application";
@@ -97,10 +116,17 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				ja,
 				Base,
 			);
 			mainGroup = AD75E9AE2FED373000094EFB;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				B30000012FF1000100000003 /* XCLocalSwiftPackageReference "FluelLibrary" */,
+				B10000012FED500100000005 /* XCRemoteSwiftPackageReference "MHPlatform" */,
+				B10000012FED500100000006 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */,
+				B10000012FED500100000007 /* XCRemoteSwiftPackageReference "MHUI" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = AD75E9B82FED373000094EFB /* Products */;
 			projectDirPath = "";
@@ -133,6 +159,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Fluel/Configurations/Fluel.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 66PKF55HK5;
@@ -141,7 +168,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Fluel/Info.plist;
+				INFOPLIST_FILE = Fluel/Configurations/Info.plist;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -178,6 +205,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = Fluel/Configurations/Fluel.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 66PKF55HK5;
@@ -186,7 +214,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = Fluel/Info.plist;
+				INFOPLIST_FILE = Fluel/Configurations/Info.plist;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -354,6 +382,62 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		B30000012FF1000100000003 /* XCLocalSwiftPackageReference "FluelLibrary" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = FluelLibrary;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		B10000012FED500100000005 /* XCRemoteSwiftPackageReference "MHPlatform" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/muhiro12/MHPlatform";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+		B10000012FED500100000006 /* XCRemoteSwiftPackageReference "SwiftLintPlugins" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/SimplyDanny/SwiftLintPlugins";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.0.0;
+			};
+		};
+		B10000012FED500100000007 /* XCRemoteSwiftPackageReference "MHUI" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/muhiro12/MHUI";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		B10000012FED500100000004 /* MHDesign */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B10000012FED500100000007 /* XCRemoteSwiftPackageReference "MHUI" */;
+			productName = MHDesign;
+		};
+		B10000012FED500100000009 /* MHUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B10000012FED500100000007 /* XCRemoteSwiftPackageReference "MHUI" */;
+			productName = MHUI;
+		};
+		B10000012FED50010000000B /* MHPlatform */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = B10000012FED500100000005 /* XCRemoteSwiftPackageReference "MHPlatform" */;
+			productName = MHPlatform;
+		};
+		B30000012FF1000100000004 /* FluelLibrary */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FluelLibrary;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = AD75E9AF2FED373000094EFB /* Project object */;
 	validationLevel = 1;
