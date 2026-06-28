@@ -1,5 +1,6 @@
 # Project - Local files
 .build/
+**/Package.resolved
 
 # Finder
 .DS_Store

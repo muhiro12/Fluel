@@ -14,6 +14,7 @@ struct RestoreEntryIntent: AppIntent {
         LocalizedStringResource("Move an archived entry back into daily life.", table: "AppIntents")
     )
     static let supportedModes: IntentModes = .background
+    static let isDiscoverable = false
 
     @Parameter(title: LocalizedStringResource("Entry", table: "AppIntents"))
     private var entry: EntryEntity

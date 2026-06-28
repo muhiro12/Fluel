@@ -305,6 +305,38 @@
         }
       }
     },
+    "Open Fluel Destination": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fluelの行き先を開く"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Fluel Destination"
+          }
+        }
+      }
+    },
+    "Open Fluel Route": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Fluelのルートを開く"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Open Fluel Route"
+          }
+        }
+      }
+    },
     "Open Fluel to a main screen.": {
       "localizations": {
         "ja": {
@@ -461,6 +493,22 @@
           "stringUnit": {
             "state": "translated",
             "value": "Title"
+          }
+        }
+      }
+    },
+    "URL": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "URL"
           }
         }
       }

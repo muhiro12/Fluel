@@ -14,6 +14,7 @@ struct ArchiveEntryIntent: AppIntent {
         LocalizedStringResource("Move an entry out of daily life.", table: "AppIntents")
     )
     static let supportedModes: IntentModes = .background
+    static let isDiscoverable = false
 
     @Parameter(title: LocalizedStringResource("Entry", table: "AppIntents"))
     private var entry: EntryEntity

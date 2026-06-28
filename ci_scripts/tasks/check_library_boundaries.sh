@@ -32,26 +32,44 @@ library_non_foundation_imports=$(
 
 if [[ -n "$library_non_foundation_imports" ]]; then
   library_non_foundation_imports=$(
-    awk -F: '$3 !~ /^[[:space:]]*(@preconcurrency[[:space:]]+)?import[[:space:]]+Foundation$/ { print }' \
+    awk -F: '$3 !~ /^[[:space:]]*(@preconcurrency[[:space:]]+)?import[[:space:]]+(Foundation|MHPlatformCore)$/ { print }' \
       <<<"$library_non_foundation_imports"
   )
 fi
 
 if [[ -n "$library_non_foundation_imports" ]]; then
-  record_failure "FluelLibrary/Sources must stay Foundation-only:
+  record_failure "FluelLibrary/Sources may only import Foundation and MHPlatformCore:
 $library_non_foundation_imports"
 fi
 
-library_package_dependencies=$(
+library_package_urls=$(
   rg \
     --line-number \
-    "\\.package\\(" \
+    "url: \"" \
     "$repository_root/FluelLibrary/Package.swift" || true
 )
 
-if [[ -n "$library_package_dependencies" ]]; then
-  record_failure "FluelLibrary/Package.swift must not declare package dependencies while the library is Foundation-only:
-$library_package_dependencies"
+if [[ -n "$library_package_urls" ]]; then
+  unexpected_library_package_urls=$(
+    awk '$0 !~ /https:\/\/github\.com\/muhiro12\/MHPlatform/ { print }' \
+      <<<"$library_package_urls"
+  )
+
+  if [[ -n "$unexpected_library_package_urls" ]]; then
+    record_failure "FluelLibrary/Package.swift should only depend on MHPlatform for MHPlatformCore:
+$unexpected_library_package_urls"
+  fi
+fi
+
+mhplatformcore_dependency=$(
+  rg \
+    --line-number \
+    "name: \"MHPlatformCore\"" \
+    "$repository_root/FluelLibrary/Package.swift" || true
+)
+
+if [[ -z "$mhplatformcore_dependency" ]]; then
+  record_failure "FluelLibrary/Package.swift should depend on MHPlatformCore for shared link contracts."
 fi
 
 app_domain_declarations=$(
@@ -87,8 +105,8 @@ mhplatform_runtime_links=$(
     "$repository_root/Fluel.xcodeproj/project.pbxproj" || true
 )
 
-if [[ -n "$mhplatform_runtime_links" ]]; then
-  record_failure "MHPlatform should stay declared but unlinked until a concrete runtime feature needs it:
+if [[ -z "$mhplatform_runtime_links" ]]; then
+  record_failure "The Fluel app target should link MHPlatform for runtime routing and logging:
 $mhplatform_runtime_links"
 fi
 

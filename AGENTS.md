@@ -31,9 +31,12 @@ decisions unless the current task explicitly asks for that phase.
 ## Project Structure
 
 - `Fluel.xcodeproj`: Xcode project for the app surface.
-- `Fluel/`: app target source, assets, entitlements, and plist.
+- `Fluel/Configurations/`: app entitlements and plist.
+- `Fluel/Resources/`: app assets and String Catalogs.
+- `Fluel/Sources/`: app target source grouped by app, feature, platform,
+  preview support, and shared UI responsibilities.
 - `FluelLibrary/`: Swift package for durable entry domain logic,
-  cross-surface value contracts, `*Operations`, and package tests.
+  cross-surface value and link contracts, `*Operations`, and package tests.
 - `ci_scripts/`: repository-owned shell entrypoints for non-runtime
   verification and fallback app builds.
 
@@ -42,6 +45,8 @@ decisions unless the current task explicitly asks for that phase.
 The `Fluel` app target owns Apple surface concerns:
 
 - SwiftUI screens, presentation state, navigation, sheets, and previews.
+- MHPlatform app runtime bootstrap, logging, route pipeline setup, and live
+  App Intent handoff adapters.
 - App lifecycle and SwiftData `ModelContainer` setup, including the production
   CloudKit-backed configuration and preview/test in-memory configuration.
 - SwiftData `@Model` adapter types and translation to or from
@@ -58,17 +63,20 @@ start precision behavior, input validation, or cross-surface use cases.
 `FluelLibrary` owns reusable product behavior:
 
 - `StartPrecision`, `TimeTogetherSummary`, `EntryDraft`, `EntryInput`,
-  `EntrySnapshot`, and `EntryOperations`.
+  `EntrySnapshot`, `EntryOperations`, `FluelLink`, and
+  `FluelLinkOperations`.
 - Domain validation, normalized start dates, approximate start semantics, and
   elapsed-time presentation values.
+- Core-safe link parsing and URL generation backed by `MHPlatformCore`.
 - Public `*Operations` facades that future App Intents, widgets, share
   extensions, watch targets, and app UI adapters can call.
 - Repository-owned package tests for durable behavior.
 
-Keep `FluelLibrary` Foundation-only until a concrete need justifies another
-dependency. It must not import SwiftUI, SwiftData, MHUI, MHDesign, MHPlatform,
-or app-runtime frameworks. Platform and persistence glue stays in the app or a
-future surface adapter.
+Keep `FluelLibrary` limited to Foundation and `MHPlatformCore` unless a
+concrete need justifies another dependency. It must not import SwiftUI,
+SwiftData, MHUI, MHDesign, AppIntents, the MHPlatform umbrella product, or
+app-runtime frameworks. Platform runtime and persistence glue stays in the app
+or a future surface adapter.
 
 ## Documentation Contract
 

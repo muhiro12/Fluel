@@ -6,6 +6,7 @@
 //
 
 import AppIntents
+import FluelLibrary
 
 enum FluelDestinationIntentValue: String, AppEnum {
     case entries
@@ -28,10 +29,10 @@ enum FluelDestinationIntentValue: String, AppEnum {
         .archive: DisplayRepresentation(title: LocalizedStringResource("Archive", table: "AppIntents"))
     ]
 
-    var route: FluelRoute? {
+    var linkDestination: FluelLinkDestination {
         switch self {
         case .entries:
-            nil
+            .entries
         case .dashboard:
             .dashboard
         case .timeline:

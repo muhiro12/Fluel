@@ -7,7 +7,8 @@ let package = Package( // swiftlint:disable:this prefixed_toplevel_constant
     name: "FluelLibrary",
     defaultLocalization: "en",
     platforms: [
-        .iOS("27.0")
+        .iOS("27.0"),
+        .macOS(.v15)
     ],
     products: [
         .library(
@@ -15,9 +16,21 @@ let package = Package( // swiftlint:disable:this prefixed_toplevel_constant
             targets: ["FluelLibrary"]
         )
     ],
+    dependencies: [
+        .package(
+            url: "https://github.com/muhiro12/MHPlatform",
+            "1.0.0"..<"2.0.0"
+        )
+    ],
     targets: [
         .target(
             name: "FluelLibrary",
+            dependencies: [
+                .product(
+                    name: "MHPlatformCore",
+                    package: "MHPlatform"
+                )
+            ],
             path: "Sources",
             resources: [
                 .process("Resources")

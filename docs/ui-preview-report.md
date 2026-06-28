@@ -63,12 +63,11 @@ Component previews retained or added:
 
 Current linked package state:
 
-- The app target links `MHDesign` and `MHUI`.
-- The Xcode project keeps package references for `MHPlatform`,
-  `SwiftLintPlugins`, and `MHUI`.
-- `Package.resolved` pins `MHUI` at `1.8.0`,
-  revision `cb14a83e84a9fa743fbce8aa420dd8315edb3a93`.
-- `Package.resolved` pins `MHPlatform` at `1.12.0` and
+- The app target links `MHPlatform`, `MHDesign`, and `MHUI`.
+- `FluelLibrary` depends on `MHPlatformCore` from `MHPlatform`.
+- Xcode and SwiftPM `Package.resolved` files are treated as local generated
+  resolution artifacts in this repository; the current verification run
+  resolved `MHPlatform` at `1.12.0`, `MHUI` at `1.8.0`, and
   `SwiftLintPlugins` at `0.64.1`.
 
 Available API areas inspected:

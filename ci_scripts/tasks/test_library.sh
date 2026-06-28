@@ -32,6 +32,7 @@ mkdir -p \
 HOME="$local_home_directory" \
   TMPDIR="$temporary_directory" \
   XDG_CACHE_HOME="$cache_directory" \
+  PLL_SOURCE_PACKAGES_PATH="$scratch_directory" \
   SWIFTPM_CACHE_PATH="$swiftpm_cache_directory" \
   SWIFTPM_CONFIG_PATH="$swiftpm_config_directory" \
   swift test \

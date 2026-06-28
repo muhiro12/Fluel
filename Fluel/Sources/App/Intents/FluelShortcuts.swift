@@ -30,7 +30,7 @@ struct FluelShortcuts: AppShortcutsProvider {
         )
 
         AppShortcut(
-            intent: OpenFluelDestinationIntent(),
+            intent: OpenFluelIntent(),
             phrases: [
                 "Open \(.applicationName)",
                 "Open a Fluel screen in \(.applicationName)"

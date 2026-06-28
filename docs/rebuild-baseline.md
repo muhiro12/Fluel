@@ -17,9 +17,11 @@ wrap SwiftData or CloudKit while the app has one persistence surface.
 App Intents live in the app target. They call `FluelLibrary` Operations through
 thin app-side adapters and must not reimplement durable entry rules.
 
-`FluelLibrary` remains Foundation-only. Do not add `AppIntents`, SwiftUI,
-SwiftData, MHUI, MHDesign, or app-runtime framework dependencies to the shared
-library.
+`FluelLibrary` may use `MHPlatformCore` for core-safe link contracts, but it
+must not add `AppIntents`, SwiftUI, SwiftData, MHUI, MHDesign, the MHPlatform
+umbrella product, or app-runtime framework dependencies. App-side App Intents
+should hand routes to the app through the MHPlatform route pipeline rather than
+holding in-memory router state.
 
 ## Localization
 

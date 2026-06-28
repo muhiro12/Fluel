@@ -144,27 +144,25 @@ Do not add layers only for symmetry with another repository.
 
 ## Current Foundation Note
 
-The first rebuilt app foundation keeps the Incomes-aligned package references
-but links only `MHDesign` and `MHUI` in the app target. `MHPlatform` remains a
-declared package reference and should be linked when a concrete Fluel feature
-needs its app-runtime facilities.
-
-This avoids pulling app-runtime dependencies such as ad configuration into the
-first Entry, Start, Precision, and Time together slice before the product has a
-reason to own those surfaces.
+The rebuilt app foundation now uses the Incomes/Stally-aligned package posture:
+the app target links `MHPlatform`, `MHDesign`, and `MHUI`, while
+`FluelLibrary` depends only on `MHPlatformCore` from the MHPlatform package for
+core-safe link contracts.
 
 The current development foundation adds `FluelLibrary` as the shared package
 for durable entry behavior. The app target still owns SwiftData `@Model`
 storage, SwiftUI presentation, navigation, and model-container setup. The
 library owns start precision, draft validation, normalized start dates,
-elapsed-time summaries, stable entry snapshots, and `EntryOperations`.
+elapsed-time summaries, stable entry snapshots, `EntryOperations`, and
+core-safe route URL contracts.
 
 The rebuild baseline now includes:
 
 - SwiftData runtime storage configured for CloudKit, with separate in-memory
   containers for previews, tests, and runtime screenshot scenarios.
 - App Intents and App Shortcuts in the app target that call
-  `FluelLibrary` Operations through thin app-side adapters.
+  `FluelLibrary` Operations through thin app-side adapters and hand app
+  destinations to the MHPlatform route pipeline.
 - English and Japanese localization through app String Catalogs and package
   localization resources.
 
