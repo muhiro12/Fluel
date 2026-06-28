@@ -13,6 +13,7 @@
 "days" = "日";
 "duration.part.separator" = "、";
 "duration.value.unit" = "%@%@";
+"Entry start must be today or earlier." = "Startは今日以前にしてください。";
 "Entry title must not be empty." = "Entryの名前を入力してください。";
 "Exact day" = "日までわかっている";
 "Fluel Timeline" = "Fluel Timeline";

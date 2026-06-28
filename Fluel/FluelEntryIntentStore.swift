@@ -18,13 +18,11 @@ enum FluelEntryIntentStore {
         note: String,
         modelContainer: ModelContainer
     ) throws -> EntryEntity {
-        let input = try EntryOperations.makeInput(
-            from: .init(
-                title: title,
-                note: note,
-                precision: precision.startPrecision,
-                dayDate: startDate
-            )
+        let input = try EntryInput(
+            title: title,
+            startDate: startDate,
+            startPrecision: precision.startPrecision,
+            note: note
         )
         let entry = Entry(input: input)
         let modelContext = modelContainer.mainContext

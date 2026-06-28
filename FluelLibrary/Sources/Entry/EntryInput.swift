@@ -17,6 +17,7 @@ public struct EntryInput: Equatable, Sendable {
         startDate: Date,
         startPrecision: StartPrecision,
         note: String? = nil,
+        currentDate: Date = .now,
         calendar: Calendar = .autoupdatingCurrent
     ) throws {
         let trimmedTitle = title.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -25,12 +26,22 @@ public struct EntryInput: Equatable, Sendable {
             throw EntryValidationError.emptyTitle
         }
 
-        self.title = trimmedTitle
-        self.note = Self.normalizedNote(note)
-        self.startDate = startPrecision.normalizedStartDate(
+        let normalizedStartDate = startPrecision.normalizedStartDate(
             from: startDate,
             calendar: calendar
         )
+        let normalizedCurrentDate = StartPrecision.day.normalizedStartDate(
+            from: currentDate,
+            calendar: calendar
+        )
+
+        guard normalizedStartDate <= normalizedCurrentDate else {
+            throw EntryValidationError.futureStart
+        }
+
+        self.title = trimmedTitle
+        self.note = Self.normalizedNote(note)
+        self.startDate = normalizedStartDate
         self.startPrecision = startPrecision
     }
 

@@ -5,9 +5,10 @@ public enum EntryOperations {
     /// Creates validated entry input from an editable draft.
     public static func makeInput(
         from draft: EntryDraft,
+        currentDate: Date = .now,
         calendar: Calendar = .autoupdatingCurrent
     ) throws -> EntryInput {
-        try draft.makeInput(calendar: calendar)
+        try draft.makeInput(currentDate: currentDate, calendar: calendar)
     }
 
     /// Returns elapsed-time presentation for an entry snapshot.

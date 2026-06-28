@@ -115,12 +115,16 @@ public struct EntryDraft: Equatable, Sendable {
     }
 
     /// Creates validated entry input.
-    public func makeInput(calendar: Calendar = .autoupdatingCurrent) throws -> EntryInput {
+    public func makeInput(
+        currentDate: Date = .now,
+        calendar: Calendar = .autoupdatingCurrent
+    ) throws -> EntryInput {
         try EntryInput(
             title: trimmedTitle,
             startDate: startDate(calendar: calendar),
             startPrecision: precision,
             note: trimmedNote,
+            currentDate: currentDate,
             calendar: calendar
         )
     }

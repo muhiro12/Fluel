@@ -13,6 +13,7 @@
 "days" = "days";
 "duration.part.separator" = ", ";
 "duration.value.unit" = "%@ %@";
+"Entry start must be today or earlier." = "Entry start must be today or earlier.";
 "Entry title must not be empty." = "Entry title must not be empty.";
 "Exact day" = "Exact day";
 "Fluel Timeline" = "Fluel Timeline";
