@@ -101,11 +101,13 @@ final class Entry {
     }
 
     convenience init(input: EntryInput) {
+        let currentDate = Date()
+
         self.init(
             input: input,
             photoData: nil,
-            createdAt: .now,
-            updatedAt: .now,
+            createdAt: currentDate,
+            updatedAt: currentDate,
             archivedAt: nil,
             id: .init()
         )

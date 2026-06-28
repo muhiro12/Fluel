@@ -57,4 +57,16 @@ struct EntryDraftTests {
         #expect(draft.year == 2_026)
         #expect(draft.month == 6)
     }
+
+    @Test
+    func availableYearsHandlesNonGregorianCurrentYear() {
+        var calendar = Calendar(identifier: .japanese)
+        calendar.timeZone = TestDateSupport.calendar.timeZone
+        let currentDate = TestDateSupport.date(year: 2_026, month: 6, day: 25)
+        let currentYear = calendar.component(.year, from: currentDate)
+        let draft = EntryDraft(calendar: calendar)
+
+        #expect(currentYear < 1_900)
+        #expect(draft.availableYears(currentDate: currentDate, calendar: calendar) == [currentYear])
+    }
 }

@@ -67,6 +67,10 @@ public struct EntryDraft: Equatable, Sendable {
     ) -> [Int] {
         let currentYear = calendar.component(.year, from: currentDate)
 
+        guard currentYear >= Self.earliestYear else {
+            return [currentYear]
+        }
+
         return Array(Self.earliestYear...currentYear).reversed()
     }
 
