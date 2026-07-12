@@ -34,11 +34,6 @@ public struct EntryDraft: Equatable, Sendable {
         !trimmedTitle.isEmpty
     }
 
-    /// True when dismissing the draft would lose user-entered content.
-    public var hasUnsavedContent: Bool {
-        !trimmedTitle.isEmpty || !trimmedNote.isEmpty || precision != .day
-    }
-
     /// Creates an editable entry draft.
     public init(
         title: String = "",
@@ -61,6 +56,28 @@ public struct EntryDraft: Equatable, Sendable {
         self.dayDate = dayDate
         self.month = month ?? components.month ?? Self.firstMonth
         self.year = year ?? components.year ?? Self.earliestYear
+    }
+
+    /// Returns whether the editable content differs from an earlier draft.
+    ///
+    /// Start components that are inactive for the selected precision do not
+    /// count as changes.
+    public func hasContentChanges(
+        comparedTo original: Self,
+        calendar: Calendar = .autoupdatingCurrent
+    ) -> Bool {
+        guard title == original.title,
+              note == original.note,
+              precision == original.precision else {
+            return true
+        }
+
+        guard let start = try? start(calendar: calendar),
+              let originalStart = try? original.start(calendar: calendar) else {
+            return true
+        }
+
+        return start != originalStart
     }
 
     /// Returns selectable years up to the current year.

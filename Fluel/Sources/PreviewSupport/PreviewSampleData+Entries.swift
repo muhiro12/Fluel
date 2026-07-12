@@ -11,6 +11,22 @@ import Foundation
 // swiftlint:disable no_magic_numbers number_separator
 
 extension PreviewSampleData {
+    static var samplePhotoData: Data {
+        let encodedPhoto = "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAGCAYAAAD+Bd/7AAAAAXNSR0IArs4c6QAA"
+            + "ADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAACKAD"
+            + "AAQAAAABAAAABgAAAAAJfOcJAAAATklEQVQIHWMUnbv0PwMewASTsxdmZDhqwwzG"
+            + "IDYMwBW0aTIxSHIwgjGIDQMIFkwEjYYrqLr+j+H5j/9gDGLDAAuMcfDtfwbrI39"
+            + "hXDgNAIWhFbt9COKBAAAAAElFTkSuQmCC"
+
+        guard let data = Data(
+            base64Encoded: encodedPhoto
+        ) else {
+            preconditionFailure("Preview photo fixture is invalid.")
+        }
+
+        return data
+    }
+
     static var sampleEntries: [Entry] {
         typicalEntries
     }
@@ -40,7 +56,7 @@ extension PreviewSampleData {
             Entry(
                 title: "Watch",
                 note: nil,
-                photoData: Data([1]),
+                photoData: samplePhotoData,
                 start: entryStart(year: 2025, precision: .day, month: 12, day: 14),
                 createdAt: ReferenceDate.created,
                 updatedAt: ReferenceDate.created,
@@ -65,7 +81,7 @@ extension PreviewSampleData {
             Entry(
                 title: "Wallet",
                 note: "Usually one of the first things that leaves with me.",
-                photoData: Data([1]),
+                photoData: samplePhotoData,
                 start: entryStart(year: 2020, precision: .year),
                 createdAt: ReferenceDate.created,
                 updatedAt: ReferenceDate.current,
@@ -111,6 +127,14 @@ extension PreviewSampleData {
 
     static var archivedEntries: [Entry] {
         denseEntries.filter(\.isArchived)
+    }
+
+    static func draft(for entry: Entry) -> EntryDraft {
+        guard let draft = try? EntryOperations.makeDraft(from: entry.snapshot) else {
+            preconditionFailure("Preview entry draft is invalid.")
+        }
+
+        return draft
     }
 
     private static func entryStart(

@@ -75,4 +75,67 @@ struct EntryDraftTests {
         #expect(years.first == 2_026)
         #expect(years.last == 1_900)
     }
+
+    @Test
+    func contentChangesIgnoreInactiveStartComponents() {
+        let calendar = TestDateSupport.calendar
+        let dayDate = TestDateSupport.date(year: 2_025, month: 5, day: 12)
+        let original = EntryDraft(
+            title: "Notebook",
+            note: "Desk notes",
+            precision: .day,
+            dayDate: dayDate,
+            month: 5,
+            year: 2_025,
+            calendar: calendar
+        )
+        let draft = EntryDraft(
+            title: original.title,
+            note: original.note,
+            precision: .day,
+            dayDate: dayDate,
+            month: 1,
+            year: 1_900,
+            calendar: calendar
+        )
+
+        #expect(!draft.hasContentChanges(comparedTo: original, calendar: calendar))
+    }
+
+    @Test
+    func contentChangesCompareTheSelectedApproximateStart() {
+        let calendar = TestDateSupport.calendar
+        let original = EntryDraft(
+            title: "Notebook",
+            precision: .month,
+            month: 5,
+            year: 2_025,
+            calendar: calendar
+        )
+        var draft = original
+
+        draft.month = 6
+
+        #expect(draft.hasContentChanges(comparedTo: original, calendar: calendar))
+    }
+
+    @Test
+    func contentChangesIncludeTextAndPrecision() {
+        let calendar = TestDateSupport.calendar
+        let original = EntryDraft(
+            title: "Notebook",
+            note: "Desk notes",
+            precision: .year,
+            year: 2_025,
+            calendar: calendar
+        )
+        var draft = original
+
+        draft.note = "Shelf notes"
+        #expect(draft.hasContentChanges(comparedTo: original, calendar: calendar))
+
+        draft = original
+        draft.precision = .month
+        #expect(draft.hasContentChanges(comparedTo: original, calendar: calendar))
+    }
 }

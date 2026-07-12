@@ -23,7 +23,7 @@ struct MilestonesView: View {
                         ForEach(milestones) { milestone in
                             MilestoneRowView(
                                 milestone: milestone,
-                                approximateLabel: "Approximate start"
+                                approximateLabel: Text("Approximate start")
                             )
                         }
                     } header: {

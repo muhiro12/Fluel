@@ -14,28 +14,28 @@ struct MilestoneRowView: View {
     private var designMetrics
 
     let milestone: EntryMilestone
-    let approximateLabel: LocalizedStringKey
+    let approximateLabel: Text
 
     var body: some View {
         VStack(alignment: .leading, spacing: designMetrics.spacing.inline) {
-            Text(milestone.title)
+            Text(verbatim: milestone.title)
                 .mhRowTitle()
 
             (
-                Text(milestone.durationText)
+                Text(verbatim: milestone.durationText)
                     + Text(verbatim: " – ")
-                    + Text(milestone.daysRemainingText)
+                    + Text(verbatim: milestone.daysRemainingText)
             )
-                .mhRowSupporting()
+            .mhRowSupporting()
 
-            Text(milestone.date.precision.startLabel(for: milestone.date))
+            Text(verbatim: milestone.date.precision.startLabel(for: milestone.date))
                 .mhRowSupporting()
 
             if milestone.isApproximate {
-                Text(approximateLabel)
+                approximateLabel
                     .mhBadge(
                         style: .neutral,
-                        accessibilityLabel: Text(approximateLabel)
+                        accessibilityLabel: approximateLabel
                     )
             }
         }

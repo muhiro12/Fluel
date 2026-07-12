@@ -17,7 +17,7 @@ struct DashboardMilestonesSection: View {
             ForEach(milestones) { milestone in
                 MilestoneRowView(
                     milestone: milestone,
-                    approximateLabel: "Approximate milestone"
+                    approximateLabel: Text("Approximate milestone")
                 )
             }
         } header: {

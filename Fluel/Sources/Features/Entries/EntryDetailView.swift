@@ -17,6 +17,7 @@ struct EntryDetailView: View {
     private var modelContext
 
     @State private var isConfirmingPermanentDelete = false
+    @State private var editorRoute: EntryEditorRoute?
     @State private var isShowingActionError = false
 
     let entry: Entry
@@ -24,6 +25,8 @@ struct EntryDetailView: View {
     var body: some View {
         List {
             EntryDetailHeader(entry: entry)
+
+            EntryPhotoDetailSection(photoData: entry.photoData)
 
             EntryStartDetailSection(entry: entry)
 
@@ -43,13 +46,39 @@ struct EntryDetailView: View {
         .navigationTitle(entry.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            ToolbarItem(placement: .primaryAction) {
-                ShareLink(
-                    item: shareSummary.text,
-                    subject: Text(shareSummary.subject)
-                ) {
-                    Label("Share", systemImage: "square.and.arrow.up")
+            ToolbarItemGroup(placement: .primaryAction) {
+                Button(action: edit) {
+                    Label("Edit", systemImage: "pencil")
                 }
+
+                Menu {
+                    Button(action: duplicate) {
+                        Label("Duplicate", systemImage: "plus.square.on.square")
+                    }
+
+                    ShareLink(
+                        item: shareSummary.text,
+                        subject: Text(shareSummary.subject)
+                    ) {
+                        Label("Share", systemImage: "square.and.arrow.up")
+                    }
+                } label: {
+                    Label("More", systemImage: "ellipsis.circle")
+                }
+            }
+        }
+        .sheet(item: $editorRoute) { route in
+            if let editedEntry = route.entry {
+                EntryEditorView(
+                    editing: editedEntry,
+                    draft: route.draft,
+                    photoData: route.photoData
+                )
+            } else {
+                EntryEditorView(
+                    draft: route.draft,
+                    photoData: route.photoData
+                )
             }
         }
         .confirmationDialog(
@@ -76,6 +105,26 @@ struct EntryDetailView: View {
 
     private var shareSummary: EntryShareSummary {
         EntryOperations.entryShareSummary(for: entry.snapshot)
+    }
+
+    private func edit() {
+        presentEditor(entry: entry)
+    }
+
+    private func duplicate() {
+        presentEditor(entry: nil)
+    }
+
+    private func presentEditor(entry editedEntry: Entry?) {
+        do {
+            editorRoute = try .init(
+                entry: editedEntry,
+                draft: EntryOperations.makeDraft(from: entry.snapshot),
+                photoData: entry.photoData
+            )
+        } catch {
+            isShowingActionError = true
+        }
     }
 
     private func archive() {
@@ -122,6 +171,16 @@ struct EntryDetailView: View {
 
 #Preview("Entry detail - typical") {
     let preview = PreviewSampleData.detailContainer(title: "Notebook")
+
+    NavigationStack {
+        EntryDetailView(entry: preview.entry)
+    }
+    .mhTheme(.standard)
+    .modelContainer(preview.container)
+}
+
+#Preview("Entry detail - photo") {
+    let preview = PreviewSampleData.detailContainer(title: "Watch")
 
     NavigationStack {
         EntryDetailView(entry: preview.entry)
