@@ -2,6 +2,27 @@ import Foundation
 
 /// Cross-surface entry use cases.
 public enum EntryOperations {
+    /// Creates an editable draft from an entry snapshot.
+    public static func makeDraft(
+        from snapshot: EntrySnapshot,
+        calendar: Calendar = .autoupdatingCurrent
+    ) -> EntryDraft {
+        let startComponents = calendar.dateComponents(
+            [.year, .month],
+            from: snapshot.startDate
+        )
+
+        return .init(
+            title: snapshot.title,
+            note: snapshot.note ?? "",
+            precision: snapshot.startPrecision,
+            dayDate: snapshot.startDate,
+            month: startComponents.month,
+            year: startComponents.year,
+            calendar: calendar
+        )
+    }
+
     /// Creates validated entry input from an editable draft.
     public static func makeInput(
         from draft: EntryDraft,
@@ -9,6 +30,35 @@ public enum EntryOperations {
         calendar: Calendar = .autoupdatingCurrent
     ) throws -> EntryInput {
         try draft.makeInput(currentDate: currentDate, calendar: calendar)
+    }
+
+    /// Returns an updated snapshot after validating editable draft values.
+    ///
+    /// Identity, creation, archive, and photo state remain unchanged.
+    public static func update(
+        _ snapshot: EntrySnapshot,
+        from draft: EntryDraft,
+        updatedAt: Date,
+        calendar: Calendar = .autoupdatingCurrent
+    ) throws -> EntrySnapshot {
+        let input = try makeInput(
+            from: draft,
+            currentDate: updatedAt,
+            calendar: calendar
+        )
+
+        return .init(
+            id: snapshot.id,
+            title: input.title,
+            startDate: input.startDate,
+            startPrecision: input.startPrecision,
+            createdAt: snapshot.createdAt,
+            updatedAt: updatedAt,
+            archivedAt: snapshot.archivedAt,
+            note: input.note,
+            hasPhoto: snapshot.hasPhoto,
+            calendar: calendar
+        )
     }
 
     /// Returns elapsed-time presentation for an entry snapshot.
