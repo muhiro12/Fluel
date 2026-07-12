@@ -14,19 +14,21 @@ struct MilestonesView: View {
     @Query private var entries: [Entry]
 
     var body: some View {
-        List {
+        Group {
             if milestones.isEmpty {
                 MilestonesEmptyState()
             } else {
-                Section {
-                    ForEach(milestones) { milestone in
-                        MilestoneRowView(
-                            milestone: milestone,
-                            approximateLabel: "Approximate start"
-                        )
+                List {
+                    Section {
+                        ForEach(milestones) { milestone in
+                            MilestoneRowView(
+                                milestone: milestone,
+                                approximateLabel: "Approximate start"
+                            )
+                        }
+                    } header: {
+                        FluelSectionHeader("Upcoming milestones")
                     }
-                } header: {
-                    FluelSectionHeader("Upcoming milestones")
                 }
             }
         }

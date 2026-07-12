@@ -21,7 +21,11 @@ struct MilestoneRowView: View {
             Text(milestone.title)
                 .mhRowTitle()
 
-            Text("\(milestone.durationText) - \(milestone.daysRemainingText)")
+            (
+                Text(milestone.durationText)
+                    + Text(verbatim: " – ")
+                    + Text(milestone.daysRemainingText)
+            )
                 .mhRowSupporting()
 
             Text(milestone.date.precision.startLabel(for: milestone.date))
