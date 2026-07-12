@@ -75,7 +75,7 @@ fi
 app_domain_declarations=$(
   rg \
     --line-number \
-    "^[[:space:]]*(public[[:space:]]+|private[[:space:]]+|final[[:space:]]+|struct[[:space:]]+|enum[[:space:]]+|class[[:space:]]+)*(struct|enum|final[[:space:]]+class|class)[[:space:]]+(StartPrecision|TimeTogetherSummary|EntryDraft|EntryInput|EntrySnapshot|EntryOperations)\\b" \
+    "^[[:space:]]*(public[[:space:]]+|private[[:space:]]+|final[[:space:]]+|struct[[:space:]]+|enum[[:space:]]+|class[[:space:]]+)*(struct|enum|final[[:space:]]+class|class)[[:space:]]+(EntryStart|StartPrecision|TimeTogetherSummary|EntryDraft|EntryInput|EntrySnapshot|EntryOperations)\\b" \
     "${app_sources[@]}" \
     -g '*.swift' || true
 )
@@ -101,7 +101,7 @@ fi
 mhplatform_runtime_links=$(
   rg \
     --line-number \
-    "MHPlatform in Frameworks" \
+    "productName = MHPlatform;" \
     "$repository_root/Fluel.xcodeproj/project.pbxproj" || true
 )
 

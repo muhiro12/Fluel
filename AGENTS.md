@@ -184,6 +184,8 @@ The active Xcode project is `Fluel.xcodeproj`.
 - Preferred Swift lint check: `bash ci_scripts/tasks/lint_swift.sh`.
 - Preferred retained repository-rule check:
   `bash ci_scripts/tasks/check_repository_rules.sh`.
+- Preferred localization completeness check:
+  `bash ci_scripts/tasks/check_localizations.sh`.
 - Preferred String Catalog audit from the repository root when the local
   `string-catalog-maintainer` skill is installed:
 

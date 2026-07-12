@@ -101,6 +101,7 @@ check_build_environment() {
 check_rules_environment() {
   check_swiftlint_environment
   ensure_command "rg" "Install ripgrep so repository rule checks can scan source files."
+  ensure_command "python3" "Install Python 3 so repository localization checks can run."
 }
 
 case "$profile" in

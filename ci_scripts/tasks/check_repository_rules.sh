@@ -11,5 +11,6 @@ repository_root=$CI_TASK_REPOSITORY_ROOT
 bash "$repository_root/ci_scripts/tasks/check_environment.sh" --profile rules
 CI_SKIP_ENV_CHECK=1 bash "$repository_root/ci_scripts/tasks/lint_swift.sh"
 bash "$repository_root/ci_scripts/tasks/check_library_boundaries.sh"
+bash "$repository_root/ci_scripts/tasks/check_localizations.sh"
 
 echo "Repository rules check passed."
