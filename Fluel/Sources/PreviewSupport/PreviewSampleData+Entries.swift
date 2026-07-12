@@ -21,8 +21,7 @@ extension PreviewSampleData {
                 title: "This home",
                 note: "A home is where daily life gathers.",
                 photoData: nil,
-                startDate: date(year: 2021, month: 4, day: 1),
-                startPrecision: .year,
+                start: entryStart(year: 2021, precision: .year),
                 createdAt: ReferenceDate.created,
                 updatedAt: ReferenceDate.created,
                 archivedAt: nil,
@@ -32,8 +31,7 @@ extension PreviewSampleData {
                 title: "Notebook",
                 note: "Ordinary thoughts from this year.",
                 photoData: nil,
-                startDate: date(year: 2024, month: 9, day: 1),
-                startPrecision: .month,
+                start: entryStart(year: 2024, precision: .month, month: 9),
                 createdAt: ReferenceDate.created,
                 updatedAt: ReferenceDate.created,
                 archivedAt: nil,
@@ -43,8 +41,7 @@ extension PreviewSampleData {
                 title: "Watch",
                 note: nil,
                 photoData: Data([1]),
-                startDate: date(year: 2025, month: 12, day: 14),
-                startPrecision: .day,
+                start: entryStart(year: 2025, precision: .day, month: 12, day: 14),
                 createdAt: ReferenceDate.created,
                 updatedAt: ReferenceDate.created,
                 archivedAt: nil,
@@ -54,8 +51,7 @@ extension PreviewSampleData {
                 title: "Desk lamp",
                 note: "Moved to storage.",
                 photoData: nil,
-                startDate: date(year: 2023, month: 2, day: 14),
-                startPrecision: .day,
+                start: entryStart(year: 2023, precision: .day, month: 2, day: 14),
                 createdAt: ReferenceDate.created,
                 updatedAt: ReferenceDate.current,
                 archivedAt: ReferenceDate.current,
@@ -70,8 +66,7 @@ extension PreviewSampleData {
                 title: "Wallet",
                 note: "Usually one of the first things that leaves with me.",
                 photoData: Data([1]),
-                startDate: date(year: 2020, month: 1, day: 1),
-                startPrecision: .year,
+                start: entryStart(year: 2020, precision: .year),
                 createdAt: ReferenceDate.created,
                 updatedAt: ReferenceDate.current,
                 archivedAt: nil,
@@ -81,8 +76,7 @@ extension PreviewSampleData {
                 title: "Bag",
                 note: nil,
                 photoData: nil,
-                startDate: date(year: 2024, month: 11, day: 1),
-                startPrecision: .month,
+                start: entryStart(year: 2024, precision: .month, month: 11),
                 createdAt: ReferenceDate.created,
                 updatedAt: ReferenceDate.current,
                 archivedAt: nil,
@@ -92,8 +86,7 @@ extension PreviewSampleData {
                 title: "Plant",
                 note: "Shares the same light near the kitchen window.",
                 photoData: nil,
-                startDate: date(year: 2024, month: 3, day: 1),
-                startPrecision: .month,
+                start: entryStart(year: 2024, precision: .month, month: 3),
                 createdAt: ReferenceDate.created,
                 updatedAt: ReferenceDate.current,
                 archivedAt: nil,
@@ -107,8 +100,7 @@ extension PreviewSampleData {
                 to judge before the MHUI adoption pass.
                 """,
                 photoData: nil,
-                startDate: date(year: 2018, month: 1, day: 1),
-                startPrecision: .year,
+                start: entryStart(year: 2018, precision: .year),
                 createdAt: ReferenceDate.created,
                 updatedAt: ReferenceDate.current,
                 archivedAt: nil,
@@ -119,6 +111,39 @@ extension PreviewSampleData {
 
     static var archivedEntries: [Entry] {
         denseEntries.filter(\.isArchived)
+    }
+
+    private static func entryStart(
+        year: Int,
+        precision: StartPrecision,
+        month: Int = 1,
+        day: Int = 1
+    ) -> EntryStart {
+        let start: EntryStart?
+
+        switch precision {
+        case .day:
+            start = try? .day(
+                year: year,
+                month: month,
+                day: day
+            )
+        case .month:
+            start = try? .month(
+                year: year,
+                month: month
+            )
+        case .year:
+            start = try? .year(year)
+        }
+
+        guard let start else {
+            preconditionFailure(
+                "Invalid preview entry start: \(year)-\(month)-\(day) (\(precision.rawValue))."
+            )
+        }
+
+        return start
     }
 }
 

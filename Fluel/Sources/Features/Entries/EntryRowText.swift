@@ -20,11 +20,11 @@ struct EntryRowText: View {
             Text(entry.title)
                 .mhRowTitle()
 
-            Text(entry.startPrecision.startLabel(for: entry.startDate))
+            Text(entry.start.precision.startLabel(for: entry.start))
                 .mhRowSupporting()
 
             FluelBadgeStack {
-                if entry.startPrecision.isApproximate {
+                if entry.start.precision.isApproximate {
                     Text("Approximate start")
                         .mhBadge(
                             style: .neutral,

@@ -11,16 +11,36 @@ import SwiftData
 
 @Model
 final class Entry {
+    private static let defaultStartYear = 1_970
+
     var id = UUID()
     var title = ""
     var note: String?
     @Attribute(.externalStorage)
     var photoData: Data?
-    var startDate = Date()
+    var startYear = defaultStartYear
+    var startMonth = 1
+    var startDay = 1
     var startPrecision = StartPrecision.day
     var createdAt = Date()
     var updatedAt = Date()
     var archivedAt: Date?
+
+    var start: EntryStart {
+        guard let resolvedStart = try? Self.makeStart(
+            year: startYear,
+            month: startMonth,
+            day: startDay,
+            precision: startPrecision
+        ) else {
+            preconditionFailure(
+                "Entry contains an invalid start: \(startYear)-\(startMonth)-\(startDay) "
+                    + "(\(startPrecision.rawValue))."
+            )
+        }
+
+        return resolvedStart
+    }
 
     var isArchived: Bool {
         archivedAt != nil
@@ -38,8 +58,7 @@ final class Entry {
         .init(
             id: id,
             title: title,
-            startDate: startDate,
-            startPrecision: startPrecision,
+            start: start,
             createdAt: createdAt,
             updatedAt: updatedAt,
             archivedAt: archivedAt,
@@ -56,8 +75,7 @@ final class Entry {
         title: String,
         note: String?,
         photoData: Data?,
-        startDate: Date,
-        startPrecision: StartPrecision,
+        start: EntryStart,
         createdAt: Date,
         updatedAt: Date,
         archivedAt: Date?,
@@ -71,8 +89,10 @@ final class Entry {
         self.title = trimmedTitle
         self.note = Self.normalizedNote(note)
         self.photoData = photoData
-        self.startDate = startPrecision.normalizedStartDate(from: startDate)
-        self.startPrecision = startPrecision
+        startYear = start.year
+        startMonth = start.month
+        startDay = start.day
+        startPrecision = start.precision
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.archivedAt = archivedAt
@@ -82,8 +102,7 @@ final class Entry {
         title: String,
         note: String?,
         photoData: Data?,
-        startDate: Date,
-        startPrecision: StartPrecision,
+        start: EntryStart,
         createdAt: Date,
         updatedAt: Date
     ) {
@@ -91,8 +110,7 @@ final class Entry {
             title: title,
             note: note,
             photoData: photoData,
-            startDate: startDate,
-            startPrecision: startPrecision,
+            start: start,
             createdAt: createdAt,
             updatedAt: updatedAt,
             archivedAt: nil,
@@ -125,8 +143,7 @@ final class Entry {
             title: input.title,
             note: input.note,
             photoData: photoData,
-            startDate: input.startDate,
-            startPrecision: input.startPrecision,
+            start: input.start,
             createdAt: createdAt,
             updatedAt: updatedAt,
             archivedAt: archivedAt,
@@ -143,6 +160,29 @@ final class Entry {
         }
 
         return trimmedNote
+    }
+
+    private static func makeStart(
+        year: Int,
+        month: Int,
+        day: Int,
+        precision: StartPrecision
+    ) throws -> EntryStart {
+        switch precision {
+        case .day:
+            try EntryStart.day(
+                year: year,
+                month: month,
+                day: day
+            )
+        case .month:
+            try EntryStart.month(
+                year: year,
+                month: month
+            )
+        case .year:
+            try EntryStart.year(year)
+        }
     }
 
     func timeTogether() -> TimeTogetherSummary {
@@ -164,41 +204,27 @@ final class Entry {
     }
 
     func archive() {
-        archive(
-            archivedAt: .now,
-            calendar: .autoupdatingCurrent
-        )
+        archive(archivedAt: .now)
     }
 
-    func archive(
-        archivedAt: Date,
-        calendar: Calendar
-    ) {
+    func archive(archivedAt: Date) {
         apply(
             EntryOperations.archive(
                 snapshot,
-                archivedAt: archivedAt,
-                calendar: calendar
+                archivedAt: archivedAt
             )
         )
     }
 
     func restore() {
-        restore(
-            restoredAt: .now,
-            calendar: .autoupdatingCurrent
-        )
+        restore(restoredAt: .now)
     }
 
-    func restore(
-        restoredAt: Date,
-        calendar: Calendar
-    ) {
+    func restore(restoredAt: Date) {
         apply(
             EntryOperations.restore(
                 snapshot,
-                restoredAt: restoredAt,
-                calendar: calendar
+                restoredAt: restoredAt
             )
         )
     }
@@ -206,8 +232,10 @@ final class Entry {
     func apply(_ snapshot: EntrySnapshot) {
         title = snapshot.title
         note = snapshot.note
-        startDate = snapshot.startDate
-        startPrecision = snapshot.startPrecision
+        startYear = snapshot.start.year
+        startMonth = snapshot.start.month
+        startDay = snapshot.start.day
+        startPrecision = snapshot.start.precision
         createdAt = snapshot.createdAt
         updatedAt = snapshot.updatedAt
         archivedAt = snapshot.archivedAt

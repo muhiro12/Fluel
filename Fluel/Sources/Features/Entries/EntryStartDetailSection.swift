@@ -14,10 +14,10 @@ struct EntryStartDetailSection: View {
 
     var body: some View {
         Section {
-            LabeledContent("Start", value: entry.startPrecision.startLabel(for: entry.startDate))
-            LabeledContent("Precision", value: entry.startPrecision.knownAsText)
+            LabeledContent("Start", value: entry.start.precision.startLabel(for: entry.start))
+            LabeledContent("Precision", value: entry.start.precision.knownAsText)
 
-            if let rangeLabel = entry.startPrecision.startRangeLabel(for: entry.startDate) {
+            if let rangeLabel = entry.start.precision.startRangeLabel(for: entry.start) {
                 LabeledContent("Start range", value: rangeLabel)
             }
         } header: {

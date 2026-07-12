@@ -21,7 +21,7 @@ struct EntryStartPicker: View {
             EntryStartValuePicker(draft: $draft, calendar: calendar)
 
             LabeledContent("Known as", value: draft.precision.knownAsText)
-            LabeledContent("Start", value: draft.startLabel(calendar: calendar))
+            LabeledContent("Start", value: startLabel)
         } header: {
             FluelSectionHeader("Start")
         } footer: {
@@ -35,5 +35,14 @@ struct EntryStartPicker: View {
         .onChange(of: draft.month) {
             draft.clampToPresent(calendar: calendar)
         }
+    }
+
+    private var startLabel: String {
+        guard let label = try? draft.startLabel(calendar: calendar) else {
+            assertionFailure("The entry draft contains an invalid start.")
+            return ""
+        }
+
+        return label
     }
 }

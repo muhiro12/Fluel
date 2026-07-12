@@ -30,7 +30,7 @@ struct EntryEntity: AppEntity, Identifiable {
     init(entry: Entry) {
         id = entry.id.uuidString
         title = entry.title
-        startLabel = entry.startPrecision.startLabel(for: entry.startDate)
+        startLabel = entry.start.precision.startLabel(for: entry.start)
         isArchived = entry.isArchived
     }
 }

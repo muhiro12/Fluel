@@ -6,6 +6,7 @@
 //
 
 import AppIntents
+import FluelLibrary
 import Foundation
 import SwiftData
 
@@ -32,11 +33,17 @@ struct CreateEntryIntent: AppIntent {
 
     @MainActor
     func perform() throws -> some ReturnsValue<EntryEntity> & ProvidesDialog {
+        let calendar = Calendar.autoupdatingCurrent
+        let start = try EntryStart(
+            date: startDate,
+            precision: precision.startPrecision,
+            timeZone: calendar.timeZone
+        )
         let entry = try FluelEntryIntentStore.createEntry(
             title: title,
-            startDate: startDate,
-            precision: precision,
+            start: start,
             note: note,
+            calendar: calendar,
             modelContainer: modelContainer
         )
 

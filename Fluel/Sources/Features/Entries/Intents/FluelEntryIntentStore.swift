@@ -13,16 +13,16 @@ enum FluelEntryIntentStore {
     @MainActor
     static func createEntry(
         title: String,
-        startDate: Date,
-        precision: FluelStartPrecisionIntentValue,
+        start: EntryStart,
         note: String,
+        calendar: Calendar,
         modelContainer: ModelContainer
     ) throws -> EntryEntity {
         let input = try EntryInput(
             title: title,
-            startDate: startDate,
-            startPrecision: precision.startPrecision,
-            note: note
+            start: start,
+            note: note,
+            calendar: calendar
         )
         let entry = Entry(input: input)
         let modelContext = modelContainer.mainContext
@@ -40,6 +40,11 @@ enum FluelEntryIntentStore {
         modelContainer: ModelContainer
     ) throws {
         let entry = try entry(for: entity, modelContainer: modelContainer)
+
+        guard !entry.isArchived else {
+            throw FluelEntryIntentStoreError.entryAlreadyArchived
+        }
+
         let snapshot = EntryOperations.archive(
             entry.snapshot,
             archivedAt: .now
@@ -57,6 +62,11 @@ enum FluelEntryIntentStore {
         modelContainer: ModelContainer
     ) throws {
         let entry = try entry(for: entity, modelContainer: modelContainer)
+
+        guard entry.isArchived else {
+            throw FluelEntryIntentStoreError.entryIsNotArchived
+        }
+
         let snapshot = EntryOperations.restore(
             entry.snapshot,
             restoredAt: .now

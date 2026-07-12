@@ -24,7 +24,7 @@ struct MilestoneRowView: View {
             Text("\(milestone.durationText) - \(milestone.daysRemainingText)")
                 .mhRowSupporting()
 
-            Text(milestone.date.formatted(date: .abbreviated, time: .omitted))
+            Text(milestone.date.precision.startLabel(for: milestone.date))
                 .mhRowSupporting()
 
             if milestone.isApproximate {

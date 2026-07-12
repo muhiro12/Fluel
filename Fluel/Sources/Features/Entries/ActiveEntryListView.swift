@@ -17,9 +17,7 @@ struct ActiveEntryListView: View {
     @Query(
         filter: #Predicate<Entry> { entry in
             entry.archivedAt == nil
-        },
-        sort: \Entry.startDate,
-        order: .forward
+        }
     )
     private var entries: [Entry]
 

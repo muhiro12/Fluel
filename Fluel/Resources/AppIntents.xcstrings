@@ -433,6 +433,54 @@
         }
       }
     },
+    "The entry could not be found.": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "Entryが見つかりませんでした。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "The entry could not be found."
+          }
+        }
+      }
+    },
+    "This entry is already archived.": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "このEntryはすでにArchiveされています。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This entry is already archived."
+          }
+        }
+      }
+    },
+    "This entry is not archived.": {
+      "localizations": {
+        "ja": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "このEntryはArchiveされていません。"
+          }
+        },
+        "en": {
+          "stringUnit": {
+            "state": "translated",
+            "value": "This entry is not archived."
+          }
+        }
+      }
+    },
     "Time Together": {
       "localizations": {
         "ja": {

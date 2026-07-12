@@ -11,8 +11,7 @@ import SwiftData
 import SwiftUI
 
 struct MilestonesView: View {
-    @Query(sort: \Entry.startDate, order: .forward)
-    private var entries: [Entry]
+    @Query private var entries: [Entry]
 
     var body: some View {
         List {
