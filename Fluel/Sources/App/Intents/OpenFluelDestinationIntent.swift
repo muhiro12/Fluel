@@ -14,10 +14,9 @@ struct OpenFluelDestinationIntent: AppIntent {
         LocalizedStringResource("Open Fluel to a main screen.", table: "AppIntents")
     )
     static let openAppWhenRun = true
-    static let isDiscoverable = false
 
     @Parameter(title: LocalizedStringResource("Destination", table: "AppIntents"))
-    private var destination: FluelDestinationIntentValue
+    var destination: FluelDestinationIntentValue
 
     @MainActor
     func perform() async -> some IntentResult {

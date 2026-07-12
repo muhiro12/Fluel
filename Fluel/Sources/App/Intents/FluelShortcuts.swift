@@ -12,8 +12,7 @@ struct FluelShortcuts: AppShortcutsProvider {
         AppShortcut(
             intent: CreateEntryIntent(),
             phrases: [
-                "Create an entry in \(.applicationName)",
-                "Add an entry with \(.applicationName)"
+                "Create an entry in \(.applicationName)"
             ],
             shortTitle: LocalizedStringResource("Create Entry", table: "AppIntents"),
             systemImageName: "plus.circle"
@@ -22,8 +21,7 @@ struct FluelShortcuts: AppShortcutsProvider {
         AppShortcut(
             intent: CheckTimeTogetherIntent(),
             phrases: [
-                "Check time together in \(.applicationName)",
-                "How long has this been with me in \(.applicationName)"
+                "Check time together in \(.applicationName)"
             ],
             shortTitle: LocalizedStringResource("Time Together", table: "AppIntents"),
             systemImageName: "clock"
@@ -32,11 +30,19 @@ struct FluelShortcuts: AppShortcutsProvider {
         AppShortcut(
             intent: OpenFluelIntent(),
             phrases: [
-                "Open \(.applicationName)",
-                "Open a Fluel screen in \(.applicationName)"
+                "Open \(.applicationName)"
             ],
             shortTitle: LocalizedStringResource("Open Fluel", table: "AppIntents"),
             systemImageName: "rectangle.grid.2x2"
+        )
+
+        AppShortcut(
+            intent: OpenFluelDestinationIntent(),
+            phrases: [
+                "Open \(\.$destination) in \(.applicationName)"
+            ],
+            shortTitle: LocalizedStringResource("Open Fluel Destination", table: "AppIntents"),
+            systemImageName: "arrow.turn.down.right"
         )
     }
 }
