@@ -6,7 +6,6 @@ import FluelLibrary
 struct EntryActivityOperationsTests {
     @Test
     func activityFactoriesPreserveEventIdentityAndSnapshotContext() throws {
-        let calendar = TestDateSupport.calendar
         let addedID = UUID()
         let updatedID = UUID()
         let archivedID = UUID()
@@ -14,13 +13,11 @@ struct EntryActivityOperationsTests {
             title: "Notebook",
             createdAt: TestDateSupport.date(year: 2_026, month: 6, day: 1),
             updatedAt: TestDateSupport.date(year: 2_026, month: 6, day: 1),
-            archivedAt: nil,
-            calendar: calendar
+            archivedAt: nil
         )
         let archivedSnapshot = EntryOperations.archive(
             createdSnapshot,
-            archivedAt: TestDateSupport.date(year: 2_026, month: 6, day: 3),
-            calendar: calendar
+            archivedAt: TestDateSupport.date(year: 2_026, month: 6, day: 3)
         )
 
         let addedActivity = EntryOperations.addedActivity(
@@ -59,7 +56,6 @@ struct EntryActivityOperationsTests {
             createdAt: TestDateSupport.date(year: 2_026, month: 6, day: 1),
             updatedAt: TestDateSupport.date(year: 2_026, month: 6, day: 1),
             archivedAt: nil,
-            calendar: calendar,
             id: entryID
         )
         let firstUpdatedSnapshot = snapshot(
@@ -67,7 +63,6 @@ struct EntryActivityOperationsTests {
             createdAt: createdSnapshot.createdAt,
             updatedAt: TestDateSupport.date(year: 2_026, month: 6, day: 2),
             archivedAt: nil,
-            calendar: calendar,
             id: entryID
         )
         let secondUpdatedSnapshot = snapshot(
@@ -75,7 +70,6 @@ struct EntryActivityOperationsTests {
             createdAt: createdSnapshot.createdAt,
             updatedAt: TestDateSupport.date(year: 2_026, month: 6, day: 3),
             archivedAt: nil,
-            calendar: calendar,
             id: entryID
         )
         let activity = [
@@ -109,18 +103,15 @@ struct EntryActivityOperationsTests {
             title: "Desk lamp",
             createdAt: TestDateSupport.date(year: 2_026, month: 1, day: 1),
             updatedAt: TestDateSupport.date(year: 2_026, month: 1, day: 1),
-            archivedAt: nil,
-            calendar: calendar
+            archivedAt: nil
         )
         let archivedSnapshot = EntryOperations.archive(
             createdSnapshot,
-            archivedAt: TestDateSupport.date(year: 2_026, month: 6, day: 2),
-            calendar: calendar
+            archivedAt: TestDateSupport.date(year: 2_026, month: 6, day: 2)
         )
         let restoredSnapshot = EntryOperations.restore(
             archivedSnapshot,
-            restoredAt: TestDateSupport.date(year: 2_026, month: 6, day: 3),
-            calendar: calendar
+            restoredAt: TestDateSupport.date(year: 2_026, month: 6, day: 3)
         )
         let archivedActivity = try #require(EntryOperations.archivedActivity(
             for: archivedSnapshot
@@ -154,18 +145,15 @@ struct EntryActivityOperationsTests {
         createdAt: Date,
         updatedAt: Date,
         archivedAt: Date?,
-        calendar: Calendar,
         id: UUID = .init()
     ) -> EntrySnapshot {
         .init(
             id: id,
             title: title,
-            startDate: TestDateSupport.date(year: 2_024, month: 1, day: 1),
-            startPrecision: .day,
+            start: TestDateSupport.start(year: 2_024, month: 1, day: 1),
             createdAt: createdAt,
             updatedAt: updatedAt,
-            archivedAt: archivedAt,
-            calendar: calendar
+            archivedAt: archivedAt
         )
     }
 }

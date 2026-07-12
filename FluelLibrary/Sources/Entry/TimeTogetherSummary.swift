@@ -46,28 +46,26 @@ public struct TimeTogetherSummary: Equatable, Sendable {
     /// Optional total value text.
     public let totalValueText: String?
 
-    /// Creates an elapsed-time summary from a start, precision, and reference date.
+    /// Creates an elapsed-time summary from a calendar start and reference date.
     public init(
-        startDate: Date,
-        precision: StartPrecision,
+        start: EntryStart,
         referenceDate: Date = .now,
         calendar: Calendar = .autoupdatingCurrent
     ) {
-        let normalizedStart = precision.normalizedStartDate(
-            from: startDate,
-            calendar: calendar
-        )
-        let normalizedReference = max(
-            precision.normalizedStartDate(from: referenceDate, calendar: calendar),
-            normalizedStart
+        let calculationCalendar = EntryStart.gregorianCalendar(in: .gmt)
+        let normalizedStart = start.calculationDate
+        let normalizedReference = Self.normalizedReferenceDate(
+            for: start,
+            referenceDate: referenceDate,
+            timeZone: calendar.timeZone
         )
 
-        switch precision {
+        switch start.precision {
         case .day:
             let values = Self.dayValues(
                 normalizedStart: normalizedStart,
                 normalizedReference: normalizedReference,
-                calendar: calendar
+                calendar: calculationCalendar
             )
             primaryText = values.primaryText
             fullText = values.fullText
@@ -78,7 +76,7 @@ public struct TimeTogetherSummary: Equatable, Sendable {
             let values = Self.monthValues(
                 normalizedStart: normalizedStart,
                 normalizedReference: normalizedReference,
-                calendar: calendar
+                calendar: calculationCalendar
             )
             primaryText = values.primaryText
             fullText = values.fullText
@@ -89,7 +87,7 @@ public struct TimeTogetherSummary: Equatable, Sendable {
             let values = Self.yearValues(
                 normalizedStart: normalizedStart,
                 normalizedReference: normalizedReference,
-                calendar: calendar
+                calendar: calculationCalendar
             )
             primaryText = values.primaryText
             fullText = values.fullText
@@ -97,6 +95,22 @@ public struct TimeTogetherSummary: Equatable, Sendable {
             totalValueLabel = values.totalValueLabel
             totalValueText = values.totalValueText
         }
+    }
+
+    private static func normalizedReferenceDate(
+        for start: EntryStart,
+        referenceDate: Date,
+        timeZone: TimeZone
+    ) -> Date {
+        guard let referenceStart = try? EntryStart(
+            date: referenceDate,
+            precision: start.precision,
+            timeZone: timeZone
+        ) else {
+            return start.calculationDate
+        }
+
+        return max(referenceStart.calculationDate, start.calculationDate)
     }
 
     private static func dayValues(

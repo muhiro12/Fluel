@@ -27,32 +27,81 @@ public extension EntryOperations {
         referenceDate: Date,
         calendar: Calendar
     ) -> EntryMilestone? {
-        let normalizedReferenceDate = calendar.startOfDay(for: referenceDate)
-        let normalizedStartDate = calendar.startOfDay(for: snapshot.startDate)
+        guard let referenceStart = try? EntryStart(
+            date: referenceDate,
+            precision: .day,
+            timeZone: calendar.timeZone
+        ) else {
+            return nil
+        }
+
+        let calculationCalendar = EntryStart.gregorianCalendar(in: .gmt)
+        let normalizedReferenceDate = referenceStart.calculationDate
+        let normalizedStartDate = snapshot.start.calculationDate
+        guard let milestone = milestone(
+            after: normalizedReferenceDate,
+            from: normalizedStartDate,
+            calendar: calculationCalendar
+        ) else {
+            return nil
+        }
+
+        guard let milestoneStart = try? EntryStart(
+            date: milestone.date,
+            precision: .day,
+            timeZone: .gmt
+        ) else {
+            return nil
+        }
+
+        let daysRemaining = max(
+            0,
+            calculationCalendar.dateComponents(
+                [.day],
+                from: normalizedReferenceDate,
+                to: milestone.date
+            ).day ?? 0
+        )
+
+        return .init(
+            entryID: snapshot.id,
+            title: snapshot.title,
+            durationYears: milestone.durationYears,
+            date: milestoneStart,
+            daysRemaining: daysRemaining,
+            isApproximate: snapshot.start.precision.isApproximate
+        )
+    }
+
+    private static func milestone(
+        after referenceDate: Date,
+        from startDate: Date,
+        calendar: Calendar
+    ) -> (date: Date, durationYears: Int)? {
         var durationYears = max(
             1,
             calendar.dateComponents(
                 [.year],
-                from: normalizedStartDate,
-                to: normalizedReferenceDate
+                from: startDate,
+                to: referenceDate
             ).year ?? 0
         )
 
         guard var milestoneDate = calendar.date(
             byAdding: .year,
             value: durationYears,
-            to: normalizedStartDate
+            to: startDate
         ) else {
             return nil
         }
 
-        while milestoneDate < normalizedReferenceDate {
+        while milestoneDate < referenceDate {
             durationYears += 1
 
             guard let nextMilestoneDate = calendar.date(
                 byAdding: .year,
                 value: durationYears,
-                to: normalizedStartDate
+                to: startDate
             ) else {
                 return nil
             }
@@ -60,23 +109,7 @@ public extension EntryOperations {
             milestoneDate = nextMilestoneDate
         }
 
-        let daysRemaining = max(
-            0,
-            calendar.dateComponents(
-                [.day],
-                from: normalizedReferenceDate,
-                to: milestoneDate
-            ).day ?? 0
-        )
-
-        return .init(
-            entryID: snapshot.id,
-            title: snapshot.title,
-            durationYears: durationYears,
-            date: milestoneDate,
-            daysRemaining: daysRemaining,
-            isApproximate: snapshot.startPrecision.isApproximate
-        )
+        return (milestoneDate, durationYears)
     }
 
     private static func compare<T: Comparable>(

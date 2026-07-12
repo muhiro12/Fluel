@@ -10,13 +10,11 @@ struct EntryShareOperationsTests {
         let snapshot = EntrySnapshot(
             id: UUID(),
             title: "This home",
-            startDate: TestDateSupport.date(year: 2_021, month: 1, day: 1),
-            startPrecision: .year,
+            start: TestDateSupport.start(year: 2_021, precision: .year),
             createdAt: TestDateSupport.date(year: 2_026, month: 1, day: 1),
             updatedAt: TestDateSupport.date(year: 2_026, month: 6, day: 6),
             archivedAt: TestDateSupport.date(year: 2_026, month: 6, day: 6),
-            note: "First place together.",
-            calendar: calendar
+            note: "First place together."
         )
 
         let summary = EntryOperations.entryShareSummary(
@@ -47,12 +45,10 @@ struct EntryShareOperationsTests {
             EntrySnapshot(
                 id: UUID(),
                 title: "Watch",
-                startDate: TestDateSupport.date(year: 2_025, month: 7, day: 10),
-                startPrecision: .day,
+                start: TestDateSupport.start(year: 2_025, month: 7, day: 10),
                 createdAt: TestDateSupport.date(year: 2_026, month: 6, day: 3),
                 updatedAt: TestDateSupport.date(year: 2_026, month: 6, day: 3),
-                archivedAt: nil,
-                calendar: calendar
+                archivedAt: nil
             )
         ]
         let result = EntryOperations.timeline(

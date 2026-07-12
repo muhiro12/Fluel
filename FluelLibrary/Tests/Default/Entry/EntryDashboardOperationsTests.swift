@@ -62,7 +62,7 @@ struct EntryDashboardOperationsTests {
     func dashboardSummaryCountsEntriesAndHighlights() {
         let calendar = TestDateSupport.calendar
         let summary = EntryOperations.dashboardSummary(
-            from: snapshots(calendar: calendar),
+            from: snapshots(),
             activity: [],
             referenceDate: TestDateSupport.date(year: 2_026, month: 6, day: 25),
             calendar: calendar
@@ -82,7 +82,7 @@ struct EntryDashboardOperationsTests {
     func dashboardSummaryIncludesUpcomingMilestones() {
         let calendar = TestDateSupport.calendar
         let summary = EntryOperations.dashboardSummary(
-            from: snapshots(calendar: calendar),
+            from: snapshots(),
             activity: [],
             referenceDate: TestDateSupport.date(year: 2_026, month: 6, day: 25),
             calendar: calendar,
@@ -98,7 +98,7 @@ struct EntryDashboardOperationsTests {
     @Test
     func dashboardSummaryIncludesRecentActivity() throws {
         let calendar = TestDateSupport.calendar
-        let snapshots = snapshots(calendar: calendar)
+        let snapshots = snapshots()
         let archivedActivity = try #require(EntryOperations.archivedActivity(
             for: snapshots[2]
         ))
@@ -119,23 +119,22 @@ struct EntryDashboardOperationsTests {
         #expect(summary.recentActivity.map(\.kind) == [.archived, .added, .updated])
     }
 
-    private func snapshots(calendar: Calendar) -> [EntrySnapshot] {
+    private func snapshots() -> [EntrySnapshot] {
         fixtures.map { values in
             EntrySnapshot(
                 id: UUID(),
                 title: values.title,
-                startDate: TestDateSupport.date(
+                start: TestDateSupport.start(
                     year: values.startYear,
                     month: values.startMonth,
-                    day: values.startDay
+                    day: values.startDay,
+                    precision: values.precision
                 ),
-                startPrecision: values.precision,
                 createdAt: activityDate(day: values.createdDay),
                 updatedAt: activityDate(day: values.updatedDay),
                 archivedAt: values.archivedDay.map(activityDate(day:)),
                 note: values.note,
-                hasPhoto: values.hasPhoto,
-                calendar: calendar
+                hasPhoto: values.hasPhoto
             )
         }
     }

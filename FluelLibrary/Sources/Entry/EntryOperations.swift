@@ -6,19 +6,16 @@ public enum EntryOperations {
     public static func makeDraft(
         from snapshot: EntrySnapshot,
         calendar: Calendar = .autoupdatingCurrent
-    ) -> EntryDraft {
-        let startComponents = calendar.dateComponents(
-            [.year, .month],
-            from: snapshot.startDate
-        )
+    ) throws -> EntryDraft {
+        let dayDate = try snapshot.start.date(in: calendar.timeZone)
 
         return .init(
             title: snapshot.title,
             note: snapshot.note ?? "",
-            precision: snapshot.startPrecision,
-            dayDate: snapshot.startDate,
-            month: startComponents.month,
-            year: startComponents.year,
+            precision: snapshot.start.precision,
+            dayDate: dayDate,
+            month: snapshot.start.month,
+            year: snapshot.start.year,
             calendar: calendar
         )
     }
@@ -50,14 +47,12 @@ public enum EntryOperations {
         return .init(
             id: snapshot.id,
             title: input.title,
-            startDate: input.startDate,
-            startPrecision: input.startPrecision,
+            start: input.start,
             createdAt: snapshot.createdAt,
             updatedAt: updatedAt,
             archivedAt: snapshot.archivedAt,
             note: input.note,
-            hasPhoto: snapshot.hasPhoto,
-            calendar: calendar
+            hasPhoto: snapshot.hasPhoto
         )
     }
 
@@ -75,8 +70,8 @@ public enum EntryOperations {
         for snapshot: EntrySnapshot,
         calendar: Calendar = .autoupdatingCurrent
     ) -> String {
-        snapshot.startPrecision.startLabel(
-            for: snapshot.startDate,
+        snapshot.start.precision.startLabel(
+            for: snapshot.start,
             calendar: calendar
         )
     }
@@ -86,8 +81,8 @@ public enum EntryOperations {
         for snapshot: EntrySnapshot,
         calendar: Calendar = .autoupdatingCurrent
     ) -> String? {
-        snapshot.startPrecision.startRangeLabel(
-            for: snapshot.startDate,
+        snapshot.start.precision.startRangeLabel(
+            for: snapshot.start,
             calendar: calendar
         )
     }
@@ -95,8 +90,7 @@ public enum EntryOperations {
     /// Returns an archived snapshot.
     public static func archive(
         _ snapshot: EntrySnapshot,
-        archivedAt: Date,
-        calendar: Calendar = .autoupdatingCurrent
+        archivedAt: Date
     ) -> EntrySnapshot {
         guard !snapshot.isArchived else {
             return snapshot
@@ -105,22 +99,19 @@ public enum EntryOperations {
         return EntrySnapshot(
             id: snapshot.id,
             title: snapshot.title,
-            startDate: snapshot.startDate,
-            startPrecision: snapshot.startPrecision,
+            start: snapshot.start,
             createdAt: snapshot.createdAt,
             updatedAt: archivedAt,
             archivedAt: archivedAt,
             note: snapshot.note,
-            hasPhoto: snapshot.hasPhoto,
-            calendar: calendar
+            hasPhoto: snapshot.hasPhoto
         )
     }
 
     /// Returns a restored active snapshot.
     public static func restore(
         _ snapshot: EntrySnapshot,
-        restoredAt: Date,
-        calendar: Calendar = .autoupdatingCurrent
+        restoredAt: Date
     ) -> EntrySnapshot {
         guard snapshot.isArchived else {
             return snapshot
@@ -129,14 +120,12 @@ public enum EntryOperations {
         return EntrySnapshot(
             id: snapshot.id,
             title: snapshot.title,
-            startDate: snapshot.startDate,
-            startPrecision: snapshot.startPrecision,
+            start: snapshot.start,
             createdAt: snapshot.createdAt,
             updatedAt: restoredAt,
             archivedAt: nil,
             note: snapshot.note,
-            hasPhoto: snapshot.hasPhoto,
-            calendar: calendar
+            hasPhoto: snapshot.hasPhoto
         )
     }
 

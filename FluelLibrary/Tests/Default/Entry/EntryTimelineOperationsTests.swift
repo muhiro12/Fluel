@@ -53,7 +53,7 @@ struct EntryTimelineOperationsTests {
     @Test
     func timelineGroupsActivityByMonthAndSummarizesVisibleSlice() {
         let calendar = TestDateSupport.calendar
-        let snapshots = snapshots(calendar: calendar)
+        let snapshots = snapshots()
         let result = EntryOperations.timeline(
             from: snapshots,
             activity: activity(from: snapshots),
@@ -73,7 +73,7 @@ struct EntryTimelineOperationsTests {
     @Test
     func timelineAppliesSearchFilterScopeAndVisibleMilestones() {
         let calendar = TestDateSupport.calendar
-        let snapshots = snapshots(calendar: calendar)
+        let snapshots = snapshots()
         let query = EntryTimelineQuery(
             searchText: "watch",
             filter: .all,
@@ -97,7 +97,7 @@ struct EntryTimelineOperationsTests {
     @Test
     func timelineFiltersArchivedActivityWithoutActiveMilestones() {
         let calendar = TestDateSupport.calendar
-        let snapshots = snapshots(calendar: calendar)
+        let snapshots = snapshots()
         let query = EntryTimelineQuery(filter: .archived, scope: .recentYear)
 
         let result = EntryOperations.timeline(
@@ -117,7 +117,7 @@ struct EntryTimelineOperationsTests {
     @Test
     func timelineDoesNotSynthesizeMissingActivityFromSnapshots() {
         let calendar = TestDateSupport.calendar
-        let snapshots = snapshots(calendar: calendar)
+        let snapshots = snapshots()
 
         let result = EntryOperations.timeline(
             from: snapshots,
@@ -131,21 +131,20 @@ struct EntryTimelineOperationsTests {
         #expect(result.upcomingMilestones.isEmpty)
     }
 
-    private func snapshots(calendar: Calendar) -> [EntrySnapshot] {
+    private func snapshots() -> [EntrySnapshot] {
         fixtures.map { values in
             EntrySnapshot(
                 id: UUID(),
                 title: values.title,
-                startDate: TestDateSupport.date(
+                start: TestDateSupport.start(
                     year: values.startYear,
                     month: values.startMonth,
-                    day: values.startDay
+                    day: values.startDay,
+                    precision: values.precision
                 ),
-                startPrecision: values.precision,
                 createdAt: values.createdAt,
                 updatedAt: values.updatedAt,
-                archivedAt: values.archivedAt,
-                calendar: calendar
+                archivedAt: values.archivedAt
             )
         }
     }

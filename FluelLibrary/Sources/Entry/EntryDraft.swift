@@ -3,7 +3,6 @@ import Foundation
 /// Editable entry draft values shared by UI and future system surfaces.
 public struct EntryDraft: Equatable, Sendable {
     private static let earliestYear = 1_900
-    private static let firstDay = 1
     private static let firstMonth = 1
     private static let lastMonth = 12
 
@@ -50,14 +49,18 @@ public struct EntryDraft: Equatable, Sendable {
         year: Int? = nil,
         calendar: Calendar = .autoupdatingCurrent
     ) {
-        let currentDate = Date()
+        let gregorianCalendar = EntryStart.gregorianCalendar(in: calendar.timeZone)
+        let components = gregorianCalendar.dateComponents(
+            [.year, .month],
+            from: dayDate
+        )
 
         self.title = title
         self.note = note
         self.precision = precision
         self.dayDate = dayDate
-        self.month = month ?? calendar.component(.month, from: currentDate)
-        self.year = year ?? calendar.component(.year, from: currentDate)
+        self.month = month ?? components.month ?? Self.firstMonth
+        self.year = year ?? components.year ?? Self.earliestYear
     }
 
     /// Returns selectable years up to the current year.
@@ -65,7 +68,8 @@ public struct EntryDraft: Equatable, Sendable {
         currentDate: Date = .now,
         calendar: Calendar = .autoupdatingCurrent
     ) -> [Int] {
-        let currentYear = calendar.component(.year, from: currentDate)
+        let gregorianCalendar = EntryStart.gregorianCalendar(in: calendar.timeZone)
+        let currentYear = gregorianCalendar.component(.year, from: currentDate)
 
         guard currentYear >= Self.earliestYear else {
             return [currentYear]
@@ -79,41 +83,41 @@ public struct EntryDraft: Equatable, Sendable {
         currentDate: Date = .now,
         calendar: Calendar = .autoupdatingCurrent
     ) -> [Int] {
-        let currentYear = calendar.component(.year, from: currentDate)
+        let gregorianCalendar = EntryStart.gregorianCalendar(in: calendar.timeZone)
+        let currentYear = gregorianCalendar.component(.year, from: currentDate)
 
         guard year == currentYear else {
             return Array(Self.firstMonth...Self.lastMonth)
         }
 
-        return Array(Self.firstMonth...calendar.component(.month, from: currentDate))
+        return Array(Self.firstMonth...gregorianCalendar.component(.month, from: currentDate))
     }
 
-    /// Resolves the draft into the earliest start date represented by the precision.
-    public func startDate(calendar: Calendar = .autoupdatingCurrent) -> Date {
+    /// Resolves the draft into a validated calendar start.
+    public func start(calendar: Calendar = .autoupdatingCurrent) throws -> EntryStart {
         switch precision {
         case .day:
-            precision.normalizedStartDate(from: dayDate, calendar: calendar)
+            try EntryStart(
+                date: dayDate,
+                precision: precision,
+                timeZone: calendar.timeZone
+            )
         case .month:
-            calendar.date(from: DateComponents(
-                calendar: calendar,
+            try EntryStart.month(
                 year: year,
-                month: month,
-                day: Self.firstDay
-            )) ?? precision.normalizedStartDate(from: dayDate, calendar: calendar)
+                month: month
+            )
         case .year:
-            calendar.date(from: DateComponents(
-                calendar: calendar,
-                year: year,
-                month: Self.firstMonth,
-                day: Self.firstDay
-            )) ?? precision.normalizedStartDate(from: dayDate, calendar: calendar)
+            try EntryStart.year(year)
         }
     }
 
     /// Formats the draft start for display.
-    public func startLabel(calendar: Calendar = .autoupdatingCurrent) -> String {
-        precision.startLabel(
-            for: startDate(calendar: calendar),
+    public func startLabel(calendar: Calendar = .autoupdatingCurrent) throws -> String {
+        let start = try start(calendar: calendar)
+
+        return precision.startLabel(
+            for: start,
             calendar: calendar
         )
     }
@@ -125,8 +129,7 @@ public struct EntryDraft: Equatable, Sendable {
     ) throws -> EntryInput {
         try EntryInput(
             title: trimmedTitle,
-            startDate: startDate(calendar: calendar),
-            startPrecision: precision,
+            start: start(calendar: calendar),
             note: trimmedNote,
             currentDate: currentDate,
             calendar: calendar
@@ -137,7 +140,8 @@ public struct EntryDraft: Equatable, Sendable {
     public mutating func alignComponentsWithPrecision(
         calendar: Calendar = .autoupdatingCurrent
     ) {
-        let components = calendar.dateComponents([.year, .month], from: dayDate)
+        let gregorianCalendar = EntryStart.gregorianCalendar(in: calendar.timeZone)
+        let components = gregorianCalendar.dateComponents([.year, .month], from: dayDate)
         year = components.year ?? year
         month = components.month ?? month
         clampToPresent(calendar: calendar)
@@ -148,8 +152,9 @@ public struct EntryDraft: Equatable, Sendable {
         currentDate: Date = .now,
         calendar: Calendar = .autoupdatingCurrent
     ) {
-        let currentYear = calendar.component(.year, from: currentDate)
-        let currentMonth = calendar.component(.month, from: currentDate)
+        let gregorianCalendar = EntryStart.gregorianCalendar(in: calendar.timeZone)
+        let currentYear = gregorianCalendar.component(.year, from: currentDate)
+        let currentMonth = gregorianCalendar.component(.month, from: currentDate)
 
         year = min(max(year, Self.earliestYear), currentYear)
 

@@ -5,40 +5,63 @@ import FluelLibrary
 
 struct StartPrecisionTests {
     @Test
-    func monthPrecisionNormalizesToFirstDayOfMonth() {
-        let calendar = TestDateSupport.calendar
-        let startDate = TestDateSupport.date(year: 2_025, month: 5, day: 23)
-        let expectedDate = TestDateSupport.date(year: 2_025, month: 5, day: 1)
-
-        let normalizedDate = StartPrecision.month.normalizedStartDate(
-            from: startDate,
-            calendar: calendar
+    func startLabelsRemainStableAcrossTimeZones() {
+        let tokyo = TestDateSupport.calendar(timeZoneIdentifier: "Asia/Tokyo")
+        let losAngeles = TestDateSupport.calendar(
+            timeZoneIdentifier: "America/Los_Angeles"
         )
+        let starts = [
+            TestDateSupport.start(year: 2_025, month: 5, day: 23),
+            TestDateSupport.start(year: 2_025, month: 5, precision: .month),
+            TestDateSupport.start(year: 2_025, precision: .year)
+        ]
 
-        #expect(normalizedDate == expectedDate)
+        for start in starts {
+            let tokyoLabel = start.precision.startLabel(
+                for: start,
+                calendar: tokyo
+            )
+            let losAngelesLabel = start.precision.startLabel(
+                for: start,
+                calendar: losAngeles
+            )
+
+            #expect(tokyoLabel == losAngelesLabel)
+        }
     }
 
     @Test
-    func yearPrecisionNormalizesToFirstDayOfYear() {
-        let calendar = TestDateSupport.calendar
-        let startDate = TestDateSupport.date(year: 2_025, month: 5, day: 23)
-        let expectedDate = TestDateSupport.date(year: 2_025, month: 1, day: 1)
-
-        let normalizedDate = StartPrecision.year.normalizedStartDate(
-            from: startDate,
-            calendar: calendar
+    func approximateRangeRemainsStableAcrossTimeZones() {
+        let tokyo = TestDateSupport.calendar(timeZoneIdentifier: "Asia/Tokyo")
+        let losAngeles = TestDateSupport.calendar(
+            timeZoneIdentifier: "America/Los_Angeles"
+        )
+        let start = TestDateSupport.start(
+            year: 2_024,
+            month: 2,
+            precision: .month
         )
 
-        #expect(normalizedDate == expectedDate)
+        let tokyoRange = start.precision.startRangeLabel(
+            for: start,
+            calendar: tokyo
+        )
+        let losAngelesRange = start.precision.startRangeLabel(
+            for: start,
+            calendar: losAngeles
+        )
+
+        #expect(tokyoRange == losAngelesRange)
+        #expect(tokyoRange?.contains("29") == true)
     }
 
     @Test
     func dayPrecisionHasNoApproximateRange() {
         let calendar = TestDateSupport.calendar
-        let startDate = TestDateSupport.date(year: 2_025, month: 5, day: 23)
+        let start = TestDateSupport.start(year: 2_025, month: 5, day: 23)
 
-        let rangeLabel = StartPrecision.day.startRangeLabel(
-            for: startDate,
+        let rangeLabel = start.precision.startRangeLabel(
+            for: start,
             calendar: calendar
         )
 

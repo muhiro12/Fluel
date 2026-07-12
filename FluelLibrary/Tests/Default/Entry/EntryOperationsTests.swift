@@ -10,12 +10,10 @@ struct EntryOperationsTests {
         let snapshot = EntrySnapshot(
             id: UUID(),
             title: "Desk",
-            startDate: TestDateSupport.date(year: 2_024, month: 1, day: 1),
-            startPrecision: .year,
+            start: TestDateSupport.start(year: 2_024, precision: .year),
             createdAt: TestDateSupport.date(year: 2_026, month: 6, day: 25),
             updatedAt: TestDateSupport.date(year: 2_026, month: 6, day: 25),
-            archivedAt: nil,
-            calendar: calendar
+            archivedAt: nil
         )
 
         let summary = EntryOperations.timeTogether(
@@ -33,8 +31,7 @@ struct EntryOperationsTests {
         let calendar = TestDateSupport.calendar
         let archivedAt = TestDateSupport.date(year: 2_026, month: 6, day: 10)
         let snapshot = makeTimeTogetherSnapshot(
-            archivedAt: archivedAt,
-            calendar: calendar
+            archivedAt: archivedAt
         )
 
         let summary = EntryOperations.timeTogether(
@@ -51,8 +48,7 @@ struct EntryOperationsTests {
         let calendar = TestDateSupport.calendar
         let archivedAt = TestDateSupport.date(year: 2_026, month: 6, day: 10)
         let snapshot = makeTimeTogetherSnapshot(
-            archivedAt: archivedAt,
-            calendar: calendar
+            archivedAt: archivedAt
         )
 
         let summary = EntryOperations.timeTogether(
@@ -68,13 +64,11 @@ struct EntryOperationsTests {
     func restoredTimeTogetherUsesReferenceDate() {
         let calendar = TestDateSupport.calendar
         let archivedSnapshot = makeTimeTogetherSnapshot(
-            archivedAt: TestDateSupport.date(year: 2_026, month: 6, day: 10),
-            calendar: calendar
+            archivedAt: TestDateSupport.date(year: 2_026, month: 6, day: 10)
         )
         let restoredSnapshot = EntryOperations.restore(
             archivedSnapshot,
-            restoredAt: TestDateSupport.date(year: 2_026, month: 6, day: 15),
-            calendar: calendar
+            restoredAt: TestDateSupport.date(year: 2_026, month: 6, day: 15)
         )
 
         let summary = EntryOperations.timeTogether(
@@ -88,14 +82,12 @@ struct EntryOperationsTests {
 
     @Test
     func archiveMarksActiveSnapshotAsArchived() {
-        let calendar = TestDateSupport.calendar
-        let snapshot = makeSnapshot(archivedAt: nil, calendar: calendar)
+        let snapshot = makeSnapshot(archivedAt: nil)
         let archivedAt = TestDateSupport.date(year: 2_026, month: 7, day: 1)
 
         let archivedSnapshot = EntryOperations.archive(
             snapshot,
-            archivedAt: archivedAt,
-            calendar: calendar
+            archivedAt: archivedAt
         )
 
         #expect(archivedSnapshot.isArchived)
@@ -103,20 +95,18 @@ struct EntryOperationsTests {
         #expect(archivedSnapshot.updatedAt == archivedAt)
         #expect(archivedSnapshot.id == snapshot.id)
         #expect(archivedSnapshot.title == snapshot.title)
-        #expect(archivedSnapshot.startDate == snapshot.startDate)
+        #expect(archivedSnapshot.start == snapshot.start)
     }
 
     @Test
     func archiveLeavesArchivedSnapshotUnchanged() {
-        let calendar = TestDateSupport.calendar
         let originalArchiveDate = TestDateSupport.date(year: 2_026, month: 6, day: 1)
-        let snapshot = makeSnapshot(archivedAt: originalArchiveDate, calendar: calendar)
+        let snapshot = makeSnapshot(archivedAt: originalArchiveDate)
         let laterArchiveDate = TestDateSupport.date(year: 2_026, month: 7, day: 1)
 
         let archivedSnapshot = EntryOperations.archive(
             snapshot,
-            archivedAt: laterArchiveDate,
-            calendar: calendar
+            archivedAt: laterArchiveDate
         )
 
         #expect(archivedSnapshot == snapshot)
@@ -124,15 +114,13 @@ struct EntryOperationsTests {
 
     @Test
     func restoreMakesArchivedSnapshotActive() {
-        let calendar = TestDateSupport.calendar
         let archivedAt = TestDateSupport.date(year: 2_026, month: 6, day: 1)
-        let snapshot = makeSnapshot(archivedAt: archivedAt, calendar: calendar)
+        let snapshot = makeSnapshot(archivedAt: archivedAt)
         let restoredAt = TestDateSupport.date(year: 2_026, month: 7, day: 1)
 
         let restoredSnapshot = EntryOperations.restore(
             snapshot,
-            restoredAt: restoredAt,
-            calendar: calendar
+            restoredAt: restoredAt
         )
 
         #expect(!restoredSnapshot.isArchived)
@@ -144,14 +132,12 @@ struct EntryOperationsTests {
 
     @Test
     func restoreLeavesActiveSnapshotUnchanged() {
-        let calendar = TestDateSupport.calendar
-        let snapshot = makeSnapshot(archivedAt: nil, calendar: calendar)
+        let snapshot = makeSnapshot(archivedAt: nil)
         let restoredAt = TestDateSupport.date(year: 2_026, month: 7, day: 1)
 
         let restoredSnapshot = EntryOperations.restore(
             snapshot,
-            restoredAt: restoredAt,
-            calendar: calendar
+            restoredAt: restoredAt
         )
 
         #expect(restoredSnapshot == snapshot)
@@ -159,11 +145,9 @@ struct EntryOperationsTests {
 
     @Test
     func permanentDeleteBelongsOnlyToArchivedSnapshots() throws {
-        let calendar = TestDateSupport.calendar
-        let activeSnapshot = makeSnapshot(archivedAt: nil, calendar: calendar)
+        let activeSnapshot = makeSnapshot(archivedAt: nil)
         let archivedSnapshot = makeSnapshot(
-            archivedAt: TestDateSupport.date(year: 2_026, month: 6, day: 1),
-            calendar: calendar
+            archivedAt: TestDateSupport.date(year: 2_026, month: 6, day: 1)
         )
 
         #expect(!EntryOperations.canDeletePermanently(activeSnapshot))
@@ -175,37 +159,29 @@ struct EntryOperationsTests {
         try EntryOperations.validatePermanentDelete(for: archivedSnapshot)
     }
 
-    private func makeSnapshot(
-        archivedAt: Date?,
-        calendar: Calendar
-    ) -> EntrySnapshot {
+    private func makeSnapshot(archivedAt: Date?) -> EntrySnapshot {
         EntrySnapshot(
             id: UUID(),
             title: "Desk lamp",
-            startDate: TestDateSupport.date(year: 2_024, month: 1, day: 15),
-            startPrecision: .day,
+            start: TestDateSupport.start(year: 2_024, month: 1, day: 15),
             createdAt: TestDateSupport.date(year: 2_026, month: 5, day: 1),
             updatedAt: TestDateSupport.date(year: 2_026, month: 5, day: 2),
-            archivedAt: archivedAt,
-            calendar: calendar
+            archivedAt: archivedAt
         )
     }
 
     private func makeTimeTogetherSnapshot(
-        archivedAt: Date?,
-        calendar: Calendar
+        archivedAt: Date?
     ) -> EntrySnapshot {
         let startDate = TestDateSupport.date(year: 2_026, month: 6, day: 1)
 
         return .init(
             id: UUID(),
             title: "Desk lamp",
-            startDate: startDate,
-            startPrecision: .day,
+            start: TestDateSupport.start(year: 2_026, month: 6, day: 1),
             createdAt: startDate,
             updatedAt: archivedAt ?? startDate,
-            archivedAt: archivedAt,
-            calendar: calendar
+            archivedAt: archivedAt
         )
     }
 }

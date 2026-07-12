@@ -10,8 +10,8 @@ public struct EntryMilestone: Equatable, Identifiable, Sendable {
     public let title: String
     /// Milestone duration in years.
     public let durationYears: Int
-    /// Calendar date of the milestone.
-    public let date: Date
+    /// Gregorian calendar date of the milestone.
+    public let date: EntryStart
     /// Days remaining from the reference date.
     public let daysRemaining: Int
     /// True when the milestone is based on an approximate start.
@@ -47,7 +47,7 @@ public struct EntryMilestone: Equatable, Identifiable, Sendable {
         entryID: UUID,
         title: String,
         durationYears: Int,
-        date: Date,
+        date: EntryStart,
         daysRemaining: Int,
         isApproximate: Bool
     ) {

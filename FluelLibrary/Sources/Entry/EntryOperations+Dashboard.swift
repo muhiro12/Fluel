@@ -37,7 +37,11 @@ public extension EntryOperations {
         from snapshots: [EntrySnapshot]
     ) -> EntrySnapshot? {
         snapshots.min { lhs, rhs in
-            compare(lhs.startDate, rhs.startDate, tieBreak: titlePrecedes(lhs, rhs))
+            compare(
+                lhs.start.calculationDate,
+                rhs.start.calculationDate,
+                tieBreak: titlePrecedes(lhs, rhs)
+            )
         }
     }
 

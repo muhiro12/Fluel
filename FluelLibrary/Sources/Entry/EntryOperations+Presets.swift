@@ -81,7 +81,8 @@ public extension EntryOperations {
         calendar: Calendar = .autoupdatingCurrent
     ) -> EntryDraft {
         let startDate = preset.start.date(referenceDate: referenceDate, calendar: calendar)
-        let components = calendar.dateComponents([.year, .month], from: startDate)
+        let gregorianCalendar = EntryStart.gregorianCalendar(in: calendar.timeZone)
+        let components = gregorianCalendar.dateComponents([.year, .month], from: startDate)
 
         return .init(
             title: preset.title,

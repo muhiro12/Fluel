@@ -20,8 +20,11 @@ struct EntryDraftTests {
 
         #expect(input.title == "Notebook")
         #expect(input.note == "Ordinary thoughts")
-        #expect(input.startDate == TestDateSupport.date(year: 2_025, month: 5, day: 1))
-        #expect(input.startPrecision == .month)
+        #expect(input.start == TestDateSupport.start(
+            year: 2_025,
+            month: 5,
+            precision: .month
+        ))
     }
 
     @Test
@@ -59,14 +62,17 @@ struct EntryDraftTests {
     }
 
     @Test
-    func availableYearsHandlesNonGregorianCurrentYear() {
+    func availableYearsUsesGregorianYearWithNonGregorianDisplayCalendar() {
         var calendar = Calendar(identifier: .japanese)
         calendar.timeZone = TestDateSupport.calendar.timeZone
         let currentDate = TestDateSupport.date(year: 2_026, month: 6, day: 25)
-        let currentYear = calendar.component(.year, from: currentDate)
         let draft = EntryDraft(calendar: calendar)
+        let years = draft.availableYears(
+            currentDate: currentDate,
+            calendar: calendar
+        )
 
-        #expect(currentYear < 1_900)
-        #expect(draft.availableYears(currentDate: currentDate, calendar: calendar) == [currentYear])
+        #expect(years.first == 2_026)
+        #expect(years.last == 1_900)
     }
 }

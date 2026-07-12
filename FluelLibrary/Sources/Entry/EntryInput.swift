@@ -6,16 +6,13 @@ public struct EntryInput: Equatable, Sendable {
     public let title: String
     /// Optional trimmed note text.
     public let note: String?
-    /// Normalized start date.
-    public let startDate: Date
-    /// Known start precision.
-    public let startPrecision: StartPrecision
+    /// Validated calendar date when the entry started.
+    public let start: EntryStart
 
     /// Creates validated entry input.
     public init(
         title: String,
-        startDate: Date,
-        startPrecision: StartPrecision,
+        start: EntryStart,
         note: String? = nil,
         currentDate: Date = .now,
         calendar: Calendar = .autoupdatingCurrent
@@ -26,23 +23,19 @@ public struct EntryInput: Equatable, Sendable {
             throw EntryValidationError.emptyTitle
         }
 
-        let normalizedStartDate = startPrecision.normalizedStartDate(
-            from: startDate,
-            calendar: calendar
-        )
-        let normalizedCurrentDate = StartPrecision.day.normalizedStartDate(
-            from: currentDate,
-            calendar: calendar
+        let currentStart = try EntryStart(
+            date: currentDate,
+            precision: .day,
+            timeZone: calendar.timeZone
         )
 
-        guard normalizedStartDate <= normalizedCurrentDate else {
+        guard start <= currentStart else {
             throw EntryValidationError.futureStart
         }
 
         self.title = trimmedTitle
         self.note = Self.normalizedNote(note)
-        self.startDate = normalizedStartDate
-        self.startPrecision = startPrecision
+        self.start = start
     }
 
     private static func normalizedNote(_ note: String?) -> String? {

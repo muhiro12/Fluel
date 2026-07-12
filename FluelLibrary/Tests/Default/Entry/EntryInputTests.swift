@@ -8,13 +8,12 @@ struct EntryInputTests {
     func inputRejectsFutureDayStart() {
         let calendar = TestDateSupport.calendar
         let currentDate = TestDateSupport.date(year: 2_026, month: 6, day: 25)
-        let futureDate = TestDateSupport.date(year: 2_026, month: 6, day: 26)
+        let futureStart = TestDateSupport.start(year: 2_026, month: 6, day: 26)
 
         #expect(throws: EntryValidationError.futureStart) {
             try EntryInput(
                 title: "Notebook",
-                startDate: futureDate,
-                startPrecision: .day,
+                start: futureStart,
                 currentDate: currentDate,
                 calendar: calendar
             )
@@ -25,13 +24,16 @@ struct EntryInputTests {
     func inputRejectsFutureApproximateMonthStart() {
         let calendar = TestDateSupport.calendar
         let currentDate = TestDateSupport.date(year: 2_026, month: 6, day: 25)
-        let futureDate = TestDateSupport.date(year: 2_026, month: 7, day: 12)
+        let futureStart = TestDateSupport.start(
+            year: 2_026,
+            month: 7,
+            precision: .month
+        )
 
         #expect(throws: EntryValidationError.futureStart) {
             try EntryInput(
                 title: "Notebook",
-                startDate: futureDate,
-                startPrecision: .month,
+                start: futureStart,
                 currentDate: currentDate,
                 calendar: calendar
             )
@@ -39,29 +41,72 @@ struct EntryInputTests {
     }
 
     @Test
-    func inputPreservesApproximateComponentsFromStartDate() throws {
+    func inputPreservesApproximateStart() throws {
         let calendar = TestDateSupport.calendar
         let currentDate = TestDateSupport.date(year: 2_026, month: 6, day: 25)
-        let startDate = TestDateSupport.date(year: 2_022, month: 3, day: 18)
-
         let monthInput = try EntryInput(
             title: "Notebook",
-            startDate: startDate,
-            startPrecision: .month,
+            start: TestDateSupport.start(
+                year: 2_022,
+                month: 3,
+                precision: .month
+            ),
             currentDate: currentDate,
             calendar: calendar
         )
         let yearInput = try EntryInput(
             title: "Notebook",
-            startDate: startDate,
-            startPrecision: .year,
+            start: TestDateSupport.start(
+                year: 2_022,
+                precision: .year
+            ),
             currentDate: currentDate,
             calendar: calendar
         )
 
-        #expect(monthInput.startDate == TestDateSupport.date(year: 2_022, month: 3, day: 1))
-        #expect(monthInput.startPrecision == .month)
-        #expect(yearInput.startDate == TestDateSupport.date(year: 2_022, month: 1, day: 1))
-        #expect(yearInput.startPrecision == .year)
+        #expect(monthInput.start == TestDateSupport.start(
+            year: 2_022,
+            month: 3,
+            precision: .month
+        ))
+        #expect(yearInput.start == TestDateSupport.start(
+            year: 2_022,
+            precision: .year
+        ))
+    }
+
+    @Test
+    func futureValidationUsesTheReferenceTimeZoneCalendarDate() throws {
+        let calendars = [
+            TestDateSupport.calendar(timeZoneIdentifier: "Asia/Tokyo"),
+            TestDateSupport.calendar(timeZoneIdentifier: "America/Los_Angeles")
+        ]
+        let today = TestDateSupport.start(year: 2_026, month: 7, day: 12)
+        let tomorrow = TestDateSupport.start(year: 2_026, month: 7, day: 13)
+
+        for calendar in calendars {
+            let currentDate = TestDateSupport.date(
+                year: 2_026,
+                month: 7,
+                day: 12,
+                calendar: calendar
+            )
+            let input = try EntryInput(
+                title: "Notebook",
+                start: today,
+                currentDate: currentDate,
+                calendar: calendar
+            )
+
+            #expect(input.start == today)
+            #expect(throws: EntryValidationError.futureStart) {
+                try EntryInput(
+                    title: "Notebook",
+                    start: tomorrow,
+                    currentDate: currentDate,
+                    calendar: calendar
+                )
+            }
+        }
     }
 }

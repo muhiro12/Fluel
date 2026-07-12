@@ -35,7 +35,12 @@ public extension EntryOperations {
                 matches(snapshot, searchText: searchText, filter: filter, calendar: calendar)
             }
             .sorted { lhs, rhs in
-                archivedSortPrecedes(lhs, rhs, sort: sort)
+                archivedSortPrecedes(
+                    lhs,
+                    rhs,
+                    sort: sort,
+                    calendar: calendar
+                )
             }
     }
 
@@ -79,17 +84,17 @@ public extension EntryOperations {
     ) -> String {
         var components = [
             snapshot.title,
-            snapshot.startPrecision.label,
-            snapshot.startPrecision.knownAsText,
-            snapshot.startPrecision.startLabel(for: snapshot.startDate, calendar: calendar)
+            snapshot.start.precision.label,
+            snapshot.start.precision.knownAsText,
+            snapshot.start.precision.startLabel(for: snapshot.start, calendar: calendar)
         ]
 
         if let note = snapshot.note {
             components.append(note)
         }
 
-        if let rangeLabel = snapshot.startPrecision.startRangeLabel(
-            for: snapshot.startDate,
+        if let rangeLabel = snapshot.start.precision.startRangeLabel(
+            for: snapshot.start,
             calendar: calendar
         ) {
             components.append(rangeLabel)
@@ -115,9 +120,17 @@ public extension EntryOperations {
     ) -> Bool {
         switch sort {
         case .longestTogether:
-            compare(lhs.startDate, rhs.startDate, tieBreak: lhs.title < rhs.title)
+            compare(
+                lhs.start.calculationDate,
+                rhs.start.calculationDate,
+                tieBreak: lhs.title < rhs.title
+            )
         case .mostRecentStart:
-            compare(rhs.startDate, lhs.startDate, tieBreak: lhs.title < rhs.title)
+            compare(
+                rhs.start.calculationDate,
+                lhs.start.calculationDate,
+                tieBreak: lhs.title < rhs.title
+            )
         case .alphabetical:
             titlePrecedes(lhs, rhs)
         case .recentlyUpdated:
@@ -128,7 +141,8 @@ public extension EntryOperations {
     private static func archivedSortPrecedes(
         _ lhs: EntrySnapshot,
         _ rhs: EntrySnapshot,
-        sort: ArchivedEntrySort
+        sort: ArchivedEntrySort,
+        calendar: Calendar
     ) -> Bool {
         switch sort {
         case .recentlyArchived:
@@ -145,8 +159,8 @@ public extension EntryOperations {
             )
         case .longestTogetherBeforeArchive:
             compare(
-                archivedDuration(rhs),
-                archivedDuration(lhs),
+                archivedDuration(rhs, calendar: calendar),
+                archivedDuration(lhs, calendar: calendar),
                 tieBreak: titlePrecedes(lhs, rhs)
             )
         case .alphabetical:
@@ -154,12 +168,23 @@ public extension EntryOperations {
         }
     }
 
-    private static func archivedDuration(_ snapshot: EntrySnapshot) -> TimeInterval {
-        guard let archivedAt = snapshot.archivedAt else {
+    private static func archivedDuration(
+        _ snapshot: EntrySnapshot,
+        calendar: Calendar
+    ) -> TimeInterval {
+        guard let archivedAt = snapshot.archivedAt,
+              let archiveStart = try? EntryStart(
+                date: archivedAt,
+                precision: .day,
+                timeZone: calendar.timeZone
+              ) else {
             return 0
         }
 
-        return archivedAt.timeIntervalSince(snapshot.startDate)
+        return max(
+            0,
+            archiveStart.calculationDate.timeIntervalSince(snapshot.start.calculationDate)
+        )
     }
 
     private static func titlePrecedes(

@@ -5,30 +5,33 @@ import FluelLibrary
 
 struct EntryEditingOperationsTests {
     @Test
-    func operationsCreateDraftFromSnapshot() {
+    func operationsCreateDraftFromSnapshot() throws {
         let calendar = TestDateSupport.calendar
         let snapshot = EntrySnapshot(
             id: UUID(),
             title: "Notebook",
-            startDate: TestDateSupport.date(year: 2_025, month: 5, day: 1),
-            startPrecision: .month,
+            start: TestDateSupport.start(
+                year: 2_025,
+                month: 5,
+                precision: .month
+            ),
             createdAt: TestDateSupport.date(year: 2_026, month: 1, day: 1),
             updatedAt: TestDateSupport.date(year: 2_026, month: 2, day: 1),
             archivedAt: nil,
             note: "Ordinary thoughts",
-            hasPhoto: true,
-            calendar: calendar
+            hasPhoto: true
         )
 
-        let draft = EntryOperations.makeDraft(
+        let draft = try EntryOperations.makeDraft(
             from: snapshot,
             calendar: calendar
         )
+        let expectedDayDate = try snapshot.start.date(in: calendar.timeZone)
 
         #expect(draft.title == snapshot.title)
         #expect(draft.note == snapshot.note)
-        #expect(draft.precision == snapshot.startPrecision)
-        #expect(draft.dayDate == snapshot.startDate)
+        #expect(draft.precision == snapshot.start.precision)
+        #expect(draft.dayDate == expectedDayDate)
         #expect(draft.month == 5)
         #expect(draft.year == 2_025)
     }
@@ -43,14 +46,12 @@ struct EntryEditingOperationsTests {
         let snapshot = EntrySnapshot(
             id: identifier,
             title: "Notebook",
-            startDate: TestDateSupport.date(year: 2_024, month: 1, day: 1),
-            startPrecision: .year,
+            start: TestDateSupport.start(year: 2_024, precision: .year),
             createdAt: createdAt,
             updatedAt: archivedAt,
             archivedAt: archivedAt,
             note: "Old note",
-            hasPhoto: true,
-            calendar: calendar
+            hasPhoto: true
         )
         let draft = EntryDraft(
             title: "  Daily notebook  ",
@@ -75,14 +76,36 @@ struct EntryEditingOperationsTests {
         #expect(updatedSnapshot.updatedAt == updatedAt)
         #expect(updatedSnapshot.title == "Daily notebook")
         #expect(updatedSnapshot.note == nil)
-        #expect(updatedSnapshot.startDate == TestDateSupport.date(year: 2_024, month: 6, day: 1))
-        #expect(updatedSnapshot.startPrecision == .month)
+        #expect(updatedSnapshot.start == TestDateSupport.start(
+            year: 2_024,
+            month: 6,
+            precision: .month
+        ))
+    }
+
+    @Test
+    func draftRoundTripPreservesStartAcrossTimeZones() throws {
+        let snapshot = makeSnapshot()
+        let calendars = [
+            TestDateSupport.calendar(timeZoneIdentifier: "Asia/Tokyo"),
+            TestDateSupport.calendar(timeZoneIdentifier: "America/Los_Angeles")
+        ]
+
+        for calendar in calendars {
+            let draft = try EntryOperations.makeDraft(
+                from: snapshot,
+                calendar: calendar
+            )
+            let roundTripStart = try draft.start(calendar: calendar)
+
+            #expect(roundTripStart == snapshot.start)
+        }
     }
 
     @Test
     func operationsRejectEmptyTitleWhenUpdatingSnapshot() {
         let calendar = TestDateSupport.calendar
-        let snapshot = makeSnapshot(calendar: calendar)
+        let snapshot = makeSnapshot()
         let draft = EntryDraft(
             title: "   ",
             precision: .day,
@@ -103,7 +126,7 @@ struct EntryEditingOperationsTests {
     @Test
     func operationsRejectFutureStartWhenUpdatingSnapshot() {
         let calendar = TestDateSupport.calendar
-        let snapshot = makeSnapshot(calendar: calendar)
+        let snapshot = makeSnapshot()
         let draft = EntryDraft(
             title: "Desk lamp",
             precision: .day,
@@ -121,16 +144,14 @@ struct EntryEditingOperationsTests {
         }
     }
 
-    private func makeSnapshot(calendar: Calendar) -> EntrySnapshot {
+    private func makeSnapshot() -> EntrySnapshot {
         EntrySnapshot(
             id: UUID(),
             title: "Desk lamp",
-            startDate: TestDateSupport.date(year: 2_024, month: 1, day: 15),
-            startPrecision: .day,
+            start: TestDateSupport.start(year: 2_024, month: 1, day: 15),
             createdAt: TestDateSupport.date(year: 2_026, month: 5, day: 1),
             updatedAt: TestDateSupport.date(year: 2_026, month: 5, day: 2),
-            archivedAt: nil,
-            calendar: calendar
+            archivedAt: nil
         )
     }
 }

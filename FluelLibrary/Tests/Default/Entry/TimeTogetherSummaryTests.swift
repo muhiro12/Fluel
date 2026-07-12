@@ -8,8 +8,7 @@ struct TimeTogetherSummaryTests {
     func dayPrecisionSummarizesElapsedYearsMonthsAndDays() {
         let calendar = TestDateSupport.calendar
         let summary = TimeTogetherSummary(
-            startDate: TestDateSupport.date(year: 2_024, month: 1, day: 15),
-            precision: .day,
+            start: TestDateSupport.start(year: 2_024, month: 1, day: 15),
             referenceDate: TestDateSupport.date(year: 2_025, month: 3, day: 20),
             calendar: calendar
         )
@@ -25,8 +24,11 @@ struct TimeTogetherSummaryTests {
     func monthPrecisionSummarizesFromEarliestMonthDay() {
         let calendar = TestDateSupport.calendar
         let summary = TimeTogetherSummary(
-            startDate: TestDateSupport.date(year: 2_025, month: 5, day: 30),
-            precision: .month,
+            start: TestDateSupport.start(
+                year: 2_025,
+                month: 5,
+                precision: .month
+            ),
             referenceDate: TestDateSupport.date(year: 2_026, month: 6, day: 25),
             calendar: calendar
         )
@@ -42,8 +44,7 @@ struct TimeTogetherSummaryTests {
     func yearPrecisionSummarizesFromEarliestYearDay() {
         let calendar = TestDateSupport.calendar
         let summary = TimeTogetherSummary(
-            startDate: TestDateSupport.date(year: 2_024, month: 10, day: 15),
-            precision: .year,
+            start: TestDateSupport.start(year: 2_024, precision: .year),
             referenceDate: TestDateSupport.date(year: 2_026, month: 6, day: 25),
             calendar: calendar
         )
@@ -53,5 +54,36 @@ struct TimeTogetherSummaryTests {
         #expect(summary.supportingText != nil)
         #expect(summary.totalValueLabel == nil)
         #expect(summary.totalValueText == nil)
+    }
+
+    @Test
+    func elapsedSummaryRemainsStableAcrossTimeZones() {
+        let start = TestDateSupport.start(year: 2_024, month: 1, day: 15)
+        let tokyo = TestDateSupport.calendar(timeZoneIdentifier: "Asia/Tokyo")
+        let losAngeles = TestDateSupport.calendar(
+            timeZoneIdentifier: "America/Los_Angeles"
+        )
+        let tokyoSummary = TimeTogetherSummary(
+            start: start,
+            referenceDate: TestDateSupport.date(
+                year: 2_026,
+                month: 6,
+                day: 25,
+                calendar: tokyo
+            ),
+            calendar: tokyo
+        )
+        let losAngelesSummary = TimeTogetherSummary(
+            start: start,
+            referenceDate: TestDateSupport.date(
+                year: 2_026,
+                month: 6,
+                day: 25,
+                calendar: losAngeles
+            ),
+            calendar: losAngeles
+        )
+
+        #expect(tokyoSummary == losAngelesSummary)
     }
 }

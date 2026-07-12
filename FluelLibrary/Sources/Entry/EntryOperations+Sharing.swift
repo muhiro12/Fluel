@@ -20,7 +20,10 @@ public extension EntryOperations {
                 "share.entry.start",
                 startLabel(for: snapshot, calendar: calendar)
             ),
-            EntryLocalization.format("share.entry.precision", snapshot.startPrecision.knownAsText)
+            EntryLocalization.format(
+                "share.entry.precision",
+                snapshot.start.precision.knownAsText
+            )
         ]
 
         if let rangeLabel = startRangeLabel(for: snapshot, calendar: calendar) {
@@ -183,6 +186,13 @@ public extension EntryOperations {
         calendar: Calendar
     ) -> String {
         formattedDate(date, template: "yMMMM", calendar: calendar)
+    }
+
+    private static func dateText(
+        _ start: EntryStart,
+        calendar: Calendar
+    ) -> String {
+        StartPrecision.day.startLabel(for: start, calendar: calendar)
     }
 
     private static func dateText(

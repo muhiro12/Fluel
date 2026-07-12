@@ -41,110 +41,108 @@ public enum StartPrecision: String, CaseIterable, Codable, Hashable, Identifiabl
         self != .day
     }
 
-    /// Returns a localized month name for picker presentation.
+    /// Returns a localized Gregorian month name for picker presentation.
     public static func monthName(
         for month: Int,
         calendar: Calendar = .autoupdatingCurrent
     ) -> String {
-        var components = DateComponents()
-        components.calendar = calendar
-        components.year = Self.monthNameReferenceYear
-        components.month = month
-        components.day = 1
-
-        guard let date = components.date else {
+        guard let start = try? EntryStart.month(
+            year: monthNameReferenceYear,
+            month: month
+        ) else {
             return String(month)
         }
 
-        return date.formatted(.dateTime.month(.wide))
+        return formattedDate(
+            start.calculationDate,
+            template: "MMMM",
+            calendar: calendar
+        )
     }
 
-    /// Normalizes a date to the earliest date represented by this precision.
-    public func normalizedStartDate(
-        from date: Date,
-        calendar: Calendar = .autoupdatingCurrent
-    ) -> Date {
-        switch self {
-        case .day:
-            calendar.startOfDay(for: date)
-        case .month:
-            normalizedDate(
-                from: date,
-                components: [.year, .month],
-                calendar: calendar
-            )
-        case .year:
-            normalizedDate(
-                from: date,
-                components: [.year],
-                calendar: calendar
-            )
-        }
-    }
-
-    /// Formats the known start value for display.
-    public func startLabel(
-        for date: Date,
-        calendar: Calendar = .autoupdatingCurrent
-    ) -> String {
-        let normalizedDate = normalizedStartDate(from: date, calendar: calendar)
-
-        switch self {
-        case .day:
-            return normalizedDate.formatted(date: .abbreviated, time: .omitted)
-        case .month:
-            return normalizedDate.formatted(.dateTime.month(.wide).year())
-        case .year:
-            return String(calendar.component(.year, from: normalizedDate))
-        }
-    }
-
-    /// Formats the approximate range represented by a month or year start.
-    public func startRangeLabel(
-        for date: Date,
-        calendar: Calendar = .autoupdatingCurrent
-    ) -> String? {
-        let normalizedDate = normalizedStartDate(from: date, calendar: calendar)
-
-        switch self {
-        case .day:
-            return nil
-        case .month:
-            return dateRangeLabel(component: .month, normalizedDate: normalizedDate, calendar: calendar)
-        case .year:
-            return dateRangeLabel(component: .year, normalizedDate: normalizedDate, calendar: calendar)
-        }
-    }
-
-    private func normalizedDate(
-        from date: Date,
-        components: Set<Calendar.Component>,
-        calendar: Calendar
-    ) -> Date {
-        let dateComponents = calendar.dateComponents(components, from: date)
-
-        return calendar.date(from: DateComponents(
-            calendar: calendar,
-            year: dateComponents.year,
-            month: dateComponents.month ?? 1,
-            day: 1
-        )) ?? calendar.startOfDay(for: date)
-    }
-
-    private func dateRangeLabel(
+    private static func dateRangeLabel(
         component: Calendar.Component,
-        normalizedDate: Date,
+        start: EntryStart,
         calendar: Calendar
     ) -> String? {
-        guard let interval = calendar.dateInterval(of: component, for: normalizedDate),
-              let finalDay = calendar.date(byAdding: .day, value: -1, to: interval.end) else {
+        let calculationCalendar = EntryStart.gregorianCalendar(in: .gmt)
+
+        guard let interval = calculationCalendar.dateInterval(
+            of: component,
+            for: start.calculationDate
+        ),
+        let finalDay = calculationCalendar.date(
+            byAdding: .day,
+            value: -1,
+            to: interval.end
+        ) else {
             return nil
         }
 
         return [
-            interval.start.formatted(date: .abbreviated, time: .omitted),
-            finalDay.formatted(date: .abbreviated, time: .omitted)
+            formattedDate(interval.start, template: "yMMMd", calendar: calendar),
+            formattedDate(finalDay, template: "yMMMd", calendar: calendar)
         ]
         .joined(separator: " - ")
+    }
+
+    private static func formattedDate(
+        _ date: Date,
+        template: String,
+        calendar: Calendar
+    ) -> String {
+        let formatter = DateFormatter()
+        formatter.calendar = EntryStart.gregorianCalendar(in: .gmt)
+        formatter.locale = calendar.locale ?? .autoupdatingCurrent
+        formatter.timeZone = .gmt
+        formatter.setLocalizedDateFormatFromTemplate(template)
+
+        return formatter.string(from: date)
+    }
+
+    /// Formats a Gregorian entry start for display.
+    public func startLabel(
+        for start: EntryStart,
+        calendar: Calendar = .autoupdatingCurrent
+    ) -> String {
+        switch self {
+        case .day:
+            Self.formattedDate(
+                start.calculationDate,
+                template: "yMMMd",
+                calendar: calendar
+            )
+        case .month:
+            Self.formattedDate(
+                start.calculationDate,
+                template: "yMMMM",
+                calendar: calendar
+            )
+        case .year:
+            String(start.year)
+        }
+    }
+
+    /// Formats the approximate Gregorian range represented by a month or year start.
+    public func startRangeLabel(
+        for start: EntryStart,
+        calendar: Calendar = .autoupdatingCurrent
+    ) -> String? {
+        switch self {
+        case .day:
+            nil
+        case .month:
+            Self.dateRangeLabel(
+                component: .month,
+                start: start,
+                calendar: calendar
+            )
+        case .year:
+            Self.dateRangeLabel(
+                component: .year,
+                start: start,
+                calendar: calendar
+            )
+        }
     }
 }

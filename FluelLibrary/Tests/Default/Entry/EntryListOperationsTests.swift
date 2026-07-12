@@ -83,7 +83,7 @@ struct EntryListOperationsTests {
     func activeEntriesApplySearchFilterAndSort() {
         let calendar = TestDateSupport.calendar
         let snapshots = activeFixtures.map { values in
-            snapshot(values, calendar: calendar)
+            snapshot(values)
         }
 
         let longestTogether = EntryOperations.activeEntries(
@@ -120,7 +120,7 @@ struct EntryListOperationsTests {
     func archivedEntriesApplySearchFilterAndSort() {
         let calendar = TestDateSupport.calendar
         let snapshots = archivedFixtures.map { values in
-            snapshot(values, calendar: calendar)
+            snapshot(values)
         }
 
         let recentlyArchived = EntryOperations.archivedEntries(
@@ -159,20 +159,45 @@ struct EntryListOperationsTests {
         #expect(photoMatches.map(\.title) == ["Bag"])
     }
 
-    private func snapshot(_ values: Values, calendar: Calendar) -> EntrySnapshot {
+    @Test
+    func startSortRemainsStableAcrossTimeZones() {
+        let snapshots = activeFixtures.map(snapshot)
+        let tokyo = TestDateSupport.calendar(timeZoneIdentifier: "Asia/Tokyo")
+        let losAngeles = TestDateSupport.calendar(
+            timeZoneIdentifier: "America/Los_Angeles"
+        )
+
+        let tokyoTitles = EntryOperations.activeEntries(
+            from: snapshots,
+            sort: .longestTogether,
+            calendar: tokyo
+        )
+        .map(\.title)
+        let losAngelesTitles = EntryOperations.activeEntries(
+            from: snapshots,
+            sort: .longestTogether,
+            calendar: losAngeles
+        )
+        .map(\.title)
+
+        #expect(tokyoTitles == losAngelesTitles)
+    }
+
+    private func snapshot(_ values: Values) -> EntrySnapshot {
         EntrySnapshot(
             id: UUID(),
             title: values.title,
-            startDate: TestDateSupport.date(year: values.startYear, month: 1, day: 1),
-            startPrecision: .year,
+            start: TestDateSupport.start(
+                year: values.startYear,
+                precision: .year
+            ),
             createdAt: TestDateSupport.date(year: 2_026, month: 6, day: 1),
             updatedAt: TestDateSupport.date(year: 2_026, month: 6, day: values.updatedDay),
             archivedAt: values.archivedDay.map { day in
                 TestDateSupport.date(year: 2_026, month: 6, day: day)
             },
             note: values.note,
-            hasPhoto: values.hasPhoto,
-            calendar: calendar
+            hasPhoto: values.hasPhoto
         )
     }
 }

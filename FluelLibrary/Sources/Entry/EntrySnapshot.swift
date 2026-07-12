@@ -10,10 +10,8 @@ public struct EntrySnapshot: Equatable, Identifiable, Sendable {
     public let note: String?
     /// True when the entry has photo content.
     public let hasPhoto: Bool
-    /// Normalized start date.
-    public let startDate: Date
-    /// Known start precision.
-    public let startPrecision: StartPrecision
+    /// Calendar date when the entry started.
+    public let start: EntryStart
     /// Creation date.
     public let createdAt: Date
     /// Last update date.
@@ -35,24 +33,18 @@ public struct EntrySnapshot: Equatable, Identifiable, Sendable {
     public init(
         id: UUID,
         title: String,
-        startDate: Date,
-        startPrecision: StartPrecision,
+        start: EntryStart,
         createdAt: Date,
         updatedAt: Date,
         archivedAt: Date?,
         note: String? = nil,
-        hasPhoto: Bool = false,
-        calendar: Calendar = .autoupdatingCurrent
+        hasPhoto: Bool = false
     ) {
         self.id = id
         self.title = title
         self.note = Self.normalizedNote(note)
         self.hasPhoto = hasPhoto
-        self.startDate = startPrecision.normalizedStartDate(
-            from: startDate,
-            calendar: calendar
-        )
-        self.startPrecision = startPrecision
+        self.start = start
         self.createdAt = createdAt
         self.updatedAt = updatedAt
         self.archivedAt = archivedAt
@@ -79,8 +71,7 @@ public struct EntrySnapshot: Equatable, Identifiable, Sendable {
         } ?? referenceDate
 
         return TimeTogetherSummary(
-            startDate: startDate,
-            precision: startPrecision,
+            start: start,
             referenceDate: effectiveReferenceDate,
             calendar: calendar
         )

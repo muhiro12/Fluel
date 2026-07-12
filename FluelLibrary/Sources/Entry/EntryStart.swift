@@ -29,6 +29,8 @@ public struct EntryStart: Comparable, Hashable, Sendable {
     /// How precisely the start is known.
     public let precision: StartPrecision
 
+    let calculationDate: Date
+
     private var precisionSortOrder: Int {
         switch precision {
         case .year:
@@ -81,12 +83,14 @@ public struct EntryStart: Comparable, Hashable, Sendable {
         validatedYear year: Int,
         month: Int,
         day: Int,
-        precision: StartPrecision
+        precision: StartPrecision,
+        calculationDate: Date
     ) {
         self.year = year
         self.month = month
         self.day = day
         self.precision = precision
+        self.calculationDate = calculationDate
     }
 
     /// Creates an exact-day start from Gregorian calendar components.
@@ -158,7 +162,8 @@ public struct EntryStart: Comparable, Hashable, Sendable {
         )
 
         guard year >= firstYear,
-              components.isValidDate(in: calendar) else {
+              components.isValidDate(in: calendar),
+              let resolvedCalculationDate = calendar.date(from: components) else {
             throw ValidationError.invalidDate(
                 year: year,
                 month: month,
@@ -170,11 +175,12 @@ public struct EntryStart: Comparable, Hashable, Sendable {
             validatedYear: year,
             month: month,
             day: day,
-            precision: precision
+            precision: precision,
+            calculationDate: resolvedCalculationDate
         )
     }
 
-    private static func gregorianCalendar(in timeZone: TimeZone) -> Calendar {
+    static func gregorianCalendar(in timeZone: TimeZone) -> Calendar {
         var calendar = Calendar(identifier: .gregorian)
         calendar.timeZone = timeZone
         return calendar
