@@ -105,8 +105,9 @@ struct ActiveEntryListView: View {
 
     private func archive(_ entry: Entry) {
         do {
-            entry.archive()
-            try modelContext.save()
+            try modelContext.performAndSave {
+                entry.archive()
+            }
         } catch {
             isShowingArchiveError = true
         }

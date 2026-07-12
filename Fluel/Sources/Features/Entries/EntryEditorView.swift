@@ -77,8 +77,9 @@ struct EntryEditorView: View {
         do {
             let input = try EntryOperations.makeInput(from: draft)
 
-            modelContext.insert(Entry(input: input))
-            try modelContext.save()
+            try modelContext.performAndSave {
+                modelContext.insert(Entry(input: input))
+            }
             dismiss()
         } catch {
             isShowingSaveError = true

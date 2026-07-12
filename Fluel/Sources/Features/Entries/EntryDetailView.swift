@@ -96,9 +96,10 @@ struct EntryDetailView: View {
 
     private func deletePermanently() {
         do {
-            try EntryOperations.validatePermanentDelete(for: entry.snapshot)
-            modelContext.delete(entry)
-            try modelContext.save()
+            try modelContext.performAndSave {
+                try EntryOperations.validatePermanentDelete(for: entry.snapshot)
+                modelContext.delete(entry)
+            }
             dismiss()
         } catch {
             isShowingActionError = true
@@ -107,8 +108,9 @@ struct EntryDetailView: View {
 
     private func saveAction(_ action: () -> Void) {
         do {
-            action()
-            try modelContext.save()
+            try modelContext.performAndSave {
+                action()
+            }
         } catch {
             isShowingActionError = true
         }

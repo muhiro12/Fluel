@@ -104,8 +104,9 @@ struct ArchiveEntryListView: View {
 
     private func restore(_ entry: Entry) {
         do {
-            entry.restore()
-            try modelContext.save()
+            try modelContext.performAndSave {
+                entry.restore()
+            }
         } catch {
             isShowingRestoreError = true
         }

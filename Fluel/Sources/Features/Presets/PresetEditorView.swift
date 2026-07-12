@@ -94,13 +94,13 @@ struct PresetEditorView: View {
         )
 
         do {
-            if let preset {
-                preset.apply(snapshot)
-            } else {
-                modelContext.insert(Preset(preset: snapshot))
+            try modelContext.performAndSave {
+                if let preset {
+                    preset.apply(snapshot)
+                } else {
+                    modelContext.insert(Preset(preset: snapshot))
+                }
             }
-
-            try modelContext.save()
             dismiss()
         } catch {
             isShowingSaveError = true

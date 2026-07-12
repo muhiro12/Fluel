@@ -97,14 +97,10 @@ struct PresetsView: View {
             return
         }
 
-        do {
+        _ = savePresetChange {
             for preset in missingPresets {
                 modelContext.insert(Preset(preset: preset))
             }
-
-            try modelContext.save()
-        } catch {
-            isShowingActionError = true
         }
     }
 
@@ -118,8 +114,15 @@ struct PresetsView: View {
 
     private func use(_ preset: Preset) {
         let usedPreset = EntryOperations.recordUse(of: preset.snapshot, usedAt: .now)
-        preset.apply(usedPreset)
-        savePresetChange()
+
+        let didSave = savePresetChange {
+            preset.apply(usedPreset)
+        }
+
+        guard didSave else {
+            return
+        }
+
         entryDraftSheet = .init(draft: EntryOperations.makeDraft(from: usedPreset))
     }
 
@@ -137,36 +140,45 @@ struct PresetsView: View {
             return
         }
 
+        let didSave = savePresetChange {
+            modelContext.delete(preset)
+        }
+
+        guard didSave else {
+            return
+        }
+
         presetPendingDeletion = nil
-        modelContext.delete(preset)
-        savePresetChange()
     }
 
     private func togglePin(_ preset: Preset) {
-        preset.apply(EntryOperations.pin(preset.snapshot, isPinned: !preset.isPinned))
-        savePresetChange()
+        _ = savePresetChange {
+            preset.apply(EntryOperations.pin(preset.snapshot, isPinned: !preset.isPinned))
+        }
     }
 
     private func toggleDefault(_ preset: Preset) {
         let defaultID = preset.isDefault ? nil : preset.id
         let updatedPresets = EntryOperations.setDefaultPreset(defaultID, in: presets.map(\.snapshot))
 
-        for updatedPreset in updatedPresets {
-            if let matchingPreset = presets.first(where: { candidatePreset in
-                candidatePreset.id == updatedPreset.id
-            }) {
-                matchingPreset.apply(updatedPreset)
+        _ = savePresetChange {
+            for updatedPreset in updatedPresets {
+                if let matchingPreset = presets.first(where: { candidatePreset in
+                    candidatePreset.id == updatedPreset.id
+                }) {
+                    matchingPreset.apply(updatedPreset)
+                }
             }
         }
-
-        savePresetChange()
     }
 
-    private func savePresetChange() {
+    private func savePresetChange(_ changes: () throws -> Void) -> Bool {
         do {
-            try modelContext.save()
+            try modelContext.performAndSave(changes)
+            return true
         } catch {
             isShowingActionError = true
+            return false
         }
     }
 }

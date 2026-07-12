@@ -27,8 +27,9 @@ enum FluelEntryIntentStore {
         let entry = Entry(input: input)
         let modelContext = modelContainer.mainContext
 
-        modelContext.insert(entry)
-        try modelContext.save()
+        try modelContext.performAndSave {
+            modelContext.insert(entry)
+        }
 
         return .init(entry: entry)
     }
@@ -43,9 +44,11 @@ enum FluelEntryIntentStore {
             entry.snapshot,
             archivedAt: .now
         )
+        let modelContext = modelContainer.mainContext
 
-        entry.apply(snapshot)
-        try modelContainer.mainContext.save()
+        try modelContext.performAndSave {
+            entry.apply(snapshot)
+        }
     }
 
     @MainActor
@@ -58,9 +61,11 @@ enum FluelEntryIntentStore {
             entry.snapshot,
             restoredAt: .now
         )
+        let modelContext = modelContainer.mainContext
 
-        entry.apply(snapshot)
-        try modelContainer.mainContext.save()
+        try modelContext.performAndSave {
+            entry.apply(snapshot)
+        }
     }
 
     @MainActor
