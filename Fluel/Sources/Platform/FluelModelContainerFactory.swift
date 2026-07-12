@@ -10,16 +10,14 @@ import SwiftData
 enum FluelModelContainerFactory {
     static let cloudKitContainerIdentifier = "iCloud.com.muhiro12.Fluel"
 
-    private static let storeName = "Fluel"
+    private static let storeName = "FluelV1"
 
-    static let schema = Schema([
-        Entry.self,
-        Preset.self
-    ])
+    static let schema = Schema(versionedSchema: FluelSchemaV1.self)
 
     static func production() throws -> ModelContainer {
         try ModelContainer(
             for: schema,
+            migrationPlan: FluelSchemaMigrationPlan.self,
             configurations: [
                 ModelConfiguration(
                     storeName,
@@ -33,6 +31,7 @@ enum FluelModelContainerFactory {
     static func inMemory() throws -> ModelContainer {
         try ModelContainer(
             for: schema,
+            migrationPlan: FluelSchemaMigrationPlan.self,
             configurations: [
                 ModelConfiguration(
                     schema: schema,

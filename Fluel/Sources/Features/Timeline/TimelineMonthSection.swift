@@ -47,7 +47,7 @@ struct TimelineMonthSection: View {
         ]
         .compactMap(\.self)
 
-        return parts.joined(separator: ", ")
+        return parts.formatted(.list(type: .and, width: .narrow))
     }
 
     private func trendText(count: Int, label: String) -> String? {

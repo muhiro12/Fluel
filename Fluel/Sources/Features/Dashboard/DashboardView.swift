@@ -14,7 +14,15 @@ struct DashboardView: View {
     @Query(sort: \Entry.updatedAt, order: .reverse)
     private var entries: [Entry]
 
+    @Query(sort: \EntryActivity.occurredAt, order: .reverse)
+    private var activity: [EntryActivity]
+
     var body: some View {
+        let summary = EntryOperations.dashboardSummary(
+            from: entries.map(\.snapshot),
+            activity: activity.map(\.summary)
+        )
+
         List {
             DashboardCountsSection(summary: summary)
 
@@ -29,10 +37,6 @@ struct DashboardView: View {
             }
         }
         .navigationTitle("Dashboard")
-    }
-
-    private var summary: EntryDashboardSummary {
-        EntryOperations.dashboardSummary(from: entries.map(\.snapshot))
     }
 }
 

@@ -76,10 +76,12 @@ struct EntryEditorView: View {
     private func save() {
         do {
             let input = try EntryOperations.makeInput(from: draft)
-
-            try modelContext.performAndSave {
-                modelContext.insert(Entry(input: input))
-            }
+            try EntryStore.create(
+                input: input,
+                photoData: nil,
+                createdAt: .now,
+                in: modelContext
+            )
             dismiss()
         } catch {
             isShowingSaveError = true

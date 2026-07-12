@@ -90,34 +90,41 @@ enum PreviewSampleData {
 
     static func container(for scenario: Scenario) -> ModelContainer {
         let entries: [Entry]
+        let activityItems: [EntryActivity]
         let presets: [Preset]
         let defaultSelections: [PresetDefaultSelection]
 
         switch scenario {
         case .empty:
             entries = []
+            activityItems = []
             presets = []
             defaultSelections = []
         case .typical:
             entries = typicalEntries
+            activityItems = activity(for: entries)
             presets = samplePresets
             defaultSelections = sampleDefaultSelections
         case .dense:
             entries = denseEntries
+            activityItems = activity(for: entries)
             presets = samplePresets
             defaultSelections = sampleDefaultSelections
         case .archive:
             entries = archivedEntries
+            activityItems = activity(for: entries)
             presets = samplePresets
             defaultSelections = sampleDefaultSelections
         case .presets:
             entries = []
+            activityItems = []
             presets = samplePresets
             defaultSelections = sampleDefaultSelections
         }
 
         return container(
             entries: entries,
+            activity: activityItems,
             presets: presets,
             defaultSelections: defaultSelections
         )
@@ -131,6 +138,7 @@ enum PreviewSampleData {
         return (
             container: container(
                 entries: [entry],
+                activity: activity(for: [entry]),
                 presets: samplePresets,
                 defaultSelections: sampleDefaultSelections
             ),

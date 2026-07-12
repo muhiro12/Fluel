@@ -80,13 +80,21 @@ struct EntryDetailView: View {
 
     private func archive() {
         saveAction {
-            entry.archive()
+            try EntryStore.archive(
+                entry,
+                archivedAt: .now,
+                in: modelContext
+            )
         }
     }
 
     private func restore() {
         saveAction {
-            entry.restore()
+            try EntryStore.restore(
+                entry,
+                restoredAt: .now,
+                in: modelContext
+            )
         }
     }
 
@@ -96,21 +104,16 @@ struct EntryDetailView: View {
 
     private func deletePermanently() {
         do {
-            try modelContext.performAndSave {
-                try EntryOperations.validatePermanentDelete(for: entry.snapshot)
-                modelContext.delete(entry)
-            }
+            try EntryStore.deletePermanently(entry, in: modelContext)
             dismiss()
         } catch {
             isShowingActionError = true
         }
     }
 
-    private func saveAction(_ action: () -> Void) {
+    private func saveAction(_ action: () throws -> Void) {
         do {
-            try modelContext.performAndSave {
-                action()
-            }
+            try action()
         } catch {
             isShowingActionError = true
         }

@@ -30,6 +30,7 @@ extension PreviewSampleData {
 
     static func container(
         entries: [Entry],
+        activity: [EntryActivity],
         presets: [Preset],
         defaultSelections: [PresetDefaultSelection]
     ) -> ModelContainer {
@@ -45,6 +46,10 @@ extension PreviewSampleData {
 
         for entry in entries {
             context.insert(entry)
+        }
+
+        for activityItem in activity {
+            context.insert(activityItem)
         }
 
         for preset in presets {

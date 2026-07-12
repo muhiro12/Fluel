@@ -14,11 +14,29 @@ struct TimelineView: View {
     @Query(sort: \Entry.updatedAt, order: .reverse)
     private var entries: [Entry]
 
+    @Query(sort: \EntryActivity.occurredAt, order: .reverse)
+    private var activity: [EntryActivity]
+
     @State private var searchText = ""
     @State private var filter = EntryActivityFilter.all
     @State private var scope = EntryTimelineScope.recentYear
 
     var body: some View {
+        let query = EntryTimelineQuery(
+            searchText: searchText,
+            filter: filter,
+            scope: scope
+        )
+        let result = EntryOperations.timeline(
+            from: entries.map(\.snapshot),
+            activity: activity.map(\.summary),
+            query: query
+        )
+        let shareSummary = EntryOperations.timelineShareSummary(
+            for: result,
+            query: query
+        )
+
         List {
             if result.summary.totalActivityCount == 0 {
                 TimelineEmptyState()
@@ -70,24 +88,6 @@ struct TimelineView: View {
                 }
             }
         }
-    }
-
-    private var result: EntryTimelineResult {
-        EntryOperations.timeline(
-            from: entries.map(\.snapshot),
-            query: query
-        )
-    }
-
-    private var query: EntryTimelineQuery {
-        .init(searchText: searchText, filter: filter, scope: scope)
-    }
-
-    private var shareSummary: EntryShareSummary {
-        EntryOperations.timelineShareSummary(
-            for: result,
-            query: query
-        )
     }
 
     private func clearSearchAndFilters() {

@@ -24,12 +24,13 @@ enum FluelEntryIntentStore {
             note: note,
             calendar: calendar
         )
-        let entry = Entry(input: input)
         let modelContext = modelContainer.mainContext
-
-        try modelContext.performAndSave {
-            modelContext.insert(entry)
-        }
+        let entry = try EntryStore.create(
+            input: input,
+            photoData: nil,
+            createdAt: .now,
+            in: modelContext
+        )
 
         return .init(entry: entry)
     }
@@ -45,15 +46,12 @@ enum FluelEntryIntentStore {
             throw FluelEntryIntentStoreError.entryAlreadyArchived
         }
 
-        let snapshot = EntryOperations.archive(
-            entry.snapshot,
-            archivedAt: .now
-        )
         let modelContext = modelContainer.mainContext
-
-        try modelContext.performAndSave {
-            entry.apply(snapshot)
-        }
+        try EntryStore.archive(
+            entry,
+            archivedAt: .now,
+            in: modelContext
+        )
     }
 
     @MainActor
@@ -67,15 +65,12 @@ enum FluelEntryIntentStore {
             throw FluelEntryIntentStoreError.entryIsNotArchived
         }
 
-        let snapshot = EntryOperations.restore(
-            entry.snapshot,
-            restoredAt: .now
-        )
         let modelContext = modelContainer.mainContext
-
-        try modelContext.performAndSave {
-            entry.apply(snapshot)
-        }
+        try EntryStore.restore(
+            entry,
+            restoredAt: .now,
+            in: modelContext
+        )
     }
 
     @MainActor

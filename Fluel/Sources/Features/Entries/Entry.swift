@@ -203,32 +203,6 @@ final class Entry {
         )
     }
 
-    func archive() {
-        archive(archivedAt: .now)
-    }
-
-    func archive(archivedAt: Date) {
-        apply(
-            EntryOperations.archive(
-                snapshot,
-                archivedAt: archivedAt
-            )
-        )
-    }
-
-    func restore() {
-        restore(restoredAt: .now)
-    }
-
-    func restore(restoredAt: Date) {
-        apply(
-            EntryOperations.restore(
-                snapshot,
-                restoredAt: restoredAt
-            )
-        )
-    }
-
     func apply(_ snapshot: EntrySnapshot) {
         title = snapshot.title
         note = snapshot.note
