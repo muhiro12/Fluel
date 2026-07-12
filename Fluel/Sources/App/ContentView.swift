@@ -12,12 +12,11 @@ import SwiftData
 import SwiftUI
 
 struct ContentView: View {
-    @Query(
-        filter: #Predicate<Preset> { preset in
-            preset.isDefault
-        }
-    )
-    private var defaultPresets: [Preset]
+    @Query(sort: \Preset.title, order: .forward)
+    private var presets: [Preset]
+
+    @Query(sort: \PresetDefaultSelection.selectedAt, order: .reverse)
+    private var defaultSelections: [PresetDefaultSelection]
 
     @Environment(FluelRouteInbox.self)
     private var routeInbox
@@ -71,8 +70,12 @@ struct ContentView: View {
     }
 
     private func addEntry() {
-        let draft = defaultPresets.first.map { preset in
-            EntryOperations.makeDraft(from: preset.snapshot)
+        let defaultPresetID = PresetStore.selectedDefaultPresetID(from: defaultSelections)
+        let defaultPreset = defaultPresetID.flatMap { presetID in
+            PresetStore.preset(withID: presetID, in: presets)
+        }
+        let draft = defaultPreset.flatMap { preset in
+            try? EntryOperations.makeDraft(from: preset.snapshot(isDefault: true))
         } ?? EntryDraft()
 
         activeSheet = .init(draft: draft)

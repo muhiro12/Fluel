@@ -61,7 +61,7 @@ struct PresetEditorView: View {
     }
 
     init(preset: Preset?) {
-        let presetSnapshot = preset?.snapshot
+        let presetSnapshot = preset?.snapshot(isDefault: false)
         let initialStartOption = presetSnapshot.map { snapshot in
             PresetStartOption.option(for: snapshot.start)
         } ?? .today
@@ -89,14 +89,14 @@ struct PresetEditorView: View {
             id: preset?.id ?? UUID(),
             note: note,
             isPinned: preset?.isPinned ?? false,
-            isDefault: preset?.isDefault ?? false,
+            isDefault: false,
             lastUsedAt: preset?.lastUsedAt
         )
 
         do {
             try modelContext.performAndSave {
                 if let preset {
-                    preset.apply(snapshot)
+                    preset.apply(snapshot, updatedAt: .now)
                 } else {
                     modelContext.insert(Preset(preset: snapshot))
                 }

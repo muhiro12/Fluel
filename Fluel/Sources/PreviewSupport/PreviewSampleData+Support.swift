@@ -30,7 +30,8 @@ extension PreviewSampleData {
 
     static func container(
         entries: [Entry],
-        presets: [Preset]
+        presets: [Preset],
+        defaultSelections: [PresetDefaultSelection]
     ) -> ModelContainer {
         let modelContainer: ModelContainer
 
@@ -48,6 +49,10 @@ extension PreviewSampleData {
 
         for preset in presets {
             context.insert(preset)
+        }
+
+        for defaultSelection in defaultSelections {
+            context.insert(defaultSelection)
         }
 
         do {

@@ -12,9 +12,6 @@ import FluelLibrary
 extension PreviewSampleData {
     static var samplePresets: [Preset] {
         var presets = EntryOperations.starterPresets()
-        let defaultID = presets.first { preset in
-            preset.title == "This home"
-        }?.id
 
         presets = presets.map { preset in
             switch preset.title {
@@ -39,13 +36,26 @@ extension PreviewSampleData {
             lastUsedAt: date(year: 2026, month: 6, day: 20)
         ))
 
-        return EntryOperations.setDefaultPreset(defaultID, in: presets).map { preset in
+        return presets.map { preset in
             Preset(
                 preset: preset,
                 createdAt: ReferenceDate.created,
                 updatedAt: ReferenceDate.current
             )
         }
+    }
+
+    static var sampleDefaultSelections: [PresetDefaultSelection] {
+        let defaultID = EntryOperations.starterPresets().first { preset in
+            preset.title == "This home"
+        }?.id
+
+        return [
+            PresetDefaultSelection(
+                presetID: defaultID,
+                selectedAt: ReferenceDate.current
+            )
+        ]
     }
 }
 

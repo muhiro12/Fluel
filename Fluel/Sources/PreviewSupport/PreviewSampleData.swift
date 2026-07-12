@@ -91,26 +91,36 @@ enum PreviewSampleData {
     static func container(for scenario: Scenario) -> ModelContainer {
         let entries: [Entry]
         let presets: [Preset]
+        let defaultSelections: [PresetDefaultSelection]
 
         switch scenario {
         case .empty:
             entries = []
             presets = []
+            defaultSelections = []
         case .typical:
             entries = typicalEntries
             presets = samplePresets
+            defaultSelections = sampleDefaultSelections
         case .dense:
             entries = denseEntries
             presets = samplePresets
+            defaultSelections = sampleDefaultSelections
         case .archive:
             entries = archivedEntries
             presets = samplePresets
+            defaultSelections = sampleDefaultSelections
         case .presets:
             entries = []
             presets = samplePresets
+            defaultSelections = sampleDefaultSelections
         }
 
-        return container(entries: entries, presets: presets)
+        return container(
+            entries: entries,
+            presets: presets,
+            defaultSelections: defaultSelections
+        )
     }
 
     static func detailContainer(title: String) -> (container: ModelContainer, entry: Entry) {
@@ -119,7 +129,11 @@ enum PreviewSampleData {
         } ?? typicalEntries[0]
 
         return (
-            container: container(entries: [entry], presets: samplePresets),
+            container: container(
+                entries: [entry],
+                presets: samplePresets,
+                defaultSelections: sampleDefaultSelections
+            ),
             entry: entry
         )
     }

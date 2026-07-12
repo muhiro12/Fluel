@@ -6,6 +6,7 @@
 //
 
 import FluelLibrary
+import Foundation
 import MHUI
 import SwiftData
 import SwiftUI
@@ -16,6 +17,9 @@ struct PresetsView: View {
 
     @Query(sort: \Preset.title, order: .forward)
     private var presets: [Preset]
+
+    @Query(sort: \PresetDefaultSelection.selectedAt, order: .reverse)
+    private var defaultSelections: [PresetDefaultSelection]
 
     @State private var editorRoute: PresetEditorRoute?
     @State private var entryDraftSheet: PresetEntryDraftSheet?
@@ -31,7 +35,7 @@ struct PresetsView: View {
                 Section("Presets") {
                     ForEach(orderedPresets) { preset in
                         PresetRowView(
-                            preset: preset.snapshot,
+                            preset: snapshot(for: preset),
                             canEdit: preset.isCustom,
                             use: { use(preset) },
                             edit: { edit(preset) },
@@ -74,33 +78,44 @@ struct PresetsView: View {
         } message: {
             Text("This removes the reusable starting point. Entries already created from it stay unchanged.")
         }
-        .onAppear(perform: seedStarterPresets)
+        .task(id: reconciliationID) {
+            reconcilePresets()
+        }
     }
 
     private var orderedPresets: [Preset] {
-        let orderedIDs = EntryOperations.orderedPresets(presets.map(\.snapshot)).map(\.id)
+        let deduplicatedPresets = PresetStore.deduplicatedPresets(presets)
+        let snapshots = deduplicatedPresets.map { preset in
+            snapshot(for: preset)
+        }
+        let orderedIDs = EntryOperations.orderedPresets(snapshots).map(\.id)
 
         return orderedIDs.compactMap { id in
-            presets.first { preset in
-                preset.id == id
-            }
+            PresetStore.preset(withID: id, in: deduplicatedPresets)
         }
     }
 
-    private func seedStarterPresets() {
-        let existingIDs = Set(presets.map(\.id))
-        let missingPresets = EntryOperations.starterPresets().filter { preset in
-            !existingIDs.contains(preset.id)
-        }
+    private var selectedDefaultPresetID: UUID? {
+        PresetStore.selectedDefaultPresetID(from: defaultSelections)
+    }
 
-        guard !missingPresets.isEmpty else {
-            return
-        }
+    private var reconciliationID: PresetStore.ReconciliationID {
+        PresetStore.reconciliationID(
+            for: presets,
+            defaultSelections: defaultSelections
+        )
+    }
 
-        _ = savePresetChange {
-            for preset in missingPresets {
-                modelContext.insert(Preset(preset: preset))
-            }
+    private func reconcilePresets() {
+        do {
+            try PresetStore.reconcilePresets(
+                presets,
+                defaultSelections: defaultSelections,
+                in: modelContext,
+                reconciledAt: .now
+            )
+        } catch {
+            isShowingActionError = true
         }
     }
 
@@ -113,10 +128,14 @@ struct PresetsView: View {
     }
 
     private func use(_ preset: Preset) {
-        let usedPreset = EntryOperations.recordUse(of: preset.snapshot, usedAt: .now)
+        let usedAt = Date.now
+        let usedPreset = EntryOperations.recordUse(
+            of: snapshot(for: preset),
+            usedAt: usedAt
+        )
 
         let didSave = savePresetChange {
-            preset.apply(usedPreset)
+            preset.apply(usedPreset, updatedAt: usedAt)
         }
 
         guard didSave else {
@@ -140,7 +159,16 @@ struct PresetsView: View {
             return
         }
 
+        let deletedAt = Date.now
+        let wasDefault = selectedDefaultPresetID == preset.id
         let didSave = savePresetChange {
+            if wasDefault {
+                modelContext.insert(PresetDefaultSelection(
+                    presetID: nil,
+                    selectedAt: deletedAt
+                ))
+            }
+
             modelContext.delete(preset)
         }
 
@@ -152,24 +180,25 @@ struct PresetsView: View {
     }
 
     private func togglePin(_ preset: Preset) {
+        let changedAt = Date.now
         _ = savePresetChange {
-            preset.apply(EntryOperations.pin(preset.snapshot, isPinned: !preset.isPinned))
+            preset.apply(
+                EntryOperations.pin(snapshot(for: preset), isPinned: !preset.isPinned),
+                updatedAt: changedAt
+            )
         }
     }
 
     private func toggleDefault(_ preset: Preset) {
-        let defaultID = preset.isDefault ? nil : preset.id
-        let updatedPresets = EntryOperations.setDefaultPreset(defaultID, in: presets.map(\.snapshot))
+        let defaultID = selectedDefaultPresetID == preset.id ? nil : preset.id
 
         _ = savePresetChange {
-            for updatedPreset in updatedPresets {
-                if let matchingPreset = presets.first(where: { candidatePreset in
-                    candidatePreset.id == updatedPreset.id
-                }) {
-                    matchingPreset.apply(updatedPreset)
-                }
-            }
+            modelContext.insert(PresetDefaultSelection(presetID: defaultID))
         }
+    }
+
+    private func snapshot(for preset: Preset) -> EntryPreset {
+        preset.snapshot(isDefault: preset.id == selectedDefaultPresetID)
     }
 
     private func savePresetChange(_ changes: () throws -> Void) -> Bool {
