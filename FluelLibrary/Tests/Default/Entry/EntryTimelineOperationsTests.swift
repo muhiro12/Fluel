@@ -53,8 +53,10 @@ struct EntryTimelineOperationsTests {
     @Test
     func timelineGroupsActivityByMonthAndSummarizesVisibleSlice() {
         let calendar = TestDateSupport.calendar
+        let snapshots = snapshots(calendar: calendar)
         let result = EntryOperations.timeline(
-            from: snapshots(calendar: calendar),
+            from: snapshots,
+            activity: activity(from: snapshots),
             referenceDate: TestDateSupport.date(year: 2_026, month: 6, day: 25),
             calendar: calendar
         )
@@ -71,6 +73,7 @@ struct EntryTimelineOperationsTests {
     @Test
     func timelineAppliesSearchFilterScopeAndVisibleMilestones() {
         let calendar = TestDateSupport.calendar
+        let snapshots = snapshots(calendar: calendar)
         let query = EntryTimelineQuery(
             searchText: "watch",
             filter: .all,
@@ -79,7 +82,8 @@ struct EntryTimelineOperationsTests {
         )
 
         let result = EntryOperations.timeline(
-            from: snapshots(calendar: calendar),
+            from: snapshots,
+            activity: activity(from: snapshots),
             query: query,
             referenceDate: TestDateSupport.date(year: 2_026, month: 6, day: 25),
             calendar: calendar
@@ -93,10 +97,12 @@ struct EntryTimelineOperationsTests {
     @Test
     func timelineFiltersArchivedActivityWithoutActiveMilestones() {
         let calendar = TestDateSupport.calendar
+        let snapshots = snapshots(calendar: calendar)
         let query = EntryTimelineQuery(filter: .archived, scope: .recentYear)
 
         let result = EntryOperations.timeline(
-            from: snapshots(calendar: calendar),
+            from: snapshots,
+            activity: activity(from: snapshots),
             query: query,
             referenceDate: TestDateSupport.date(year: 2_026, month: 6, day: 25),
             calendar: calendar
@@ -105,6 +111,23 @@ struct EntryTimelineOperationsTests {
         #expect(result.summary.visibleActivityCount == 1)
         #expect(result.summary.archivedCount == 1)
         #expect(result.months.first?.activity.first?.kind == .archived)
+        #expect(result.upcomingMilestones.isEmpty)
+    }
+
+    @Test
+    func timelineDoesNotSynthesizeMissingActivityFromSnapshots() {
+        let calendar = TestDateSupport.calendar
+        let snapshots = snapshots(calendar: calendar)
+
+        let result = EntryOperations.timeline(
+            from: snapshots,
+            activity: [],
+            query: .init(scope: .allTime),
+            calendar: calendar
+        )
+
+        #expect(result.summary.totalActivityCount == 0)
+        #expect(result.months.isEmpty)
         #expect(result.upcomingMilestones.isEmpty)
     }
 
@@ -124,6 +147,25 @@ struct EntryTimelineOperationsTests {
                 archivedAt: values.archivedAt,
                 calendar: calendar
             )
+        }
+    }
+
+    private func activity(
+        from snapshots: [EntrySnapshot]
+    ) -> [EntryActivitySummary] {
+        snapshots.flatMap { snapshot in
+            var activity = [EntryOperations.addedActivity(for: snapshot)]
+
+            if snapshot.updatedAt != snapshot.createdAt,
+               snapshot.updatedAt != snapshot.archivedAt {
+                activity.append(EntryOperations.updatedActivity(for: snapshot))
+            }
+
+            if let archivedActivity = EntryOperations.archivedActivity(for: snapshot) {
+                activity.append(archivedActivity)
+            }
+
+            return activity
         }
     }
 }

@@ -4,6 +4,7 @@ public extension EntryOperations {
     /// Returns collection overview values for the Dashboard.
     static func dashboardSummary(
         from snapshots: [EntrySnapshot],
+        activity: [EntryActivitySummary],
         referenceDate: Date = .now,
         calendar: Calendar = .autoupdatingCurrent,
         milestoneLimit: Int = 3,
@@ -28,7 +29,7 @@ public extension EntryOperations {
                 calendar: calendar,
                 limit: milestoneLimit
             ),
-            recentActivity: recentActivity(from: snapshots, limit: activityLimit)
+            recentActivity: recentActivity(from: activity, limit: activityLimit)
         )
     }
 
@@ -52,51 +53,19 @@ public extension EntryOperations {
     }
 
     private static func recentActivity(
-        from snapshots: [EntrySnapshot],
+        from activity: [EntryActivitySummary],
         limit: Int
     ) -> [EntryActivitySummary] {
-        snapshots
-            .flatMap(activitySummaries)
+        activity
             .sorted { lhs, rhs in
-                compare(rhs.date, lhs.date, tieBreak: lhs.title < rhs.title)
+                compare(
+                    rhs.date,
+                    lhs.date,
+                    tieBreak: lhs.id.uuidString < rhs.id.uuidString
+                )
             }
             .prefix(max(0, limit))
             .map(\.self)
-    }
-
-    private static func activitySummaries(
-        for snapshot: EntrySnapshot
-    ) -> [EntryActivitySummary] {
-        if let archivedAt = snapshot.archivedAt {
-            return [
-                .init(
-                    entryID: snapshot.id,
-                    title: snapshot.title,
-                    kind: .archived,
-                    date: archivedAt
-                )
-            ]
-        }
-
-        if snapshot.updatedAt != snapshot.createdAt {
-            return [
-                .init(
-                    entryID: snapshot.id,
-                    title: snapshot.title,
-                    kind: .updated,
-                    date: snapshot.updatedAt
-                )
-            ]
-        }
-
-        return [
-            .init(
-                entryID: snapshot.id,
-                title: snapshot.title,
-                kind: .added,
-                date: snapshot.createdAt
-            )
-        ]
     }
 
     private static func titlePrecedes(

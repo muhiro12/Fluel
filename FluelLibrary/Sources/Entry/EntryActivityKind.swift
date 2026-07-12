@@ -1,7 +1,7 @@
 import Foundation
 
 /// User-visible kinds of entry activity.
-public enum EntryActivityKind: String, CaseIterable, Identifiable, Sendable {
+public enum EntryActivityKind: String, CaseIterable, Codable, Hashable, Identifiable, Sendable {
     case added
     case updated
     case archived

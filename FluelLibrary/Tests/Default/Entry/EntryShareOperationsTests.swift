@@ -57,6 +57,9 @@ struct EntryShareOperationsTests {
         ]
         let result = EntryOperations.timeline(
             from: snapshots,
+            activity: snapshots.map { snapshot in
+                EntryOperations.addedActivity(for: snapshot)
+            },
             query: query,
             referenceDate: TestDateSupport.date(year: 2_026, month: 6, day: 25),
             calendar: calendar

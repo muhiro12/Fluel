@@ -4,12 +4,12 @@ public extension EntryOperations {
     /// Returns timeline activity grouped by month.
     static func timeline(
         from snapshots: [EntrySnapshot],
+        activity: [EntryActivitySummary],
         query: EntryTimelineQuery = .init(),
         referenceDate: Date = .now,
         calendar: Calendar = .autoupdatingCurrent
     ) -> EntryTimelineResult {
-        let allActivity = snapshots.flatMap(fullActivitySummaries)
-        let visibleActivity = allActivity.filter { activity in
+        let visibleActivity = activity.filter { activity in
             isVisible(
                 activity,
                 query: query,
@@ -25,7 +25,7 @@ public extension EntryOperations {
 
         return .init(
             summary: summary(
-                totalActivityCount: allActivity.count,
+                totalActivityCount: activity.count,
                 visibleActivity: visibleActivity,
                 representedMonthCount: months.count
             ),
@@ -37,40 +37,6 @@ public extension EntryOperations {
                 limit: query.milestoneLimit
             )
         )
-    }
-
-    private static func fullActivitySummaries(
-        for snapshot: EntrySnapshot
-    ) -> [EntryActivitySummary] {
-        var summaries = [
-            EntryActivitySummary(
-                entryID: snapshot.id,
-                title: snapshot.title,
-                kind: .added,
-                date: snapshot.createdAt
-            )
-        ]
-
-        if snapshot.updatedAt != snapshot.createdAt,
-           snapshot.updatedAt != snapshot.archivedAt {
-            summaries.append(.init(
-                entryID: snapshot.id,
-                title: snapshot.title,
-                kind: .updated,
-                date: snapshot.updatedAt
-            ))
-        }
-
-        if let archivedAt = snapshot.archivedAt {
-            summaries.append(.init(
-                entryID: snapshot.id,
-                title: snapshot.title,
-                kind: .archived,
-                date: archivedAt
-            ))
-        }
-
-        return summaries
     }
 
     private static func isVisible(
@@ -133,9 +99,7 @@ public extension EntryOperations {
             .map { monthDate in
                 EntryTimelineMonth(
                     monthDate: monthDate,
-                    activity: groupedActivity[monthDate, default: []].sorted { lhs, rhs in
-                        compare(rhs.date, lhs.date, tieBreak: lhs.title < rhs.title)
-                    },
+                    activity: groupedActivity[monthDate, default: []].sorted(by: activityPrecedes),
                     calendar: calendar
                 )
             }
@@ -190,5 +154,16 @@ public extension EntryOperations {
         }
 
         return lhs < rhs
+    }
+
+    private static func activityPrecedes(
+        _ lhs: EntryActivitySummary,
+        _ rhs: EntryActivitySummary
+    ) -> Bool {
+        compare(
+            rhs.date,
+            lhs.date,
+            tieBreak: lhs.id.uuidString < rhs.id.uuidString
+        )
     }
 }

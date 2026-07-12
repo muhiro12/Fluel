@@ -63,6 +63,7 @@ struct EntryDashboardOperationsTests {
         let calendar = TestDateSupport.calendar
         let summary = EntryOperations.dashboardSummary(
             from: snapshots(calendar: calendar),
+            activity: [],
             referenceDate: TestDateSupport.date(year: 2_026, month: 6, day: 25),
             calendar: calendar
         )
@@ -74,6 +75,7 @@ struct EntryDashboardOperationsTests {
         #expect(summary.photoCount == 1)
         #expect(summary.longestRunningActiveEntry?.title == "This home")
         #expect(summary.recentlyArchivedEntry?.title == "Desk lamp")
+        #expect(summary.recentActivity.isEmpty)
     }
 
     @Test
@@ -81,6 +83,7 @@ struct EntryDashboardOperationsTests {
         let calendar = TestDateSupport.calendar
         let summary = EntryOperations.dashboardSummary(
             from: snapshots(calendar: calendar),
+            activity: [],
             referenceDate: TestDateSupport.date(year: 2_026, month: 6, day: 25),
             calendar: calendar,
             milestoneLimit: 2
@@ -93,10 +96,20 @@ struct EntryDashboardOperationsTests {
     }
 
     @Test
-    func dashboardSummaryIncludesRecentActivity() {
+    func dashboardSummaryIncludesRecentActivity() throws {
         let calendar = TestDateSupport.calendar
+        let snapshots = snapshots(calendar: calendar)
+        let archivedActivity = try #require(EntryOperations.archivedActivity(
+            for: snapshots[2]
+        ))
+        let activity = [
+            EntryOperations.updatedActivity(for: snapshots[0]),
+            EntryOperations.addedActivity(for: snapshots[1]),
+            archivedActivity
+        ]
         let summary = EntryOperations.dashboardSummary(
-            from: snapshots(calendar: calendar),
+            from: snapshots,
+            activity: activity,
             referenceDate: TestDateSupport.date(year: 2_026, month: 6, day: 25),
             calendar: calendar,
             activityLimit: 3
