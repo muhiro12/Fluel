@@ -28,7 +28,7 @@ struct PresetRowView: View {
                 .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: designMetrics.spacing.inline) {
-                Text(preset.title)
+                Text(verbatim: preset.displayTitle)
                     .mhRowTitle()
 
                 Text(preset.startPrecision.knownAsText)

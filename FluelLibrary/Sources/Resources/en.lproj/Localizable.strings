@@ -27,6 +27,14 @@
 "months" = "months";
 "Most recent start" = "Most recent start";
 "Oldest archived" = "Oldest archived";
+"Photo" = "Photo";
+"preset.starter.bag" = "Bag";
+"preset.starter.notebook" = "Notebook";
+"preset.starter.plant" = "Plant";
+"preset.starter.shoes" = "Shoes";
+"preset.starter.thisHome" = "This home";
+"preset.starter.wallet" = "Wallet";
+"preset.starter.watch" = "Watch";
 "Recent 6 months" = "Recent 6 months";
 "Recent year" = "Recent year";
 "Recently archived" = "Recently archived";

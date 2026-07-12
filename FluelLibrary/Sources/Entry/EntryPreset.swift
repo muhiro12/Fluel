@@ -27,6 +27,20 @@ public struct EntryPreset: Equatable, Identifiable, Sendable {
     /// Last use date.
     public let lastUsedAt: Date?
 
+    /// Built-in starter identity when this preset is one of Fluel's stable defaults.
+    public var starterIdentity: EntryStarterPreset? {
+        guard origin == .starter else {
+            return nil
+        }
+
+        return .init(id: id)
+    }
+
+    /// Localized title for presentation without changing the persisted canonical title.
+    public var displayTitle: String {
+        starterIdentity?.displayTitle ?? title
+    }
+
     /// Creates an entry preset.
     public init(
         title: String,

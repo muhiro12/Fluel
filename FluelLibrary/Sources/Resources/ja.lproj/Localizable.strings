@@ -27,6 +27,14 @@
 "months" = "か月";
 "Most recent start" = "新しいStart順";
 "Oldest archived" = "古いArchive順";
+"Photo" = "Photo";
+"preset.starter.bag" = "バッグ";
+"preset.starter.notebook" = "ノート";
+"preset.starter.plant" = "植物";
+"preset.starter.shoes" = "靴";
+"preset.starter.thisHome" = "この家";
+"preset.starter.wallet" = "財布";
+"preset.starter.watch" = "腕時計";
 "Recent 6 months" = "直近6か月";
 "Recent year" = "直近1年";
 "Recently archived" = "最近Archive";

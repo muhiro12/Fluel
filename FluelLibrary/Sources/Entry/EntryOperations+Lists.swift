@@ -98,15 +98,15 @@ public extension EntryOperations {
             calendar: calendar
         ) {
             components.append(rangeLabel)
-            components.append("Approximate start")
+            components.append(EntryLocalization.string("Approximate start"))
         }
 
         if snapshot.hasPhoto {
-            components.append("Photo")
+            components.append(EntryLocalization.string("Photo"))
         }
 
         if let archivedAt = snapshot.archivedAt {
-            components.append("Archived")
+            components.append(EntryLocalization.string("Archived"))
             components.append(archivedAt.formatted(date: .abbreviated, time: .omitted))
         }
 

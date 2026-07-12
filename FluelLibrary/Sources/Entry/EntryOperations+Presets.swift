@@ -8,8 +8,7 @@ public extension EntryOperations {
     }
 
     private struct StarterPresetValue {
-        let id: String
-        let title: String
+        let identity: EntryStarterPreset
         let symbolName: String
         let start: EntryPresetStart
         let precision: StartPrecision
@@ -18,50 +17,43 @@ public extension EntryOperations {
     private static var starterPresetValues: [StarterPresetValue] {
         [
             .init(
-                id: "11111111-1111-1111-1111-111111111111",
-                title: "This home",
+                identity: .thisHome,
                 symbolName: "house",
                 start: .yearsAgo(PresetOffset.oneYear),
                 precision: .year
             ),
             .init(
-                id: "22222222-2222-2222-2222-222222222222",
-                title: "Wallet",
+                identity: .wallet,
                 symbolName: "wallet.pass",
                 start: .yearsAgo(PresetOffset.oneYear),
                 precision: .year
             ),
             .init(
-                id: "33333333-3333-3333-3333-333333333333",
-                title: "Bag",
+                identity: .bag,
                 symbolName: "bag",
                 start: .monthsAgo(PresetOffset.sixMonths),
                 precision: .month
             ),
             .init(
-                id: "44444444-4444-4444-4444-444444444444",
-                title: "Shoes",
+                identity: .shoes,
                 symbolName: "shoeprints.fill",
                 start: .monthsAgo(PresetOffset.sixMonths),
                 precision: .month
             ),
             .init(
-                id: "55555555-5555-5555-5555-555555555555",
-                title: "Watch",
+                identity: .watch,
                 symbolName: "applewatch",
                 start: .yearsAgo(PresetOffset.oneYear),
                 precision: .year
             ),
             .init(
-                id: "66666666-6666-6666-6666-666666666666",
-                title: "Plant",
+                identity: .plant,
                 symbolName: "leaf",
                 start: .monthsAgo(PresetOffset.threeMonths),
                 precision: .month
             ),
             .init(
-                id: "77777777-7777-7777-7777-777777777777",
-                title: "Notebook",
+                identity: .notebook,
                 symbolName: "book.closed",
                 start: .today,
                 precision: .day
@@ -85,7 +77,7 @@ public extension EntryOperations {
         let components = gregorianCalendar.dateComponents([.year, .month], from: startDate)
 
         return .init(
-            title: preset.title,
+            title: preset.displayTitle,
             note: preset.note ?? "",
             precision: preset.startPrecision,
             dayDate: startDate,
@@ -165,18 +157,18 @@ public extension EntryOperations {
                 return (lhs.lastUsedAt ?? .distantPast) > (rhs.lastUsedAt ?? .distantPast)
             }
 
-            return lhs.title.localizedStandardCompare(rhs.title) == .orderedAscending
+            return lhs.displayTitle.localizedStandardCompare(rhs.displayTitle) == .orderedAscending
         }
     }
 
     private static func starterPreset(_ value: StarterPresetValue) -> EntryPreset {
         .init(
-            title: value.title,
+            title: value.identity.canonicalTitle,
             symbolName: value.symbolName,
             start: value.start,
             startPrecision: value.precision,
             origin: .starter,
-            id: UUID(uuidString: value.id) ?? UUID()
+            id: value.identity.id
         )
     }
 }

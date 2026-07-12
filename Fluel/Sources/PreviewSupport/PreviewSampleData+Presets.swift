@@ -14,10 +14,10 @@ extension PreviewSampleData {
         var presets = EntryOperations.starterPresets()
 
         presets = presets.map { preset in
-            switch preset.title {
-            case "This home":
+            switch preset.starterIdentity {
+            case .thisHome:
                 EntryOperations.pin(preset, isPinned: true)
-            case "Notebook":
+            case .notebook:
                 EntryOperations.recordUse(of: preset, usedAt: ReferenceDate.current)
             default:
                 preset
@@ -46,9 +46,7 @@ extension PreviewSampleData {
     }
 
     static var sampleDefaultSelections: [PresetDefaultSelection] {
-        let defaultID = EntryOperations.starterPresets().first { preset in
-            preset.title == "This home"
-        }?.id
+        let defaultID = EntryStarterPreset.thisHome.id
 
         return [
             PresetDefaultSelection(

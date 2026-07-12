@@ -183,6 +183,27 @@ struct EntryListOperationsTests {
         #expect(tokyoTitles == losAngelesTitles)
     }
 
+    @Test
+    func searchMatchesLocalizedSemanticLabels() {
+        let calendar = TestDateSupport.calendar
+        let photoSnapshot = snapshot(activeFixtures[1])
+        let archivedSnapshot = snapshot(archivedFixtures[0])
+
+        let photoMatches = EntryOperations.activeEntries(
+            from: [photoSnapshot],
+            searchText: "Photo",
+            calendar: calendar
+        )
+        let archivedMatches = EntryOperations.archivedEntries(
+            from: [archivedSnapshot],
+            searchText: "Archived",
+            calendar: calendar
+        )
+
+        #expect(photoMatches.map(\.id) == [photoSnapshot.id])
+        #expect(archivedMatches.map(\.id) == [archivedSnapshot.id])
+    }
+
     private func snapshot(_ values: Values) -> EntrySnapshot {
         EntrySnapshot(
             id: UUID(),
