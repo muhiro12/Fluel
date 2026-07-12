@@ -2,15 +2,17 @@
 
 ## Purpose Of This Handoff
 
-This repository is expected to lose its existing Xcode project and source code
-in a future manual phase. The rebuild itself is not part of this task.
+This handoff was created before the legacy Xcode project and source code were
+removed. It preserved the product knowledge that had to survive that cleanup.
 
-These documents preserve the product knowledge that should survive deletion of
-the legacy implementation.
+The legacy cleanup and initial rebuild are now complete. This document remains
+historical product-intent evidence and does not authorize deletion of the
+current rebuilt implementation.
 
 ## Documentation Set
 
-Read these files before any future rebuild work:
+These files formed the preservation set and remain product references for
+current implementation work:
 
 - `docs/product-brief.md`
 - `docs/product-purpose.md`
@@ -25,6 +27,7 @@ After the preservation pass, implementation-direction constraints were added
 to:
 
 - `docs/rebuild-implementation-principles.md`
+- `docs/rebuild-baseline.md`
 
 Together, they answer:
 
@@ -66,10 +69,10 @@ Fluel quietly keeps time with the things and places the user lives with.
 
 Everything else should be evaluated against that center.
 
-## Safe To Discard In The Future Manual Phase
+## Legacy Details That Were Safe To Discard
 
-The future manual cleanup phase may delete the legacy implementation without
-preserving these details:
+During the completed legacy cleanup, these implementation details did not need
+to be carried forward automatically:
 
 - Existing Xcode project structure.
 - Existing app, library, and widget target boundaries.
@@ -84,12 +87,14 @@ preserving these details:
 - Existing debug, diagnostics, preview, and capture infrastructure.
 - Existing architecture decision records that describe code placement.
 
-Do not carry these forward merely because they exist today.
+They were not rebuild requirements merely because they existed in the legacy
+repository. This statement does not apply to the current rebuilt
+implementation.
 
 ## Must Not Be Lost
 
-The source code should not be deleted until these product ideas are preserved
-in docs:
+Before the legacy source was deleted, these product ideas had to be preserved
+in docs. They remain requirements for the current implementation:
 
 - Fluel's purpose as a quiet time-with-things-and-places product.
 - Entry as one thing or place the user lives with.
@@ -114,7 +119,7 @@ in docs:
 
 ## Rebuild Boundary
 
-This handoff does not decide:
+This preservation handoff did not decide:
 
 - App architecture.
 - Target structure.
@@ -126,11 +131,10 @@ This handoff does not decide:
 - Release plan.
 - New features.
 
-Those are future decisions after the legacy implementation has been removed.
-Some implementation-direction constraints have since been recorded in
-`docs/rebuild-implementation-principles.md`; use that document for the
-confirmed rebuild posture without treating the legacy implementation as a
-blueprint.
+Those decisions were made separately as the rebuilt implementation took shape.
+The confirmed implementation posture is recorded in
+`docs/rebuild-implementation-principles.md` and `docs/rebuild-baseline.md`;
+neither document makes the legacy implementation a blueprint.
 
 ## Final Audit Result
 
@@ -140,6 +144,6 @@ legacy localization scope, the non-empty entry title rule, and `Desk lamp` as
 archived sample vocabulary. The important source-only product knowledge has
 been extracted into the docs listed above.
 
-If future manual deletion uncovers unreviewed private notes, screenshots, or
-external planning artifacts that are not present in this repository, those
-should be audited separately before deletion.
+If a later audit uncovers unreviewed private notes, screenshots, or external
+planning artifacts that are not present in this repository, audit them
+separately before making related product decisions.

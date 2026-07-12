@@ -43,3 +43,19 @@ Intents backed by `FluelLibrary` Operations, and English plus Japanese
 localization assets. Future implementation work should use the preserved
 product documents as the source of truth for Fluel's domain, language,
 workflows, and experience principles.
+
+## Development
+
+Use Xcode 27 with an iOS 27 Simulator. Open `Fluel.xcodeproj` and select the
+`Fluel` scheme, or run the repository checks from the command line:
+
+```sh
+bash ci_scripts/tasks/build_app.sh
+bash ci_scripts/tasks/test_library.sh
+bash ci_scripts/tasks/check_repository_rules.sh
+```
+
+Simulator development uses the repository's app configuration. Running on a
+device or using the production CloudKit container requires your own development
+team and matching bundle and iCloud container identifiers; update the Xcode
+build settings, entitlements, and model-container configuration together.

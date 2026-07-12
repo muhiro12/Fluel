@@ -5,6 +5,11 @@
 This report summarizes the current Fluel UI preview, screenshot, and MHUI
 adoption coverage.
 
+Repository paths and package-resolution notes were refreshed on 2026-07-12
+against commit `055dea2`. The screenshots and verification entries below are
+historical evidence from the original preview pass, not a claim that every
+check was rerun for that commit.
+
 The latest passes improved the existing UI without adding product features,
 changing data models, adding Operations, or copying Incomes-specific UI. The
 decision standard is:
@@ -65,10 +70,10 @@ Current linked package state:
 
 - The app target links `MHPlatform`, `MHDesign`, and `MHUI`.
 - `FluelLibrary` depends on `MHPlatformCore` from `MHPlatform`.
-- Xcode and SwiftPM `Package.resolved` files are treated as local generated
-  resolution artifacts in this repository; the current verification run
-  resolved `MHPlatform` at `1.12.0`, `MHUI` at `1.8.0`, and
-  `SwiftLintPlugins` at `0.64.1`.
+- The Xcode app's `Package.resolved` file is tracked for reproducible app and
+  Xcode Cloud resolution. SwiftPM lockfiles for `FluelLibrary` remain local
+  generated artifacts. The recorded verification run resolved `MHPlatform` at
+  `1.12.0`, `MHUI` at `1.8.0`, and `SwiftLintPlugins` at `0.64.1`.
 
 Available API areas inspected:
 
@@ -179,11 +184,11 @@ Settings:
 
 Preview data lives in app-target preview support:
 
-- `Fluel/PreviewSampleData.swift`
-- `Fluel/PreviewSampleData+Support.swift`
-- `Fluel/PreviewSampleData+Entries.swift`
-- `Fluel/PreviewSampleData+Drafts.swift`
-- `Fluel/PreviewSampleData+Presets.swift`
+- `Fluel/Sources/PreviewSupport/PreviewSampleData.swift`
+- `Fluel/Sources/PreviewSupport/PreviewSampleData+Support.swift`
+- `Fluel/Sources/PreviewSupport/PreviewSampleData+Entries.swift`
+- `Fluel/Sources/PreviewSupport/PreviewSampleData+Drafts.swift`
+- `Fluel/Sources/PreviewSupport/PreviewSampleData+Presets.swift`
 
 The sample data follows the product language in
 `docs/product-language.md`: This home, Notebook, Watch, Wallet, Bag, Plant,
@@ -414,9 +419,9 @@ Not recommended now:
 - Do not replace native `List` or `Form` behavior while it remains the clearest
   Apple pattern for these screens.
 
-## Verification Notes
+## Verification Snapshot
 
-Successful checks during this pass:
+The original preview pass recorded these successful checks:
 
 - XcodeBuildMCP `session_show_defaults`, followed by session defaults for
   `Fluel.xcodeproj`, scheme `Fluel`, Debug, iPhone 17 Pro iOS 27 Simulator.

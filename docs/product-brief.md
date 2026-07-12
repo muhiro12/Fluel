@@ -52,10 +52,11 @@ value.
 
 ## Product Status
 
-The existing repository is archaeological evidence for a product that was never
-released. The legacy implementation should not be treated as a reference
-architecture. These docs preserve product intent so the existing source code
-can later be deleted safely.
+Fluel began as an unreleased product whose legacy repository served as
+archaeological evidence. That legacy implementation has since been removed and
+an initial rebuilt app now lives in this repository. The legacy architecture
+should not be treated as a blueprint; these documents remain the source of
+truth for the product intent that the current implementation must preserve.
 
 ## What Matters Most
 

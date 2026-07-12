@@ -5,12 +5,13 @@
 This document records implementation-direction constraints that were clarified
 after the product-preservation pass.
 
-The product documents still define what Fluel is. This document defines how
-the future rebuild should approach platform, app shape, reference projects,
-package posture, and OS baseline once implementation work begins.
+The product documents still define what Fluel is. This document records the
+platform, app-shape, reference-project, package, and OS-baseline direction used
+by the current rebuild.
 
-This document does not create a new Xcode project, choose final target
-structure, define a release plan, or restore any legacy implementation detail.
+The initial rebuilt project now exists. This document does not authorize
+recreating it, replacing its target structure, defining a release plan, or
+restoring any legacy implementation detail.
 
 ## Product Center
 
@@ -62,12 +63,11 @@ Use Apple-native capabilities as primary constraints:
 
 ## Minimum OS Baseline
 
-The intended minimum support baseline for the rebuild is the iOS 27 family.
+The current minimum support baseline is the iOS 27 family.
 
-Do not design the new implementation around compatibility with older iOS
-families unless this baseline is explicitly revised. When the concrete Xcode
-project is created, verify that the selected SDK and deployment target express
-this baseline correctly.
+Do not design the current implementation around compatibility with older iOS
+families unless this baseline is explicitly revised. Keep the selected SDK and
+deployment target aligned with this baseline.
 
 ## Reference Projects
 
@@ -91,9 +91,9 @@ coverage gap rather than silently substituting a weaker reference.
 Use the same package posture as Incomes unless a Fluel-specific product or
 platform constraint requires a documented exception.
 
-At implementation time, inspect the current Incomes project and align with its
-then-current package set and version policy. As of this note, the observed
-Incomes package posture includes:
+The initial implementation inspected the current Incomes project and aligned
+with its then-current package set and version policy. The observed Incomes
+package posture included:
 
 - `MHPlatform` from `https://github.com/muhiro12/MHPlatform.git`, using the
   `1.0.0..<2.0.0` family for shared-library adoption and an Xcode project
@@ -112,7 +112,7 @@ creation time.
 
 ## MHUI Direction
 
-Use MHUI with the full current SDK capabilities available to the rebuild.
+Use MHUI with the full current SDK capabilities available to the app.
 
 Do not constrain Fluel's MHUI usage to legacy fallback styling or older-OS
 compatibility paths when the iOS 27 baseline allows current SDK-native
@@ -129,7 +129,7 @@ current SDK guidance.
 Start from the smallest structure that can express the product well, then add
 boundaries when they protect real behavior.
 
-If the rebuild grows beyond one app surface, prefer the Incomes-style
+As the implementation grows beyond one app surface, prefer the Incomes-style
 direction:
 
 - Durable business logic lives in a shared library.
@@ -173,8 +173,8 @@ surfaces when a feature goal needs them, and have those surfaces call
 
 ## Verification Posture
 
-Once implementation exists, use the repository `AGENTS.md` verification
-contract and keep Apple verification MCP-first.
+Use the repository `AGENTS.md` verification contract and keep Apple
+verification MCP-first.
 
 Treat shared-library tests, app or surface builds, retained repository-rule
 checks, and runtime/UI evidence as separate capabilities. Choose the smallest
