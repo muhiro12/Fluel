@@ -24,8 +24,8 @@ struct FluelApp: App {
                 rootContent()
                     .fluelPlatformEnvironment(platformEnvironment)
                     .mhTheme(.standard)
-            case .failure(let error):
-                FluelStartupFailureView(error: error)
+            case .failure:
+                FluelStartupFailureView()
                     .mhTheme(.standard)
             }
         }
