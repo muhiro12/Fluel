@@ -29,6 +29,64 @@ struct EntryOperationsTests {
     }
 
     @Test
+    func archivedTimeTogetherStopsAtArchiveDate() {
+        let calendar = TestDateSupport.calendar
+        let archivedAt = TestDateSupport.date(year: 2_026, month: 6, day: 10)
+        let snapshot = makeTimeTogetherSnapshot(
+            archivedAt: archivedAt,
+            calendar: calendar
+        )
+
+        let summary = EntryOperations.timeTogether(
+            for: snapshot,
+            referenceDate: TestDateSupport.date(year: 2_026, month: 6, day: 20),
+            calendar: calendar
+        )
+
+        #expect(summary.primaryText == "9 days")
+    }
+
+    @Test
+    func archivedTimeTogetherUsesEarlierReferenceDate() {
+        let calendar = TestDateSupport.calendar
+        let archivedAt = TestDateSupport.date(year: 2_026, month: 6, day: 10)
+        let snapshot = makeTimeTogetherSnapshot(
+            archivedAt: archivedAt,
+            calendar: calendar
+        )
+
+        let summary = EntryOperations.timeTogether(
+            for: snapshot,
+            referenceDate: TestDateSupport.date(year: 2_026, month: 6, day: 5),
+            calendar: calendar
+        )
+
+        #expect(summary.primaryText == "4 days")
+    }
+
+    @Test
+    func restoredTimeTogetherUsesReferenceDate() {
+        let calendar = TestDateSupport.calendar
+        let archivedSnapshot = makeTimeTogetherSnapshot(
+            archivedAt: TestDateSupport.date(year: 2_026, month: 6, day: 10),
+            calendar: calendar
+        )
+        let restoredSnapshot = EntryOperations.restore(
+            archivedSnapshot,
+            restoredAt: TestDateSupport.date(year: 2_026, month: 6, day: 15),
+            calendar: calendar
+        )
+
+        let summary = EntryOperations.timeTogether(
+            for: restoredSnapshot,
+            referenceDate: TestDateSupport.date(year: 2_026, month: 6, day: 20),
+            calendar: calendar
+        )
+
+        #expect(summary.primaryText == "19 days")
+    }
+
+    @Test
     func archiveMarksActiveSnapshotAsArchived() {
         let calendar = TestDateSupport.calendar
         let snapshot = makeSnapshot(archivedAt: nil, calendar: calendar)
@@ -128,6 +186,24 @@ struct EntryOperationsTests {
             startPrecision: .day,
             createdAt: TestDateSupport.date(year: 2_026, month: 5, day: 1),
             updatedAt: TestDateSupport.date(year: 2_026, month: 5, day: 2),
+            archivedAt: archivedAt,
+            calendar: calendar
+        )
+    }
+
+    private func makeTimeTogetherSnapshot(
+        archivedAt: Date?,
+        calendar: Calendar
+    ) -> EntrySnapshot {
+        let startDate = TestDateSupport.date(year: 2_026, month: 6, day: 1)
+
+        return .init(
+            id: UUID(),
+            title: "Desk lamp",
+            startDate: startDate,
+            startPrecision: .day,
+            createdAt: startDate,
+            updatedAt: archivedAt ?? startDate,
             archivedAt: archivedAt,
             calendar: calendar
         )

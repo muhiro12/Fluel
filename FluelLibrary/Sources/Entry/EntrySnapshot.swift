@@ -69,15 +69,19 @@ public struct EntrySnapshot: Equatable, Identifiable, Sendable {
         return trimmedNote
     }
 
-    /// Returns elapsed-time presentation for this snapshot.
+    /// Returns elapsed-time presentation, stopping at the archive date when archived.
     public func timeTogether(
         referenceDate: Date = .now,
         calendar: Calendar = .autoupdatingCurrent
     ) -> TimeTogetherSummary {
-        TimeTogetherSummary(
+        let effectiveReferenceDate = archivedAt.map { archivedAt in
+            min(referenceDate, archivedAt)
+        } ?? referenceDate
+
+        return TimeTogetherSummary(
             startDate: startDate,
             precision: startPrecision,
-            referenceDate: referenceDate,
+            referenceDate: effectiveReferenceDate,
             calendar: calendar
         )
     }
