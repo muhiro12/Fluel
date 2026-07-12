@@ -62,8 +62,9 @@ start precision behavior, input validation, or cross-surface use cases.
 
 `FluelLibrary` owns reusable product behavior:
 
-- `StartPrecision`, `TimeTogetherSummary`, `EntryDraft`, `EntryInput`,
-  `EntrySnapshot`, `EntryOperations`, `FluelLink`, and
+- `EntryStart`, `StartPrecision`, `TimeTogetherSummary`, `EntryDraft`,
+  `EntryInput`, `EntrySnapshot`, `EntryActivitySummary`, `EntryPreset`,
+  `EntryStarterPreset`, `EntryOperations`, `FluelLink`, and
   `FluelLinkOperations`.
 - Domain validation, normalized start dates, approximate start semantics, and
   elapsed-time presentation values.

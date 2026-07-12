@@ -5,14 +5,12 @@
 This report summarizes the current Fluel UI preview, screenshot, and MHUI
 adoption coverage.
 
-Repository paths and package-resolution notes were refreshed on 2026-07-12
-against commit `055dea2`. The screenshots and verification entries below are
-historical evidence from the original preview pass, not a claim that every
-check was rerun for that commit.
+Repository paths and implementation notes were refreshed on 2026-07-13
+against commit `32bd4be`. Most screenshots below remain historical evidence
+from the original preview pass. Targeted live and Preview checks completed on
+2026-07-13 are called out explicitly.
 
-The latest passes improved the existing UI without adding product features,
-changing data models, adding Operations, or copying Incomes-specific UI. The
-decision standard is:
+The decision standard is:
 
 - Preserve Fluel's quiet, familiar, low-pressure product tone.
 - Keep Apple-native navigation, lists, forms, search, menus, share, swipe, and
@@ -354,6 +352,7 @@ Confirmed through previews and screenshots:
 - Dense list data with long title wrapping.
 - Entry rows with note, photo metadata, and approximate-start badges.
 - Entry detail with typical month-precision data.
+- Entry detail with a valid photo fixture.
 - Entry detail for an archived entry.
 - Add-entry form with empty draft.
 - Edit-entry form with filled and long-note drafts.
@@ -373,18 +372,15 @@ Not confirmed or only partially confirmed:
 
 - Settings, because the screen is not implemented.
 - Widget-style glance, because the surface is not implemented.
-- Direct Xcode Preview image capture, because the available XcodeBuildMCP
-  tools did not expose a dedicated Preview renderer.
-- Semantic UI snapshot and tap traversal, because `snapshot_ui` previously
-  failed in the local Xcode beta environment with missing
-  `SimulatorKit.framework`.
-- Destructive confirmation dialog rendering, because semantic tap traversal was
-  unavailable. The archived detail preview confirms the destructive action
-  entry point is visible.
+- A complete recapture of every retained Preview variant. Targeted Japanese
+  Milestones and photo-detail previews rendered successfully on 2026-07-13.
+- Permanent-delete confirmation rendering. Entry-discard confirmation was
+  verified through live Simulator interaction on 2026-07-13.
 - Error alerts for save, archive, and restore failures, because no failure
   injection seam exists for those app-side adapters.
-- Full photo display, because current UI exposes photo presence as metadata
-  rather than rendering image content.
+- End-to-end selection of real iCloud, RAW, and panoramic photo assets. The
+  picker, file-backed downsampling, cancellation, storage, and display paths
+  are implemented, but those external asset variants remain a device test.
 
 ## UI Tone
 

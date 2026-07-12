@@ -1,7 +1,7 @@
 # Fluel
 
-Fluel is an unfinished Apple-platform product concept for quietly keeping time
-with the things and places a person lives with.
+Fluel is a pre-release iOS app for quietly keeping time with the things and
+places a person lives with.
 
 This repository preserves the product intent from an earlier implementation
 and now contains the rebuilt app project, a small shared library package, and
@@ -28,7 +28,7 @@ language should survive, and what legacy implementation details should not be
 carried forward automatically. The implementation-principles document captures
 additional rebuild direction clarified after the preservation pass.
 
-## Rebuild Status
+## Implementation Status
 
 The current implementation surface is a rebuilt Xcode project:
 
@@ -38,11 +38,12 @@ The current implementation surface is a rebuilt Xcode project:
 - Shared package: `FluelLibrary`
 - Repository verification scripts: `ci_scripts/tasks/`
 
-The rebuild baseline includes SwiftData with CloudKit configuration, App
-Intents backed by `FluelLibrary` Operations, and English plus Japanese
-localization assets. Future implementation work should use the preserved
-product documents as the source of truth for Fluel's domain, language,
-workflows, and experience principles.
+The current app includes active and archived entries, entry creation, editing,
+duplication, notes and photos, dashboard and timeline summaries, milestones,
+presets, App Intents backed by `FluelLibrary` Operations, CloudKit-backed
+SwiftData, and English plus Japanese localization. Further implementation work
+should use the preserved product documents as the source of truth for Fluel's
+domain, language, workflows, and experience principles.
 
 ## Development
 

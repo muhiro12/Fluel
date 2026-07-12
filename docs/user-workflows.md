@@ -145,8 +145,7 @@ The user should be able to:
 - Delete custom presets after confirmation.
 - Pin presets.
 - Reuse recent presets.
-- Choose one default preset.
-- Decide whether new entries should actually open from the default preset.
+- Choose one default preset so new entries opened from Add begin with it.
 
 Pinning, unpinning, setting a default preset, and clearing a default preset
 should give clear non-blocking confirmation.
