@@ -16,6 +16,7 @@ struct CreateEntryIntent: AppIntent {
         LocalizedStringResource("Create an entry with a known start.", table: "AppIntents")
     )
     static let supportedModes: IntentModes = .background
+    static let authenticationPolicy: IntentAuthenticationPolicy = .requiresAuthentication
 
     @Parameter(title: LocalizedStringResource("Title", table: "AppIntents"))
     private var title: String

@@ -14,6 +14,7 @@ struct CheckTimeTogetherIntent: AppIntent {
         LocalizedStringResource("Check how long an entry has been with you.", table: "AppIntents")
     )
     static let supportedModes: IntentModes = .background
+    static let authenticationPolicy: IntentAuthenticationPolicy = .requiresAuthentication
 
     @Parameter(title: LocalizedStringResource("Entry", table: "AppIntents"))
     private var entry: EntryEntity
