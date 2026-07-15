@@ -1,0 +1,13 @@
+{
+  "fill" : {
+    "automatic-gradient" : "srgb:0.23529,0.82745,0.99608,1.00000"
+  },
+  "groups" : [
+
+  ],
+  "supported-platforms" : {
+    "squares" : [
+      "iOS"
+    ]
+  }
+}
