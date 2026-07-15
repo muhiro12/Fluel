@@ -144,11 +144,16 @@ During implementation work:
 Use the Incomes/Cookle verification posture unless the new repository shape
 gives a stronger reason to diverge:
 
-- Agents MUST prefer XcodeBuildMCP for Apple build, test, run, Simulator,
-  runtime log, screenshot, and UI snapshot verification.
-- Before the first XcodeBuildMCP build, test, or run call in a session, run
-  XcodeBuildMCP `session_show_defaults`. If defaults do not point at this
-  repository, set them for the current session before continuing.
+- Agents MUST prefer the Xcode-native integration available in the current
+  agent environment for project discovery, active scheme and destination
+  selection, build, test, run, runtime logs, Preview rendering, live UI
+  inspection, and screenshots.
+- Before changing Xcode's active selection, discover the open projects,
+  schemes, and run destinations, identify `Fluel.xcodeproj`, and record the
+  original active scheme and destination. Switch only to values returned by
+  discovery. After verification, restore the original scheme first, rediscover
+  its valid destinations, restore the original destination, and confirm the
+  final selection. Report any selection that cannot be restored.
 - Treat shared-library tests, app or surface builds, retained repository-rule
   checks, and runtime/UI evidence as separate capabilities.
 - Choose the smallest verification set that proves the current change, and
@@ -165,7 +170,7 @@ gives a stronger reason to diverge:
   separately installed `swiftlint` binary.
 - Retain shell scripts only for SwiftLint/autofix, static repository rules,
   compatibility wrappers, optional audits, or checks not naturally covered by
-  XcodeBuildMCP.
+  the available Xcode-native integration.
 
 ## Current Verification
 
@@ -176,9 +181,9 @@ The active Xcode project is `Fluel.xcodeproj`.
 - Current shared library: Swift package `FluelLibrary`.
 - Current widget and watch schemes: none.
 - Current App Intents: included in the `Fluel` app target.
-- Preferred compile check: XcodeBuildMCP `build_sim` with project
-  `Fluel.xcodeproj`, scheme `Fluel`, configuration `Debug`, and an iOS 27
-  simulator.
+- Preferred compile check: the available Xcode-native build capability with
+  project `Fluel.xcodeproj`, scheme `Fluel`, configuration `Debug`, and a
+  discovered iOS 27 Simulator destination.
 - Preferred package test check: `bash ci_scripts/tasks/test_library.sh`.
 - Preferred Swift format check or autofix:
   `bash ci_scripts/tasks/format_swift.sh`.
@@ -218,10 +223,12 @@ contracts change.
 
 When runtime, lifecycle, persistence container, navigation, visible UI,
 localization, App Intents, or package-linking behavior changes, add
-XcodeBuildMCP `build_run_sim`, runtime log review, and `screenshot` evidence.
+a targeted Xcode-native run, runtime-log review, and live UI or screenshot
+evidence. Use direct Preview rendering when it faithfully covers the changed
+surface.
 For localization changes, capture English and Japanese screenshots when the UI
-surface is affected. If UI automation or `snapshot_ui` is unavailable in the
-active Xcode beta environment, use runtime logs, screenshots, and domain tests
+surface is affected. If live UI interaction is unavailable in the active Xcode
+environment, use runtime logs, screenshots, Preview evidence, and domain tests
 as the fallback verification contract.
 
 For documentation-only changes:

@@ -174,7 +174,7 @@ surfaces when a feature goal needs them, and have those surfaces call
 ## Verification Posture
 
 Use the repository `AGENTS.md` verification contract and keep Apple
-verification MCP-first.
+verification Xcode-native-first.
 
 Treat shared-library tests, app or surface builds, retained repository-rule
 checks, and runtime/UI evidence as separate capabilities. Choose the smallest
