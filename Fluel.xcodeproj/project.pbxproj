@@ -55,8 +55,8 @@
 		AD75E9AE2FED373000094EFB = {
 			isa = PBXGroup;
 			children = (
-				B30000012FF1000100000002 /* FluelLibrary */,
 				AD75E9B92FED373000094EFB /* Fluel */,
+				B30000012FF1000100000002 /* FluelLibrary */,
 				AD75E9B82FED373000094EFB /* Products */,
 			);
 			sourceTree = "<group>";
