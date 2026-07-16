@@ -72,8 +72,8 @@ struct ContentView: View {
         let defaultPreset = defaultPresetID.flatMap { presetID in
             PresetStore.preset(withID: presetID, in: presets)
         }
-        let draft = defaultPreset.flatMap { preset in
-            try? EntryOperations.makeDraft(from: preset.snapshot(isDefault: true))
+        let draft = defaultPreset.map { preset in
+            EntryOperations.makeDraft(from: preset.snapshot(isDefault: true))
         } ?? EntryDraft()
 
         activeSheet = .init(draft: draft)
