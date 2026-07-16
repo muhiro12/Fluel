@@ -8,14 +8,18 @@
 import FluelLibrary
 import MHUI
 import SwiftUI
+import TipKit
 
 struct EntryStartPicker: View {
     @Binding var draft: EntryDraft
 
+    private let precisionTip = EntryStartPrecisionTip()
     private let calendar = Calendar.autoupdatingCurrent
 
     var body: some View {
         Section {
+            TipView(precisionTip, arrowEdge: .bottom)
+
             EntryPrecisionPicker(draft: $draft, calendar: calendar)
 
             EntryStartValuePicker(draft: $draft, calendar: calendar)
@@ -24,11 +28,11 @@ struct EntryStartPicker: View {
             LabeledContent("Start", value: startLabel)
         } header: {
             FluelSectionHeader("Start")
-        } footer: {
-            Text("The start stays exactly as you know it. Month and year starts remain approximate.")
-                .mhSectionFooterText()
         }
         .labeledContentStyle(.mhKeyValue)
+        .onChange(of: draft.precision) {
+            precisionTip.invalidate(reason: .actionPerformed)
+        }
         .onChange(of: draft.year) {
             draft.clampToPresent(calendar: calendar)
         }

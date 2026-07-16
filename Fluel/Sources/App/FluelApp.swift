@@ -11,6 +11,7 @@ import MHPlatform
 import MHUI
 import SwiftData
 import SwiftUI
+import TipKit
 
 @main
 struct FluelApp: App {
@@ -42,6 +43,15 @@ struct FluelApp: App {
             source: #fileID
         )
         startupLogger.notice("startup.begin")
+
+        do {
+            try Tips.configure()
+        } catch {
+            startupLogger.error(
+                "startup.tipkit_failed",
+                metadata: FluelLogging.errorMetadata(error)
+            )
+        }
 
         previewScreen = requestedPreviewScreen
         platformEnvironmentResult = Result {

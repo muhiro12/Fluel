@@ -420,18 +420,19 @@
         }
       }
     },
-    "Choose one photo that helps you remember this entry." : {
+    "Choose the precision you know" : {
+      "comment" : "Title of the one-time tip shown beside the entry start precision picker.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Choose one photo that helps you remember this entry."
+            "value" : "Choose the precision you know"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "このEntryを思い出せる写真を1枚選んでください。"
+            "value" : "Startのわかる範囲を選ぶ"
           }
         }
       }
@@ -1972,22 +1973,6 @@
         }
       }
     },
-    "The start stays exactly as you know it. Month and year starts remain approximate." : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The start stays exactly as you know it. Month and year starts remain approximate."
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Startは知っている範囲のまま残します。月や年のStartは、おおよそのまま扱われます。"
-          }
-        }
-      }
-    },
     "Thing or place" : {
       "localizations" : {
         "en" : {
@@ -2260,18 +2245,19 @@
         }
       }
     },
-    "Use the name of one thing or place you live with." : {
+    "Use a day, month, or year. Month and year starts stay approximate." : {
+      "comment" : "Message explaining how entry start precision preserves uncertainty.",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Use the name of one thing or place you live with."
+            "value" : "Use a day, month, or year. Month and year starts stay approximate."
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "一緒に過ごしているものや場所の名前を使います。"
+            "value" : "日・月・年から選べます。月や年までのStartは、おおよそのまま残ります。"
           }
         }
       }
