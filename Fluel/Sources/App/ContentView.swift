@@ -6,6 +6,7 @@
 //
 
 import FluelLibrary
+import Foundation
 import MHPlatform
 import MHUI
 import SwiftData
@@ -23,16 +24,18 @@ struct ContentView: View {
     @Environment(FluelRoutePipeline.self)
     private var routePipeline
 
-    @State private var navigationPath = [FluelRoute]()
+    @State private var selectedRoute: FluelRoute? = .entries
+    @State private var preferredCompactColumn = NavigationSplitViewColumn.detail
+    @State private var detailIdentity = UUID()
     @State private var activeSheet: ActiveEntrySheet?
 
-    private var invalidDeepLinkAlertBinding: Binding<Bool> {
+    private var invalidDeepLinkBinding: Binding<URL?> {
         .init(
             get: {
-                routePipeline.lastParseFailureURL != nil
+                routePipeline.lastParseFailureURL
             },
-            set: { isPresented in
-                if !isPresented {
+            set: { invalidURL in
+                if invalidURL == nil {
                     routePipeline.clearLastParseFailure()
                 }
             }
@@ -40,32 +43,27 @@ struct ContentView: View {
     }
 
     var body: some View {
-        NavigationStack(path: $navigationPath) {
-            ActiveEntryListView(addEntry: addEntry)
-                .navigationTitle("Entries")
-                .toolbar {
-                    ContentToolbar(addEntry: addEntry)
-                }
-                .navigationDestination(for: FluelRoute.self) { route in
-                    routeView(for: route)
-                }
-                .sheet(item: $activeSheet) { sheet in
-                    EntryEditorView(draft: sheet.draft)
-                }
-                .alert(
-                    "Unsupported Link",
-                    isPresented: invalidDeepLinkAlertBinding,
-                    presenting: routePipeline.lastParseFailureURL
-                ) { _ in
-                    Button("OK", role: .cancel) {
-                        routePipeline.clearLastParseFailure()
-                    }
-                } message: { _ in
-                    Text("This link is not supported by this version of Fluel.")
-                }
-                .mhRouteHandler(routeInbox) { link in
-                    openSupportedLink(link)
-                }
+        NavigationSplitView(preferredCompactColumn: $preferredCompactColumn) {
+            ContentSidebar(selection: $selectedRoute)
+        } detail: {
+            ContentDetailView(
+                route: selectedRoute ?? .entries,
+                addEntry: addEntry
+            )
+            .id(detailIdentity)
+        }
+        .sheet(item: $activeSheet) { sheet in
+            EntryEditorView(draft: sheet.draft)
+        }
+        .alert("Unsupported Link", item: invalidDeepLinkBinding) { _ in
+            Button("OK", role: .cancel) {
+                routePipeline.clearLastParseFailure()
+            }
+        } message: { _ in
+            Text("This link is not supported by this version of Fluel.")
+        }
+        .mhRouteHandler(routeInbox) { link in
+            openSupportedLink(link)
         }
     }
 
@@ -81,22 +79,6 @@ struct ContentView: View {
         activeSheet = .init(draft: draft)
     }
 
-    @ViewBuilder
-    private func routeView(for route: FluelRoute) -> some View {
-        switch route {
-        case .dashboard:
-            DashboardView()
-        case .timeline:
-            TimelineView()
-        case .milestones:
-            MilestonesView()
-        case .presets:
-            PresetsView()
-        case .archive:
-            ArchiveEntryListView()
-        }
-    }
-
     private func openSupportedLink(_ link: FluelLink) {
         switch link {
         case .destination(let destination):
@@ -105,20 +87,9 @@ struct ContentView: View {
     }
 
     private func openDestination(_ destination: FluelLinkDestination) {
-        switch destination {
-        case .entries:
-            navigationPath = []
-        case .dashboard:
-            navigationPath = [.dashboard]
-        case .timeline:
-            navigationPath = [.timeline]
-        case .milestones:
-            navigationPath = [.milestones]
-        case .presets:
-            navigationPath = [.presets]
-        case .archive:
-            navigationPath = [.archive]
-        }
+        selectedRoute = .init(destination: destination)
+        preferredCompactColumn = .detail
+        detailIdentity = .init()
     }
 }
 
