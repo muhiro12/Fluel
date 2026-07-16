@@ -5,16 +5,18 @@
 This report summarizes the current Fluel UI preview, screenshot, and MHUI
 adoption coverage.
 
-Repository paths and implementation notes were refreshed on 2026-07-13
-against commit `32bd4be`. Most screenshots below remain historical evidence
+Repository paths and implementation notes were refreshed on 2026-07-16
+against commit `8ef4434`. Most screenshots below remain historical evidence
 from the original preview pass. Targeted live and Preview checks completed on
-2026-07-13 are called out explicitly.
+2026-07-13 and adaptive-navigation checks completed on 2026-07-16 are called
+out explicitly.
 
 The decision standard is:
 
 - Preserve Fluel's quiet, familiar, low-pressure product tone.
-- Keep Apple-native navigation, lists, forms, search, menus, share, swipe, and
-  confirmation behavior where those controls are already the right fit.
+- Keep Apple-native adaptive navigation, lists, forms, search, menus, share,
+  swipe, and confirmation behavior where those controls are already the right
+  fit.
 - Use MHUI and MHDesign where they improve shared rhythm, semantic typography,
   metadata treatment, and reusable presentation without flattening native
   surfaces.
@@ -22,9 +24,9 @@ The decision standard is:
 ## HIG And MHUI Priority
 
 Apple Human Interface Guidelines and platform-native behavior are the base
-layer. Native `NavigationStack`, `List`, `Form`, `Menu`, `ShareLink`, sheets,
-alerts, controls, swipe actions, and confirmation dialogs stay in place when
-they are the most familiar iOS pattern.
+layer. Native `NavigationSplitView`, `NavigationStack`, `List`, `Form`,
+`Menu`, `ShareLink`, sheets, alerts, controls, swipe actions, and confirmation
+dialogs stay in place when they are the most familiar Apple-platform pattern.
 
 MHUI and MHDesign are the shared style layer above that base. In Fluel they
 should align spacing, typography rhythm, section cues, row rhythm, metadata,
@@ -101,12 +103,16 @@ while centralizing the repeated empty-state presentation through
 
 Active entries:
 
-- Adopted: one native Browse toolbar menu for secondary destinations,
-  `EntryRowView` row rhythm through `mhRow()`, `MHDesignMetrics` spacing,
-  adaptive metadata badges through `FluelBadgeStack`, and shared empty-state
-  presentation through `FluelEmptyState`.
-- Kept SwiftUI-native: `NavigationStack`, `List`, `searchable`, sort/filter
-  `Menu` plus `Picker`, `NavigationLink`, and `swipeActions`.
+- Adopted: one native two-column `NavigationSplitView` for top-level
+  destinations, `EntryRowView` row rhythm through `mhRow()`,
+  `MHDesignMetrics` spacing, adaptive metadata badges through
+  `FluelBadgeStack`, and shared empty-state presentation through
+  `FluelEmptyState`.
+- Kept SwiftUI-native: a detail-local `NavigationStack`, `List`, `searchable`,
+  sort/filter `Menu` plus `Picker`, `NavigationLink`, and `swipeActions`.
+- Removed: the root Browse toolbar menu. The sidebar now owns top-level
+  navigation and automatically collapses to a single navigation flow at
+  compact width.
 - Deferred: `mhListChrome(...)`, because it removed the calmer native
   inset-grouped surface.
 
@@ -300,9 +306,13 @@ All screenshots were captured on iPhone 17 Pro Simulator at 368 x 800.
 
 Most improved:
 
-- Active entries no longer exposes Dashboard, Timeline, Milestones, Presets,
-  and Archive as five separate leading toolbar icons. They now live in one
-  native Browse menu, so Add Entry and list content have clearer priority.
+- Root navigation no longer depends on a Browse toolbar menu. A native
+  two-column split view keeps Entries primary, groups the five supporting
+  destinations in a sidebar, collapses to a single flow on iPhone, and keeps
+  sidebar and detail visible together on iPad.
+- The main detail title uses compact inline presentation on iPhone and large
+  presentation at regular width, avoiding title-layout changes after moving
+  through the collapsed sidebar.
 - Entry metadata badges now use an adaptive shared stack. Badges stay compact
   when they fit and fall back vertically when long text or compact width needs
   it.
@@ -347,6 +357,10 @@ Rejected after testing:
 
 Confirmed through previews and screenshots:
 
+- Tab-free root navigation with all six destinations.
+- Compact-width sidebar-to-detail navigation on iPhone.
+- Regular-width sidebar and Entries detail shown together on iPad, including
+  the selected Entries highlight.
 - Empty active list.
 - Active list with multiple entries.
 - Dense list data with long title wrapping.
@@ -372,6 +386,10 @@ Not confirmed or only partially confirmed:
 
 - Settings, because the screen is not implemented.
 - Widget-style glance, because the surface is not implemented.
+- iPad destination switching beyond the initial Entries selection and
+  portrait-to-landscape adaptation. CoreSimulator accepted the launch and
+  portrait screenshot but did not provide reliable interaction or rotation
+  control during the 2026-07-16 pass.
 - A complete recapture of every retained Preview variant. Targeted Japanese
   Milestones and photo-detail previews rendered successfully on 2026-07-13.
 - Permanent-delete confirmation rendering. Entry-discard confirmation was
@@ -385,9 +403,10 @@ Not confirmed or only partially confirmed:
 ## UI Tone
 
 The updated UI keeps Fluel's quiet, familiar, low-pressure tone. The largest
-change is removing toolbar crowding from the primary active-entry screen. The
-new section cues add a small amount of structure without adding new product
-copy or turning the app into a dashboard-first product.
+change is making the primary active-entry screen the compact starting point
+while moving infrequent destinations into an adaptive sidebar. The new section
+cues add a small amount of structure without adding new product copy or
+turning the app into a dashboard-first product.
 
 The app still feels Apple-native because standard grouped lists, forms, search,
 menus, share, swipe actions, alerts, and confirmation dialogs remain the core
@@ -405,7 +424,8 @@ Good later candidates:
    the current native toolbar and section buttons.
 4. Consider a package-level MHUI flow layout for metadata badges if badge
    wrapping becomes common across apps.
-5. Review iPad width after the app has a real regular-width navigation plan.
+5. Revisit a third split-view column only if the product gains an independent
+   intermediate selection tier that cannot remain in the detail stack.
 
 Not recommended now:
 
@@ -416,6 +436,27 @@ Not recommended now:
   Apple pattern for these screens.
 
 ## Verification Snapshot
+
+The adaptive-navigation pass recorded these successful checks on 2026-07-16:
+
+- Xcode-native builds with `Fluel`, Debug, and the discovered iOS 27 Simulator
+  destination.
+- iPhone 17 Pro live navigation through all six destinations, return to
+  Entries, Add Entry presentation, screenshots, hierarchy inspection, and
+  startup-log review.
+- iPad Pro 11-inch (M5) launch through `simctl` fallback after Xcode-native
+  device interaction could not connect. The portrait screenshot confirmed the
+  simultaneous sidebar and detail layout, selected Entries highlight, all six
+  destinations, and absence of a bottom tab bar.
+- Compact inline and regular-width large title presentation checks.
+- `bash ci_scripts/tasks/format_swift.sh`.
+- `bash ci_scripts/tasks/lint_swift.sh`.
+- `bash ci_scripts/tasks/check_repository_rules.sh`.
+- `bash ci_scripts/tasks/verify_task_completion.sh`, including 66 shared
+  library tests and the fallback app build.
+- String Catalog audit for required locales `en,ja` with no incomplete or
+  stale keys in `Localizable.xcstrings`.
+- `git diff --check`.
 
 The original preview pass recorded these successful checks:
 
