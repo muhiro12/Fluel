@@ -14,6 +14,8 @@ import SwiftUI
 struct PresetsView: View {
     @Environment(\.modelContext)
     private var modelContext
+    @Environment(\.mhTheme)
+    private var theme
 
     @Query(sort: \Preset.title, order: .forward)
     private var presets: [Preset]
@@ -28,9 +30,11 @@ struct PresetsView: View {
     @State private var isShowingActionError = false
 
     var body: some View {
-        List {
-            if !orderedPresets.isEmpty {
-                Section {
+        VStack(alignment: .leading, spacing: theme.spacing.section) {
+            if let leadPreset = orderedPresets.first {
+                PresetLeadSummary(preset: snapshot(for: leadPreset))
+
+                MHGroupedRows {
                     ForEach(orderedPresets) { preset in
                         PresetRowView(
                             preset: snapshot(for: preset),
@@ -41,20 +45,20 @@ struct PresetsView: View {
                             togglePin: { togglePin(preset) },
                             toggleDefault: { toggleDefault(preset) }
                         )
-                        .mhRow()
                     }
-                } header: {
-                    MHSectionHeader("Presets")
                 }
-            }
-        }
-        .mhListChrome()
-        .overlay {
-            if orderedPresets.isEmpty {
+                .mhSection(
+                    "Reusable starting points",
+                    supporting: "Use a preset immediately or adjust its reusable details."
+                )
+            } else {
                 PresetsEmptyState(create: createPreset)
             }
         }
-        .navigationTitle("Presets")
+        .mhScreen(
+            "Presets",
+            subtitle: "Familiar ways to begin a new entry."
+        )
         .toolbar {
             ToolbarItem(placement: .primaryAction) {
                 Button(action: createPreset) {

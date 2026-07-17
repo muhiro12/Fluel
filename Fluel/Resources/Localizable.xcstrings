@@ -180,6 +180,22 @@
         }
       }
     },
+    "Activity gathered across the life of your entries." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Activity gathered across the life of your entries."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entryと過ごす時間の中で積み重なったActivityです。"
+          }
+        }
+      }
+    },
     "Activity will gather as entries are added, adjusted, and archived." : {
       "localizations" : {
         "en" : {
@@ -1013,6 +1029,38 @@
         }
       }
     },
+    "Familiar ways to begin a new entry." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Familiar ways to begin a new entry."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "使い慣れた方法から新しいEntryを始めます。"
+          }
+        }
+      }
+    },
+    "First preset" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "First preset"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最初のPreset"
+          }
+        }
+      }
+    },
     "Filter" : {
       "localizations" : {
         "en" : {
@@ -1361,6 +1409,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "新しいEntry"
+          }
+        }
+      }
+    },
+    "Next milestone" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next milestone"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "次のMilestone"
           }
         }
       }
@@ -1877,6 +1941,22 @@
         }
       }
     },
+    "Reusable starting points" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reusable starting points"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "繰り返し使える開始点"
+          }
+        }
+      }
+    },
     "Reusable starting points will appear here." : {
       "localizations" : {
         "en" : {
@@ -2261,6 +2341,22 @@
         }
       }
     },
+    "The milestones that follow the nearest yearly moment." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The milestones that follow the nearest yearly moment."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "直近の毎年の節目に続くMilestoneです。"
+          }
+        }
+      }
+    },
     "The moments that define the collection right now." : {
       "localizations" : {
         "en" : {
@@ -2598,6 +2694,22 @@
         }
       }
     },
+    "Use a preset immediately or adjust its reusable details." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use a preset immediately or adjust its reusable details."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Presetをすぐに使うか、繰り返し使う内容を調整できます。"
+          }
+        }
+      }
+    },
     "Visible" : {
       "localizations" : {
         "en" : {
@@ -2610,6 +2722,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "表示中"
+          }
+        }
+      }
+    },
+    "Visible activity" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Visible activity"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "表示中のActivity"
           }
         }
       }

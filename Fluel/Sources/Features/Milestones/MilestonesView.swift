@@ -11,31 +11,38 @@ import SwiftData
 import SwiftUI
 
 struct MilestonesView: View {
+    @Environment(\.mhTheme)
+    private var theme
+
     @Query private var entries: [Entry]
 
     var body: some View {
-        List {
-            if !milestones.isEmpty {
-                Section {
-                    ForEach(milestones) { milestone in
-                        MilestoneRowView(
-                            milestone: milestone,
-                            approximateLabel: Text("Approximate start")
-                        )
-                        .mhRow()
+        VStack(alignment: .leading, spacing: theme.spacing.section) {
+            if let nearestMilestone = milestones.first {
+                MilestoneNextSummary(milestone: nearestMilestone)
+
+                if milestones.count > 1 {
+                    MHGroupedRows {
+                        ForEach(milestones.dropFirst()) { milestone in
+                            MilestoneRowView(
+                                milestone: milestone,
+                                approximateLabel: Text("Approximate start")
+                            )
+                        }
                     }
-                } header: {
-                    MHSectionHeader("Upcoming milestones")
+                    .mhSection(
+                        "Upcoming milestones",
+                        supporting: "The milestones that follow the nearest yearly moment."
+                    )
                 }
-            }
-        }
-        .mhListChrome()
-        .overlay {
-            if milestones.isEmpty {
+            } else {
                 MilestonesEmptyState()
             }
         }
-        .navigationTitle("Milestones")
+        .mhScreen(
+            "Milestones",
+            subtitle: "Yearly moments that are drawing closer."
+        )
     }
 
     private var milestones: [EntryMilestone] {

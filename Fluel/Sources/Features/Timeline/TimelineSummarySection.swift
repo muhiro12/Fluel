@@ -13,16 +13,29 @@ struct TimelineSummarySection: View {
     let summary: EntryTimelineSummary
 
     var body: some View {
-        Section {
-            LabeledContent("Visible", value: summary.visibleActivityCount.formatted())
-            LabeledContent("Total", value: summary.totalActivityCount.formatted())
-            LabeledContent("Months", value: summary.representedMonthCount.formatted())
-            LabeledContent("Added", value: summary.addedCount.formatted())
-            LabeledContent("Updated", value: summary.updatedCount.formatted())
-            LabeledContent("Archived", value: summary.archivedCount.formatted())
-        } header: {
-            MHSectionHeader("Timeline summary")
+        MHSummary(
+            title: Text(summary.visibleActivityCount, format: .number),
+            metadata: Text("Visible activity"),
+            supporting: Text(verbatim: supportingText)
+        ) {
+            FluelBadgeStack {
+                Text(verbatim: "\(summary.addedCount.formatted()) \(String(localized: "Added"))")
+                    .mhBadge(style: .accent)
+
+                Text(verbatim: "\(summary.updatedCount.formatted()) \(String(localized: "Updated"))")
+                    .mhBadge(style: .neutral)
+
+                Text(verbatim: "\(summary.archivedCount.formatted()) \(String(localized: "Archived"))")
+                    .mhBadge(style: .neutral)
+            }
         }
-        .labeledContentStyle(.mhKeyValue)
+    }
+
+    private var supportingText: String {
+        let totalLabel = String(localized: "Total")
+        let monthsLabel = String(localized: "Months")
+
+        return "\(totalLabel): \(summary.totalActivityCount.formatted()) · "
+            + "\(monthsLabel): \(summary.representedMonthCount.formatted())"
     }
 }

@@ -11,6 +11,9 @@ import SwiftData
 import SwiftUI
 
 struct TimelineView: View {
+    @Environment(\.mhTheme)
+    private var theme
+
     @Query(sort: \Entry.updatedAt, order: .reverse)
     private var entries: [Entry]
 
@@ -37,7 +40,7 @@ struct TimelineView: View {
             query: query
         )
 
-        List {
+        LazyVStack(alignment: .leading, spacing: theme.spacing.section) {
             if result.summary.totalActivityCount > 0,
                result.summary.visibleActivityCount > 0 {
                 TimelineSummarySection(summary: result.summary)
@@ -49,17 +52,16 @@ struct TimelineView: View {
                 ForEach(result.months) { month in
                     TimelineMonthSection(month: month)
                 }
-            }
-        }
-        .mhListChrome()
-        .overlay {
-            if result.summary.totalActivityCount == 0 {
+            } else if result.summary.totalActivityCount == 0 {
                 TimelineEmptyState()
-            } else if result.summary.visibleActivityCount == 0 {
+            } else {
                 EntryListFilteredEmptyState(clear: clearSearchAndFilters)
             }
         }
-        .navigationTitle("Timeline")
+        .mhScreen(
+            "Timeline",
+            subtitle: "Activity gathered across the life of your entries."
+        )
         .searchable(text: $searchText, prompt: "Search timeline")
         .toolbar {
             ToolbarItemGroup(placement: .secondaryAction) {

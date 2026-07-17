@@ -16,7 +16,7 @@ struct TimelineMonthSection: View {
     let month: EntryTimelineMonth
 
     var body: some View {
-        Section {
+        MHGroupedRows {
             LabeledContent("Monthly trends", value: trendsText)
                 .labeledContentStyle(.mhKeyValue)
 
@@ -31,13 +31,11 @@ struct TimelineMonthSection: View {
                     Text(item.date.formatted(date: .abbreviated, time: .omitted))
                         .mhRowSupporting()
                 }
-                .mhRow()
             }
-        } header: {
-            MHSectionHeader(
-                title: Text(month.monthDate.formatted(.dateTime.month(.wide).year()))
-            )
         }
+        .mhSection(
+            title: Text(month.monthDate.formatted(.dateTime.month(.wide).year()))
+        )
     }
 
     private var trendsText: String {
