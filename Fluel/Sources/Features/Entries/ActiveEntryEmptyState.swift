@@ -10,6 +10,7 @@ import SwiftUI
 
 struct ActiveEntryEmptyState: View {
     let addEntry: () -> Void
+    let addSampleData: (() -> Void)?
 
     var body: some View {
         FluelEmptyState(
@@ -17,8 +18,15 @@ struct ActiveEntryEmptyState: View {
             systemImage: "clock",
             description: "Add one thing or place you live with and keep the start as precisely as you know it."
         ) {
-            Button("Add Entry", action: addEntry)
-                .buttonStyle(.mhPrimary)
+            VStack {
+                Button("Add Entry", action: addEntry)
+                    .buttonStyle(.mhPrimary)
+
+                if let addSampleData {
+                    Button("Add Sample Data", action: addSampleData)
+                        .buttonStyle(.mhQuiet)
+                }
+            }
         }
     }
 }

@@ -132,6 +132,22 @@
         }
       }
     },
+    "Add Sample Data" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Sample Data"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サンプルデータを追加"
+          }
+        }
+      }
+    },
     "Add one thing or place you live with and keep the start as precisely as you know it." : {
       "localizations" : {
         "en" : {
@@ -1605,6 +1621,38 @@
         }
       }
     },
+    "Remove Sample Data" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove Sample Data"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サンプルデータを削除"
+          }
+        }
+      }
+    },
+    "Remove sample data?" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove sample data?"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サンプルデータを削除しますか？"
+          }
+        }
+      }
+    },
     "Remove Photo" : {
       "localizations" : {
         "en" : {
@@ -1697,6 +1745,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "保存"
+          }
+        }
+      }
+    },
+    "Sample Data" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sample Data"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サンプルデータ"
+          }
+        }
+      }
+    },
+    "Sample data could not be updated" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sample data could not be updated"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サンプルデータを更新できませんでした"
+          }
+        }
+      }
+    },
+    "Sample entries, all of their activity, and any changes you made to them will be deleted." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sample entries, all of their activity, and any changes you made to them will be deleted."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "サンプルのEntry、すべてのActivity、加えた変更が削除されます。"
           }
         }
       }
