@@ -16,7 +16,7 @@ struct DashboardEntryHighlightsSection: View {
     let summary: EntryDashboardSummary
 
     var body: some View {
-        Section {
+        MHGroupedRows {
             if let entry = summary.longestRunningActiveEntry {
                 highlight(
                     label: "Longest together right now",
@@ -35,9 +35,11 @@ struct DashboardEntryHighlightsSection: View {
                     showsTimeTogetherMark: false
                 )
             }
-        } header: {
-            MHSectionHeader("Highlights")
         }
+        .mhSection(
+            "Highlights",
+            supporting: "The moments that define the collection right now."
+        )
     }
 
     private func highlight(
@@ -60,6 +62,5 @@ struct DashboardEntryHighlightsSection: View {
                     .mhRowSupporting()
             }
         }
-        .mhRow()
     }
 }

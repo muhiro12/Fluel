@@ -16,7 +16,7 @@ struct DashboardRecentActivitySection: View {
     let activity: [EntryActivitySummary]
 
     var body: some View {
-        Section {
+        MHGroupedRows {
             ForEach(activity) { item in
                 VStack(alignment: .leading, spacing: designMetrics.spacing.inline) {
                     Text(item.kind.label)
@@ -28,10 +28,11 @@ struct DashboardRecentActivitySection: View {
                     Text(item.date.formatted(date: .abbreviated, time: .omitted))
                         .mhRowSupporting()
                 }
-                .mhRow()
             }
-        } header: {
-            MHSectionHeader("Recent activity")
         }
+        .mhSection(
+            "Recent activity",
+            supporting: "The latest changes across entries."
+        )
     }
 }

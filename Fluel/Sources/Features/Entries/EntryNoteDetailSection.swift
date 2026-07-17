@@ -13,12 +13,8 @@ struct EntryNoteDetailSection: View {
 
     var body: some View {
         if let note {
-            Section {
-                Text(note)
-                    .mhRow()
-            } header: {
-                MHSectionHeader("Note")
-            }
+            Text(note)
+                .mhSection("Note")
         }
     }
 }

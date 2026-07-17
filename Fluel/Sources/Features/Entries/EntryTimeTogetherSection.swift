@@ -15,16 +15,19 @@ struct EntryTimeTogetherSection: View {
     var body: some View {
         let summary = entry.timeTogether()
 
-        Section {
+        MHGroupedRows {
             LabeledContent("Elapsed in full", value: summary.fullText)
+                .labeledContentStyle(.mhKeyValue)
 
             if let label = summary.totalValueLabel,
                let value = summary.totalValueText {
                 LabeledContent(label, value: value)
+                    .labeledContentStyle(.mhKeyValue)
             }
-        } header: {
-            MHSectionHeader("Time together")
         }
-        .labeledContentStyle(.mhKeyValue)
+        .mhSection(
+            "Time together",
+            supporting: "A fuller reading of the elapsed time."
+        )
     }
 }

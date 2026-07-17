@@ -11,6 +11,9 @@ import SwiftData
 import SwiftUI
 
 struct DashboardView: View {
+    @Environment(\.mhTheme)
+    private var theme
+
     @Query(sort: \Entry.updatedAt, order: .reverse)
     private var entries: [Entry]
 
@@ -23,7 +26,7 @@ struct DashboardView: View {
             activity: activity.map(\.summary)
         )
 
-        List {
+        VStack(alignment: .leading, spacing: theme.spacing.section) {
             DashboardCountsSection(summary: summary)
 
             DashboardEntryHighlightsSection(summary: summary)
@@ -36,8 +39,10 @@ struct DashboardView: View {
                 DashboardRecentActivitySection(activity: summary.recentActivity)
             }
         }
-        .mhListChrome()
-        .navigationTitle("Dashboard")
+        .mhScreen(
+            "Dashboard",
+            subtitle: "A quiet view of the time held across your entries."
+        )
     }
 }
 

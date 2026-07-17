@@ -4,6 +4,38 @@
     "%@" : {
       "shouldTranslate" : false
     },
+    "%lld active" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld active"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Active %lld件"
+          }
+        }
+      }
+    },
+    "%lld archived" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld archived"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Archive %lld件"
+          }
+        }
+      }
+    },
     "1 year ago" : {
       "localizations" : {
         "en" : {
@@ -68,6 +100,38 @@
         }
       }
     },
+    "A fuller reading of the elapsed time." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A fuller reading of the elapsed time."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "経過時間をより詳しく表示します。"
+          }
+        }
+      }
+    },
+    "A quiet view of the time held across your entries." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "A quiet view of the time held across your entries."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entryと過ごした時間を静かに見渡します。"
+          }
+        }
+      }
+    },
     "Active" : {
       "localizations" : {
         "en" : {
@@ -80,6 +144,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Active"
+          }
+        }
+      }
+    },
+    "Active and archived entries stay visible together." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Active and archived entries stay visible together."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ActiveとArchiveのEntryをまとめて確認できます。"
           }
         }
       }
@@ -176,6 +256,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "写真を追加"
+          }
+        }
+      }
+    },
+    "Yearly moments that are drawing closer." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yearly moments that are drawing closer."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "毎年の節目が近づいています。"
           }
         }
       }
@@ -517,6 +613,22 @@
         }
       }
     },
+    "Dates that describe this record in Fluel." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dates that describe this record in Fluel."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "FluelでこのEntryを記録した日時です。"
+          }
+        }
+      }
+    },
     "Default" : {
       "localizations" : {
         "en" : {
@@ -545,6 +657,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "DefaultのPreset"
+          }
+        }
+      }
+    },
+    "Details" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Details"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "詳細"
           }
         }
       }
@@ -1189,6 +1317,22 @@
         }
       }
     },
+    "Move this entry out of daily life without losing its history." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Move this entry out of daily life without losing its history."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "履歴を残したまま、このEntryを日々の暮らしから外します。"
+          }
+        }
+      }
+    },
     "Moved out of daily life" : {
       "localizations" : {
         "en" : {
@@ -1717,6 +1861,22 @@
         }
       }
     },
+    "Restore this entry or remove it permanently." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restore this entry or remove it permanently."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "このEntryをRestoreするか、完全に削除します。"
+          }
+        }
+      }
+    },
     "Reusable starting points will appear here." : {
       "localizations" : {
         "en" : {
@@ -2037,6 +2197,22 @@
         }
       }
     },
+    "Supporting context stays quieter than the entry total." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Supporting context stays quieter than the entry total."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "補足情報はEntryの合計より控えめに示します。"
+          }
+        }
+      }
+    },
     "The app could not prepare its entry storage. Please try again later." : {
       "localizations" : {
         "en" : {
@@ -2049,6 +2225,54 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Entryの保存場所を準備できませんでした。しばらくしてからもう一度お試しください。"
+          }
+        }
+      }
+    },
+    "The date and precision Fluel uses to keep time." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The date and precision Fluel uses to keep time."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Fluelが時間を数える基準となるStartとPrecisionです。"
+          }
+        }
+      }
+    },
+    "The latest changes across entries." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The latest changes across entries."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entryに加わった最近の変化です。"
+          }
+        }
+      }
+    },
+    "The moments that define the collection right now." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The moments that define the collection right now."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "今のコレクションを形づくる出来事です。"
           }
         }
       }
@@ -2193,6 +2417,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "合計"
+          }
+        }
+      }
+    },
+    "Total entries" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total entries"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Entryの合計"
           }
         }
       }

@@ -20,15 +20,11 @@ struct EntryPhotoDetailSection: View {
 
     var body: some View {
         if let photoData {
-            Section {
-                EntryPhotoImage(photoData: photoData)
-                    .frame(maxWidth: .infinity)
-                    .frame(maxHeight: Layout.maximumImageHeight)
-                    .clipShape(.rect(cornerRadius: designMetrics.cornerRadius.surface))
-                    .mhRow()
-            } header: {
-                MHSectionHeader("Photo")
-            }
+            EntryPhotoImage(photoData: photoData)
+                .frame(maxWidth: .infinity)
+                .frame(maxHeight: Layout.maximumImageHeight)
+                .clipShape(.rect(cornerRadius: designMetrics.cornerRadius.surface))
+                .mhSection("Photo")
         }
     }
 }

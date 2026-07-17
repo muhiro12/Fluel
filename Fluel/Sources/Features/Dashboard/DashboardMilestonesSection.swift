@@ -13,16 +13,17 @@ struct DashboardMilestonesSection: View {
     let milestones: [EntryMilestone]
 
     var body: some View {
-        Section {
+        MHGroupedRows {
             ForEach(milestones) { milestone in
                 MilestoneRowView(
                     milestone: milestone,
                     approximateLabel: Text("Approximate milestone")
                 )
-                .mhRow()
             }
-        } header: {
-            MHSectionHeader("Upcoming milestones")
         }
+        .mhSection(
+            "Upcoming milestones",
+            supporting: "Yearly moments that are drawing closer."
+        )
     }
 }

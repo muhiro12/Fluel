@@ -15,6 +15,8 @@ struct EntryDetailView: View {
     private var dismiss
     @Environment(\.modelContext)
     private var modelContext
+    @Environment(\.mhTheme)
+    private var theme
 
     @State private var isConfirmingPermanentDelete = false
     @State private var editorRoute: EntryEditorRoute?
@@ -23,10 +25,8 @@ struct EntryDetailView: View {
     let entry: Entry
 
     var body: some View {
-        List {
-            Section {
-                EntryDetailHeader(entry: entry)
-            }
+        VStack(alignment: .leading, spacing: theme.spacing.section) {
+            EntryDetailHeader(entry: entry)
 
             EntryPhotoDetailSection(photoData: entry.photoData)
 
@@ -45,7 +45,7 @@ struct EntryDetailView: View {
                 deletePermanently: confirmPermanentDelete
             )
         }
-        .mhListChrome()
+        .mhScreen()
         .navigationTitle(entry.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
