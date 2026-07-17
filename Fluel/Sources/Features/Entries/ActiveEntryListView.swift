@@ -45,7 +45,7 @@ struct ActiveEntryListView: View {
                         } label: {
                             Label("Archive", systemImage: "archivebox")
                         }
-                        .tint(.orange)
+                        .tint(Color.accentColor)
                     }
                 }
             }
