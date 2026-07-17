@@ -12,10 +12,6 @@ import SwiftData
 
 extension PreviewSampleData {
     enum Identifier {
-        static let thisHome = "10000000-0000-0000-0000-000000000001"
-        static let notebook = "10000000-0000-0000-0000-000000000002"
-        static let watch = "10000000-0000-0000-0000-000000000003"
-        static let deskLamp = "10000000-0000-0000-0000-000000000004"
         static let wallet = "10000000-0000-0000-0000-000000000005"
         static let bag = "10000000-0000-0000-0000-000000000006"
         static let plant = "10000000-0000-0000-0000-000000000007"

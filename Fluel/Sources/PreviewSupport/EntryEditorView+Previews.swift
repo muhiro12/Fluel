@@ -16,7 +16,9 @@ import SwiftUI
 }
 
 #Preview("Edit entry - filled") {
-    let preview = PreviewSampleData.detailContainer(title: "Watch")
+    let preview = PreviewSampleData.detailContainer(
+        id: SampleDataManifest.Identifier.watch
+    )
 
     EntryEditorView(
         editing: preview.entry,

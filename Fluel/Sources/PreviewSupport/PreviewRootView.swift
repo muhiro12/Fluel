@@ -49,7 +49,7 @@ struct PreviewRootView: View {
 
     private var activeDetailEntry: Entry? {
         entries.first { entry in
-            entry.title == "Notebook"
+            entry.id == SampleDataManifest.Identifier.notebook
         } ?? entries.first { entry in
             !entry.isArchived
         }

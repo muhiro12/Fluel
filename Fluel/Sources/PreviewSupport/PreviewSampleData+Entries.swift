@@ -12,19 +12,18 @@ import Foundation
 
 extension PreviewSampleData {
     static var samplePhotoData: Data {
-        let encodedPhoto = "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAGCAYAAAD+Bd/7AAAAAXNSR0IArs4c6QAA"
-            + "ADhlWElmTU0AKgAAAAgAAYdpAAQAAAABAAAAGgAAAAAAAqACAAQAAAABAAAACKAD"
-            + "AAQAAAABAAAABgAAAAAJfOcJAAAATklEQVQIHWMUnbv0PwMewASTsxdmZDhqwwzG"
-            + "IDYMwBW0aTIxSHIwgjGIDQMIFkwEjYYrqLr+j+H5j/9gDGLDAAuMcfDtfwbrI39"
-            + "hXDgNAIWhFbt9COKBAAAAAElFTkSuQmCC"
+        SampleDataManifest.samplePhotoData
+    }
 
-        guard let data = Data(
-            base64Encoded: encodedPhoto
-        ) else {
-            preconditionFailure("Preview photo fixture is invalid.")
+    static var sampleEntryDefinitions: [SampleDataManifest.EntryDefinition] {
+        do {
+            return try SampleDataManifest.entries(
+                referenceDate: ReferenceDate.current,
+                calendar: Calendar(identifier: .gregorian)
+            )
+        } catch {
+            preconditionFailure("Sample entry definitions are invalid: \(error)")
         }
-
-        return data
     }
 
     static var sampleEntries: [Entry] {
@@ -32,48 +31,9 @@ extension PreviewSampleData {
     }
 
     static var typicalEntries: [Entry] {
-        [
-            Entry(
-                title: "This home",
-                note: "A home is where daily life gathers.",
-                photoData: nil,
-                start: entryStart(year: 2021, precision: .year),
-                createdAt: ReferenceDate.created,
-                updatedAt: ReferenceDate.created,
-                archivedAt: nil,
-                id: uuid(Identifier.thisHome)
-            ),
-            Entry(
-                title: "Notebook",
-                note: "Ordinary thoughts from this year.",
-                photoData: nil,
-                start: entryStart(year: 2024, precision: .month, month: 9),
-                createdAt: ReferenceDate.created,
-                updatedAt: ReferenceDate.created,
-                archivedAt: nil,
-                id: uuid(Identifier.notebook)
-            ),
-            Entry(
-                title: "Watch",
-                note: nil,
-                photoData: samplePhotoData,
-                start: entryStart(year: 2025, precision: .day, month: 12, day: 14),
-                createdAt: ReferenceDate.created,
-                updatedAt: ReferenceDate.created,
-                archivedAt: nil,
-                id: uuid(Identifier.watch)
-            ),
-            Entry(
-                title: "Desk lamp",
-                note: "Moved to storage.",
-                photoData: nil,
-                start: entryStart(year: 2023, precision: .day, month: 2, day: 14),
-                createdAt: ReferenceDate.created,
-                updatedAt: ReferenceDate.current,
-                archivedAt: ReferenceDate.current,
-                id: uuid(Identifier.deskLamp)
-            )
-        ]
+        sampleEntryDefinitions.map { definition in
+            definition.makeEntry()
+        }
     }
 
     static var denseEntries: [Entry] {

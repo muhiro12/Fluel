@@ -10,11 +10,6 @@ import Foundation
 
 extension PreviewSampleData {
     private enum ActivityIdentifier {
-        static let thisHomeAdded = "30000000-0000-0000-0000-000000000001"
-        static let notebookAdded = "30000000-0000-0000-0000-000000000002"
-        static let watchAdded = "30000000-0000-0000-0000-000000000003"
-        static let deskLampAdded = "30000000-0000-0000-0000-000000000004"
-        static let deskLampArchived = "30000000-0000-0000-0000-000000000005"
         static let walletAdded = "30000000-0000-0000-0000-000000000006"
         static let walletUpdated = "30000000-0000-0000-0000-000000000007"
         static let bagAdded = "30000000-0000-0000-0000-000000000008"
@@ -36,49 +31,11 @@ extension PreviewSampleData {
     }
 
     private static func sampleActivity() -> [EntryActivity] {
-        typicalActivity()
-            + additionalAddedActivity()
-            + additionalUpdatedActivity()
-    }
-
-    private static func typicalActivity() -> [EntryActivity] {
-        [
-            activity(
-                id: ActivityIdentifier.thisHomeAdded,
-                entryID: Identifier.thisHome,
-                title: "This home",
-                kind: .added,
-                date: ReferenceDate.created
-            ),
-            activity(
-                id: ActivityIdentifier.notebookAdded,
-                entryID: Identifier.notebook,
-                title: "Notebook",
-                kind: .added,
-                date: ReferenceDate.created
-            ),
-            activity(
-                id: ActivityIdentifier.watchAdded,
-                entryID: Identifier.watch,
-                title: "Watch",
-                kind: .added,
-                date: ReferenceDate.created
-            ),
-            activity(
-                id: ActivityIdentifier.deskLampAdded,
-                entryID: Identifier.deskLamp,
-                title: "Desk lamp",
-                kind: .added,
-                date: ReferenceDate.created
-            ),
-            activity(
-                id: ActivityIdentifier.deskLampArchived,
-                entryID: Identifier.deskLamp,
-                title: "Desk lamp",
-                kind: .archived,
-                date: ReferenceDate.current
-            )
-        ]
+        sampleEntryDefinitions.flatMap { definition in
+            definition.makeActivityItems()
+        }
+        + additionalAddedActivity()
+        + additionalUpdatedActivity()
     }
 
     private static func additionalAddedActivity() -> [EntryActivity] {

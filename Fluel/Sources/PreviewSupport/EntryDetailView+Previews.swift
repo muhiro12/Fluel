@@ -10,7 +10,9 @@ import SwiftData
 import SwiftUI
 
 #Preview("Entry detail - typical") {
-    let preview = PreviewSampleData.detailContainer(title: "Notebook")
+    let preview = PreviewSampleData.detailContainer(
+        id: SampleDataManifest.Identifier.notebook
+    )
 
     NavigationStack {
         EntryDetailView(entry: preview.entry)
@@ -20,7 +22,9 @@ import SwiftUI
 }
 
 #Preview("Entry detail - photo") {
-    let preview = PreviewSampleData.detailContainer(title: "Watch")
+    let preview = PreviewSampleData.detailContainer(
+        id: SampleDataManifest.Identifier.watch
+    )
 
     NavigationStack {
         EntryDetailView(entry: preview.entry)
@@ -30,7 +34,9 @@ import SwiftUI
 }
 
 #Preview("Entry detail - archived") {
-    let preview = PreviewSampleData.detailContainer(title: "Desk lamp")
+    let preview = PreviewSampleData.detailContainer(
+        id: SampleDataManifest.Identifier.deskLamp
+    )
 
     NavigationStack {
         EntryDetailView(entry: preview.entry)
@@ -41,7 +47,7 @@ import SwiftUI
 
 #Preview("Entry detail - long text, large type") {
     let preview = PreviewSampleData.detailContainer(
-        title: "Small wooden chair that moved through different rooms"
+        id: PreviewSampleData.uuid(PreviewSampleData.Identifier.longTitle)
     )
 
     NavigationStack {

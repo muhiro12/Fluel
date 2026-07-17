@@ -5,6 +5,7 @@
 //  Created by Codex on 2026/06/25.
 //
 
+import Foundation
 import SwiftData
 
 @MainActor
@@ -130,9 +131,9 @@ enum PreviewSampleData {
         )
     }
 
-    static func detailContainer(title: String) -> (container: ModelContainer, entry: Entry) {
+    static func detailContainer(id: UUID) -> (container: ModelContainer, entry: Entry) {
         let entry = denseEntries.first { entry in
-            entry.title == title
+            entry.id == id
         } ?? typicalEntries[0]
 
         return (
