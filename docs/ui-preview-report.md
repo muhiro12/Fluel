@@ -5,11 +5,11 @@
 This report summarizes the current Fluel UI preview, screenshot, and MHUI
 adoption coverage.
 
-Repository paths and implementation notes were refreshed on 2026-07-16
-against commit `8ef4434`. Most screenshots below remain historical evidence
+Repository paths and implementation notes were refreshed on 2026-07-17
+against commit `2e0c3fb`. Most screenshots below remain historical evidence
 from the original preview pass. Targeted live and Preview checks completed on
-2026-07-13 and adaptive-navigation checks completed on 2026-07-16 are called
-out explicitly.
+2026-07-13, adaptive-navigation checks completed on 2026-07-16, and MHUI 1.10
+adoption checks completed on 2026-07-17 are called out explicitly.
 
 The decision standard is:
 
@@ -73,7 +73,7 @@ Current linked package state:
 - The Xcode app's `Package.resolved` file is tracked for reproducible app and
   Xcode Cloud resolution. SwiftPM lockfiles for `FluelLibrary` remain local
   generated artifacts. The recorded verification run resolved `MHPlatform` at
-  `1.12.0`, `MHUI` at `1.8.0`, and `SwiftLintPlugins` at `0.64.1`.
+  `1.12.0`, `MHUI` at `1.10.0`, and `SwiftLintPlugins` at `0.65.0`.
 
 Available API areas inspected:
 
@@ -89,8 +89,39 @@ Available API areas inspected:
 - `mhSectionHeader()`, `mhSectionHeaderTitle()`,
   `mhSectionHeaderSupporting()`, and `mhSectionFooterText()`.
 - `mhListChrome(...)`, `mhFormChrome(...)`, `mhSection(...)`,
-  `mhSurface(...)`, `mhGroupedRows(...)`, `MHActionGroup`,
-  `mhInputChrome(state:)`, and `mhGlassPolicy(_)`.
+  `mhSurface(...)`, `MHGroupedRows`, `MHSurfaceRole.elevated`,
+  `MHActionGroup`, `mhInputChrome(state:)`, and `mhGlassPolicy(_)`.
+
+### MHUI 1.10 Adoption Review
+
+The [MHUI 1.9 release](https://github.com/muhiro12/MHUI/releases/tag/1.9),
+[MHUI 1.10 release](https://github.com/muhiro12/MHUI/releases/tag/1.10), and
+the `1.8...1.10` source diff were reviewed against Fluel's call sites.
+
+- `FluelApp` applies `MHTheme.standard` at the app root for both the normal and
+  startup-failure paths. Runtime screenshot roots and standalone component
+  previews also apply the same standard theme.
+- The no-argument standard theme inherits Fluel's `AccentColor` asset. Fluel's
+  system cyan remains the host-owned accent, and the app does not install a
+  competing fixed theme accent or redundant root `tint(_:)` override.
+- Fluel does not use the removed `mhGroupedRows(...)` modifier, directly
+  initialize the changed theme groups, or exhaustively switch over the
+  extended surface and font-style enums.
+- Existing semantic row, text, badge, section-header, empty-state, key-value,
+  and button APIs automatically receive the new neutral palette, tighter
+  metrics, stronger system typography, and leading-edge section cues.
+- A live iPhone 17 Pro audit covered active entries empty, dashboard dense,
+  entry detail dense, presets, and entry editor. The new theme appeared on all
+  five screens without clipping, overlap, unreadable text, incorrect accent
+  ownership, or runtime failure.
+- An iPad landscape dashboard follow-up did not produce reviewable app evidence.
+  Device Interaction kept Fluel in the background and returned the SpringBoard
+  app switcher after one foreground retry. The run and session were stopped,
+  and the original Xcode selection was restored, so this remains a tool-side
+  coverage gap rather than an app finding.
+- `MHGroupedRows` and the elevated surface role remain available when a future
+  custom grouped surface needs them. The current native `List` and `Form`
+  decisions do not need replacement merely to exercise the new APIs.
 
 MHUI's architecture guidance was important: host screens own product wording,
 business-state branching, and navigation meaning. MHUI owns reusable
