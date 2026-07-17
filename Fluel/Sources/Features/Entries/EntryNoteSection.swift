@@ -21,7 +21,6 @@ struct EntryNoteSection: View {
             TextField("Small memory or detail", text: $note, axis: .vertical)
                 .lineLimit(Layout.minimumLineLimit...Layout.maximumLineLimit)
                 .submitLabel(.done)
-                .mhInputChrome()
         } header: {
             MHSectionHeader("Note")
         }

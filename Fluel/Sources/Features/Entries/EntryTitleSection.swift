@@ -16,7 +16,6 @@ struct EntryTitleSection: View {
             TextField("Thing or place", text: $title)
                 .textInputAutocapitalization(.words)
                 .submitLabel(.done)
-                .mhInputChrome()
         } header: {
             MHSectionHeader("Entry")
         }

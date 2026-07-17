@@ -24,6 +24,10 @@ struct EntryDetailView: View {
 
     var body: some View {
         List {
+            Section {
+                EntryDetailHeader(entry: entry)
+            }
+
             EntryPhotoDetailSection(photoData: entry.photoData)
 
             EntryStartDetailSection(entry: entry)
@@ -41,9 +45,7 @@ struct EntryDetailView: View {
                 deletePermanently: confirmPermanentDelete
             )
         }
-        .mhListChrome {
-            EntryDetailHeader(entry: entry)
-        }
+        .mhListChrome()
         .navigationTitle(entry.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
