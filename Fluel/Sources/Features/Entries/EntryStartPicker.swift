@@ -25,11 +25,13 @@ struct EntryStartPicker: View {
             EntryStartValuePicker(draft: $draft, calendar: calendar)
 
             LabeledContent("Known as", value: draft.precision.knownAsText)
+                .labeledContentStyle(.mhKeyValue)
+
             LabeledContent("Start", value: startLabel)
+                .labeledContentStyle(.mhKeyValue)
         } header: {
             MHSectionHeader("Start")
         }
-        .labeledContentStyle(.mhKeyValue)
         .onChange(of: draft.precision) {
             precisionTip.invalidate(reason: .actionPerformed)
         }
