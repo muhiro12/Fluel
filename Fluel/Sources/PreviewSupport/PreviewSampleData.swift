@@ -146,6 +146,22 @@ enum PreviewSampleData {
         )
     }
 
+    static func presetEditorContainer(title: String) -> (container: ModelContainer, preset: Preset) {
+        let preset = samplePresets.first { preset in
+            preset.title == title
+        } ?? samplePresets[0]
+
+        return (
+            container: container(
+                entries: [],
+                activity: [],
+                presets: [preset],
+                defaultSelections: []
+            ),
+            preset: preset
+        )
+    }
+
     private static func scenario(from arguments: [String]) -> Scenario? {
         guard let value = value(after: Argument.scenario, in: arguments) else {
             return nil

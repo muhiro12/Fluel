@@ -207,28 +207,3 @@ struct EntryEditorView: View {
         isProcessingPhoto = false
     }
 }
-
-#Preview("Add entry - empty") {
-    EntryEditorView()
-        .modelContainer(PreviewSampleData.emptyContainer())
-        .mhTheme(.standard)
-}
-
-#Preview("Edit entry - filled") {
-    let preview = PreviewSampleData.detailContainer(title: "Watch")
-
-    EntryEditorView(
-        editing: preview.entry,
-        draft: PreviewSampleData.draft(for: preview.entry),
-        photoData: preview.entry.photoData
-    )
-    .modelContainer(preview.container)
-    .mhTheme(.standard)
-}
-
-#Preview("Create entry - long text, dark") {
-    EntryEditorView(draft: PreviewSampleData.longTextDraft)
-        .modelContainer(PreviewSampleData.emptyContainer())
-        .mhTheme(.standard)
-        .preferredColorScheme(.dark)
-}

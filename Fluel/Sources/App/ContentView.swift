@@ -92,29 +92,3 @@ struct ContentView: View {
         detailIdentity = .init()
     }
 }
-
-#Preview("Active entries - empty") {
-    FluelPreviewContainer(.empty) {
-        ContentView()
-    }
-}
-
-#Preview("Active entries - typical") {
-    FluelPreviewContainer {
-        ContentView()
-    }
-}
-
-#Preview("Active entries - dense, large type") {
-    FluelPreviewContainer(.dense) {
-        ContentView()
-    }
-    .dynamicTypeSize(.accessibility2)
-}
-
-#Preview("Active entries - dark") {
-    FluelPreviewContainer {
-        ContentView()
-    }
-    .preferredColorScheme(.dark)
-}
