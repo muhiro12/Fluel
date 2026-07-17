@@ -184,6 +184,68 @@ therefore kept Fluel-specific screen composition and copy in the app target,
 while centralizing the repeated empty-state presentation through
 `FluelEmptyState`.
 
+### Visual Ownership Review
+
+The following concerns were classified from current Fluel previews, the MHUI
+1.11 adoption guide and source, and Apple's current layout, scroll-view,
+materials, and Liquid Glass guidance.
+
+- Background brightness — MHUI package. `MHBackground` uses an opaque
+  `#F2F2F2` light canvas, and Fluel does not override it. This is the package's
+  intended achromatic palette, but its perceived weight needs package-level
+  review rather than an app-local color fork.
+- Background differences — intended platform layering, with an MHUI
+  integration concern. Native navigation, sidebar, toolbar, and search
+  surfaces use system Liquid Glass or materials, while adopted content screens
+  use the MHUI canvas. The layer distinction is intentional; the strength of
+  the transition is affected by the package canvas and container layout.
+- Scroll-region boundaries — MHUI package. `MHContainerChromeModifier` pads
+  the native `List` or `Form` itself horizontally and vertically. This shortens
+  the scroll viewport instead of allowing content to extend beneath the
+  floating navigation layer and use the system scroll-edge treatment.
+- Centered content compression — MHUI package. The same modifier applies outer
+  screen margins and a readable-width limit around the complete scrolling
+  container. Readable text width is intentional at regular width, but viewport
+  padding at compact width makes the whole interactive region feel inset.
+- Square list elements — MHUI package. `mhListChrome()` forces a plain list and
+  `mhRow()` clears native row backgrounds and separators. The resulting
+  editorial rectangles are an intentional 1.11 treatment, but shape and
+  grouping need shared-package review.
+- Row body alignment — Fluel app and MHUI package. Fluel's preset SF Symbols
+  had variable intrinsic widths; the app now uses one Dynamic Type-scaled
+  symbol column. Remaining offsets between section headers, key-value rows,
+  and ordinary rows come from separate MHUI header and row inset recipes.
+- Double-framed form inputs — MHUI package. Fluel follows the documented
+  native-form route: a `TextField` inside `Form` receives `mhInputChrome()`.
+  The package adds an inner fill and border while the native form section keeps
+  its own grouped surface.
+- Section cue and row margins — MHUI package. `MHSectionHeaderModifier` adds a
+  package leading inset after the native section header inset, while row chrome
+  uses a separate list-row inset. The combined native and package margins
+  produce different leading guides.
+- Liquid Glass harmony — MHUI package, not custom app glass. Fluel uses system
+  navigation and control glass; it does not add custom glass to content. Apple
+  intends glass for the navigation and control layer, but the package's opaque,
+  inset scroll container prevents content from flowing naturally beneath that
+  layer and weakens the relationship.
+
+No app-local workaround was added for package-owned canvas, viewport, row,
+header, input, or glass composition. Those concerns need one shared MHUI fix so
+all adopters receive the same behavior.
+
+Recommended MHUI follow-up:
+
+1. Keep native scrolling containers edge-to-edge and apply readable-width or
+   margin policy to their content instead of shortening the scroll viewport.
+2. Define one shared leading guide for section cues, ordinary rows, and
+   key-value rows after native container insets are resolved.
+3. Reconcile the plain editorial row treatment with rounded Apple-platform
+   grouping, or expose the two treatments as explicit package choices.
+4. Make input chrome aware of native form grouping so one field does not show
+   both an outer grouped surface and an inner bordered surface.
+5. Review canvas brightness and the transition between opaque content planes
+   and system Liquid Glass without putting glass into the content layer.
+
 ## Screen Decisions
 
 Active entries:
