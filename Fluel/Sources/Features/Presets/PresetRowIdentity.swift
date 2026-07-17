@@ -10,8 +10,15 @@ import MHUI
 import SwiftUI
 
 struct PresetRowIdentity: View {
+    private enum Layout {
+        static let symbolColumnWidth: CGFloat = 24
+    }
+
     @Environment(\.mhDesignMetrics)
     private var designMetrics
+
+    @ScaledMetric(relativeTo: .title3)
+    private var symbolColumnWidth = Layout.symbolColumnWidth
 
     let preset: EntryPreset
 
@@ -19,6 +26,7 @@ struct PresetRowIdentity: View {
         HStack(alignment: .top, spacing: designMetrics.spacing.control) {
             Image(systemName: preset.symbolName)
                 .mhTextStyle(.sectionTitle, colorRole: .secondaryText)
+                .frame(width: symbolColumnWidth)
                 .accessibilityHidden(true)
 
             VStack(alignment: .leading, spacing: designMetrics.spacing.inline) {
