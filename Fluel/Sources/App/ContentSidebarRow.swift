@@ -5,6 +5,7 @@
 //  Created by Codex on 2026/07/16.
 //
 
+import MHUI
 import SwiftUI
 
 struct ContentSidebarRow: View {
@@ -14,5 +15,6 @@ struct ContentSidebarRow: View {
         NavigationLink(value: route) {
             Label(route.title, systemImage: route.systemImage)
         }
+        .mhRow()
     }
 }

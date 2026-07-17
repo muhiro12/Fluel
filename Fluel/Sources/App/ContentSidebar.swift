@@ -5,6 +5,7 @@
 //  Created by Codex on 2026/07/16.
 //
 
+import MHUI
 import SwiftUI
 
 struct ContentSidebar: View {
@@ -28,6 +29,7 @@ struct ContentSidebar: View {
                 }
             }
         }
+        .mhListChrome()
         .navigationTitle("Fluel")
     }
 
