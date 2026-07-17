@@ -9,9 +9,11 @@ Repository paths and implementation notes were refreshed on 2026-07-17
 after package-resolution commit `1bba63a`. Most screenshots below remain
 historical evidence from the original preview pass. Targeted live and Preview
 checks completed on 2026-07-13, adaptive-navigation checks completed on
-2026-07-16, and MHUI 1.10 and 1.11 adoption checks completed on 2026-07-17 are
-called out explicitly. All 25 current screen-level Preview definitions were
-rendered again on 2026-07-17 after the MHUI 1.11 adoption changes.
+2026-07-16, and MHUI 1.10, 1.11, and 1.12 adoption checks completed on
+2026-07-17 are called out explicitly. All 25 current screen-level Preview
+definitions were rendered after the MHUI 1.11 adoption changes. The MHUI 1.12
+follow-up re-rendered the five screens that cover the changed list, form,
+section, key-value, surface, and Liquid Glass boundaries.
 
 The decision standard is:
 
@@ -74,7 +76,7 @@ Current linked package state:
 - The Xcode app's `Package.resolved` file is tracked for reproducible app and
   Xcode Cloud resolution. SwiftPM lockfiles for `FluelLibrary` remain local
   generated artifacts. The recorded verification run resolved `MHPlatform` at
-  `1.12.0`, `MHUI` at `1.11.0`, and `SwiftLintPlugins` at `0.65.0`.
+  `1.12.0`, `MHUI` at `1.12.0`, and `SwiftLintPlugins` at `0.65.0`.
 
 Available API areas inspected:
 
@@ -91,7 +93,7 @@ Available API areas inspected:
   `mhSectionHeaderSupporting()`, and `mhSectionFooterText()`.
 - `MHSummary`, `MHSectionHeader`, `MHSectionFooter`,
   `MHTextRole.summaryTitle`, and `MHTheme.Typography.summaryTitle`.
-- `mhListChrome(...)`, `mhFormChrome(...)`, `mhSection(...)`,
+- `mhListChrome()`, `mhFormChrome()`, `mhSection(...)`,
   `mhSurface(...)`, `MHGroupedRows`, `MHSurfaceRole.elevated`,
   `MHActionGroup`, `mhInputChrome(state:)`, and `mhGlassPolicy(_)`.
 
@@ -184,11 +186,11 @@ therefore kept Fluel-specific screen composition and copy in the app target,
 while centralizing the repeated empty-state presentation through
 `FluelEmptyState`.
 
-### Visual Ownership Review
+### MHUI 1.11 Visual Ownership Review
 
-The following concerns were classified from current Fluel previews, the MHUI
-1.11 adoption guide and source, and Apple's current layout, scroll-view,
-materials, and Liquid Glass guidance.
+The following concerns were classified from Fluel previews before the MHUI
+1.12 update, the MHUI 1.11 adoption guide and source, and Apple's layout,
+scroll-view, materials, and Liquid Glass guidance.
 
 - Background brightness — MHUI package. `MHBackground` uses an opaque
   `#F2F2F2` light canvas, and Fluel does not override it. This is the package's
@@ -246,6 +248,44 @@ Recommended MHUI follow-up:
 5. Review canvas brightness and the transition between opaque content planes
    and system Liquid Glass without putting glass into the content layer.
 
+### MHUI 1.12 Follow-Up
+
+The [MHUI 1.12 release](https://github.com/muhiro12/MHUI/releases/tag/1.12),
+[1.11...1.12 source diff](https://github.com/muhiro12/MHUI/compare/1.11...1.12),
+and current adoption guide directly address the package-owned findings above.
+
+- Native `List` and `Form` containers keep their complete viewport,
+  platform-selected style, grouped row backgrounds, separators, and control
+  behavior. Fluel uses only the no-argument `mhListChrome()` and
+  `mhFormChrome()` APIs.
+- Screen-specific lead content remains inside the app-owned native container.
+  Entry detail presents its summary as the first `List` section instead of
+  passing a detached header to container chrome.
+- Form text fields no longer receive `mhInputChrome()`. Native form grouping
+  now owns the field surface without a second frame.
+- The standard light canvas changes from `#F2F2F2` to `#FAFAFA`, surfaces
+  become white, and public control and surface corner radii increase to 8 and
+  12 points.
+- Section cues now use the native section leading guide, and key-value rows
+  use one stable value column with an automatic vertical fallback.
+- Metadata badges and detached input chrome remain solid content treatments.
+  Liquid Glass stays reserved for eligible interactive controls and system
+  navigation chrome.
+
+One app-side integration issue remained after the package update. The entry
+start section applied `.labeledContentStyle(.mhKeyValue)` to the complete
+`Section`, which also restyled its native `DatePicker` and `Picker` controls.
+At AX2 the date value was clipped. Fluel now applies the style only to the two
+explicit `LabeledContent` rows, allowing native controls to choose their own
+accessibility layout while retaining MHUI key-value treatment where intended.
+
+Focused Preview verification covered active entries, dense dashboard, entry
+detail, the filled entry editor, and custom presets on iPhone 17 Pro. The
+entry editor was also rendered at AX2, and dense dashboard plus the filled
+editor were rendered on iPad Pro 11-inch. The previously reported background,
+viewport, central compression, square grouping, row alignment, double-frame,
+section-margin, and Glass-harmony concerns did not reproduce after migration.
+
 ## Screen Decisions
 
 Active entries:
@@ -272,7 +312,7 @@ Archive:
 
 Entry detail:
 
-- Adopted: `mhListChrome(...)`, `MHSummary`, package-owned
+- Adopted: `mhListChrome()`, `MHSummary`, package-owned
   `MHSectionHeader`, `MHActionGroup` for archive-state actions, shared photo
   surface metrics, and existing `LabeledContentStyle.mhKeyValue` for key-value
   rows.
@@ -281,12 +321,13 @@ Entry detail:
 
 Entry editor and preset editor:
 
-- Adopted: `mhFormChrome(...)`, `mhInputChrome()`, package-owned
-  `MHSectionHeader`, shared photo surface metrics, and `MHActionGroup` for
-  related photo actions.
+- Adopted: `mhFormChrome()`, package-owned `MHSectionHeader`, explicit
+  `LabeledContentStyle.mhKeyValue` rows, shared photo surface metrics, and
+  `MHActionGroup` for related photo actions.
 - Kept SwiftUI-native: `Form`, text fields, segmented precision picker,
   date/month/year pickers, cancellation/confirmation toolbar items, discard
-  confirmation, and save alerts.
+  confirmation, and save alerts. Native form grouping intentionally replaces
+  detached `mhInputChrome()` on these fields.
 
 Dashboard:
 
@@ -469,18 +510,20 @@ Most improved:
   section cue, semantic title treatment, and accessibility header trait.
 - Row spacing now comes from `MHDesignMetrics` instead of local ad-hoc values
   where the row is part of the shared visual rhythm.
-- Content lists and editor forms now use package-owned screen chrome and
-  readable-width behavior while retaining their native SwiftUI controls.
-- Entry detail presents time together through `MHSummary` above the list,
-  separating screen context from the detail rows without adding a custom card.
+- Content lists and editor forms now use package-owned canvas chrome while
+  retaining their complete native viewport, platform grouping, and SwiftUI
+  controls.
+- Entry detail presents time together through `MHSummary` in the first list
+  section, separating screen context from the detail rows without adding a
+  detached scroll container.
 - Empty states now keep native `ContentUnavailableView` semantics while using
   one Fluel wrapper for MHUI spacing and action styling. They overlay empty
   chromed lists instead of becoming oversized native list rows.
 
 MHUI family fit:
 
-- The app now shares screen, summary, row, input, badge, section, empty-state,
-  key-value, and primary-action rhythm across screens.
+- The app now shares screen, summary, row, badge, section, empty-state,
+  key-value, and primary-action rhythm while native forms own input grouping.
 - Product meaning still comes from Fluel's own copy, sample entries, screen
   composition, and active/archive separation.
 - The family resemblance is stronger without making the UI louder or less
@@ -495,9 +538,9 @@ Intentionally preserved:
 - Product language remains Entry, Start, Precision, Time together, Archive,
   Timeline, Milestone, and Preset.
 
-Superseded 1.10 decisions:
+Superseded package decisions:
 
-- The 1.10 audit deferred `mhListChrome(...)`, `mhFormChrome(...)`, and broader
+- The 1.10 audit deferred `mhListChrome()`, `mhFormChrome()`, and broader
   row chrome because their then-current appearance flattened native grouped
   cards without adding a complete replacement hierarchy.
 - MHUI 1.11 changes that contract: achromatic canvas treatment, readable-width
@@ -505,6 +548,10 @@ Superseded 1.10 decisions:
   `MHSummary` now form one explicit composition system. The new implementation
   adopts those pieces together instead of applying a single modifier in
   isolation.
+- MHUI 1.12 replaces the native-container parts of that 1.11 treatment with
+  full-viewport, platform-selected `List` and `Form` geometry. Fluel keeps the
+  semantic package components while removing detached lead content and input
+  chrome that compete with native container ownership.
 - `MHActionGroup` now owns related archive and photo actions. Preset-row
   actions remain a native primary action plus overflow menu because that
   compact row interaction is already clearer than a grouped action strip.
@@ -534,6 +581,9 @@ Confirmed through previews and screenshots:
 - Dark mode for active entries and edit-entry previews.
 - Large Dynamic Type previews for active entries, entry detail, and preset
   rows.
+- AX2 entry editing with native start controls, unclipped date value, and
+  vertically adapting MHUI key-value rows.
+- MHUI 1.12 full-viewport list and form geometry on iPhone and iPad.
 - English and Japanese active-entry empty states through runtime launch
   arguments and screenshots.
 - All 25 current screen-level Preview definitions, including the new preset
@@ -593,6 +643,28 @@ Not recommended now:
   Apple pattern for these screens.
 
 ## Verification Snapshot
+
+The MHUI 1.12 follow-up recorded these successful checks on 2026-07-17:
+
+- Official 1.12 release notes, the `1.11...1.12` source diff, migration guide,
+  package verification notes, and Fluel call sites were reviewed together.
+- Xcode-native build with scheme `Fluel`, Debug, and the discovered iPhone 17
+  Pro iOS 27 Simulator destination completed with no warning or error.
+- Direct Xcode-native Preview rendering covered active entries, dense
+  dashboard, entry detail, the filled entry editor, and custom presets on
+  iPhone 17 Pro.
+- The filled editor was re-rendered at AX2 before and after narrowing
+  `.mhKeyValue` to explicit `LabeledContent` rows. The native date control
+  changed from a clipped horizontal value to a complete vertical layout.
+- Dense dashboard and the filled editor rendered on iPad Pro 11-inch without
+  central viewport compression, detached chrome, or broken regular-width
+  grouping.
+- The Xcode scheme remained `Fluel`, and the destination was restored to
+  `iPhone 17 Pro for Fluel` after iPad coverage.
+- `bash ci_scripts/tasks/format_swift.sh`,
+  `bash ci_scripts/tasks/lint_swift.sh`, and
+  `bash ci_scripts/tasks/check_repository_rules.sh`.
+- `git diff --check`.
 
 The MHUI 1.11 adoption pass recorded these successful checks on 2026-07-17:
 
@@ -693,9 +765,5 @@ Tooling limitation:
   `__designTimeSelection` overload for stateful screens whose Preview
   declarations share the implementation file. Dedicated Preview-support files
   are the current repository workaround.
-- MHUI's `Validation / Native Containers` Preview is not suitable as
-  full-screen clipping evidence while its embedded `List` and `Form` retain
-  fixed heights. Fluel's consumer Previews are the controlling evidence for
-  this app.
 - Markdown lint was not run because `markdownlint` was not available on the
   local `PATH`.
