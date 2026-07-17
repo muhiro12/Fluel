@@ -34,7 +34,7 @@ struct DashboardEntryHighlightsSection: View {
                 )
             }
         } header: {
-            FluelSectionHeader("Highlights")
+            MHSectionHeader("Highlights")
         }
     }
 
@@ -53,5 +53,6 @@ struct DashboardEntryHighlightsSection: View {
             Text(detail)
                 .mhRowSupporting()
         }
+        .mhRow()
     }
 }

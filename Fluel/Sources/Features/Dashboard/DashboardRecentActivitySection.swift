@@ -28,9 +28,10 @@ struct DashboardRecentActivitySection: View {
                     Text(item.date.formatted(date: .abbreviated, time: .omitted))
                         .mhRowSupporting()
                 }
+                .mhRow()
             }
         } header: {
-            FluelSectionHeader("Recent activity")
+            MHSectionHeader("Recent activity")
         }
     }
 }

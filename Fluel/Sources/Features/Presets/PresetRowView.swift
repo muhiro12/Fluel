@@ -12,6 +12,8 @@ import SwiftUI
 struct PresetRowView: View {
     @Environment(\.mhDesignMetrics)
     private var designMetrics
+    @Environment(\.dynamicTypeSize)
+    private var dynamicTypeSize
 
     let preset: EntryPreset
     let canEdit: Bool
@@ -22,43 +24,20 @@ struct PresetRowView: View {
     let toggleDefault: () -> Void
 
     var body: some View {
-        HStack(spacing: designMetrics.spacing.control) {
-            Image(systemName: preset.symbolName)
-                .foregroundStyle(.secondary)
-                .accessibilityHidden(true)
+        let layout = dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(
+                alignment: .leading,
+                spacing: designMetrics.spacing.control
+            ))
+            : AnyLayout(HStackLayout(
+                alignment: .center,
+                spacing: designMetrics.spacing.control
+            ))
 
-            VStack(alignment: .leading, spacing: designMetrics.spacing.inline) {
-                Text(verbatim: preset.displayTitle)
-                    .mhRowTitle()
-
-                Text(preset.startPrecision.knownAsText)
-                    .mhRowSupporting()
-
-                badges
-            }
-
-            Spacer(minLength: designMetrics.spacing.inline)
-
+        layout {
+            PresetRowIdentity(preset: preset)
+                .frame(maxWidth: .infinity, alignment: .leading)
             actions
-        }
-    }
-
-    private var badges: some View {
-        FluelBadgeStack {
-            if preset.isPinned {
-                Text("Pinned")
-                    .mhBadge(style: .neutral, accessibilityLabel: Text("Pinned preset"))
-            }
-
-            if preset.isDefault {
-                Text("Default")
-                    .mhBadge(style: .neutral, accessibilityLabel: Text("Default preset"))
-            }
-
-            if preset.lastUsedAt != nil {
-                Text("Recent")
-                    .mhBadge(style: .neutral, accessibilityLabel: Text("Recent preset"))
-            }
         }
     }
 

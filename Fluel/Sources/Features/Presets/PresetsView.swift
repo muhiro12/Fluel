@@ -29,10 +29,8 @@ struct PresetsView: View {
 
     var body: some View {
         List {
-            if orderedPresets.isEmpty {
-                PresetsEmptyState(create: createPreset)
-            } else {
-                Section("Presets") {
+            if !orderedPresets.isEmpty {
+                Section {
                     ForEach(orderedPresets) { preset in
                         PresetRowView(
                             preset: snapshot(for: preset),
@@ -43,8 +41,17 @@ struct PresetsView: View {
                             togglePin: { togglePin(preset) },
                             toggleDefault: { toggleDefault(preset) }
                         )
+                        .mhRow()
                     }
+                } header: {
+                    MHSectionHeader("Presets")
                 }
+            }
+        }
+        .mhListChrome()
+        .overlay {
+            if orderedPresets.isEmpty {
+                PresetsEmptyState(create: createPreset)
             }
         }
         .navigationTitle("Presets")

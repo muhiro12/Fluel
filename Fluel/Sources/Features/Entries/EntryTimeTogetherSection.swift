@@ -23,7 +23,7 @@ struct EntryTimeTogetherSection: View {
                 LabeledContent(label, value: value)
             }
         } header: {
-            FluelSectionHeader("Time together")
+            MHSectionHeader("Time together")
         }
         .labeledContentStyle(.mhKeyValue)
     }

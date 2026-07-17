@@ -5,13 +5,13 @@
 //  Created by Codex on 2026/07/13.
 //
 
+import MHUI
 import PhotosUI
 import SwiftUI
 
 struct EntryPhotoEditorSection: View {
     private enum Layout {
         static let maximumImageHeight = 280.0
-        static let cornerRadius = 12.0
     }
 
     @Binding var photoData: Data?
@@ -27,11 +27,10 @@ struct EntryPhotoEditorSection: View {
                 selectedPhotoItem: $selectedPhotoItem,
                 isProcessingPhoto: isProcessingPhoto,
                 maximumImageHeight: Layout.maximumImageHeight,
-                cornerRadius: Layout.cornerRadius,
                 cancelPhotoProcessing: cancelPhotoProcessing
             )
         } header: {
-            FluelSectionHeader("Photo")
+            MHSectionHeader("Photo")
         }
     }
 }

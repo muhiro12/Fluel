@@ -38,11 +38,8 @@ struct TimelineView: View {
         )
 
         List {
-            if result.summary.totalActivityCount == 0 {
-                TimelineEmptyState()
-            } else if result.summary.visibleActivityCount == 0 {
-                EntryListFilteredEmptyState(clear: clearSearchAndFilters)
-            } else {
+            if result.summary.totalActivityCount > 0,
+               result.summary.visibleActivityCount > 0 {
                 TimelineSummarySection(summary: result.summary)
 
                 if !result.upcomingMilestones.isEmpty {
@@ -52,6 +49,14 @@ struct TimelineView: View {
                 ForEach(result.months) { month in
                     TimelineMonthSection(month: month)
                 }
+            }
+        }
+        .mhListChrome()
+        .overlay {
+            if result.summary.totalActivityCount == 0 {
+                TimelineEmptyState()
+            } else if result.summary.visibleActivityCount == 0 {
+                EntryListFilteredEmptyState(clear: clearSearchAndFilters)
             }
         }
         .navigationTitle("Timeline")

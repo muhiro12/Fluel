@@ -5,16 +5,19 @@
 //  Created by Codex on 2026/07/13.
 //
 
+import MHUI
 import PhotosUI
 import SwiftUI
 
 struct EntryPhotoEditorContent: View {
+    @Environment(\.mhDesignMetrics)
+    private var designMetrics
+
     @Binding var photoData: Data?
     @Binding var selectedPhotoItem: PhotosPickerItem?
 
     let isProcessingPhoto: Bool
     let maximumImageHeight: Double
-    let cornerRadius: Double
     let cancelPhotoProcessing: () -> Void
 
     var body: some View {
@@ -22,7 +25,8 @@ struct EntryPhotoEditorContent: View {
             EntryPhotoImage(photoData: photoData)
                 .frame(maxWidth: .infinity)
                 .frame(maxHeight: maximumImageHeight)
-                .clipShape(.rect(cornerRadius: cornerRadius))
+                .clipShape(.rect(cornerRadius: designMetrics.cornerRadius.surface))
+                .mhRow()
         }
 
         if isProcessingPhoto {
@@ -30,22 +34,31 @@ struct EntryPhotoEditorContent: View {
                 ProgressView()
                 Text("Preparing Photo")
             }
+            .mhRow()
 
-            Button("Cancel Photo", role: .cancel, action: cancelPhotoProcessing)
+            MHActionGroup {
+                Button("Cancel Photo", role: .cancel, action: cancelPhotoProcessing)
+                    .buttonStyle(.mhQuiet)
+            }
         } else if photoData == nil {
-            PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
-                Label("Add Photo", systemImage: "photo.badge.plus")
+            MHActionGroup {
+                PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
+                    Label("Add Photo", systemImage: "photo.badge.plus")
+                }
             }
         } else {
-            PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
-                Label("Replace Photo", systemImage: "photo.badge.plus")
-            }
+            MHActionGroup {
+                PhotosPicker(selection: $selectedPhotoItem, matching: .images) {
+                    Label("Replace Photo", systemImage: "photo.badge.plus")
+                }
 
-            Button(role: .destructive) {
-                photoData = nil
-                selectedPhotoItem = nil
-            } label: {
-                Label("Remove Photo", systemImage: "trash")
+                Button(role: .destructive) {
+                    photoData = nil
+                    selectedPhotoItem = nil
+                } label: {
+                    Label("Remove Photo", systemImage: "trash")
+                }
+                .buttonStyle(.mhDestructive)
             }
         }
     }

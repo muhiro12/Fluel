@@ -36,6 +36,7 @@ struct DashboardView: View {
                 DashboardRecentActivitySection(activity: summary.recentActivity)
             }
         }
+        .mhListChrome()
         .navigationTitle("Dashboard")
     }
 }

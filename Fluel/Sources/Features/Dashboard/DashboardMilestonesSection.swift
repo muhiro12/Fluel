@@ -19,9 +19,10 @@ struct DashboardMilestonesSection: View {
                     milestone: milestone,
                     approximateLabel: Text("Approximate milestone")
                 )
+                .mhRow()
             }
         } header: {
-            FluelSectionHeader("Upcoming milestones")
+            MHSectionHeader("Upcoming milestones")
         }
     }
 }

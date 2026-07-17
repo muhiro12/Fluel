@@ -29,18 +29,16 @@ struct ActiveEntryListView: View {
     let addEntry: () -> Void
 
     var body: some View {
-        Group {
-            if entries.isEmpty {
-                ActiveEntryEmptyState(addEntry: addEntry)
-            } else if visibleEntries.isEmpty {
-                EntryListFilteredEmptyState(clear: clearSearchAndFilters)
-            } else {
-                List(visibleEntries) { entry in
+        List {
+            if !entries.isEmpty,
+               !visibleEntries.isEmpty {
+                ForEach(visibleEntries) { entry in
                     NavigationLink {
                         EntryDetailView(entry: entry)
                     } label: {
                         EntryRowView(entry: entry)
                     }
+                    .mhRow()
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                         Button {
                             archive(entry)
@@ -50,6 +48,14 @@ struct ActiveEntryListView: View {
                         .tint(.orange)
                     }
                 }
+            }
+        }
+        .mhListChrome()
+        .overlay {
+            if entries.isEmpty {
+                ActiveEntryEmptyState(addEntry: addEntry)
+            } else if visibleEntries.isEmpty {
+                EntryListFilteredEmptyState(clear: clearSearchAndFilters)
             }
         }
         .searchable(text: $searchText, prompt: "Search entries")

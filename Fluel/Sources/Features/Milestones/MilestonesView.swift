@@ -14,22 +14,25 @@ struct MilestonesView: View {
     @Query private var entries: [Entry]
 
     var body: some View {
-        Group {
+        List {
+            if !milestones.isEmpty {
+                Section {
+                    ForEach(milestones) { milestone in
+                        MilestoneRowView(
+                            milestone: milestone,
+                            approximateLabel: Text("Approximate start")
+                        )
+                        .mhRow()
+                    }
+                } header: {
+                    MHSectionHeader("Upcoming milestones")
+                }
+            }
+        }
+        .mhListChrome()
+        .overlay {
             if milestones.isEmpty {
                 MilestonesEmptyState()
-            } else {
-                List {
-                    Section {
-                        ForEach(milestones) { milestone in
-                            MilestoneRowView(
-                                milestone: milestone,
-                                approximateLabel: Text("Approximate start")
-                            )
-                        }
-                    } header: {
-                        FluelSectionHeader("Upcoming milestones")
-                    }
-                }
             }
         }
         .navigationTitle("Milestones")

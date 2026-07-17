@@ -20,7 +20,7 @@ struct DashboardCountsSection: View {
             LabeledContent("With note", value: summary.noteCount.formatted())
             LabeledContent("With photo", value: summary.photoCount.formatted())
         } header: {
-            FluelSectionHeader("The quiet overview")
+            MHSectionHeader("The quiet overview")
         }
         .labeledContentStyle(.mhKeyValue)
     }

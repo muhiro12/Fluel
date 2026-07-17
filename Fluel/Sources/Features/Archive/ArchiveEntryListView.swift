@@ -29,18 +29,16 @@ struct ArchiveEntryListView: View {
     @State private var filter = EntryListFilter.all
 
     var body: some View {
-        Group {
-            if entries.isEmpty {
-                ArchivedEntryEmptyState()
-            } else if visibleEntries.isEmpty {
-                EntryListFilteredEmptyState(clear: clearSearchAndFilters)
-            } else {
-                List(visibleEntries) { entry in
+        List {
+            if !entries.isEmpty,
+               !visibleEntries.isEmpty {
+                ForEach(visibleEntries) { entry in
                     NavigationLink {
                         EntryDetailView(entry: entry)
                     } label: {
                         EntryRowView(entry: entry)
                     }
+                    .mhRow()
                     .swipeActions(edge: .trailing, allowsFullSwipe: false) {
                         Button {
                             restore(entry)
@@ -50,6 +48,14 @@ struct ArchiveEntryListView: View {
                         .tint(.green)
                     }
                 }
+            }
+        }
+        .mhListChrome()
+        .overlay {
+            if entries.isEmpty {
+                ArchivedEntryEmptyState()
+            } else if visibleEntries.isEmpty {
+                EntryListFilteredEmptyState(clear: clearSearchAndFilters)
             }
         }
         .navigationTitle("Archive")

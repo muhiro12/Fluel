@@ -19,6 +19,7 @@ struct PresetEditorPresetSection: View {
         Section {
             TextField("Thing or place", text: $title)
                 .textInputAutocapitalization(.words)
+                .mhInputChrome()
 
             Picker("Visual cue", selection: $symbolOption) {
                 ForEach(PresetSymbolOption.allCases) { option in
@@ -29,8 +30,9 @@ struct PresetEditorPresetSection: View {
 
             TextField("Small memory or detail", text: $note, axis: .vertical)
                 .lineLimit(noteLineLimit)
+                .mhInputChrome()
         } header: {
-            FluelSectionHeader("Preset")
+            MHSectionHeader("Preset")
         }
     }
 }

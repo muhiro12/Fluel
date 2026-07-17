@@ -29,7 +29,7 @@ struct PresetEditorStartSection: View {
                 }
             }
         } header: {
-            FluelSectionHeader("Start")
+            MHSectionHeader("Start")
         }
     }
 }

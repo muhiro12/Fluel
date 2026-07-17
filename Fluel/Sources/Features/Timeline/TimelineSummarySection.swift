@@ -21,7 +21,7 @@ struct TimelineSummarySection: View {
             LabeledContent("Updated", value: summary.updatedCount.formatted())
             LabeledContent("Archived", value: summary.archivedCount.formatted())
         } header: {
-            FluelSectionHeader("Timeline summary")
+            MHSectionHeader("Timeline summary")
         }
         .labeledContentStyle(.mhKeyValue)
     }

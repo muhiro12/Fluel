@@ -31,9 +31,10 @@ struct TimelineMonthSection: View {
                     Text(item.date.formatted(date: .abbreviated, time: .omitted))
                         .mhRowSupporting()
                 }
+                .mhRow()
             }
         } header: {
-            FluelSectionHeader(
+            MHSectionHeader(
                 title: Text(month.monthDate.formatted(.dateTime.month(.wide).year()))
             )
         }

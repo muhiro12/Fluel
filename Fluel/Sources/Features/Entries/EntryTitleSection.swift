@@ -5,6 +5,7 @@
 //  Created by Codex on 2026/06/25.
 //
 
+import MHUI
 import SwiftUI
 
 struct EntryTitleSection: View {
@@ -15,8 +16,9 @@ struct EntryTitleSection: View {
             TextField("Thing or place", text: $title)
                 .textInputAutocapitalization(.words)
                 .submitLabel(.done)
+                .mhInputChrome()
         } header: {
-            FluelSectionHeader("Entry")
+            MHSectionHeader("Entry")
         }
     }
 }

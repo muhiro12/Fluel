@@ -12,19 +12,36 @@ import SwiftUI
 struct EntryRowView: View {
     @Environment(\.mhDesignMetrics)
     private var designMetrics
+    @Environment(\.dynamicTypeSize)
+    private var dynamicTypeSize
 
     let entry: Entry
 
     var body: some View {
-        HStack(alignment: .center, spacing: designMetrics.spacing.control) {
+        let layout = dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(
+                alignment: .leading,
+                spacing: designMetrics.spacing.control
+            ))
+            : AnyLayout(HStackLayout(
+                alignment: .center,
+                spacing: designMetrics.spacing.control
+            ))
+
+        layout {
             EntryRowText(entry: entry)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
             timeTogetherText
-                .multilineTextAlignment(.trailing)
+                .frame(
+                    maxWidth: dynamicTypeSize.isAccessibilitySize ? .infinity : nil,
+                    alignment: dynamicTypeSize.isAccessibilitySize ? .leading : .trailing
+                )
+                .multilineTextAlignment(
+                    dynamicTypeSize.isAccessibilitySize ? .leading : .trailing
+                )
         }
         .accessibilityElement(children: .combine)
-        .mhRow()
     }
 
     private var timeTogetherText: some View {
@@ -35,6 +52,7 @@ struct EntryRowView: View {
 
 #Preview(traits: .sizeThatFitsLayout) {
     EntryRowView(entry: PreviewSampleData.sampleEntries[1])
+        .mhRow()
         .mhTheme(.standard)
         .padding()
 }

@@ -22,33 +22,22 @@ struct EntryArchiveSection: View {
                 } label: {
                     Text("State")
                 }
-
-                Button {
-                    restore()
-                } label: {
-                    Label("Restore Entry", systemImage: "arrow.uturn.backward")
-                }
-
-                Button(role: .destructive) {
-                    deletePermanently()
-                } label: {
-                    Label("Delete Permanently", systemImage: "trash")
-                }
             } else {
                 LabeledContent {
                     Text("Still with you")
                 } label: {
                     Text("State")
                 }
-
-                Button {
-                    archive()
-                } label: {
-                    Label("Archive Entry", systemImage: "archivebox")
-                }
             }
+
+            EntryArchiveActions(
+                isArchived: entry.isArchived,
+                archive: archive,
+                restore: restore,
+                deletePermanently: deletePermanently
+            )
         } header: {
-            FluelSectionHeader("Archive")
+            MHSectionHeader("Archive")
         }
         .labeledContentStyle(.mhKeyValue)
     }

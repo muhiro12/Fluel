@@ -21,7 +21,7 @@ struct EntryStartDetailSection: View {
                 LabeledContent("Start range", value: rangeLabel)
             }
         } header: {
-            FluelSectionHeader("Start")
+            MHSectionHeader("Start")
         }
         .labeledContentStyle(.mhKeyValue)
     }

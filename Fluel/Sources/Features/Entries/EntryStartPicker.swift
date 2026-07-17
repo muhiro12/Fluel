@@ -27,7 +27,7 @@ struct EntryStartPicker: View {
             LabeledContent("Known as", value: draft.precision.knownAsText)
             LabeledContent("Start", value: startLabel)
         } header: {
-            FluelSectionHeader("Start")
+            MHSectionHeader("Start")
         }
         .labeledContentStyle(.mhKeyValue)
         .onChange(of: draft.precision) {

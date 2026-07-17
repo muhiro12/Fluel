@@ -10,26 +10,17 @@ import MHUI
 import SwiftUI
 
 struct EntryDetailHeader: View {
-    @Environment(\.mhDesignMetrics)
-    private var designMetrics
-
     let entry: Entry
 
     var body: some View {
-        Section {
-            VStack(alignment: .leading, spacing: designMetrics.spacing.control) {
-                Text("Time together")
-                    .mhRowOverline()
+        let summary = entry.timeTogether()
 
-                Text(entry.timeTogether().primaryText)
-                    .mhTextStyle(.screenTitle, colorRole: .accent)
-
-                if let supportingText = entry.timeTogether().supportingText {
-                    Text(supportingText)
-                        .mhRowSupporting()
-                }
+        MHSummary(
+            title: Text(summary.primaryText),
+            metadata: Text("Time together"),
+            supporting: summary.supportingText.map { supportingText in
+                Text(supportingText)
             }
-            .padding(.vertical, designMetrics.spacing.inline)
-        }
+        )
     }
 }

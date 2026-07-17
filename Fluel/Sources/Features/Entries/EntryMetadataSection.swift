@@ -29,7 +29,7 @@ struct EntryMetadataSection: View {
                 )
             }
         } header: {
-            FluelSectionHeader("Entry")
+            MHSectionHeader("Entry")
         }
         .labeledContentStyle(.mhKeyValue)
     }

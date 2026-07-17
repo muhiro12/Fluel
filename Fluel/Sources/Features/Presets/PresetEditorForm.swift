@@ -6,6 +6,7 @@
 //
 
 import FluelLibrary
+import MHUI
 import SwiftUI
 
 struct PresetEditorForm: View {
@@ -31,5 +32,6 @@ struct PresetEditorForm: View {
                 precision: $precision
             )
         }
+        .mhFormChrome()
     }
 }

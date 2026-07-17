@@ -6,6 +6,7 @@
 //
 
 import FluelLibrary
+import MHUI
 import PhotosUI
 import SwiftUI
 
@@ -32,5 +33,6 @@ struct EntryEditorForm: View {
 
             EntryNoteSection(note: $draft.note)
         }
+        .mhFormChrome()
     }
 }
