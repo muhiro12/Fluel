@@ -14,6 +14,8 @@ checks completed on 2026-07-13, adaptive-navigation checks completed on
 definitions were rendered after the MHUI 1.11 adoption changes. The MHUI 1.12
 follow-up re-rendered the five screens that cover the changed list, form,
 section, key-value, surface, and Liquid Glass boundaries.
+A subsequent regular-width root review corrected the sidebar's remaining
+app-owned MHUI adoption gap.
 
 The decision standard is:
 
@@ -22,8 +24,8 @@ The decision standard is:
   swipe, and confirmation behavior where those controls are already the right
   fit.
 - Use MHUI and MHDesign where they improve shared rhythm, semantic typography,
-  metadata treatment, and reusable presentation without replacing native
-  surfaces.
+  metadata treatment, surface continuity, and reusable presentation without
+  replacing native interaction or adaptation.
 
 ## HIG And MHUI Priority
 
@@ -34,8 +36,10 @@ dialogs stay in place when they are the most familiar Apple-platform pattern.
 
 MHUI and MHDesign are the shared style layer above that base. In Fluel they
 should align spacing, typography rhythm, section cues, row rhythm, metadata,
-badges, empty states, key-value display, and action emphasis without becoming a
-replacement for standard Apple controls.
+badges, empty states, key-value display, canvas surfaces, and action emphasis
+without becoming a replacement for standard Apple controls. Keeping a native
+container does not exempt it from the shared visual language when MHUI provides
+an appropriate container treatment.
 
 This gives Fluel more of the non-Incomes MHUI family feel while preserving its
 own quiet, familiar, gentle, concrete, and low-pressure product tone.
@@ -152,8 +156,9 @@ and the package adoption guide were reviewed against Fluel's screens.
   insets. Editor text fields use `mhInputChrome()` inside the retained native
   forms. Related archive and photo actions use `MHActionGroup` with explicit
   destructive and quiet roles.
-- The navigation sidebar intentionally remains a native sidebar list rather
-  than receiving content-screen chrome.
+- This pass left the navigation sidebar outside content-screen chrome. The
+  later regular-width review identified that omission as incomplete MHUI
+  adoption rather than a required consequence of native navigation.
 - Fluel does not use `MHGroupedRows`, direct theme initializers, or exhaustive
   `MHTextRole` switches, so the grouped-row, typography-initializer, and
   new-enum-case migration notes do not require additional changes.
@@ -196,11 +201,12 @@ scroll-view, materials, and Liquid Glass guidance.
   `#F2F2F2` light canvas, and Fluel does not override it. This is the package's
   intended achromatic palette, but its perceived weight needs package-level
   review rather than an app-local color fork.
-- Background differences — intended platform layering, with an MHUI
-  integration concern. Native navigation, sidebar, toolbar, and search
-  surfaces use system Liquid Glass or materials, while adopted content screens
-  use the MHUI canvas. The layer distinction is intentional; the strength of
-  the transition is affected by the package canvas and container layout.
+- Background differences — Fluel app integration. Native navigation, toolbar,
+  and search controls appropriately use system Liquid Glass or materials, but
+  Fluel omitted MHUI canvas and row treatment from the sidebar `List`. That
+  made one complete navigation surface use an unrelated system background
+  while every detail screen used the MHUI canvas. Native split-view behavior
+  does not require this visual discontinuity.
 - Scroll-region boundaries — MHUI package. `MHContainerChromeModifier` pads
   the native `List` or `Form` itself horizontally and vertically. This shortens
   the scroll viewport instead of allowing content to extend beneath the
@@ -231,9 +237,10 @@ scroll-view, materials, and Liquid Glass guidance.
   inset scroll container prevents content from flowing naturally beneath that
   layer and weakens the relationship.
 
-No app-local workaround was added for package-owned canvas, viewport, row,
-header, input, or glass composition. Those concerns need one shared MHUI fix so
-all adopters receive the same behavior.
+No app-local workaround was added for package-owned canvas, viewport, content
+row, header, input, or glass composition. Those concerns need one shared MHUI
+fix so all adopters receive the same behavior. The sidebar omission is
+app-owned and is corrected after the MHUI 1.12 migration.
 
 Recommended MHUI follow-up:
 
@@ -271,6 +278,10 @@ and current adoption guide directly address the package-owned findings above.
 - Metadata badges and detached input chrome remain solid content treatments.
   Liquid Glass stays reserved for eligible interactive controls and system
   navigation chrome.
+- The `NavigationSplitView` and sidebar `List` continue to own adaptive
+  navigation behavior. Fluel now applies `mhListChrome()` to that list and
+  `mhRow()` to its destinations so the navigation surface participates in the
+  same semantic canvas and row system as its detail screens.
 
 One app-side integration issue remained after the package update. The entry
 start section applied `.labeledContentStyle(.mhKeyValue)` to the complete
@@ -282,19 +293,21 @@ accessibility layout while retaining MHUI key-value treatment where intended.
 Focused Preview verification covered active entries, dense dashboard, entry
 detail, the filled entry editor, and custom presets on iPhone 17 Pro. The
 entry editor was also rendered at AX2, and dense dashboard plus the filled
-editor were rendered on iPad Pro 11-inch. The previously reported background,
-viewport, central compression, square grouping, row alignment, double-frame,
-section-margin, and Glass-harmony concerns did not reproduce after migration.
+editor were rendered on iPad Pro 11-inch. The previously reported content
+canvas, viewport, central compression, square grouping, row alignment,
+double-frame, section-margin, and Glass-harmony concerns did not reproduce
+after migration. A later regular-width root preview exposed the remaining
+sidebar background discontinuity, which was an app-side adoption gap.
 
 ## Screen Decisions
 
 Active entries:
 
 - Adopted: one native two-column `NavigationSplitView` for top-level
-  destinations, content-list chrome, native-link row rhythm through `mhRow()`,
-  `MHDesignMetrics` spacing, adaptive metadata badges through
-  `FluelBadgeStack`, and overlaid empty-state presentation through
-  `FluelEmptyState`.
+  destinations, MHUI canvas and row treatment in both the sidebar and content
+  lists, native-link row rhythm through `mhRow()`, `MHDesignMetrics` spacing,
+  adaptive metadata badges through `FluelBadgeStack`, and overlaid empty-state
+  presentation through `FluelEmptyState`.
 - Kept SwiftUI-native: a detail-local `NavigationStack`, `List`, `searchable`,
   sort/filter `Menu` plus `Picker`, `NavigationLink`, and `swipeActions`.
 - Removed: the root Browse toolbar menu. The sidebar now owns top-level
@@ -533,8 +546,9 @@ Intentionally preserved:
 
 - Native `List`, `Form`, search, menus, pickers, swipe actions, share, alerts,
   and confirmation dialogs remain in place.
-- The adaptive navigation sidebar keeps its native sidebar treatment rather
-  than receiving content-screen chrome.
+- The adaptive navigation sidebar keeps native split-view behavior, selection
+  semantics, and collapse behavior while receiving MHUI canvas and row
+  treatment.
 - Product language remains Entry, Start, Precision, Time together, Archive,
   Timeline, Milestone, and Preset.
 
@@ -648,8 +662,16 @@ The MHUI 1.12 follow-up recorded these successful checks on 2026-07-17:
 
 - Official 1.12 release notes, the `1.11...1.12` source diff, migration guide,
   package verification notes, and Fluel call sites were reviewed together.
+- A before-and-after iPad Pro 11-inch root Preview confirmed that applying
+  `mhListChrome()` and `mhRow()` removes the unrelated system-colored sidebar
+  plane while preserving split-view structure and selection behavior.
+- The corrected root rendered on iPad in light and dark appearances and on
+  iPhone 17 Pro in the compact navigation layout.
 - Xcode-native build with scheme `Fluel`, Debug, and the discovered iPhone 17
   Pro iOS 27 Simulator destination completed with no warning or error.
+- The app launched through Xcode and reached `startup.ready`. The remaining
+  runtime messages were the expected unsigned-in Simulator CloudKit and system
+  service diagnostics, with no Fluel or MHUI runtime failure.
 - Direct Xcode-native Preview rendering covered active entries, dense
   dashboard, entry detail, the filled entry editor, and custom presets on
   iPhone 17 Pro.
