@@ -16,6 +16,8 @@ follow-up re-rendered the five screens that cover the changed list, form,
 section, key-value, surface, and Liquid Glass boundaries.
 A subsequent regular-width root review corrected the sidebar's remaining
 app-owned MHUI adoption gap.
+The MHUI 1.13 signature-composition follow-up and root-first styling review
+completed on 2026-07-18.
 
 The decision standard is:
 
@@ -43,6 +45,46 @@ an appropriate container treatment.
 
 This gives Fluel more of the non-Incomes MHUI family feel while preserving its
 own quiet, familiar, gentle, concrete, and low-pressure product tone.
+
+## MHUI 1.13 root-first and asset follow-up
+
+The current captures no longer read as a mostly OS-standard product.
+Dashboard, Entry Detail, Milestones, Timeline, and Presets visibly use the
+MHUI signature through editorial summary rules, strong section cues, outlined
+grouped rows, restrained accent, and the package spacing rhythm. Active
+Entries, Archive, the sidebar, and editors retain native containers for search,
+selection, navigation, focus, keyboard, and form behavior. Those screens are
+supported exceptions rather than the primary design route.
+
+Fluel already applies `.mhTheme(.standard)` at its app entry point. The next
+cleanup should make that contract literal:
+
+1. Wrap the success and startup-failure branches in one root container and
+   apply `.mhTheme(.standard)` once after the branch.
+2. Remove the production `.mhTheme(.standard)` from `EntryEditorView`; the
+   presented editor inherits the root environment. Keep theme calls in
+   standalone Previews because they have no app root.
+3. Remove the direct `MHDesign` product link from the app target after updating
+   MHUI. MHUI re-exports MHDesign, and the root theme synchronizes
+   `mhDesignMetrics` for the existing environment readers.
+
+The remaining shipping-source color shortcuts should also move to semantic
+asset-backed roles:
+
+- Replace `.foregroundStyle(.secondary)` in `EntryPhotoImage.swift` with
+  `.mhForegroundStyle(.secondaryText)`.
+- Replace `.foregroundStyle(.primary)` in
+  `FluelTimeTogetherLabel.swift` with
+  `.mhForegroundStyle(.primaryText)`.
+- Keep `Color.accentColor` for the clock marker: it resolves the app's
+  `AccentColor` asset, while the existing opacity remains a code-derived
+  treatment.
+
+Fluel has no RGB or hexadecimal presentation color literals in shipping Swift
+source. SF Symbols should remain in `systemName` APIs rather than being copied
+into image assets, because they need to retain native weight, scale, and
+accessibility behavior. Screenshot files under `docs` and `.build/reports`
+are review evidence rather than runtime image resources.
 
 ## Target Screens
 
