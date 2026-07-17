@@ -21,12 +21,8 @@ struct MilestoneRowView: View {
             Text(verbatim: milestone.title)
                 .mhRowTitle()
 
-            (
-                Text(verbatim: milestone.durationText)
-                    + Text(verbatim: " – ")
-                    + Text(verbatim: milestone.daysRemainingText)
-            )
-            .mhRowSupporting()
+            Text(verbatim: "\(milestone.durationText) – \(milestone.daysRemainingText)")
+                .mhRowSupporting()
 
             Text(verbatim: milestone.date.precision.startLabel(for: milestone.date))
                 .mhRowSupporting()
