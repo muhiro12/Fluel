@@ -44,7 +44,7 @@ struct PresetRowIdentity: View {
 
                     if preset.isDefault {
                         Text("Default")
-                            .mhBadge(style: .neutral, accessibilityLabel: Text("Default preset"))
+                            .mhBadge(style: .accent, accessibilityLabel: Text("Default preset"))
                     }
 
                     if preset.lastUsedAt != nil {

@@ -16,7 +16,13 @@ struct FluelEmptyState<Actions: View>: View {
 
     var body: some View {
         ContentUnavailableView {
-            Label(title, systemImage: systemImage)
+            Label {
+                Text(title)
+            } icon: {
+                Image(systemName: systemImage)
+                    .symbolRenderingMode(.hierarchical)
+                    .foregroundStyle(Color.accentColor)
+            }
         } description: {
             Text(description)
         } actions: {

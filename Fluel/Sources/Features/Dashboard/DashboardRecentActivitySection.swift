@@ -20,7 +20,7 @@ struct DashboardRecentActivitySection: View {
             ForEach(activity) { item in
                 VStack(alignment: .leading, spacing: designMetrics.spacing.inline) {
                     Text(item.kind.label)
-                        .mhRowOverline()
+                        .mhTextStyle(.metadata, colorRole: .secondaryText)
 
                     Text(item.title)
                         .mhRowTitle()

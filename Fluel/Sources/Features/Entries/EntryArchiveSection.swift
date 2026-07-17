@@ -25,6 +25,10 @@ struct EntryArchiveSection: View {
             } else {
                 LabeledContent {
                     Text("Still with you")
+                        .mhBadge(
+                            style: .accent,
+                            accessibilityLabel: Text("Still with you")
+                        )
                 } label: {
                     Text("State")
                 }

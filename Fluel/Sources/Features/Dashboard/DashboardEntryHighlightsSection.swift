@@ -21,7 +21,8 @@ struct DashboardEntryHighlightsSection: View {
                 highlight(
                     label: "Longest together right now",
                     title: entry.title,
-                    detail: EntryOperations.timeTogether(for: entry).primaryText
+                    detail: EntryOperations.timeTogether(for: entry).primaryText,
+                    showsTimeTogetherMark: true
                 )
             }
 
@@ -30,7 +31,8 @@ struct DashboardEntryHighlightsSection: View {
                 highlight(
                     label: "Recently archived",
                     title: entry.title,
-                    detail: archivedAt.formatted(date: .abbreviated, time: .omitted)
+                    detail: archivedAt.formatted(date: .abbreviated, time: .omitted),
+                    showsTimeTogetherMark: false
                 )
             }
         } header: {
@@ -41,17 +43,22 @@ struct DashboardEntryHighlightsSection: View {
     private func highlight(
         label: LocalizedStringKey,
         title: String,
-        detail: String
+        detail: String,
+        showsTimeTogetherMark: Bool
     ) -> some View {
         VStack(alignment: .leading, spacing: designMetrics.spacing.inline) {
             Text(label)
-                .mhRowOverline()
+                .mhTextStyle(.metadata, colorRole: .secondaryText)
 
             Text(title)
                 .mhRowTitle()
 
-            Text(detail)
-                .mhRowSupporting()
+            if showsTimeTogetherMark {
+                FluelTimeTogetherLabel(text: detail)
+            } else {
+                Text(detail)
+                    .mhRowSupporting()
+            }
         }
         .mhRow()
     }

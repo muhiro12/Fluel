@@ -32,7 +32,7 @@ struct EntryRowView: View {
             EntryRowText(entry: entry)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-            timeTogetherText
+            timeTogetherLabel
                 .frame(
                     maxWidth: dynamicTypeSize.isAccessibilitySize ? .infinity : nil,
                     alignment: dynamicTypeSize.isAccessibilitySize ? .leading : .trailing
@@ -44,9 +44,8 @@ struct EntryRowView: View {
         .accessibilityElement(children: .combine)
     }
 
-    private var timeTogetherText: some View {
-        Text(entry.timeTogether().primaryText)
-            .mhRowValue(colorRole: .accent)
+    private var timeTogetherLabel: some View {
+        FluelTimeTogetherLabel(text: entry.timeTogether().primaryText)
     }
 }
 
