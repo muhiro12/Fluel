@@ -5,19 +5,19 @@
 This report summarizes the current Fluel UI preview, screenshot, and MHUI
 adoption coverage.
 
-Repository paths and implementation notes were refreshed on 2026-07-17
-after package-resolution commit `1bba63a`. Most screenshots below remain
+Repository paths and implementation notes were refreshed on 2026-07-18
+after package-resolution commit `5103690`. Most screenshots below remain
 historical evidence from the original preview pass. Targeted live and Preview
 checks completed on 2026-07-13, adaptive-navigation checks completed on
-2026-07-16, and MHUI 1.10, 1.11, and 1.12 adoption checks completed on
-2026-07-17 are called out explicitly. All 25 current screen-level Preview
+2026-07-16, and MHUI 1.10 through 1.13 adoption checks completed on
+2026-07-17 and 2026-07-18 are called out explicitly. All 25 current screen-level Preview
 definitions were rendered after the MHUI 1.11 adoption changes. The MHUI 1.12
 follow-up re-rendered the five screens that cover the changed list, form,
 section, key-value, surface, and Liquid Glass boundaries.
 A subsequent regular-width root review corrected the sidebar's remaining
 app-owned MHUI adoption gap.
-The MHUI 1.13 signature-composition follow-up and root-first styling review
-completed on 2026-07-18.
+The MHUI 1.13 signature-composition follow-up and MHUI 1.15 root-first styling
+review completed on 2026-07-18.
 
 The decision standard is:
 
@@ -46,7 +46,7 @@ an appropriate container treatment.
 This gives Fluel more of the non-Incomes MHUI family feel while preserving its
 own quiet, familiar, gentle, concrete, and low-pressure product tone.
 
-## MHUI 1.13 root-first and asset follow-up
+## MHUI 1.15 Root-First And Asset Follow-Up
 
 The current captures no longer read as a mostly OS-standard product.
 Dashboard, Entry Detail, Milestones, Timeline, and Presets visibly use the
@@ -56,26 +56,26 @@ Entries, Archive, the sidebar, and editors retain native containers for search,
 selection, navigation, focus, keyboard, and form behavior. Those screens are
 supported exceptions rather than the primary design route.
 
-Fluel already applies `.mhTheme(.standard)` at its app entry point. The next
-cleanup should make that contract literal:
+Fluel applies `.mhTheme(.standard)` once around the success and startup-failure
+branches at its app entry point. The MHUI 1.15 adoption cleanup also:
 
-1. Wrap the success and startup-failure branches in one root container and
-   apply `.mhTheme(.standard)` once after the branch.
-2. Remove the production `.mhTheme(.standard)` from `EntryEditorView`; the
-   presented editor inherits the root environment. Keep theme calls in
+1. Removes the production `.mhTheme(.standard)` from `EntryEditorView`; the
+   presented editor inherits the root environment. Theme calls remain in
    standalone Previews because they have no app root.
-3. Remove the direct `MHDesign` product link from the app target after updating
-   MHUI. MHUI re-exports MHDesign, and the root theme synchronizes
-   `mhDesignMetrics` for the existing environment readers.
+2. Removes the direct `MHDesign` product link from the app target. MHUI
+   re-exports MHDesign, and the root theme synchronizes `mhDesignMetrics` for
+   the existing environment readers.
 
-The remaining shipping-source color shortcuts should also move to semantic
-asset-backed roles:
+The remaining shipping-source color shortcuts now use semantic asset-backed
+roles:
 
-- Replace `.foregroundStyle(.secondary)` in `EntryPhotoImage.swift` with
+- `.foregroundStyle(.secondary)` in `EntryPhotoImage.swift` is replaced with
   `.mhForegroundStyle(.secondaryText)`.
-- Replace `.foregroundStyle(.primary)` in
-  `FluelTimeTogetherLabel.swift` with
+- `.foregroundStyle(.primary)` in `FluelTimeTogetherLabel.swift` is replaced
+  with
   `.mhForegroundStyle(.primaryText)`.
+- Empty-state symbols use `.mhForegroundStyle(.accent)`.
+- Archive and restore swipe actions use `.mhTint(.accent)`.
 - Keep `Color.accentColor` for the clock marker: it resolves the app's
   `AccentColor` asset, while the existing opacity remains a code-derived
   treatment.
@@ -117,18 +117,19 @@ Component previews retained or added:
 
 Current linked package state:
 
-- The app target links `MHPlatform`, `MHDesign`, and `MHUI`.
+- The app target links `MHPlatform` and `MHUI`; MHUI re-exports `MHDesign`.
 - `FluelLibrary` depends on `MHPlatformCore` from `MHPlatform`.
 - The Xcode app's `Package.resolved` file is tracked for reproducible app and
   Xcode Cloud resolution. SwiftPM lockfiles for `FluelLibrary` remain local
   generated artifacts. The recorded verification run resolved `MHPlatform` at
-  `1.12.0`, `MHUI` at `1.12.0`, and `SwiftLintPlugins` at `0.65.0`.
+  `1.12.0`, `MHUI` at `1.15.0`, and `SwiftLintPlugins` at `0.65.0`.
 
 Available API areas inspected:
 
 - `MHDesignMetrics`, including shared spacing, corner radius, layout,
   readable width, and control target metrics.
 - `mhTheme(_:)` and `MHTheme.standard`.
+- `mhForegroundStyle(_:)` and `mhTint(_:)`.
 - `mhTextStyle(_:colorRole:)`, `mhRowTitle()`, `mhRowSupporting()`,
   `mhRowOverline()`, and `mhRowValue(colorRole:)`.
 - `mhBadge(style:accessibilityLabel:)`.

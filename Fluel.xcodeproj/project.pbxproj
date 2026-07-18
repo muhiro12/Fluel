@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B10000012FED500100000002 /* MHDesign in Frameworks */ = {isa = PBXBuildFile; productRef = B10000012FED500100000004 /* MHDesign */; };
 		B10000012FED500100000008 /* MHUI in Frameworks */ = {isa = PBXBuildFile; productRef = B10000012FED500100000009 /* MHUI */; };
 		B10000012FED50010000000A /* MHPlatform in Frameworks */ = {isa = PBXBuildFile; productRef = B10000012FED50010000000B /* MHPlatform */; };
 		B30000012FF1000100000001 /* FluelLibrary in Frameworks */ = {isa = PBXBuildFile; productRef = B30000012FF1000100000004 /* FluelLibrary */; };
@@ -45,7 +44,6 @@
 			files = (
 				B10000012FED50010000000A /* MHPlatform in Frameworks */,
 				B30000012FF1000100000001 /* FluelLibrary in Frameworks */,
-				B10000012FED500100000002 /* MHDesign in Frameworks */,
 				B10000012FED500100000008 /* MHUI in Frameworks */,
 			);
 		};
@@ -89,7 +87,6 @@
 			packageProductDependencies = (
 				B30000012FF1000100000004 /* FluelLibrary */,
 				B10000012FED50010000000B /* MHPlatform */,
-				B10000012FED500100000004 /* MHDesign */,
 				B10000012FED500100000009 /* MHUI */,
 			);
 			productName = Fluel;
@@ -420,11 +417,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		B10000012FED500100000004 /* MHDesign */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B10000012FED500100000007 /* XCRemoteSwiftPackageReference "MHUI" */;
-			productName = MHDesign;
-		};
 		B10000012FED500100000009 /* MHUI */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = B10000012FED500100000007 /* XCRemoteSwiftPackageReference "MHUI" */;

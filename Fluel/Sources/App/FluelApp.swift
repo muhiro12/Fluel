@@ -20,15 +20,16 @@ struct FluelApp: App {
 
     var body: some Scene {
         WindowGroup {
-            switch platformEnvironmentResult {
-            case .success(let platformEnvironment):
-                rootContent()
-                    .fluelPlatformEnvironment(platformEnvironment)
-                    .mhTheme(.standard)
-            case .failure:
-                FluelStartupFailureView()
-                    .mhTheme(.standard)
+            Group {
+                switch platformEnvironmentResult {
+                case .success(let platformEnvironment):
+                    rootContent()
+                        .fluelPlatformEnvironment(platformEnvironment)
+                case .failure:
+                    FluelStartupFailureView()
+                }
             }
+            .mhTheme(.standard)
         }
     }
 

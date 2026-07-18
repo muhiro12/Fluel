@@ -64,7 +64,6 @@ struct EntryEditorView: View {
                 await processSelectedPhoto()
             }
         }
-        .mhTheme(.standard)
     }
 
     private var editorKind: EntryEditorKind {

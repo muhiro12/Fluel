@@ -21,7 +21,7 @@ struct FluelEmptyState<Actions: View>: View {
             } icon: {
                 Image(systemName: systemImage)
                     .symbolRenderingMode(.hierarchical)
-                    .foregroundStyle(Color.accentColor)
+                    .mhForegroundStyle(.accent)
             }
         } description: {
             Text(description)

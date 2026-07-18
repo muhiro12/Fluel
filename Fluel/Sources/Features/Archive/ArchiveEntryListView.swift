@@ -45,7 +45,7 @@ struct ArchiveEntryListView: View {
                         } label: {
                             Label("Restore", systemImage: "arrow.uturn.backward")
                         }
-                        .tint(Color.accentColor)
+                        .mhTint(.accent)
                     }
                 }
             }

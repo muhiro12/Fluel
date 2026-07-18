@@ -26,7 +26,7 @@ struct FluelTimeTogetherLabel: View {
         HStack(spacing: designMetrics.spacing.inline) {
             Image(systemName: "clock")
                 .imageScale(.small)
-                .foregroundStyle(.primary)
+                .mhForegroundStyle(.primaryText)
                 .frame(width: markSize, height: markSize)
                 .background(
                     Color.accentColor.opacity(Layout.markOpacity),

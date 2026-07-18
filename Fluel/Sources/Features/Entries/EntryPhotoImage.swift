@@ -5,6 +5,7 @@
 //  Created by Codex on 2026/07/13.
 //
 
+import MHUI
 import SwiftUI
 import UIKit
 
@@ -37,7 +38,7 @@ struct EntryPhotoImage: View {
                     .accessibilityLabel("Entry photo")
             case .unavailable:
                 Label("Photo unavailable", systemImage: "photo.badge.exclamationmark")
-                    .foregroundStyle(.secondary)
+                    .mhForegroundStyle(.secondaryText)
                     .frame(maxWidth: .infinity, minHeight: Layout.minimumUnavailableHeight)
             }
         }

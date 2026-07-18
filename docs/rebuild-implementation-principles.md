@@ -103,7 +103,8 @@ package posture included:
   runtime, route, review, or other app-level support.
 - `MHUI` from `https://github.com/muhiro12/MHUI`, using the Incomes-aligned
   `1.x` posture.
-- `MHDesign` from `MHUI` for design-system adoption.
+- `MHUI` re-exports `MHDesign`, so styled adopters need only the `MHUI`
+  product link.
 - `SimplyDanny/SwiftLintPlugins` as the project-declared SwiftLint source,
   rather than relying on a separately installed `swiftlint` binary.
 
@@ -145,9 +146,9 @@ Do not add layers only for symmetry with another repository.
 ## Current Foundation Note
 
 The rebuilt app foundation now uses the Incomes/Stally-aligned package posture:
-the app target links `MHPlatform`, `MHDesign`, and `MHUI`, while
-`FluelLibrary` depends only on `MHPlatformCore` from the MHPlatform package for
-core-safe link contracts.
+the app target links `MHPlatform` and `MHUI`, which re-exports `MHDesign`,
+while `FluelLibrary` depends only on `MHPlatformCore` from the MHPlatform
+package for core-safe link contracts.
 
 The current development foundation adds `FluelLibrary` as the shared package
 for durable entry behavior. The app target still owns SwiftData `@Model`
