@@ -38,6 +38,8 @@ struct DashboardView: View {
             if !summary.recentActivity.isEmpty {
                 DashboardRecentActivitySection(activity: summary.recentActivity)
             }
+
+            FluelTestAdView()
         }
         .mhScreen(
             "Dashboard",
