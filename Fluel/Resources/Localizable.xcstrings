@@ -127,23 +127,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entryと過ごした時間を静かに見渡します。"
-          }
-        }
-      }
-    },
-    "Active" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Active"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Active"
+            "value" : "記録と過ごした時間を静かに見渡します。"
           }
         }
       }
@@ -159,7 +143,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ActiveとArchiveのEntryをまとめて確認できます。"
+            "value" : "現在の記録とアーカイブした記録をまとめて確認できます。"
           }
         }
       }
@@ -191,7 +175,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entryと過ごす時間の中で積み重なったActivityです。"
+            "value" : "記録と過ごす時間の中で積み重なった動きです。"
           }
         }
       }
@@ -207,7 +191,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entryが追加、調整、ArchiveされるとActivityが集まります。"
+            "value" : "記録を追加、調整、アーカイブすると、動きが積み重なります。"
           }
         }
       }
@@ -223,23 +207,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entryを追加"
-          }
-        }
-      }
-    },
-    "Add Sample Data" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Add Sample Data"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "サンプルデータを追加"
+            "value" : "記録を追加"
           }
         }
       }
@@ -276,18 +244,18 @@
         }
       }
     },
-    "Yearly moments that are drawing closer." : {
+    "Add Sample Data" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Yearly moments that are drawing closer."
+            "value" : "Add Sample Data"
           }
         },
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "毎年の節目が近づいています。"
+            "value" : "サンプルデータを追加"
           }
         }
       }
@@ -335,7 +303,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "おおよそのMilestone"
+            "value" : "おおよその節目"
           }
         }
       }
@@ -351,7 +319,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "おおよそのStart"
+            "value" : "おおよその始まり"
           }
         }
       }
@@ -367,7 +335,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Archive"
+            "value" : "アーカイブ"
           }
         }
       }
@@ -383,7 +351,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "EntryをArchive"
+            "value" : "記録をアーカイブ"
           }
         }
       }
@@ -399,7 +367,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Archive"
+            "value" : "アーカイブ済み"
           }
         }
       }
@@ -415,7 +383,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Archive済み"
+            "value" : "アーカイブ済み"
           }
         }
       }
@@ -431,7 +399,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ArchiveしたEntryは、いまも日々一緒にあるものとは分けて置かれます。"
+            "value" : "アーカイブした記録は、いまも日々一緒にあるものとは分けて置かれます。"
           }
         }
       }
@@ -544,7 +512,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Startのわかる範囲を選ぶ"
+            "value" : "わかっている詳しさを選ぶ"
           }
         }
       }
@@ -592,7 +560,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Presetを作成"
+            "value" : "プリセットを作成"
           }
         }
       }
@@ -624,7 +592,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Dashboard"
+            "value" : "概要"
           }
         }
       }
@@ -672,23 +640,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "DefaultのPreset"
-          }
-        }
-      }
-    },
-    "Details" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Details"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "詳細"
+            "value" : "デフォルトのプリセット"
           }
         }
       }
@@ -736,7 +688,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Presetを削除"
+            "value" : "プリセットを削除"
           }
         }
       }
@@ -752,7 +704,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "このArchive済みEntryを削除しますか？"
+            "value" : "このアーカイブ済みの記録を削除しますか?"
           }
         }
       }
@@ -768,7 +720,23 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "このPresetを削除しますか？"
+            "value" : "このプリセットを削除しますか?"
+          }
+        }
+      }
+    },
+    "Details" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Details"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "詳細"
           }
         }
       }
@@ -816,7 +784,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entryを破棄"
+            "value" : "記録を破棄"
           }
         }
       }
@@ -832,7 +800,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "このEntryを破棄しますか？"
+            "value" : "この記録を破棄しますか?"
           }
         }
       }
@@ -880,7 +848,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entryを編集"
+            "value" : "記録を編集"
           }
         }
       }
@@ -896,7 +864,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Presetを編集"
+            "value" : "プリセットを編集"
           }
         }
       }
@@ -912,7 +880,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "詳しい経過"
+            "value" : "詳しい経過時間"
           }
         }
       }
@@ -928,7 +896,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entries"
+            "value" : "記録"
           }
         }
       }
@@ -944,7 +912,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entry"
+            "value" : "記録"
           }
         }
       }
@@ -960,7 +928,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "EntryをArchiveできませんでした"
+            "value" : "記録をアーカイブできませんでした"
           }
         }
       }
@@ -976,7 +944,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entryを復元できませんでした"
+            "value" : "記録を戻せませんでした"
           }
         }
       }
@@ -992,7 +960,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entryを保存できませんでした"
+            "value" : "記録を保存できませんでした"
           }
         }
       }
@@ -1008,7 +976,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entryを更新できませんでした"
+            "value" : "記録を更新できませんでした"
           }
         }
       }
@@ -1045,22 +1013,6 @@
         }
       }
     },
-    "First preset" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "First preset"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "最初のPreset"
-          }
-        }
-      }
-    },
     "Filter" : {
       "localizations" : {
         "en" : {
@@ -1073,6 +1025,22 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Filter"
+          }
+        }
+      }
+    },
+    "First preset" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "First preset"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "最初のPreset"
           }
         }
       }
@@ -1200,7 +1168,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entryを残す"
+            "value" : "記録を残す"
           }
         }
       }
@@ -1264,7 +1232,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "いまTime togetherが一番長いEntry"
+            "value" : "いま最も長くともにある記録"
           }
         }
       }
@@ -1280,7 +1248,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Milestones"
+            "value" : "節目"
           }
         }
       }
@@ -1296,7 +1264,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "年ごとの日付が近づくと、ActiveなEntryにMilestoneが表示されます。"
+            "value" : "年ごとの日付が近づくと、現在の記録に節目が表示されます。"
           }
         }
       }
@@ -1376,7 +1344,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "履歴を残したまま、このEntryを日々の暮らしから外します。"
+            "value" : "履歴を残したまま、この記録を日々の暮らしから外します。"
           }
         }
       }
@@ -1408,7 +1376,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "新しいEntry"
+            "value" : "新しい記録"
           }
         }
       }
@@ -1424,7 +1392,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "次のMilestone"
+            "value" : "次の節目"
           }
         }
       }
@@ -1440,7 +1408,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entryが見つかりません"
+            "value" : "記録が見つかりません"
           }
         }
       }
@@ -1456,7 +1424,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "近づいているMilestoneはありません"
+            "value" : "近づいている節目はありません"
           }
         }
       }
@@ -1504,7 +1472,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "ArchiveされたEntryはまだありません"
+            "value" : "まだアーカイブはありません"
           }
         }
       }
@@ -1616,7 +1584,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "PinnedのPreset"
+            "value" : "ピン留めしたプリセット"
           }
         }
       }
@@ -1680,7 +1648,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Preset"
+            "value" : "プリセット"
           }
         }
       }
@@ -1696,7 +1664,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Presetの操作"
+            "value" : "プリセット操作"
           }
         }
       }
@@ -1712,7 +1680,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Presetを保存できませんでした"
+            "value" : "プリセットを保存できませんでした"
           }
         }
       }
@@ -1728,7 +1696,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Presetを更新できませんでした"
+            "value" : "プリセットを更新できませんでした"
           }
         }
       }
@@ -1744,7 +1712,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Presets"
+            "value" : "プリセット"
           }
         }
       }
@@ -1808,7 +1776,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "最近使ったPreset"
+            "value" : "最近使ったプリセット"
           }
         }
       }
@@ -1824,7 +1792,23 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "最近Archive"
+            "value" : "最近アーカイブした記録"
+          }
+        }
+      }
+    },
+    "Remove Photo" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove Photo"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "写真を削除"
           }
         }
       }
@@ -1857,22 +1841,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "サンプルデータを削除しますか？"
-          }
-        }
-      }
-    },
-    "Remove Photo" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Remove Photo"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "写真を削除"
           }
         }
       }
@@ -1920,7 +1888,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entryを戻す"
+            "value" : "記録を戻す"
           }
         }
       }
@@ -1936,7 +1904,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "このEntryをRestoreするか、完全に削除します。"
+            "value" : "この記録を戻すか、完全に削除します。"
           }
         }
       }
@@ -1952,7 +1920,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "繰り返し使える開始点"
+            "value" : "再利用できる始まり"
           }
         }
       }
@@ -1969,22 +1937,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "再利用できるStartのPresetがここに表示されます。"
-          }
-        }
-      }
-    },
-    "Save" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Save"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "保存"
           }
         }
       }
@@ -2037,6 +1989,22 @@
         }
       }
     },
+    "Save" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "保存"
+          }
+        }
+      }
+    },
     "Scope" : {
       "localizations" : {
         "en" : {
@@ -2080,7 +2048,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entryを検索"
+            "value" : "記録を検索"
           }
         }
       }
@@ -2096,7 +2064,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Timelineを検索"
+            "value" : "タイムラインを検索"
           }
         }
       }
@@ -2144,7 +2112,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Timelineを共有"
+            "value" : "タイムラインを共有"
           }
         }
       }
@@ -2208,7 +2176,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Start"
+            "value" : "始まり"
           }
         }
       }
@@ -2224,7 +2192,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Startの範囲"
+            "value" : "始まりの範囲"
           }
         }
       }
@@ -2373,22 +2341,6 @@
         }
       }
     },
-    "The quiet overview" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "The quiet overview"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "静かなOverview"
-          }
-        }
-      }
-    },
     "Thing or place" : {
       "localizations" : {
         "en" : {
@@ -2464,7 +2416,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Time together"
+            "value" : "ともに過ごした時間"
           }
         }
       }
@@ -2480,23 +2432,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Timeline"
-          }
-        }
-      }
-    },
-    "Timeline summary" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Timeline summary"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Timeline summary"
+            "value" : "タイムライン"
           }
         }
       }
@@ -2528,7 +2464,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Entryの合計"
+            "value" : "記録の合計"
           }
         }
       }
@@ -2624,7 +2560,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "近づいているMilestone"
+            "value" : "近づいている節目"
           }
         }
       }
@@ -2689,7 +2625,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "日・月・年から選べます。月や年までのStartは、おおよそのまま残ります。"
+            "value" : "日、月、年から選べます。月や年の始まりは、おおよそのまま残ります。"
           }
         }
       }
@@ -2706,22 +2642,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Presetをすぐに使うか、繰り返し使う内容を調整できます。"
-          }
-        }
-      }
-    },
-    "Visible" : {
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Visible"
-          }
-        },
-        "ja" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "表示中"
           }
         }
       }
@@ -2837,7 +2757,23 @@
           }
         }
       }
+    },
+    "Yearly moments that are drawing closer." : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yearly moments that are drawing closer."
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "毎年の節目が近づいています。"
+          }
+        }
+      }
     }
   },
-  "version" : "1.0"
+  "version" : "1.3"
 }

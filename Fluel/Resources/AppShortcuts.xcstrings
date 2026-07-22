@@ -15,7 +15,7 @@
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "${applicationName}でTime togetherを確認"
+              "${applicationName}でともに過ごした時間を確認"
             ]
           }
         }
@@ -35,7 +35,7 @@
           "stringSet" : {
             "state" : "translated",
             "values" : [
-              "${applicationName}でEntryを作成"
+              "${applicationName}で記録を作成"
             ]
           }
         }
@@ -82,5 +82,5 @@
       }
     }
   },
-  "version" : "1.0"
+  "version" : "1.3"
 }
