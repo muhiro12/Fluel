@@ -33,10 +33,11 @@ final class Entry {
             day: startDay,
             precision: startPrecision
         ) else {
-            preconditionFailure(
+            assertionFailure(
                 "Entry contains an invalid start: \(startYear)-\(startMonth)-\(startDay) "
                     + "(\(startPrecision.rawValue))."
             )
+            return Self.fallbackStart()
         }
 
         return resolvedStart
@@ -183,6 +184,18 @@ final class Entry {
         case .year:
             try EntryStart.year(year)
         }
+    }
+
+    private static func fallbackStart() -> EntryStart {
+        guard let fallbackEntryStart = try? EntryStart.day(
+            year: defaultStartYear,
+            month: 1,
+            day: 1
+        ) else {
+            preconditionFailure("Default entry start is invalid.")
+        }
+
+        return fallbackEntryStart
     }
 
     func timeTogether() -> TimeTogetherSummary {

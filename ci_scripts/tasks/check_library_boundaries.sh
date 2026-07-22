@@ -8,6 +8,8 @@ ci_task_require_no_arguments "$@"
 ci_task_enter_repository "${BASH_SOURCE[0]}"
 repository_root=$CI_TASK_REPOSITORY_ROOT
 
+"$script_directory/check_environment.sh" --profile rules >/dev/null
+
 library_sources=(
   "$repository_root/FluelLibrary/Sources"
 )

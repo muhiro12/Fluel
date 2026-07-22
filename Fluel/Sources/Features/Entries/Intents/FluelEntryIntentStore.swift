@@ -88,12 +88,16 @@ enum FluelEntryIntentStore {
         for entity: EntryEntity,
         modelContainer: ModelContainer
     ) throws -> Entry {
-        let identifier = entity.id
-        let descriptor = FetchDescriptor<Entry>(
+        guard let identifier = UUID(uuidString: entity.id) else {
+            throw FluelEntryIntentStoreError.entryNotFound
+        }
+
+        var descriptor = FetchDescriptor<Entry>(
             predicate: #Predicate<Entry> { entry in
-                entry.id.uuidString == identifier
+                entry.id == identifier
             }
         )
+        descriptor.fetchLimit = 1
 
         guard let entry = try modelContainer.mainContext.fetch(descriptor).first else {
             throw FluelEntryIntentStoreError.entryNotFound
