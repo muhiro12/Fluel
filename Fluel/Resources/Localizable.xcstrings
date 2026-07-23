@@ -1237,6 +1237,22 @@
         }
       }
     },
+    "Milestone" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Milestone"
+          }
+        },
+        "ja" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "節目"
+          }
+        }
+      }
+    },
     "Milestones" : {
       "localizations" : {
         "en" : {
@@ -1792,7 +1808,7 @@
         "ja" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "最近アーカイブした記録"
+            "value" : "最近のアーカイブ"
           }
         }
       }

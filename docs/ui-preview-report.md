@@ -95,19 +95,30 @@ Fluel keeps the package-owned standard theme instead of overriding those
 values locally, so its existing signature screens receive that visual update
 directly.
 
-The new `MHFeatureGrid` matches Dashboard's existing product hierarchy:
+Dashboard now follows MHUI's signature-composition hierarchy rather than
+adopting `MHFeatureGrid` as an isolated layout:
 
-- The longest-running active entry remains the leading highlight.
-- The most recently archived entry becomes concise supporting content.
-- Compact widths stack the two features while regular widths preserve a
-  leading-and-supporting split.
-- A single available highlight renders directly instead of reserving an empty
-  grid column.
+- `MHSummary` establishes the whole-collection context before supporting
+  detail.
+- The longest-running active entry is the leading feature. Its time-together
+  value becomes app-owned editorial artwork inside the package's semantic
+  muted treatment.
+- The most recently archived entry and nearest milestone fill the concise
+  supporting set. Recent activity fills a missing supporting position when it
+  adds distinct context.
+- The feature content uses the outer `mhSection` surface instead of wrapping
+  each complete feature in another card.
+- Compact widths stack the leading feature above two supporting columns,
+  regular widths preserve the leading-and-supporting split, and accessibility
+  text sizes receive MHUI's single-column fallback.
+- Sparse states render directly at full width instead of reserving an empty
+  supporting column.
+- Remaining milestones stay in their detailed grouped section after the
+  highlighted nearest milestone.
 
-Each feature keeps app-owned wording and data while using MHUI's muted surface,
-inset, semantic typography, and adaptive layout. Native `List` and `Form`
-screens remain unchanged because their selection, swipe, focus, grouping, and
-input behavior still justify the package's native-container bridges.
+Native `List` and `Form` screens remain unchanged because their selection,
+swipe, focus, grouping, and input behavior still justify the package's
+native-container bridges.
 
 ## Target Screens
 

@@ -25,17 +25,34 @@ struct DashboardView: View {
             from: entries.map(\.snapshot),
             activity: activity.map(\.summary)
         )
+        let distinctRecentActivity = summary.recentActivity.first { activity in
+            activity.kind != .archived
+                || activity.entryID != summary.recentlyArchivedEntry?.id
+        }
 
         VStack(alignment: .leading, spacing: theme.spacing.section) {
-            DashboardCountsSection(summary: summary)
+            DashboardCollectionSummary(
+                totalCount: summary.totalCount,
+                activeCount: summary.activeCount,
+                archivedCount: summary.archivedCount
+            )
 
             DashboardEntryHighlightsSection(
                 activeEntry: summary.longestRunningActiveEntry,
-                archivedEntry: summary.recentlyArchivedEntry
+                archivedEntry: summary.recentlyArchivedEntry,
+                milestone: summary.upcomingMilestones.first,
+                activity: distinctRecentActivity
             )
 
-            if !summary.upcomingMilestones.isEmpty {
-                DashboardMilestonesSection(milestones: summary.upcomingMilestones)
+            DashboardDetailsSection(
+                noteCount: summary.noteCount,
+                photoCount: summary.photoCount
+            )
+
+            if summary.upcomingMilestones.count > 1 {
+                DashboardMilestonesSection(
+                    milestones: Array(summary.upcomingMilestones.dropFirst())
+                )
             }
 
             if !summary.recentActivity.isEmpty {

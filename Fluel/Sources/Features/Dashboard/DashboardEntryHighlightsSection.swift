@@ -12,12 +12,16 @@ import SwiftUI
 struct DashboardEntryHighlightsSection: View {
     let activeEntry: EntrySnapshot?
     let archivedEntry: EntrySnapshot?
+    let milestone: EntryMilestone?
+    let activity: EntryActivitySummary?
 
     var body: some View {
         if hasHighlights {
             DashboardHighlightsLayout(
                 activeEntry: activeEntry,
-                archivedEntry: archivedEntry
+                archivedEntry: archivedEntry,
+                milestone: milestone,
+                activity: activity
             )
             .mhSection(
                 "Highlights",
@@ -27,6 +31,9 @@ struct DashboardEntryHighlightsSection: View {
     }
 
     private var hasHighlights: Bool {
-        activeEntry != nil || archivedEntry?.archivedAt != nil
+        activeEntry != nil
+            || archivedEntry?.archivedAt != nil
+            || milestone != nil
+            || activity != nil
     }
 }
