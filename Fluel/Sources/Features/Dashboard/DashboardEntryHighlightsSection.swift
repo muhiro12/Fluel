@@ -10,57 +10,23 @@ import MHUI
 import SwiftUI
 
 struct DashboardEntryHighlightsSection: View {
-    @Environment(\.mhDesignMetrics)
-    private var designMetrics
-
-    let summary: EntryDashboardSummary
+    let activeEntry: EntrySnapshot?
+    let archivedEntry: EntrySnapshot?
 
     var body: some View {
-        MHGroupedRows {
-            if let entry = summary.longestRunningActiveEntry {
-                highlight(
-                    label: "Longest together right now",
-                    title: entry.title,
-                    detail: EntryOperations.timeTogether(for: entry).primaryText,
-                    showsTimeTogetherMark: true
-                )
-            }
-
-            if let entry = summary.recentlyArchivedEntry,
-               let archivedAt = entry.archivedAt {
-                highlight(
-                    label: "Recently archived",
-                    title: entry.title,
-                    detail: archivedAt.formatted(date: .abbreviated, time: .omitted),
-                    showsTimeTogetherMark: false
-                )
-            }
+        if hasHighlights {
+            DashboardHighlightsLayout(
+                activeEntry: activeEntry,
+                archivedEntry: archivedEntry
+            )
+            .mhSection(
+                "Highlights",
+                supporting: "The moments that define the collection right now."
+            )
         }
-        .mhSection(
-            "Highlights",
-            supporting: "The moments that define the collection right now."
-        )
     }
 
-    private func highlight(
-        label: LocalizedStringKey,
-        title: String,
-        detail: String,
-        showsTimeTogetherMark: Bool
-    ) -> some View {
-        VStack(alignment: .leading, spacing: designMetrics.spacing.inline) {
-            Text(label)
-                .mhTextStyle(.metadata, colorRole: .secondaryText)
-
-            Text(title)
-                .mhRowTitle()
-
-            if showsTimeTogetherMark {
-                FluelTimeTogetherLabel(text: detail)
-            } else {
-                Text(detail)
-                    .mhRowSupporting()
-            }
-        }
+    private var hasHighlights: Bool {
+        activeEntry != nil || archivedEntry?.archivedAt != nil
     }
 }

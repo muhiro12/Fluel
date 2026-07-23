@@ -17,7 +17,8 @@ section, key-value, surface, and Liquid Glass boundaries.
 A subsequent regular-width root review corrected the sidebar's remaining
 app-owned MHUI adoption gap.
 The MHUI 1.13 signature-composition follow-up and MHUI 1.15 root-first styling
-review completed on 2026-07-18.
+review completed on 2026-07-18. The MHUI 1.16 adaptive feature-hierarchy
+follow-up completed on 2026-07-23.
 
 The decision standard is:
 
@@ -86,6 +87,28 @@ into image assets, because they need to retain native weight, scale, and
 accessibility behavior. Screenshot files under `docs` and `.build/reports`
 are review evidence rather than runtime image resources.
 
+## MHUI 1.16 Adaptive Feature-Hierarchy Follow-Up
+
+MHUI 1.16 intentionally changes the standard palette, spacing, typography
+emphasis, surface geometry, divider treatment, and hierarchy-cue placement.
+Fluel keeps the package-owned standard theme instead of overriding those
+values locally, so its existing signature screens receive that visual update
+directly.
+
+The new `MHFeatureGrid` matches Dashboard's existing product hierarchy:
+
+- The longest-running active entry remains the leading highlight.
+- The most recently archived entry becomes concise supporting content.
+- Compact widths stack the two features while regular widths preserve a
+  leading-and-supporting split.
+- A single available highlight renders directly instead of reserving an empty
+  grid column.
+
+Each feature keeps app-owned wording and data while using MHUI's muted surface,
+inset, semantic typography, and adaptive layout. Native `List` and `Form`
+screens remain unchanged because their selection, swipe, focus, grouping, and
+input behavior still justify the package's native-container bridges.
+
 ## Target Screens
 
 Confirmed existing app screens:
@@ -122,7 +145,7 @@ Current linked package state:
 - The Xcode app's `Package.resolved` file is tracked for reproducible app and
   Xcode Cloud resolution. SwiftPM lockfiles for `FluelLibrary` remain local
   generated artifacts. The recorded verification run resolved `MHPlatform` at
-  `1.12.0`, `MHUI` at `1.15.0`, and `SwiftLintPlugins` at `0.65.0`.
+  `1.12.0`, `MHUI` at `1.16.0`, and `SwiftLintPlugins` at `0.65.0`.
 
 Available API areas inspected:
 
@@ -138,7 +161,7 @@ Available API areas inspected:
 - `mhRow()`.
 - `mhSectionHeader()`, `mhSectionHeaderTitle()`,
   `mhSectionHeaderSupporting()`, and `mhSectionFooterText()`.
-- `MHSummary`, `MHSectionHeader`, `MHSectionFooter`,
+- `MHSummary`, `MHFeatureGrid`, `MHSectionHeader`, `MHSectionFooter`,
   `MHTextRole.summaryTitle`, and `MHTheme.Typography.summaryTitle`.
 - `mhListChrome()`, `mhFormChrome()`, `mhSection(...)`,
   `mhSurface(...)`, `MHGroupedRows`, `MHSurfaceRole.elevated`,
@@ -700,6 +723,27 @@ Not recommended now:
   Apple pattern for these screens.
 
 ## Verification Snapshot
+
+The MHUI 1.16 follow-up recorded these successful checks on 2026-07-23:
+
+- The 1.16 release notes, `1.15...1.16` source diff, adoption guide, public
+  sample, and Fluel call sites were reviewed together.
+- Xcode-native builds succeeded with scheme `Fluel` on the discovered iPhone
+  17 Pro iOS 27 Simulator destination.
+- The dense Dashboard Preview rendered in Japanese at standard and AX3 Dynamic
+  Type sizes.
+- Live iPhone and iPad checks covered the dense Dashboard and its Highlights
+  section. The compact layout stacked the leading and supporting features; the
+  regular-width layout kept the leading feature wider than its supporting
+  feature. Long text wrapped without clipping or overlap.
+- The active Xcode destination was restored to `iPhone 17 Pro for Fluel` after
+  the iPad check.
+- `bash ci_scripts/tasks/format_swift.sh`,
+  `bash ci_scripts/tasks/lint_swift.sh`,
+  `bash ci_scripts/tasks/check_repository_rules.sh`,
+  `bash ci_scripts/tasks/check_localizations.sh`, and `git diff --check`.
+- `bash ci_scripts/tasks/verify_task_completion.sh`, including 66 library tests
+  in 15 suites and the fallback app build.
 
 The MHUI 1.12 follow-up recorded these successful checks on 2026-07-17:
 

@@ -29,7 +29,10 @@ struct DashboardView: View {
         VStack(alignment: .leading, spacing: theme.spacing.section) {
             DashboardCountsSection(summary: summary)
 
-            DashboardEntryHighlightsSection(summary: summary)
+            DashboardEntryHighlightsSection(
+                activeEntry: summary.longestRunningActiveEntry,
+                archivedEntry: summary.recentlyArchivedEntry
+            )
 
             if !summary.upcomingMilestones.isEmpty {
                 DashboardMilestonesSection(milestones: summary.upcomingMilestones)
